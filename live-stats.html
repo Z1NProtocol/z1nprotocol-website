@@ -5,37 +5,33 @@
     <title>Live Stats – Z1N Protocol</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
-      html,
-      body {
+      html, body {
         margin: 0;
         padding: 0;
         background: #050812;
         color: #ffffff;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
       }
 
-      a {
-        color: inherit;
-        text-decoration: none;
+      a { color: inherit; text-decoration: none; }
+      a:hover { opacity: 0.9; }
+
+      /* HEADER (same as index) */
+      header {
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        margin-bottom: 20px;
       }
 
-      a:hover {
-        text-decoration: underline;
-      }
-
-      .page {
+      .nav-inner {
+        width: 100%;
         max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px 64px;
-      }
-
-      .site-header {
-        height: 64px;
+        padding: 0 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -48,7 +44,7 @@
       }
 
       .logo-mark {
-        height: 28px;
+        height: 30px;
       }
 
       .logo-text {
@@ -58,23 +54,22 @@
         opacity: 0.7;
       }
 
-      .nav {
+      .nav-links {
         display: flex;
-        gap: 20px;
+        gap: 22px;
         font-size: 13px;
-        opacity: 0.8;
+        opacity: 0.85;
       }
 
-      .nav a {
+      .nav-links a {
         position: relative;
-        padding-bottom: 2px;
       }
 
-      .nav a:hover {
-        opacity: 1;
+      .nav-links a.active {
+        color: #66d69a;
       }
 
-      .nav a.active::after {
+      .nav-links a.active::after {
         content: "";
         position: absolute;
         left: 0;
@@ -85,20 +80,33 @@
         background: linear-gradient(to right, #66d69a, #3a9f63);
       }
 
-      .main {
-        padding: 32px 0 0;
+      @media(max-width: 900px){
+        .nav-inner { padding: 0 16px; }
+        .nav-links {
+          font-size: 12px;
+          gap: 14px;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+      }
+
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px 80px;
       }
 
       .page-title {
-        font-size: clamp(30px, 3vw + 10px, 38px);
+        font-size: 40px;
         font-weight: 600;
-        margin: 0 0 8px 0;
+        margin: 32px 0 10px 0;
+        letter-spacing: -0.02em;
       }
 
       .page-sub {
         font-size: 17px;
-        opacity: 0.7;
-        margin-bottom: 24px;
+        opacity: 0.8;
+        margin-bottom: 28px;
         max-width: 720px;
         line-height: 1.6;
       }
@@ -136,74 +144,36 @@
         opacity: 0.75;
       }
 
-      /* FOOTER */
-
-      .site-footer {
-        border-top: 1px solid rgba(148, 163, 184, 0.25);
-        padding: 14px 24px 18px;
-        font-size: 11px;
-        color: #6e7389;
+      footer {
+        border-top: 1px solid rgba(255,255,255,0.05);
+        padding: 20px;
+        font-size: 12px;
+        text-align: center;
+        opacity: 0.65;
       }
 
-      .footer-inner {
-        max-width: 1200px;
-        margin: 0 auto;
+      footer .icons {
+        margin-top: 6px;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
+        justify-content: center;
+        gap: 16px;
       }
 
-      .footer-links {
-        display: flex;
-        gap: 12px;
-        align-items: center;
+      footer img {
+        height: 18px;
+        opacity: 0.85;
       }
 
-      .footer-links a {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        text-decoration: none;
-        color: inherit;
-        opacity: 0.9;
-      }
-
-      .footer-links a:hover {
-        opacity: 1;
-        color: #ffffff;
-      }
-
-      .footer-links svg {
-        width: 14px;
-        height: 14px;
-        display: block;
-      }
-
-      @media (max-width: 900px) {
+      @media(max-width: 900px){
         .page {
-          padding: 0 16px 40px;
+          padding: 0 16px 56px;
         }
-
-        .page-title {
-          font-size: 28px;
-        }
-
-        .page-sub {
-          font-size: 16px;
-        }
-
         .stats-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .footer-inner {
-          flex-direction: column;
-          align-items: flex-start;
+          grid-template-columns: repeat(2, minmax(0,1fr));
         }
       }
 
-      @media (max-width: 600px) {
+      @media(max-width: 600px){
         .stats-grid {
           grid-template-columns: 1fr;
         }
@@ -211,65 +181,56 @@
     </style>
   </head>
   <body>
-    <div class="page">
-      <header class="site-header">
+    <header>
+      <div class="nav-inner">
         <div class="logo-wrap">
           <img src="/logo-z1n.png" alt="Z1N logo" class="logo-mark" />
           <div class="logo-text">Z1N PROTOCOL</div>
         </div>
-        <nav class="nav">
+        <nav class="nav-links">
           <a href="/about.html">About</a>
           <a href="/live-stats.html" class="active">Live Stats</a>
           <a href="/artefacts.html">Artefacts</a>
           <a href="/wallet.html">Wallet</a>
         </nav>
-      </header>
+      </div>
+    </header>
 
-      <main class="main">
-        <h1 class="page-title">Live stats of the field</h1>
-        <p class="page-sub">
-          Static placeholders for now – later we wire this to on-chain views
-          and/or an indexer.
-        </p>
+    <main class="page">
+      <h1 class="page-title">Live stats of the field</h1>
+      <p class="page-sub">
+        Static placeholders for now – later we wire this to on-chain views
+        and/or an indexer.
+      </p>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Current epoch</div>
-            <div class="stat-value">42</div>
-            <div class="stat-sub">Example value.</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total keys</div>
-            <div class="stat-value">7 842</div>
-            <div class="stat-sub">Awakened Keys so far.</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total signals</div>
-            <div class="stat-value">14 220</div>
-            <div class="stat-sub">All PoG signals across epochs.</div>
-          </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Current epoch</div>
+          <div class="stat-value">42</div>
+          <div class="stat-sub">Example value.</div>
         </div>
-      </main>
-    </div>
-
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <span>No team · No token · No roadmap — the field is the only product.</span>
-        <div class="footer-links">
-          <a href="https://github.com/Z1NProtocol" target="_blank" rel="noopener">
-            <svg viewBox="0 0 16 16" aria-hidden="true">
-              <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.2" />
-              <path d="M5 10.5c.8.6 1.6.8 3 .8s2.2-.2 3-.8" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
-            </svg>
-            <span>GitHub</span>
-          </a>
-          <a href="https://x.com/Z1N_AI" target="_blank" rel="noopener">
-            <svg viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M3 3l10 10M13 3L3 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-            </svg>
-            <span>X</span>
-          </a>
+        <div class="stat-card">
+          <div class="stat-label">Total keys</div>
+          <div class="stat-value">7 842</div>
+          <div class="stat-sub">Awakened Keys so far.</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-label">Total signals</div>
+          <div class="stat-value">14 220</div>
+          <div class="stat-sub">All PoG signals across epochs.</div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      No team · No token · No roadmap — Only the field.
+      <div class="icons">
+        <a href="https://github.com" target="_blank"
+          ><img src="/icon-github.png" alt="GitHub"
+/></a>
+        <a href="https://x.com" target="_blank"
+          ><img src="/icon-x.png" alt="X"
+/></a>
       </div>
     </footer>
   </body>
