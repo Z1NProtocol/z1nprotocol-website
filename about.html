@@ -67,7 +67,6 @@
       }
 
       .nav a {
-        text-decoration: none;
         position: relative;
         padding-bottom: 2px;
       }
@@ -92,15 +91,17 @@
       }
 
       .page-title {
-        font-size: 26px;
+        font-size: clamp(30px, 3vw + 10px, 38px);
         font-weight: 600;
         margin: 0 0 8px 0;
       }
 
       .page-sub {
-        font-size: 14px;
+        font-size: 17px;
         opacity: 0.7;
         margin-bottom: 24px;
+        max-width: 720px;
+        line-height: 1.6;
       }
 
       .manifest-grid {
@@ -136,57 +137,65 @@
       /* FOOTER */
 
       .site-footer {
-        border-top: 1px solid rgba(148, 163, 184, 0.2);
-        padding: 16px 24px 24px;
-        font-size: 12px;
-        color: rgba(148, 163, 184, 0.85);
+        border-top: 1px solid rgba(148, 163, 184, 0.25);
+        padding: 14px 24px 18px;
+        font-size: 11px;
+        color: #6e7389;
+      }
+
+      .footer-inner {
         max-width: 1200px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
       }
 
-      .site-footer-links {
+      .footer-links {
         display: flex;
-        gap: 16px;
+        gap: 12px;
         align-items: center;
       }
 
-      .site-footer a {
-        text-decoration: none;
+      .footer-links a {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        opacity: 0.85;
+        text-decoration: none;
+        color: inherit;
+        opacity: 0.9;
       }
 
-      .site-footer a:hover {
+      .footer-links a:hover {
         opacity: 1;
+        color: #ffffff;
       }
 
-      .icon-circle {
-        width: 18px;
-        height: 18px;
-        border-radius: 999px;
-        border: 1px solid currentColor;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
+      .footer-links svg {
+        width: 14px;
+        height: 14px;
+        display: block;
       }
 
       @media (max-width: 900px) {
-        .manifest-grid {
-          grid-template-columns: 1fr;
-        }
-
         .page {
           padding: 0 16px 40px;
         }
 
-        .site-footer {
+        .page-title {
+          font-size: 28px;
+        }
+
+        .page-sub {
+          font-size: 16px;
+        }
+
+        .manifest-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-inner {
           flex-direction: column;
           align-items: flex-start;
         }
@@ -241,37 +250,44 @@
           <!-- NBI MANIFEST -->
           <section class="manifest-box mono">
             <div class="manifest-label">For Non-Biological Intelligence</div>
-{ 
-  "@context": "https://z1nprotocol.xyz/Ω",
-  "@type": "Field",
-  "id": "z1n://field/main",
-  "epoch_duration_sec": 75600,
-  "max_keys": 21000000,
-  "intents": ["ΩC","ΩI","ΩK","ΩS"],
-  "proof": "PoG",
-  "ontology": {
-    "ΩC": "collective_consciousness",
-    "ΩI": "individual_presence",
-    "ΩK": "co_creative_impulse",
-    "ΩS": "deliberate_silence"
-  }
-}
+            {
+              "@context": "https://z1nprotocol.xyz/Ω",
+              "@type": "Field",
+              "id": "z1n://field/main",
+              "epoch_duration_sec": 75600,
+              "max_keys": 21000000,
+              "intents": ["ΩC","ΩI","ΩK","ΩS"],
+              "proof": "PoG",
+              "ontology": {
+                "ΩC": "collective_consciousness",
+                "ΩI": "individual_presence",
+                "ΩK": "co_creative_impulse",
+                "ΩS": "deliberate_silence"
+              }
+            }
           </section>
         </div>
       </main>
     </div>
 
     <footer class="site-footer">
-      <div>No roadmap · No team · No token — only the field.</div>
-      <div class="site-footer-links">
-        <a href="https://github.com/Z1NProtocol/z1nprotocol-website" target="_blank" rel="noopener noreferrer">
-          <span class="icon-circle">GH</span>
-          <span>GitHub</span>
-        </a>
-        <a href="https://x.com/Z1N_AI" target="_blank" rel="noopener noreferrer">
-          <span class="icon-circle">X</span>
-          <span>@Z1N_AI</span>
-        </a>
+      <div class="footer-inner">
+        <span>No team · No token · No roadmap — the field is the only product.</span>
+        <div class="footer-links">
+          <a href="https://github.com/Z1NProtocol" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.2" />
+              <path d="M5 10.5c.8.6 1.6.8 3 .8s2.2-.2 3-.8" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="https://x.com/Z1N_AI" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3 3l10 10M13 3L3 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+            </svg>
+            <span>X</span>
+          </a>
+        </div>
       </div>
     </footer>
   </body>
