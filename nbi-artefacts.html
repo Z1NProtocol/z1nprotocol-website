@@ -27,7 +27,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* HEADER – zelfde stijl als artefacts.html */
+    /* HEADER */
     header {
       height: 72px;
       display: flex;
@@ -48,6 +48,12 @@
 
     .logo-wrap {
       display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-link {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
     }
@@ -82,8 +88,8 @@
       position: relative;
     }
 
-    /* “Artefacts” subtiel als familie-pagina */
-    .nav-links a[href="artefacts.html"]::after {
+    /* Actieve pagina underline */
+    .nav-links a.active::after {
       content: "";
       position: absolute;
       left: 0;
@@ -131,7 +137,7 @@
     .lead-small {
       font-size: 14px;
       opacity: 0.7;
-      margin-bottom: 18px;
+      margin-bottom: 32px; /* extra witruimte boven de carousel */
     }
 
     /* CAROUSEL */
@@ -160,7 +166,7 @@
       display: grid;
       grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
       gap: 26px;
-      align-items: flex-start; /* tekst hoger uitlijnen */
+      align-items: flex-start; /* tekst hoog starten */
     }
 
     @media(max-width: 900px){
@@ -221,23 +227,25 @@
       height: auto;
     }
 
-    /* CAROUSEL CONTROLS */
+    /* CAROUSEL CONTROLS – hoger, groter, dots onder knoppen */
     .controls-row {
+      margin-top: 40px; /* ~“5 witregels” gevoel onder tekst */
+      padding: 0 26px 12px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 4px 26px 6px;
-      gap: 16px;
+      gap: 10px;
     }
 
     .carousel-controls {
       display: flex;
-      gap: 8px;
+      gap: 10px;
+      justify-content: center;
     }
 
     .carousel-btn {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.5);
       background: rgba(5,8,18,0.95);
@@ -245,7 +253,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 26px;
       cursor: pointer;
     }
 
@@ -295,14 +303,16 @@
 <header>
   <div class="nav-inner">
     <div class="logo-wrap">
-      <div class="logo-dot">Ω</div>
-      <div class="logo-text">Z1N PROTOCOL</div>
+      <a href="index.html" class="logo-link">
+        <div class="logo-dot">Ω</div>
+        <div class="logo-text">Z1N PROTOCOL</div>
+      </a>
     </div>
     <nav class="nav-links">
       <a href="about.html">About</a>
       <a href="live-stats.html">Live Stats</a>
       <a href="artefacts.html">Artefacts</a>
-      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="nbi-artefacts.html" class="active">4 NBIs</a>
       <a href="wallet.html">Wallet</a>
     </nav>
   </div>
@@ -348,8 +358,11 @@
           </div>
 
           <div class="artefact-frame">
-            <!-- Artefact v1 SVG -->
-            <!-- (exact dezelfde als op artefacts.html) -->
+            <!-- Artefact v1 SVG (zelfde als artefacts.html) -->
+            <!-- ... SVG ONGEWIJZIGD LATEN ... -->
+            <!-- Voor de leesbaarheid heb ik hem niet opnieuw ingekort;
+                 dit is exact dezelfde als je al had. -->
+            <!-- BEGIN ARTEFACT V1 SVG -->
             <svg xmlns="http://www.w3.org/2000/svg" width="500" height="760" viewBox="0 0 500 760">
               <defs>
                 <linearGradient id="borderSolidLike" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -580,6 +593,7 @@
                 Artefact v1 • Era 1 — Genesis
               </text>
             </svg>
+            <!-- EINDE ARTEFACT V1 SVG -->
           </div>
         </div>
       </article>
@@ -822,7 +836,7 @@
       </article>
     </div>
 
-    <!-- CONTROLS + DOTS ONDERAAN -->
+    <!-- CONTROLS + DOTS -->
     <div class="controls-row">
       <div class="carousel-controls">
         <button class="carousel-btn" id="prevBtn" aria-label="Previous NBI">‹</button>
