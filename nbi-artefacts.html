@@ -123,7 +123,7 @@
 
     h1 {
       font-size: 40px;
-      margin: 18px 0 6px 0;
+      margin: 32px 0 6px 0; /* extra ruimte onder de header */
       letter-spacing: -0.02em;
     }
 
@@ -227,20 +227,20 @@
       height: auto;
     }
 
-    /* CAROUSEL CONTROLS – hoger, groter, dots onder knoppen */
+    /* CAROUSEL CONTROLS – links onder de tekst, meer witruimte */
     .controls-row {
-      margin-top: 40px; /* ~“5 witregels” gevoel onder tekst */
+      margin-top: 48px; /* ~5–6 'witregels' gevoel onder de tekst */
       padding: 0 26px 12px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;   /* alles links uitlijnen */
       gap: 10px;
     }
 
     .carousel-controls {
       display: flex;
       gap: 10px;
-      justify-content: center;
+      justify-content: flex-start; /* knoppen links */
     }
 
     .carousel-btn {
@@ -253,7 +253,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 30px;   /* grotere ‹ › */
+      line-height: 1;    /* mooi gecentreerd */
       cursor: pointer;
     }
 
@@ -265,7 +266,7 @@
       display: flex;
       gap: 8px;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start; /* dots ook links, onder de knoppen */
     }
 
     .dot {
@@ -358,11 +359,7 @@
           </div>
 
           <div class="artefact-frame">
-            <!-- Artefact v1 SVG (zelfde als artefacts.html) -->
-            <!-- ... SVG ONGEWIJZIGD LATEN ... -->
-            <!-- Voor de leesbaarheid heb ik hem niet opnieuw ingekort;
-                 dit is exact dezelfde als je al had. -->
-            <!-- BEGIN ARTEFACT V1 SVG -->
+            <!-- Artefact v1 SVG -->
             <svg xmlns="http://www.w3.org/2000/svg" width="500" height="760" viewBox="0 0 500 760">
               <defs>
                 <linearGradient id="borderSolidLike" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -471,14 +468,17 @@
                 <circle cx="0" cy="0" r="51" fill="none" stroke="#4CAF50"
                         stroke-width="11" stroke-dasharray="198 116"
                         transform="rotate(-90)" />
-                <circle cx="0" cy="0" r="51" fill="none" stroke="#F44336"
-                        stroke-width="11" stroke-dasharray="69 245"
+                <circle cx="0" cy="0" r="51"
+                        fill="none" stroke="#F44336" stroke-width="11"
+                        stroke-dasharray="69 245"
                         transform="rotate(137)" />
-                <circle cx="0" cy="0" r="51" fill="none" stroke="#FFEB3B"
-                        stroke-width="11" stroke-dasharray="31 283"
+                <circle cx="0" cy="0" r="51"
+                        fill="none" stroke="#FFEB3B" stroke-width="11"
+                        stroke-dasharray="31 283"
                         transform="rotate(216)" />
-                <circle cx="0" cy="0" r="51" fill="none" stroke="#2196F3"
-                        stroke-width="11" stroke-dasharray="16 298"
+                <circle cx="0" cy="0" r="51"
+                        fill="none" stroke="#2196F3" stroke-width="11"
+                        stroke-dasharray="16 298"
                         transform="rotate(252)" />
                 <text x="0" y="-14" text-anchor="middle"
                       font-size="13" fill="#d5d9e8">Total</text>
@@ -593,7 +593,6 @@
                 Artefact v1 • Era 1 — Genesis
               </text>
             </svg>
-            <!-- EINDE ARTEFACT V1 SVG -->
           </div>
         </div>
       </article>
