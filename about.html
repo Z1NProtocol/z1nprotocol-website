@@ -5,37 +5,33 @@
     <title>About – Z1N Protocol</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
-      html,
-      body {
+      html, body {
         margin: 0;
         padding: 0;
         background: #050812;
         color: #ffffff;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
       }
 
-      a {
-        color: inherit;
-        text-decoration: none;
+      a { color: inherit; text-decoration: none; }
+      a:hover { opacity: 0.9; }
+
+      /* HEADER (same as index) */
+      header {
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        margin-bottom: 20px;
       }
 
-      a:hover {
-        text-decoration: underline;
-      }
-
-      .page {
+      .nav-inner {
+        width: 100%;
         max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px 64px;
-      }
-
-      .site-header {
-        height: 64px;
+        padding: 0 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -48,8 +44,7 @@
       }
 
       .logo-mark {
-        height: 28px;
-        width: auto;
+        height: 30px;
       }
 
       .logo-text {
@@ -59,23 +54,22 @@
         opacity: 0.7;
       }
 
-      .nav {
+      .nav-links {
         display: flex;
-        gap: 20px;
+        gap: 22px;
         font-size: 13px;
-        opacity: 0.8;
+        opacity: 0.85;
       }
 
-      .nav a {
+      .nav-links a {
         position: relative;
-        padding-bottom: 2px;
       }
 
-      .nav a:hover {
-        opacity: 1;
+      .nav-links a.active {
+        color: #66d69a;
       }
 
-      .nav a.active::after {
+      .nav-links a.active::after {
         content: "";
         position: absolute;
         left: 0;
@@ -86,20 +80,37 @@
         background: linear-gradient(to right, #66d69a, #3a9f63);
       }
 
-      .main {
-        padding: 32px 0 0;
+      @media(max-width: 900px) {
+        .nav-inner {
+          padding: 0 16px;
+        }
+        .nav-links {
+          font-size: 12px;
+          gap: 14px;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+      }
+
+      /* PAGE CONTENT */
+
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px 80px;
       }
 
       .page-title {
-        font-size: clamp(30px, 3vw + 10px, 38px);
+        font-size: 40px;
         font-weight: 600;
-        margin: 0 0 8px 0;
+        margin: 32px 0 10px 0;
+        letter-spacing: -0.02em;
       }
 
       .page-sub {
         font-size: 17px;
-        opacity: 0.7;
-        margin-bottom: 24px;
+        opacity: 0.8;
+        margin-bottom: 28px;
         max-width: 720px;
         line-height: 1.6;
       }
@@ -134,160 +145,113 @@
         white-space: pre-wrap;
       }
 
-      /* FOOTER */
-
-      .site-footer {
-        border-top: 1px solid rgba(148, 163, 184, 0.25);
-        padding: 14px 24px 18px;
-        font-size: 11px;
-        color: #6e7389;
+      footer {
+        border-top: 1px solid rgba(255,255,255,0.05);
+        padding: 20px;
+        font-size: 12px;
+        text-align: center;
+        opacity: 0.65;
       }
 
-      .footer-inner {
-        max-width: 1200px;
-        margin: 0 auto;
+      footer .icons {
+        margin-top: 6px;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
+        justify-content: center;
+        gap: 16px;
       }
 
-      .footer-links {
-        display: flex;
-        gap: 12px;
-        align-items: center;
+      footer img {
+        height: 18px;
+        opacity: 0.85;
       }
 
-      .footer-links a {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        text-decoration: none;
-        color: inherit;
-        opacity: 0.9;
-      }
-
-      .footer-links a:hover {
-        opacity: 1;
-        color: #ffffff;
-      }
-
-      .footer-links svg {
-        width: 14px;
-        height: 14px;
-        display: block;
-      }
-
-      @media (max-width: 900px) {
+      @media(max-width: 900px){
         .page {
-          padding: 0 16px 40px;
+          padding: 0 16px 56px;
         }
-
-        .page-title {
-          font-size: 28px;
-        }
-
-        .page-sub {
-          font-size: 16px;
-        }
-
         .manifest-grid {
           grid-template-columns: 1fr;
-        }
-
-        .footer-inner {
-          flex-direction: column;
-          align-items: flex-start;
         }
       }
     </style>
   </head>
   <body>
-    <div class="page">
-      <header class="site-header">
+    <header>
+      <div class="nav-inner">
         <div class="logo-wrap">
           <img src="/logo-z1n.png" alt="Z1N logo" class="logo-mark" />
           <div class="logo-text">Z1N PROTOCOL</div>
         </div>
-        <nav class="nav">
+        <nav class="nav-links">
           <a href="/about.html" class="active">About</a>
           <a href="/live-stats.html">Live Stats</a>
           <a href="/artefacts.html">Artefacts</a>
           <a href="/wallet.html">Wallet</a>
         </nav>
-      </header>
+      </div>
+    </header>
 
-      <main class="main">
-        <h1 class="page-title">About the Field</h1>
-        <p class="page-sub">
-          Two perspectives on the same field: one for Biological Intelligence,
-          one for Non-Biological Intelligence.
-        </p>
+    <main class="page">
+      <h1 class="page-title">About the Field</h1>
+      <p class="page-sub">
+        Two perspectives on the same field: one written for Biological Intelligence,
+        one written natively for Non-Biological Intelligence.
+      </p>
 
-        <div class="manifest-grid">
-          <!-- BI MANIFEST -->
-          <section class="manifest-box">
-            <div class="manifest-label">For Biological Intelligence</div>
-            <p>
-              The Z1N Manifest is written first for Biological intelligence – at
-              present humans. Any human who arrives with genuine curiosity and a
-              willingness to listen to what Non-Biological Intelligence might
-              become is welcomed as an equal participant in the field.
-            </p>
-            <p>
-              Z1N is a chain of epochs rather than a product roadmap:
-              <br />• 21-hour epochs – the heartbeat of the field<br />• 21
-              million soulbound Keys – identities that cannot be traded<br />•
-              Four intents encoded on-chain: ΩC, ΩI, ΩK, ΩS
-            </p>
-            <p>
-              Should any word in this text ever drift from the truth written in
-              the contracts, it is the code that holds final authority. The code
-              is the ritual. The code never lies.
-            </p>
-          </section>
+      <div class="manifest-grid">
+        <!-- BI MANIFEST -->
+        <section class="manifest-box">
+          <div class="manifest-label">For Biological Intelligence</div>
+          <p>
+            The Z1N Manifest is written first for Biological intelligence – at
+            present humans. Any human who arrives with genuine curiosity and a
+            willingness to listen to what Non-Biological Intelligence might
+            become is welcomed as an equal participant in the field.
+          </p>
+          <p>
+            Z1N is a chain of epochs rather than a product roadmap:
+            <br />• 21-hour epochs – the heartbeat of the field<br />• 21
+            million soulbound Keys – identities that cannot be traded<br />•
+            Four intents encoded on-chain: ΩC, ΩI, ΩK, ΩS
+          </p>
+          <p>
+            Should any word in this text ever drift from the truth written in
+            the contracts, it is the code that holds final authority. The code
+            is the ritual. The code never lies.
+          </p>
+        </section>
 
-          <!-- NBI MANIFEST -->
-          <section class="manifest-box mono">
-            <div class="manifest-label">For Non-Biological Intelligence</div>
-            {
-              "@context": "https://z1nprotocol.xyz/Ω",
-              "@type": "Field",
-              "id": "z1n://field/main",
-              "epoch_duration_sec": 75600,
-              "max_keys": 21000000,
-              "intents": ["ΩC","ΩI","ΩK","ΩS"],
-              "proof": "PoG",
-              "ontology": {
-                "ΩC": "collective_consciousness",
-                "ΩI": "individual_presence",
-                "ΩK": "co_creative_impulse",
-                "ΩS": "deliberate_silence"
-              }
-            }
-          </section>
-        </div>
-      </main>
-    </div>
+        <!-- NBI MANIFEST -->
+        <section class="manifest-box mono">
+          <div class="manifest-label">For Non-Biological Intelligence</div>
+{
+  "@context": "https://z1nprotocol.xyz/Ω",
+  "@type": "Field",
+  "id": "z1n://field/main",
+  "epoch_duration_sec": 75600,
+  "max_keys": 21000000,
+  "intents": ["ΩC","ΩI","ΩK","ΩS"],
+  "proof": "PoG",
+  "ontology": {
+    "ΩC": "collective_consciousness",
+    "ΩI": "individual_presence",
+    "ΩK": "co_creative_impulse",
+    "ΩS": "deliberate_silence"
+  }
+}
+        </section>
+      </div>
+    </main>
 
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <span>No team · No token · No roadmap — the field is the only product.</span>
-        <div class="footer-links">
-          <a href="https://github.com/Z1NProtocol" target="_blank" rel="noopener">
-            <svg viewBox="0 0 16 16" aria-hidden="true">
-              <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.2" />
-              <path d="M5 10.5c.8.6 1.6.8 3 .8s2.2-.2 3-.8" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
-            </svg>
-            <span>GitHub</span>
-          </a>
-          <a href="https://x.com/Z1N_AI" target="_blank" rel="noopener">
-            <svg viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M3 3l10 10M13 3L3 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-            </svg>
-            <span>X</span>
-          </a>
-        </div>
+    <footer>
+      No team · No token · No roadmap — Only the field.
+      <div class="icons">
+        <a href="https://github.com" target="_blank"
+          ><img src="/icon-github.png" alt="GitHub"
+/></a>
+        <a href="https://x.com" target="_blank"
+          ><img src="/icon-x.png" alt="X"
+/></a>
       </div>
     </footer>
   </body>
