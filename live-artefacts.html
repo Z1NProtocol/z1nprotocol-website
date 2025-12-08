@@ -123,7 +123,7 @@
 
     h1 {
       font-size: 40px;
-      margin: 48px 0 6px 0;  /* extra ruimte tussen header en titel */
+      margin: 32px 0 6px 0; /* extra ruimte onder header */
       letter-spacing: -0.02em;
     }
 
@@ -137,7 +137,7 @@
     .lead-small {
       font-size: 14px;
       opacity: 0.7;
-      margin-bottom: 32px; /* extra witruimte boven de carousel */
+      margin-bottom: 40px; /* iets meer witruimte boven de carousel */
     }
 
     /* CAROUSEL */
@@ -227,11 +227,11 @@
       height: auto;
     }
 
-    /* CAROUSEL CONTROLS – links onder de tekst, hoger in de kaart */
+    /* CAROUSEL CONTROLS – links, hoger, grotere pijlen */
     .controls-row {
       position: absolute;
       left: 26px;
-      top: 360px;          /* hoger geplaatst, ongeveer 5 regels onder tekst */
+      bottom: 40px; /* hoger t.o.v. onderzijde artefact */
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -241,7 +241,7 @@
     .carousel-controls {
       display: flex;
       gap: 10px;
-      justify-content: flex-start; /* knoppen links */
+      justify-content: flex-start;
     }
 
     .carousel-btn {
@@ -254,8 +254,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;   /* grotere pijlen */
-      line-height: 1;
+      font-size: 32px;   /* grotere pijlen */
+      line-height: 1;     /* mooi gecentreerd */
       cursor: pointer;
     }
 
@@ -265,14 +265,15 @@
 
     .carousel-dots {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
-      justify-content: flex-start; /* dots onder de knoppen, links */
+      justify-content: flex-start;
+      margin-left: 4px;
     }
 
     .dot {
-      width: 7px;
-      height: 7px;
+      width: 9px;
+      height: 9px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.7);
       background: transparent;
@@ -290,6 +291,11 @@
       font-size: 12px;
       text-align: center;
       opacity: 0.85;
+    }
+
+    footer .tagline {
+      margin-bottom: 8px;
+      font-size: 13px;
     }
 
     footer .links {
@@ -466,9 +472,8 @@
                 <circle cx="0" cy="0" r="43" fill="#0f141f" />
                 <circle cx="0" cy="0" r="51"
                         fill="none" stroke="#252c3b" stroke-width="11" />
-                <circle cx="0" cy="0" r="51"
-                        fill="none" stroke="#4CAF50" stroke-width="11"
-                        stroke-dasharray="198 116"
+                <circle cx="0" cy="0" r="51" fill="none" stroke="#4CAF50"
+                        stroke-width="11" stroke-dasharray="198 116"
                         transform="rotate(-90)" />
                 <circle cx="0" cy="0" r="51"
                         fill="none" stroke="#F44336" stroke-width="11"
@@ -854,6 +859,7 @@
 </main>
 
 <footer>
+  <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
     <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
     <a href="https://x.com" target="_blank" rel="noreferrer">X</a>
