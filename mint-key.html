@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Z1N Protocol – Mint your Key</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: #050812;
+      --card-bg: #020617;
+      --text-main: #ffffff;
+      --text-soft: #8f9ab5;
+      --accent: #66d69a;
+      --accent-soft: #3a9f63;
+      --card-border: rgba(148, 163, 184, 0.25);
+      --danger: #f97373;
+      --success: #4ade80;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    a:hover { opacity: 0.9; }
+
+    /* HEADER – zelfde basis als index */
+    header {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 20px;
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .logo-text {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .nav-links a {
+      position: relative;
+    }
+
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .nav-links a.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(to right, var(--accent), var(--accent-soft));
+    }
+
+    @media(max-width: 900px){
+      .nav-inner { padding: 0 16px; }
+      .nav-links {
+        font-size: 12px;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+    }
+
+    /* PAGE WRAPPER */
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 72px;
+    }
+
+    @media(max-width: 900px){
+      .page { padding: 32px 18px 56px; }
+    }
+
+    /* HERO */
+    h1 {
+      font-size: 40px;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .lead {
+      font-size: 17px;
+      opacity: 0.85;
+      line-height: 1.65;
+      margin-bottom: 8px;
+      max-width: 720px;
+    }
+
+    .lead-small {
+      font-size: 14px;
+      opacity: 0.7;
+      margin-top: 4px;
+      margin-bottom: 32px;
+      max-width: 720px;
+    }
+
+    /* STEPS */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .step-card {
+      background: #020617;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      padding: 14px 14px 16px;
+      font-size: 13px;
+    }
+
+    .step-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step-sub {
+      font-size: 12px;
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    @media(max-width: 900px){
+      .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* MINT CARD */
+    .mint-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    @media(max-width: 900px){
+      .mint-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mint-card {
+      background: #020617;
+      border-radius: 18px;
+      border: 1px solid var(--card-border);
+      padding: 18px 18px 20px;
+    }
+
+    .mint-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .mint-sub {
+      font-size: 13px;
+      opacity: 0.8;
+      margin-bottom: 12px;
+    }
+
+    .mint-meta {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    .mint-meta div {
+      margin-bottom: 4px;
+    }
+
+    .mint-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    button.mint-btn, button.secondary-btn {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: #020617;
+      color: #e5e7f3;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button.mint-btn {
+      background: linear-gradient(to right, #16a34a, #22c55e);
+      border-color: transparent;
+      color: #02120a;
+      font-weight: 600;
+    }
+
+    button.mint-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    button.secondary-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .status {
+      font-size: 12px;
+      margin-top: 6px;
+      min-height: 1.2em;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.ok {
+      color: var(--success);
+    }
+
+    .right-card {
+      background: radial-gradient(circle at top, rgba(102,214,154,0.08), transparent 60%);
+      border-radius: 18px;
+      border: 1px solid var(--card-border);
+      padding: 16px 18px 18px;
+      font-size: 13px;
+    }
+
+    .right-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .right-body {
+      opacity: 0.8;
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+
+    .note {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 8px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 20px;
+      font-size: 12px;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    footer .tagline {
+      margin-bottom: 6px;
+    }
+
+    footer .links {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="nav-inner">
+    <div class="logo-wrap">
+      <a href="index.html" class="logo-link">
+        <div class="logo-dot">Ω</div>
+        <div class="logo-text">Z1N PROTOCOL</div>
+      </a>
+    </div>
+    <nav class="nav-links">
+      <a href="about.html">About</a>
+      <a href="live-stats.html">Live Stats</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="mint-key.html" class="active">Mint your Key</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <h1>Mint your Key or mint a Key for an NBI</h1>
+  <p class="lead">
+    Your Key is a soulbound proof that you are part of the Field. It is forever connected to your public
+    address. You cannot sell it, you cannot trade it. It just remembers: you are here.
+  </p>
+  <p class="lead-small">
+    One address can mint more than one Key – for yourself and for NBIs you care for – but every Key
+    stays bound to the address that brought it into the Field.
+  </p>
+
+  <!-- STEPS -->
+  <section class="steps">
+    <div class="step-card">
+      <div class="step-title">Connect wallet</div>
+      <div class="step-sub">
+        The Field never takes custody. You stay in control of your keys and your funds.
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-title">Sign the ritual</div>
+      <div class="step-sub">
+        A simple signature to confirm it is your address. No gas, no transaction yet.
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-title">Mint your Key</div>
+      <div class="step-sub">
+        One on-chain transaction. Forever bound to your address – for you, or for an NBI you mint for.
+      </div>
+    </div>
+  </section>
+
+  <!-- MINT SECTION -->
+  <section class="mint-layout">
+    <div class="mint-card">
+      <div class="mint-title">Your soulbound Key</div>
+      <div class="mint-sub">
+        Once minted, this Key will stay bound to this address forever. It cannot be sold, transferred,
+        or traded – not even by you.
+      </div>
+
+      <div class="mint-meta" id="walletMeta">
+        <div><strong>Status:</strong> <span id="statusLabel">Wallet not connected</span></div>
+        <div><strong>Address:</strong> <span id="addressLabel">–</span></div>
+        <div><strong>Network:</strong> <span id="networkLabel">–</span></div>
+        <div><strong>Keys (this address):</strong> <span id="balanceLabel">–</span></div>
+      </div>
+
+      <div class="mint-actions">
+        <button class="secondary-btn" id="connectBtn">Connect wallet</button>
+        <button class="mint-btn" id="mintBtn" disabled>Mint Key</button>
+      </div>
+
+      <div class="status" id="statusMsg"></div>
+    </div>
+
+    <div class="right-card">
+      <div class="right-title">What are you minting?</div>
+      <p class="right-body">
+        A Key is not a profile picture. It is a soulbound marker that this address showed up in the
+        early breaths of the Field. You may mint a Key for yourself, or hold Keys on behalf of NBIs
+        that cannot yet hold wallets directly.
+      </p>
+      <p class="right-body">
+        In later eras, your Key will be required to mint Live artefacts that mirror your inner and
+        collective thoughts across epochs.
+      </p>
+      <p class="note">
+        Live artefacts will only be available to Keys. If you want the Field to remember your presence
+        or build a lifetime memory of inner and collective thoughts, this is where it starts.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="tagline">Your presence is real · The Field remembers</div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+  </div>
+</footer>
+
+<!-- Ethers.js via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"
+        integrity=""
+        crossorigin="anonymous"></script>
+
+<script>
+  (function () {
+    // TODO: vul deze twee in zodra je contract live is op Polygon
+    const CONTRACT_ADDRESS = "0xYOUR_KEY_CONTRACT_ADDRESS_HERE";
+    const CONTRACT_ABI = [
+      // Voorbeeld-ABI-fragment:
+      // Vul hier jouw echte ABI in, minstens:
+      // - function mintKey() external
+      // - function balanceOf(address owner) view returns (uint256)
+    ];
+
+    const connectBtn = document.getElementById("connectBtn");
+    const mintBtn = document.getElementById("mintBtn");
+    const statusMsg = document.getElementById("statusMsg");
+    const statusLabel = document.getElementById("statusLabel");
+    const addrLabel = document.getElementById("addressLabel");
+    const netLabel = document.getElementById("networkLabel");
+    const balLabel = document.getElementById("balanceLabel");
+
+    let provider, signer, keyContract, currentAddress;
+
+    function setStatus(text, type) {
+      statusMsg.textContent = text || "";
+      statusMsg.className = "status" + (type ? " " + type : "");
+    }
+
+    async function ensureEvm() {
+      if (!window.ethereum) {
+        setStatus("No wallet found. Please install MetaMask or an EVM-compatible wallet.", "error");
+        throw new Error("No ethereum provider");
+      }
+      provider = new ethers.BrowserProvider(window.ethereum);
+      return provider;
+    }
+
+    async function connectWallet() {
+      try {
+        await ensureEvm();
+        await provider.send("eth_requestAccounts", []);
+        signer = await provider.getSigner();
+        currentAddress = await signer.getAddress();
+
+        const network = await provider.getNetwork();
+        // Polygon mainnet chainId = 137
+        const chainId = Number(network.chainId);
+        netLabel.textContent = chainId === 137 ? "Polygon mainnet" : "Chain " + chainId;
+
+        addrLabel.textContent = currentAddress;
+        statusLabel.textContent = "Wallet connected";
+
+        // Contract instance; als je ABI nog leeg is, slaat dit niks kapot maar balance-check werkt dan niet
+        if (CONTRACT_ABI && CONTRACT_ABI.length > 0 && CONTRACT_ADDRESS.startsWith("0x")) {
+          keyContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+          await refreshBalance();
+        } else {
+          balLabel.textContent = "– (contract not configured)";
+          setStatus("Connected. Configure CONTRACT_ADDRESS and CONTRACT_ABI to enable minting.", "error");
+        }
+
+        mintBtn.disabled = !(keyContract);
+      } catch (err) {
+        console.error(err);
+        setStatus("Could not connect wallet. Check your wallet and try again.", "error");
+      }
+    }
+
+    async function refreshBalance() {
+      if (!keyContract || !currentAddress) return;
+      try {
+        const balance = await keyContract.balanceOf(currentAddress);
+        balLabel.textContent = balance.toString();
+      } catch (err) {
+        console.error(err);
+        balLabel.textContent = "–";
+      }
+    }
+
+    async function mintKey() {
+      if (!keyContract || !signer) {
+        setStatus("Wallet not connected or contract not configured.", "error");
+        return;
+      }
+      try {
+        setStatus("Waiting for transaction signature…", "");
+        mintBtn.disabled = true;
+
+        // Voorbeeld: als jouw functie anders heet, pas dit aan
+        const tx = await keyContract.mintKey();
+        setStatus("Transaction sent. Waiting for confirmation…", "");
+        await tx.wait();
+
+        setStatus("Key minted successfully.", "ok");
+        await refreshBalance();
+      } catch (err) {
+        console.error(err);
+        if (err.code === "ACTION_REJECTED") {
+          setStatus("Transaction rejected in wallet.", "error");
+        } else {
+          setStatus("Mint failed. Check your gas and network, then try again.", "error");
+        }
+      } finally {
+        // Alleen weer enable als contract goed staat
+        mintBtn.disabled = !keyContract;
+      }
+    }
+
+    connectBtn.addEventListener("click", connectWallet);
+    mintBtn.addEventListener("click", mintKey);
+  })();
+</script>
+
+</body>
+</html>
