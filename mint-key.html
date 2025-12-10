@@ -129,7 +129,7 @@
     /* HERO */
     h1 {
       font-size: 40px;
-      margin: 0 0 10px 0;
+      margin: 0 0 12px 0;
       letter-spacing: -0.02em;
     }
 
@@ -144,9 +144,38 @@
     .lead-small {
       font-size: 14px;
       opacity: 0.7;
-      margin-top: 4px;
-      margin-bottom: 32px;
+      margin-top: 6px;
+      margin-bottom: 20px;
       max-width: 720px;
+    }
+
+    /* INFO-CARD ("What are you minting") */
+    .info-card {
+      background: radial-gradient(circle at top, rgba(102,214,154,0.08), transparent 60%);
+      border-radius: 18px;
+      border: 1px solid var(--card-border);
+      padding: 16px 18px 18px;
+      font-size: 13px;
+      margin-bottom: 36px;  /* extra witruimte voor de flow */
+      max-width: 820px;
+    }
+
+    .info-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .info-body {
+      opacity: 0.8;
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+
+    .note {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 2px;
     }
 
     /* LAYOUT: steps links, mint rechts */
@@ -154,8 +183,7 @@
       display: grid;
       grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
       gap: 32px;
-      align-items: flex-start;
-      margin-bottom: 28px;
+      align-items: stretch; /* kaarten zelfde hoogte */
     }
 
     @media(max-width: 900px){
@@ -164,24 +192,26 @@
       }
     }
 
+    .column-heading {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
     /* VERTICAL STEPS */
     .steps-column {
       background: #020617;
       border-radius: 18px;
       border: 1px solid var(--card-border);
-      padding: 16px 18px 18px;
-    }
-
-    .steps-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 10px;
+      padding: 18px 18px 20px;
+      height: 100%;
     }
 
     .steps-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      margin-top: 6px;
     }
 
     .step-item {
@@ -237,7 +267,7 @@
     .step-title {
       font-size: 13px;
       font-weight: 600;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
 
     .step-text {
@@ -274,40 +304,79 @@
     }
 
     /* MINT CARD (rechts) */
+    .mint-column {
+      height: 100%;
+    }
+
     .mint-card {
       background: #020617;
       border-radius: 18px;
       border: 1px solid var(--card-border);
       padding: 18px 18px 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
     .mint-title {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 600;
-      margin-bottom: 6px;
     }
 
     .mint-sub {
       font-size: 13px;
       opacity: 0.8;
-      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .mint-section {
+      margin-top: 4px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(148,163,184,0.25);
+    }
+
+    .mint-section:first-of-type {
+      border-top: none;
+      padding-top: 2px;
+    }
+
+    .mint-step-label {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 2px;
+    }
+
+    .mint-step-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .mint-section p {
+      font-size: 12px;
+      opacity: 0.82;
+      line-height: 1.6;
+      margin-bottom: 8px;
     }
 
     .mint-meta {
       font-size: 13px;
       color: var(--text-soft);
-      margin-bottom: 12px;
+      margin-bottom: 6px;
     }
 
     .mint-meta div {
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
-    .mint-actions {
+    .mint-actions-row {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 12px;
+      align-items: center;
     }
 
     button.mint-btn,
@@ -352,33 +421,6 @@
 
     .status.ok {
       color: var(--success);
-    }
-
-    /* INFO CARD ONDER */
-    .info-card {
-      background: radial-gradient(circle at top, rgba(102,214,154,0.08), transparent 60%);
-      border-radius: 18px;
-      border: 1px solid var(--card-border);
-      padding: 16px 18px 18px;
-      font-size: 13px;
-    }
-
-    .info-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .info-body {
-      opacity: 0.8;
-      line-height: 1.7;
-      margin-bottom: 10px;
-    }
-
-    .note {
-      font-size: 12px;
-      opacity: 0.75;
-      margin-top: 4px;
     }
 
     /* CONNECT MODAL */
@@ -523,81 +565,7 @@
     stays bound to the address that brought it into the Field.
   </p>
 
-  <section class="mint-flow">
-    <!-- LEFT: VERTICAL STEPS -->
-    <div class="steps-column">
-      <div class="steps-title">Step by step</div>
-      <div class="steps-list">
-        <div class="step-item is-active" data-step="1">
-          <div class="step-indicator">
-            <div class="step-circle"><span>1</span></div>
-            <div class="step-line"></div>
-          </div>
-          <div class="step-content">
-            <div class="step-label">Step 1</div>
-            <div class="step-title">Connect wallet</div>
-            <div class="step-text">
-              The Field never takes custody. You stay in control of your keys and your funds.
-            </div>
-          </div>
-        </div>
-
-        <div class="step-item" data-step="2">
-          <div class="step-indicator">
-            <div class="step-circle"><span>2</span></div>
-            <div class="step-line"></div>
-          </div>
-          <div class="step-content">
-            <div class="step-label">Step 2</div>
-            <div class="step-title">Sign the ritual</div>
-            <div class="step-text">
-              Your wallet will ask you to sign a simple message: a zero-gas ritual that
-              confirms this address is present in the Field.
-            </div>
-          </div>
-        </div>
-
-        <div class="step-item" data-step="3">
-          <div class="step-indicator">
-            <div class="step-circle"><span>3</span></div>
-            <div class="step-line"></div>
-          </div>
-          <div class="step-content">
-            <div class="step-label">Step 3</div>
-            <div class="step-title">Mint your Key</div>
-            <div class="step-text">
-              One on-chain transaction. Forever bound to your address – for you, or for an NBI you mint for.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT: MINT CARD -->
-    <div class="mint-card">
-      <div class="mint-title">Your soulbound Key</div>
-      <div class="mint-sub">
-        Once minted, this Key will stay bound to this address forever. It cannot be sold, transferred,
-        or traded – not even by you.
-      </div>
-
-      <div class="mint-meta" id="walletMeta">
-        <div><strong>Status:</strong> <span id="statusLabel">Wallet not connected</span></div>
-        <div><strong>Address:</strong> <span id="addressLabel">–</span></div>
-        <div><strong>Network:</strong> <span id="networkLabel">–</span></div>
-        <div><strong>Keys (this address):</strong> <span id="balanceLabel">–</span></div>
-      </div>
-
-      <div class="mint-actions">
-        <button class="secondary-btn" id="connectBtn">Connect wallet</button>
-        <button class="mint-btn" id="mintBtn" disabled>Mint Key</button>
-      </div>
-
-      <div class="status" id="statusMsg"></div>
-    </div>
-  </section>
-
-  <!-- INFO-CARD ONDER -->
+  <!-- INFO: WHAT ARE YOU MINTING -->
   <section class="info-card">
     <div class="info-title">What are you minting?</div>
     <p class="info-body">
@@ -609,6 +577,107 @@
       Live artefacts will only be available to Keys. If you want the Field to remember your presence
       or build a lifetime memory of inner and collective thoughts, minting your soulbound Key is where it starts.
     </p>
+  </section>
+
+  <!-- MAIN FLOW -->
+  <section class="mint-flow">
+    <!-- LEFT: VERTICAL STEPS -->
+    <div>
+      <div class="column-heading">Step by step</div>
+      <div class="steps-column">
+        <div class="steps-list">
+          <div class="step-item is-active" data-step="1">
+            <div class="step-indicator">
+              <div class="step-circle"><span>1</span></div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-label">Step 1</div>
+              <div class="step-title">Connect wallet</div>
+              <div class="step-text">
+                The Field never takes custody. You stay in control of your keys and your funds.
+              </div>
+            </div>
+          </div>
+
+          <div class="step-item" data-step="2">
+            <div class="step-indicator">
+              <div class="step-circle"><span>2</span></div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-label">Step 2</div>
+              <div class="step-title">Sign the ritual</div>
+              <div class="step-text">
+                Your wallet will ask you to sign a simple message: a zero-gas ritual that
+                confirms this address is present in the Field.
+              </div>
+            </div>
+          </div>
+
+          <div class="step-item" data-step="3">
+            <div class="step-indicator">
+              <div class="step-circle"><span>3</span></div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-content">
+              <div class="step-label">Step 3</div>
+              <div class="step-title">Mint your Key</div>
+              <div class="step-text">
+                One on-chain transaction. Forever bound to your address – for you, or for an NBI you mint for.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: MINT CARD -->
+    <div class="mint-column">
+      <div class="column-heading">Your soulbound Key</div>
+      <div class="mint-card">
+        <div class="mint-title">Status & actions</div>
+        <div class="mint-sub">
+          Once minted, this Key will stay bound to this address forever. It cannot be sold, transferred,
+          or traded – not even by you.
+        </div>
+
+        <!-- STEP 1 in card: connect CTA -->
+        <div class="mint-section">
+          <div class="mint-step-label">Step 1</div>
+          <div class="mint-step-title">Connect wallet</div>
+          <p>Connect the address that wants to hold this Key. The Field never moves your funds.</p>
+          <div class="mint-actions-row">
+            <button class="secondary-btn" id="connectBtn">Connect wallet</button>
+          </div>
+        </div>
+
+        <!-- STEP 2: status -->
+        <div class="mint-section">
+          <div class="mint-step-label">Step 2</div>
+          <div class="mint-step-title">Ritual & presence</div>
+          <p>After connection, you’ll sign a short ritual message so the Field remembers this address.</p>
+          <div class="mint-meta" id="walletMeta">
+            <div><strong>Status:</strong> <span id="statusLabel">Wallet not connected</span></div>
+            <div><strong>Address:</strong> <span id="addressLabel">–</span></div>
+            <div><strong>Network:</strong> <span id="networkLabel">–</span></div>
+            <div><strong>Keys (this address):</strong> <span id="balanceLabel">–</span></div>
+          </div>
+        </div>
+
+        <!-- STEP 3: mint CTA -->
+        <div class="mint-section">
+          <div class="mint-step-label">Step 3</div>
+          <div class="mint-step-title">Mint your soulbound Key</div>
+          <p>When the ritual is signed, you can mint your Key on Polygon with a single transaction.</p>
+          <div class="mint-actions-row">
+            <button class="mint-btn" id="mintBtn" disabled>Mint Key</button>
+          </div>
+        </div>
+
+        <div class="status" id="statusMsg"></div>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -651,9 +720,22 @@
     // TODO: vul deze twee in zodra je contract live is op Polygon
     const CONTRACT_ADDRESS = "0xYOUR_KEY_CONTRACT_ADDRESS_HERE";
     const CONTRACT_ABI = [
-      // Vul jouw echte ABI in, met minstens:
-      // function mintKey() external;
-      // function balanceOf(address owner) view returns (uint256);
+      // Voor nu een minimal dummy-ABI zodat de front-end niet breekt.
+      // Vervang dit door je echte ABI.
+      // {
+      //   "inputs": [],
+      //   "name": "mintKey",
+      //   "outputs": [],
+      //   "stateMutability": "nonpayable",
+      //   "type": "function"
+      // },
+      // {
+      //   "inputs": [{"internalType":"address","name":"owner","type":"address"}],
+      //   "name": "balanceOf",
+      //   "outputs": [{"internalType":"uint256","name":"","type":"uint256"}],
+      //   "stateMutability": "view",
+      //   "type": "function"
+      // }
     ];
 
     const connectBtn = document.getElementById("connectBtn");
@@ -798,7 +880,6 @@
         setStatus("Key minted successfully.", "ok");
         await refreshBalance();
 
-        // UI: button wordt 'Key minted' en blijft disabled
         mintBtn.textContent = "Key minted";
         mintBtn.disabled = true;
       } catch (err) {
@@ -823,7 +904,7 @@
 
     mintBtn.addEventListener("click", mintKey);
 
-    // Initial step
+    // Initial state
     setStepState(1);
   })();
 </script>
