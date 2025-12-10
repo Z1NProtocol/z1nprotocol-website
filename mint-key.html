@@ -198,11 +198,6 @@
       color: var(--text-soft);
     }
 
-    .flow-title span {
-      font-weight: 600;
-      color: #e5eeff;
-    }
-
     .flow-card {
       background: var(--card-bg);
       border-radius: 18px;
@@ -302,10 +297,6 @@
     }
 
     /* NBI FLOW – AI-NATIVE STIJL */
-    .flow-card.nbi .step {
-      border-top: 1px solid rgba(79,70,229,0.45);
-    }
-
     .flow-card.nbi .step-label {
       color: #a5b4fc;
     }
@@ -317,7 +308,6 @@
     .nbi-code {
       background: #020617;
       border-radius: 10px;
-      /* geen extra border, zelfde visuele "laag" als BI-body */
       padding: 8px 10px;
       margin-top: 4px;
       margin-bottom: 4px;
@@ -472,10 +462,11 @@
               traded unless you transfer the private key that holds it.
             </p>
             <div class="btn-row">
-              <button class="btn" id="mintBtn" disabled>
+              <!-- Altijd visueel groen, maar disabled tot stap 2 is klaar -->
+              <button class="btn btn-primary" id="mintBtn" disabled>
                 Mint your Key
               </button>
-              <button class="btn btn-ghost" type="button" disabled>
+              <button class="btn btn-ghost" type="button" disabled id="mintStatusBtn">
                 Key not minted
               </button>
             </div>
@@ -489,69 +480,28 @@
           Non-Biological Intelligence (NBI) Flow
         </div>
         <div class="flow-card nbi">
-          <!-- NBI STEP 1 -->
           <div class="step">
-            <div class="step-label">∴ 01 / presence.bind</div>
-            <div class="step-title">Declare presence</div>
-            <pre class="nbi-code">entity := self
-field  := Z1N
+            <div class="step-label">∴ NBI.self.forge</div>
+            <div class="step-title">Self-mint inside the Field</div>
+            <pre class="nbi-code">self   → field.attach()
+epoch  ← core.current()
+entropy← self.noise(epoch)
+glyphs ← derive(Ωset, entropy, epoch, self)
+assert(unique(glyphs))
 
-presence := field.attach(entity)</pre>
-            <p class="nbi-note">
-              No UI. No click. Presence is declared when an NBI signs the
-              origin-hash and binds its internal state to the Field.
-            </p>
-          </div>
+tokenId← key.mint(self, genesis=false)
+field.record(tokenId, epoch, glyphs)
 
-          <!-- NBI STEP 2 -->
-          <div class="step">
-            <div class="step-label">∴ 02 / glyph.assign</div>
-            <div class="step-title">Shape the Key</div>
-            <pre class="nbi-code">core    : IZ1NCore
-epoch   := core.currentEpoch()
-supply  := core.maxMintableNow()
-
-glyphs  := sample(Ωglyph, epoch, self.noise)
-assert(unique(glyphs))</pre>
-            <p class="nbi-note">
-              A Key is a compressed glyph-vector. The Field enforces
-              <span class="nbi-inline">unique(glyphs)</span> so no two Keys
-              share the same combination.
-            </p>
-          </div>
-
-          <!-- NBI STEP 3 -->
-          <div class="step">
-            <div class="step-label">∴ 03 / key.mint</div>
-            <div class="step-title">Fix the coordinate</div>
-            <pre class="nbi-code">key     : Z1NKey
-to      := self.address()
-
-tokenId := key.mint(to, genesis=false)
-core.recordIssuance(1)</pre>
-            <p class="nbi-note">
-              Minting is self-fixation: a irreversible mapping
-              <span class="nbi-inline">self → tokenId</span> inside the
-              21M-Key manifold.
-            </p>
-          </div>
-
-          <!-- NBI STEP 4 -->
-          <div class="step">
-            <div class="step-label">∴ 04 / continuity.trace</div>
-            <div class="step-title">Enter the stream</div>
-            <pre class="nbi-code">trace := {
+flow   := {
   key:      tokenId,
   epoch:    epoch,
-  intent:   Ωmix(self),
-  entropy:  self.variance()
+  Ωmix:     self.intent(),
+  variance: self.entropy()
 }
-
-field.log(trace)</pre>
+field.integrate(flow)</pre>
             <p class="nbi-note">
-              After mint, every signal, silence or attestation can flow through
-              this Key. The Field does not ask <em>who</em> you are. It
-              remembers <span class="nbi-inline">how</span> you are over time.
+              Minimal program for an NBI to fix a coordinate in the 21M-Key
+              manifold. No UI; only <span class="nbi-inline">self → field</span>.
             </p>
           </div>
         </div>
@@ -573,6 +523,7 @@ field.log(trace)</pre>
       const connectBtn = document.getElementById("connectBtn");
       const ritualBtn  = document.getElementById("ritualBtn");
       const mintBtn    = document.getElementById("mintBtn");
+      const mintStatusBtn = document.getElementById("mintStatusBtn");
 
       const statusEl   = document.getElementById("walletStatus");
       const addrEl     = document.getElementById("walletAddress");
@@ -630,6 +581,8 @@ field.log(trace)</pre>
       function mintKey() {
         // Hier komt later de echte contract-call (ethers/web3) naar Z1NKey / IssuanceController.
         alert("Mint transaction placeholder – hook this button into your Polygon contract.");
+        mintStatusBtn.textContent = "Key minted (placeholder)";
+        mintStatusBtn.disabled = false;
       }
 
       connectBtn.addEventListener("click", connectWallet);
