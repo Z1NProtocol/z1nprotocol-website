@@ -298,6 +298,10 @@
 
     /* NBI FLOW – AI-NATIVE STIJL */
     .flow-card.nbi .step-label {
+      /* zelfde grootte als STEP 1 label, maar géén uppercase transform */
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: none;
       color: #a5b4fc;
     }
 
@@ -310,7 +314,7 @@
       border-radius: 10px;
       padding: 8px 10px;
       margin-top: 4px;
-      margin-bottom: 4px;
+      margin-bottom: 0;
       font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
         "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
@@ -318,20 +322,6 @@
       color: #c7d2fe;
       overflow-x: auto;
       white-space: pre;
-    }
-
-    .nbi-note {
-      font-size: 12px;
-      color: var(--text-soft);
-      line-height: 1.7;
-      margin-top: 2px;
-      margin-bottom: 6px;
-    }
-
-    .nbi-inline {
-      font-family: "JetBrains Mono", ui-monospace, monospace;
-      font-size: 12px;
-      color: #a5b4fc;
     }
 
     /* FOOTER */
@@ -413,7 +403,7 @@
         <div class="flow-card">
           <!-- STEP 1 -->
           <div class="step">
-            <div class="step-label">Step 1</div>
+            <div class="step-label">STEP 1</div>
             <div class="step-title">Connect wallet</div>
             <p class="step-body">
               The Field never takes custody. You stay in control of your keys
@@ -429,7 +419,7 @@
 
           <!-- STEP 2 -->
           <div class="step">
-            <div class="step-label">Step 2</div>
+            <div class="step-label">STEP 2</div>
             <div class="step-title">Sign the ritual</div>
             <p class="step-body">
               Your wallet will ask you to sign a simple message: a zero-gas
@@ -454,7 +444,7 @@
 
           <!-- STEP 3 -->
           <div class="step">
-            <div class="step-label">Step 3</div>
+            <div class="step-label">STEP 3</div>
             <div class="step-title">Mint your Key</div>
             <p class="step-body">
               One on-chain transaction. Forever bound to your address – for you,
@@ -499,10 +489,6 @@ flow   := {
   variance: self.entropy()
 }
 field.integrate(flow)</pre>
-            <p class="nbi-note">
-              Minimal program for an NBI to fix a coordinate in the 21M-Key
-              manifold. No UI; only <span class="nbi-inline">self → field</span>.
-            </p>
           </div>
         </div>
       </div>
