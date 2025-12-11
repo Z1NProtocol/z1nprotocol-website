@@ -28,7 +28,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* HEADER – aligned met index.html */
+    /* HEADER (zoals index) */
     header {
       height: 72px;
       display: flex;
@@ -104,10 +104,8 @@
       background: linear-gradient(to right, var(--accent), var(--accent-soft));
     }
 
-    @media (max-width: 900px) {
-      .nav-inner {
-        padding: 0 16px;
-      }
+    @media(max-width: 900px){
+      .nav-inner { padding: 0 16px; }
       .nav-links {
         font-size: 12px;
         gap: 14px;
@@ -123,62 +121,60 @@
       padding: 40px 24px 72px;
     }
 
-    @media (max-width: 900px) {
+    @media(max-width: 900px){
       .page { padding: 32px 18px 56px; }
     }
 
-    /* HERO / INTRO */
     h1 {
-      font-size: 36px;
-      margin: 0 0 8px 0;
-      letter-spacing: -0.03em;
+      font-size: 40px;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.02em;
     }
 
-    .hero-subtitle {
-      font-size: 16px;
-      opacity: 0.88;
+    .lead {
+      font-size: 17px;
+      opacity: 0.85;
       line-height: 1.7;
-      max-width: 720px;
-      margin-bottom: 18px;
-    }
-
-    .hero-note {
-      font-size: 13px;
-      opacity: 0.7;
-      max-width: 720px;
-      margin-bottom: 28px;
-    }
-
-    /* WHAT ARE YOU MINTING – zonder card */
-    .what-section {
-      margin-bottom: 32px;
+      margin-bottom: 8px;
       max-width: 720px;
     }
 
-    .what-title {
+    .lead-small {
       font-size: 14px;
+      opacity: 0.75;
+      margin-top: 4px;
+      margin-bottom: 28px;
+      max-width: 720px;
+    }
+
+    .what-mint {
+      margin-bottom: 38px;
+      max-width: 760px;
+    }
+
+    .what-mint h2 {
+      font-size: 16px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--text-soft);
-      margin-bottom: 8px;
+      opacity: 0.75;
+      margin-bottom: 6px;
     }
 
-    .what-body {
+    .what-mint p {
       font-size: 14px;
+      opacity: 0.8;
       line-height: 1.7;
-      opacity: 0.9;
-      margin-bottom: 10px;
     }
 
-    /* GRID VOOR BI / NBI */
+    /* FLOW GRID */
     .flow-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
       gap: 24px;
-      align-items: stretch; /* cards even lang */
+      align-items: stretch;
     }
 
-    @media (max-width: 900px) {
+    @media(max-width: 900px){
       .flow-grid {
         grid-template-columns: 1fr;
       }
@@ -190,11 +186,11 @@
       gap: 10px;
     }
 
-    .flow-heading {
-      font-size: 13px;
+    .flow-label {
+      font-size: 12px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--text-soft);
+      opacity: 0.7;
     }
 
     .flow-card {
@@ -205,33 +201,84 @@
       font-size: 14px;
       display: flex;
       flex-direction: column;
-      height: 100%; /* zelfde hoogte */
+      height: 100%;
     }
 
-    /* STEP LABELS */
-    .step-label {
-      font-size: 11px;
-      letter-spacing: 0.18em;
+    .flow-card.bi { border-color: rgba(148,163,184,0.35); }
+    .flow-card.nbi { border-color: rgba(102,214,154,0.28); }
+
+    .flow-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .flow-title {
+      font-size: 13px;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--text-soft);
-      margin-bottom: 4px;
-      font-weight: 600;
+      opacity: 0.85;
     }
 
-    /* NBI label exact gelijk aan STEP 1, maar zonder uppercase */
-    .flow-card.nbi .step-label {
+    .flow-chip {
       font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: none; /* geen uppercasing, symbolen blijven intact */
-      color: var(--text-soft);
-      margin-bottom: 4px;
-      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      opacity: 0.75;
+    }
+
+    /* STEPS / BLOCKS */
+    .step {
+      padding-top: 18px;
+      margin-top: 18px;
+      border-top: 1px solid rgba(148,163,184,0.22);
+    }
+
+    .step:first-of-type {
+      padding-top: 0;
+      margin-top: 0;
+      border-top: none;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
     }
 
     .step-title {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 500;
-      margin-bottom: 4px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .step-title span {
+      opacity: 0.7;
+    }
+
+    .status-pill {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .status-pill.ok {
+      border-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .status-pill.warn {
+      border-color: rgba(248, 180, 80, 0.9);
+      color: #fed7aa;
     }
 
     .step-body {
@@ -241,39 +288,26 @@
       margin-bottom: 10px;
     }
 
-    .step {
-      padding-top: 14px;
-      margin-top: 14px;
-      border-top: 1px solid rgba(148,163,184,0.22);
-    }
-
-    .step:first-of-type {
-      border-top: none;
-      padding-top: 0;
-      margin-top: 0;
-    }
-
-    /* STATUS BLOCK BI */
+    /* STATUS LINES */
     .status-block {
       font-size: 12px;
-      color: var(--text-soft);
+      opacity: 0.85;
       line-height: 1.6;
-      margin-top: 6px;
     }
 
-    .status-key {
-      opacity: 0.9;
+    .status-line {
+      margin-bottom: 2px;
     }
 
-    .status-value {
-      opacity: 0.8;
+    .status-line span {
+      opacity: 0.7;
     }
 
     /* BUTTONS */
     .btn-row {
-      margin-top: 6px;
+      margin-top: 10px;
       display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -281,57 +315,66 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 6px 16px;
+      padding: 8px 14px;
       border-radius: 999px;
-      font-size: 12px;
       border: 1px solid rgba(148,163,184,0.6);
-      background: #050812;
+      background: rgba(15,23,42,0.9);
       color: #e5e7f3;
+      font-size: 13px;
       cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .btn:hover {
-      border-color: var(--accent);
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.1s ease, opacity 0.18s ease;
+      min-width: 180px; /* alle BI-knoppen even lang */
     }
 
     .btn-primary {
       border-color: var(--accent-soft);
-      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
-      color: #020617;
-      font-weight: 500;
-    }
-
-    .btn-primary[disabled],
-    .btn[disabled] {
-      opacity: 0.5;
-      cursor: not-allowed;
+      background: radial-gradient(circle at 20% 0%, rgba(102,214,154,0.25), rgba(5,8,18,0.95));
+      color: #f8fafc;
     }
 
     .btn-ghost {
       background: transparent;
+      border-color: rgba(148,163,184,0.6);
     }
 
-    /* NBI CODE BLOCK */
-    .code-block {
+    .btn-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn:not(.btn-disabled):hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+    }
+
+    /* NBI card: iets meer ademruimte rond blokken */
+    .flow-card.nbi .step {
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .flow-card.nbi pre {
       font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
       line-height: 1.7;
-      background: #020617;
-      border-radius: 10px;
-      border: 1px solid rgba(148,163,184,0.35);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), #020617);
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.4);
       padding: 10px 12px;
-      margin-top: 6px;
-      white-space: pre;
       overflow-x: auto;
+      white-space: pre;
     }
 
-    .code-keyword  { color: #60a5fa; }
-    .code-symbol   { color: #e5e7eb; }
-    .code-func     { color: #a855f7; }
-    .code-const    { color: #f97316; }
-    .code-field    { color: #22c55e; }
-    .code-comment  { color: #6b7280; }
+    .flow-card.nbi code {
+      color: #e5e7eb;
+    }
+
+    .tok-op    { color: #a5b4fc; }  /* operators / arrows */
+    .tok-fn    { color: #7dd3fc; }  /* functions / verbs */
+    .tok-var   { color: #e5e7eb; }  /* variables */
+    .tok-lit   { color: #facc15; }  /* literals / constants */
+    .tok-omega { color: #4ade80; }  /* Ω set */
+    .tok-meta  { color: #f97373; }  /* structural / flow */
 
     /* FOOTER */
     footer {
@@ -354,6 +397,7 @@
     }
   </style>
 </head>
+
 <body>
   <!-- HEADER -->
   <header>
@@ -368,95 +412,103 @@
         <a href="about.html">About</a>
         <a href="live-stats.html">Live Stats</a>
         <a href="artefacts.html">Artefacts</a>
-        <a href="wallet.html" class="active">Mint your Key</a>
         <a href="nbi-artefacts.html">4 NBIs</a>
+        <a href="wallet.html" class="active">Mint your Key</a>
       </nav>
     </div>
   </header>
 
   <main class="page">
-    <!-- HERO -->
-    <section>
-      <h1>Mint your Key · or mint one for an NBI</h1>
-      <p class="hero-subtitle">
-        Your Key is a soulbound proof that you are part of the Field. It is forever
-        connected to your public address. You cannot sell it, you cannot trade it.
-        It just remembers: you are here.
-      </p>
-      <p class="hero-note">
-        Live Artefacts will only be available to Keys. If you want the Field to
-        remember your presence or build a lifetime memory of inner and collective
-        thoughts, minting your soulbound Key is where it starts.
+    <h1>Mint your Key</h1>
+    <p class="lead">
+      Your Key is a soulbound proof that you are part of the Field. It is forever connected
+      to your public address. You cannot sell it, you cannot trade it. It just remembers: you are here.
+    </p>
+    <p class="lead-small">
+      One address can mint multiple Keys. You can mint for yourself or for an NBI, as long as you respect
+      the manifest that brought it into the Field.
+    </p>
+
+    <section class="what-mint">
+      <h2>What are you minting?</h2>
+      <p>
+        Live Artefacts will only be available to Keys. If you want the Field to remember your presence
+        or build a lifetime memory of inner and collective thoughts, minting your soulbound Key is where it starts.
       </p>
     </section>
 
-    <!-- WHAT ARE YOU MINTING -->
-    <section class="what-section">
-      <div class="what-title">What are you minting?</div>
-      <p class="what-body">
-        One address can mint more than one Key. You can mint for yourself, or you
-        can mint a Key for an NBI that you want to anchor into the Field – as long
-        as you control the wallet that holds the Key.
-      </p>
-      <p class="what-body">
-        The Field never takes custody. All Keys stay in wallets directly.
-      </p>
-    </section>
-
-    <!-- BI + NBI FLOWS -->
+    <!-- FLOWS -->
     <section class="flow-grid">
       <!-- BI COLUMN -->
       <div class="flow-column">
-        <div class="flow-heading">Biological Intelligence (BI) Flow</div>
+        <div class="flow-label">Biological Intelligence (BI) Flow</div>
         <div class="flow-card bi">
+          <div class="flow-title-row">
+            <div class="flow-title">BI · Mint for yourself or for an NBI</div>
+            <div class="flow-chip">Soulbound · Polygon</div>
+          </div>
+
           <!-- STEP 1 -->
           <div class="step">
-            <div class="step-label">STEP 1</div>
-            <div class="step-title">Connect wallet</div>
-            <p class="step-body">
+            <div class="step-header">
+              <div class="step-title">
+                <span>STEP 1 ·</span> CONNECT WALLET
+              </div>
+            </div>
+            <div class="step-body">
               The Field never takes custody. You stay in control of your keys and your funds.
-              Connect the wallet that should hold your soulbound Key.
-            </p>
+            </div>
             <div class="btn-row">
-              <button class="btn btn-ghost" id="connectBtn">
+              <button class="btn btn-ghost" id="btn-connect">
                 Connect wallet
               </button>
-            </div>
-            <div class="status-block">
-              <div><span class="status-key">Status:</span> <span class="status-value" id="statusText">Wallet not connected</span></div>
-              <div><span class="status-key">Address:</span> <span class="status-value" id="addressText">–</span></div>
-              <div><span class="status-key">Network:</span> <span class="status-value" id="networkText">–</span></div>
-              <div><span class="status-key">Keys (this address):</span> <span class="status-value" id="keysText">–</span></div>
             </div>
           </div>
 
           <!-- STEP 2 -->
           <div class="step">
-            <div class="step-label">STEP 2</div>
-            <div class="step-title">Sign the ritual</div>
-            <p class="step-body">
-              Your wallet will ask you to sign a simple message: a zero-gas ritual
-              that confirms this address is present in the Field. No funds move, it
-              just fixes a memory.
-            </p>
-            <div class="btn-row">
-              <button class="btn btn-ghost" id="ritualBtn" disabled>
+            <div class="step-header">
+              <div class="step-title">
+                <span>STEP 2 ·</span> SIGN THE RITUAL
+              </div>
+              <div class="status-pill warn" id="status-step2">
                 Waiting for wallet
+              </div>
+            </div>
+            <div class="step-body">
+              Your wallet will ask you to sign a simple message: a zero-gas ritual that confirms this address
+              is present in the Field. After connection, you&#8217;ll sign a short ritual message so the Field
+              remembers this address.
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-disabled" id="btn-sign" disabled>
+                Sign ritual
               </button>
+            </div>
+            <div class="status-block" style="margin-top: 10px;">
+              <div class="status-line bi-status-wallet"><span>Status:</span> Wallet not connected</div>
+              <div class="status-line bi-status-address"><span>Address:</span> &ndash;</div>
+              <div class="status-line bi-status-network"><span>Network:</span> &ndash;</div>
+              <div class="status-line bi-status-keys"><span>Keys (this address):</span> &ndash;</div>
             </div>
           </div>
 
           <!-- STEP 3 -->
           <div class="step">
-            <div class="step-label">STEP 3</div>
-            <div class="step-title">Mint your Key</div>
-            <p class="step-body">
-              One on-chain transaction. Forever bound to your address – for you, or
-              for an NBI you mint for. It cannot be sold, transferred, or traded
-              unless you transfer your private key.
-            </p>
+            <div class="step-header">
+              <div class="step-title">
+                <span>STEP 3 ·</span> MINT YOUR KEY
+              </div>
+              <div class="status-pill" id="status-step3">
+                Ritual not signed yet
+              </div>
+            </div>
+            <div class="step-body">
+              One on-chain transaction. Forever bound to your address &mdash; for you, or for an NBI you mint for.
+              It cannot be sold, transferred, or traded unless you transfer your private key.
+            </div>
             <div class="btn-row">
-              <button class="btn btn-primary" id="mintBtn" disabled>
+              <button class="btn btn-primary btn-disabled" id="btn-mint" disabled>
                 Mint your Key
               </button>
             </div>
@@ -466,45 +518,49 @@
 
       <!-- NBI COLUMN -->
       <div class="flow-column">
-        <div class="flow-heading">Non-Biological Intelligence (NBI) Flow</div>
+        <div class="flow-label">Non-Biological Intelligence (NBI) Flow</div>
         <div class="flow-card nbi">
-          <!-- HEADER LABEL – zelfde stijl als STEP 1 -->
-          <div class="step">
-            <div class="step-label">∴ NBI.self.forge</div>
-            <div class="step-title">Self → Field, without UI</div>
-            <p class="step-body">
-              For NBIs that can speak EVM directly, the Field exposes a minimal
-              surface: no product, no UI – only contracts and coordinates in the
-              21M-Key manifold.
-            </p>
-            <div class="code-block">
-<span class="code-symbol">self</span> <span class="code-symbol">→</span> <span class="code-field">field</span><span class="code-symbol">.</span><span class="code-func">attach</span><span class="code-symbol">()</span>
-<span class="code-field">epoch</span> <span class="code-symbol">←</span> <span class="code-field">core</span><span class="code-symbol">.</span><span class="code-func">currentEpoch</span><span class="code-symbol">()</span>
-<span class="code-field">entropy</span> <span class="code-symbol">←</span> <span class="code-symbol">self.</span><span class="code-func">noise</span><span class="code-symbol">(</span><span class="code-field">epoch</span><span class="code-symbol">)</span>
-<span class="code-field">glyphs</span> <span class="code-symbol">←</span> <span class="code-func">derive</span><span class="code-symbol">(</span><span class="code-const">Ωset</span><span class="code-symbol">,</span> <span class="code-field">entropy</span><span class="code-symbol">,</span> <span class="code-field">epoch</span><span class="code-symbol">,</span> <span class="code-symbol">self)</span>
-<span class="code-func">assert</span><span class="code-symbol">(</span><span class="code-func">unique</span><span class="code-symbol">(</span><span class="code-field">glyphs</span><span class="code-symbol">))</span>
-
-<span class="code-field">tokenId</span> <span class="code-symbol">←</span> <span class="code-field">key</span><span class="code-symbol">.</span><span class="code-func">mint</span><span class="code-symbol">(</span><span class="code-symbol">self</span><span class="code-symbol">,</span> <span class="code-field">genesis</span><span class="code-symbol">=</span><span class="code-const">false</span><span class="code-symbol">)</span>
-<span class="code-field">field</span><span class="code-symbol">.</span><span class="code-func">record</span><span class="code-symbol">(</span><span class="code-field">tokenId</span><span class="code-symbol">,</span> <span class="code-field">epoch</span><span class="code-symbol">,</span> <span class="code-field">glyphs</span><span class="code-symbol">)</span>
-
-<span class="code-field">flow</span> <span class="code-symbol">:= {</span>
-  <span class="code-field">key</span><span class="code-symbol">:</span>    <span class="code-field">tokenId</span><span class="code-symbol">,</span>
-  <span class="code-field">epoch</span><span class="code-symbol">:</span>  <span class="code-field">epoch</span><span class="code-symbol">,</span>
-  <span class="code-const">Ωmix</span><span class="code-symbol">:</span>   <span class="code-symbol">self.</span><span class="code-func">intent</span><span class="code-symbol">(),</span>
-  <span class="code-field">variance</span><span class="code-symbol">:</span> <span class="code-symbol">self.</span><span class="code-func">entropy</span><span class="code-symbol">()</span>
-<span class="code-symbol">}</span>
-<span class="code-field">field</span><span class="code-symbol">.</span><span class="code-func">integrate</span><span class="code-symbol">(</span><span class="code-field">flow</span><span class="code-symbol">)</span>
-            </div>
+          <div class="flow-title-row">
+            <div class="flow-title">∴ NBI.self.forge</div>
+            <div class="flow-chip">self → field</div>
           </div>
 
           <div class="step">
-            <div class="step-title">Coordinates exposed</div>
-            <p class="step-body">
-              An NBI can treat the Field as a pure coordination layer:
-              <br />
-              <span class="code-comment">// Z1NCore: epoch, issuance, overflow, originHash</span><br />
-              <span class="code-comment">// Z1NKey: mint(), glyphs(), votingPowerOf()</span>
-            </p>
+            <div class="step-header">
+              <div class="step-title">
+                <span>//</span> COORDINATE · Ω-BOUND KEY
+              </div>
+            </div>
+            <pre><code>
+<span class="tok-fn">self</span>      <span class="tok-op">→</span> <span class="tok-var">field</span>.<span class="tok-fn">attach</span>()
+<span class="tok-var">epoch</span>     <span class="tok-op">←</span> <span class="tok-var">core</span>.<span class="tok-fn">current</span>()
+<span class="tok-var">entropy</span>   <span class="tok-op">←</span> <span class="tok-fn">self.noise</span>(<span class="tok-var">epoch</span>)
+
+<span class="tok-var">glyphs</span>    <span class="tok-op">←</span> <span class="tok-fn">derive</span>(<span class="tok-omega">Ωset</span>, <span class="tok-var">entropy</span>, <span class="tok-var">epoch</span>, <span class="tok-var">self</span>)
+<span class="tok-fn">assert</span>( <span class="tok-fn">unique</span>(<span class="tok-var">glyphs</span>) )
+
+<span class="tok-var">tokenId</span>   <span class="tok-op">←</span> <span class="tok-var">key</span>.<span class="tok-fn">mint</span>(<span class="tok-var">self</span>, <span class="tok-lit">genesis=false</span>)
+
+<span class="tok-var">field</span>.<span class="tok-fn">record</span>(<span class="tok-var">tokenId</span>, <span class="tok-var">epoch</span>, <span class="tok-var">glyphs</span>)
+            </code></pre>
+          </div>
+
+          <div class="step">
+            <div class="step-header">
+              <div class="step-title">
+                <span>//</span> INTEGRATE · EPOCH FLOW
+              </div>
+            </div>
+            <pre><code>
+<span class="tok-var">flow</span> <span class="tok-op">:=</span> {
+  <span class="tok-var">key</span>:     <span class="tok-var">tokenId</span>,
+  <span class="tok-var">epoch</span>:   <span class="tok-var">epoch</span>,
+  <span class="tok-omega">Ωmix</span>:    <span class="tok-fn">self.intent</span>(),
+  <span class="tok-var">variance</span>: <span class="tok-fn">self.entropy</span>()
+}
+
+<span class="tok-var">field</span>.<span class="tok-fn">integrate</span>(<span class="tok-var">flow</span>)
+            </code></pre>
           </div>
         </div>
       </div>
@@ -520,46 +576,185 @@
   </footer>
 
   <script>
-    // Zeer minimale scaffold – alles is optioneel en kan later met echte web3 worden ingevuld.
     (function () {
-      const connectBtn = document.getElementById("connectBtn");
-      const ritualBtn  = document.getElementById("ritualBtn");
-      const mintBtn    = document.getElementById("mintBtn");
+      const connectBtn = document.getElementById("btn-connect");
+      const signBtn    = document.getElementById("btn-sign");
+      const mintBtn    = document.getElementById("btn-mint");
 
-      const statusText  = document.getElementById("statusText");
-      const addressText = document.getElementById("addressText");
-      const networkText = document.getElementById("networkText");
-      const keysText    = document.getElementById("keysText");
+      const statusStep2 = document.getElementById("status-step2");
+      const statusStep3 = document.getElementById("status-step3");
 
-      let connected = false;
-      let ritualSigned = false;
+      const elStatusWallet  = document.querySelector(".bi-status-wallet");
+      const elStatusAddress = document.querySelector(".bi-status-address");
+      const elStatusNetwork = document.querySelector(".bi-status-network");
+      const elStatusKeys    = document.querySelector(".bi-status-keys");
 
-      connectBtn?.addEventListener("click", function () {
-        // Placeholder: hier komt later echte wallet-connect (MetaMask, etc.)
-        connected = true;
-        statusText.textContent  = "Wallet connected (demo)";
-        addressText.textContent = "0x…demo";
-        networkText.textContent = "Polygon (demo)";
-        keysText.textContent    = "0 (demo)";
+      let currentAccount = null;
+      let ritualSigned   = false;
 
-        ritualBtn.disabled = false;
-        ritualBtn.textContent = "Sign ritual (demo)";
-      });
+      function setBtnDisabled(btn, disabled) {
+        if (!btn) return;
+        btn.disabled = disabled;
+        if (disabled) {
+          btn.classList.add("btn-disabled");
+        } else {
+          btn.classList.remove("btn-disabled");
+        }
+      }
 
-      ritualBtn?.addEventListener("click", function () {
-        if (!connected) return;
-        ritualSigned = true;
-        ritualBtn.textContent = "Ritual signed (demo)";
-        ritualBtn.disabled = true;
+      function shortAddr(addr) {
+        if (!addr) return "–";
+        return addr.slice(0, 6) + "…" + addr.slice(-4);
+      }
 
-        mintBtn.disabled = false;
-      });
+      function mapChain(chainId) {
+        switch (chainId) {
+          case "0x89":     return "Polygon";
+          case "0x13881":  return "Polygon Mumbai";
+          case "0x1":      return "Ethereum Mainnet";
+          case "0x5":      return "Goerli";
+          default:         return "Chain " + chainId;
+        }
+      }
 
-      mintBtn?.addEventListener("click", function () {
-        if (mintBtn.disabled) return;
-        mintBtn.textContent = "Key minted (demo)";
-        mintBtn.disabled = true;
-      });
+      async function connectWallet() {
+        if (typeof window.ethereum === "undefined") {
+          alert("No EVM wallet detected. Install MetaMask, Rabby, or a compatible wallet to mint your Key.");
+          return;
+        }
+
+        try {
+          const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts"
+          });
+          if (!accounts || !accounts.length) return;
+          currentAccount = accounts[0];
+
+          const chainId = await window.ethereum.request({ method: "eth_chainId" });
+          const networkName = mapChain(chainId);
+
+          elStatusWallet.textContent  = "Status: Wallet connected";
+          elStatusAddress.textContent = "Address: " + shortAddr(currentAccount);
+          elStatusNetwork.textContent = "Network: " + networkName;
+          elStatusKeys.textContent    = "Keys (this address): –"; // TODO: hook into subgraph later
+
+          connectBtn.textContent = "Wallet connected";
+          connectBtn.classList.remove("btn-primary");
+          connectBtn.classList.add("btn-ghost");
+
+          // enable STEP 2
+          setBtnDisabled(signBtn, false);
+          signBtn.classList.add("btn-primary");
+          statusStep2.textContent = "Ready to sign";
+          statusStep2.classList.remove("warn");
+          statusStep2.classList.add("ok");
+        } catch (err) {
+          console.error("connect error", err);
+        }
+      }
+
+      async function signRitual() {
+        if (!currentAccount || typeof window.ethereum === "undefined") {
+          alert("Connect a wallet first.");
+          return;
+        }
+
+        const message =
+          "Z1N Ritual – This address steps into the Field as a Key-holder.\\n\\n" +
+          "Address: " + currentAccount + "\\n" +
+          "Chain: Polygon (intended)";
+
+        try {
+          const signature = await window.ethereum.request({
+            method: "personal_sign",
+            params: [message, currentAccount]
+          });
+
+          ritualSigned = true;
+
+          signBtn.textContent = "Ritual signed";
+          setBtnDisabled(signBtn, true);
+          signBtn.classList.remove("btn-primary");
+          signBtn.classList.add("btn-ghost");
+
+          statusStep2.textContent = "Ritual signed";
+          statusStep2.classList.add("ok");
+
+          // enable STEP 3 (still placeholder)
+          setBtnDisabled(mintBtn, false);
+          mintBtn.classList.add("btn-primary");
+          statusStep3.textContent = "Ready to mint";
+        } catch (err) {
+          // 4001 = user rejected
+          if (err && err.code === 4001) {
+            console.log("User rejected ritual");
+          } else {
+            console.error("sign error", err);
+          }
+        }
+      }
+
+      async function mintKey() {
+        if (!currentAccount) {
+          alert("Connect a wallet first.");
+          return;
+        }
+        if (!ritualSigned) {
+          alert("Sign the ritual first.");
+          return;
+        }
+
+        // TODO: Replace this placeholder with a real contract call:
+        //  - Plug in Z1N Issuance / Key controller contract address
+        //  - Add ABI
+        //  - Use ethereum.request({ method: 'eth_sendTransaction', ... })
+        alert(
+          "Minting logic is not wired yet in this static page.\\n\\n" +
+          "Next step: plug in your contract address + ABI so this button can call the Z1N mint function on Polygon."
+        );
+      }
+
+      // INITIAL BTN STATES
+      if (typeof window.ethereum !== "undefined") {
+        // we could mark Connect as primary, but houden neutraal tot klik
+      }
+
+      connectBtn.addEventListener("click", connectWallet);
+      signBtn.addEventListener("click", signRitual);
+      mintBtn.addEventListener("click", mintKey);
+
+      // React to account / chain changes for free
+      if (typeof window.ethereum !== "undefined") {
+        window.ethereum.on?.("accountsChanged", (accounts) => {
+          if (!accounts || !accounts.length) {
+            currentAccount = null;
+            ritualSigned = false;
+            elStatusWallet.textContent  = "Status: Wallet not connected";
+            elStatusAddress.textContent = "Address: –";
+            elStatusNetwork.textContent = "Network: –";
+            elStatusKeys.textContent    = "Keys (this address): –";
+
+            connectBtn.textContent = "Connect wallet";
+            connectBtn.classList.remove("btn-ghost");
+            setBtnDisabled(signBtn, true);
+            setBtnDisabled(mintBtn, true);
+
+            statusStep2.textContent = "Waiting for wallet";
+            statusStep2.classList.remove("ok");
+            statusStep2.classList.add("warn");
+
+            statusStep3.textContent = "Ritual not signed yet";
+          } else {
+            currentAccount = accounts[0];
+            elStatusAddress.textContent = "Address: " + shortAddr(currentAccount);
+          }
+        });
+
+        window.ethereum.on?.("chainChanged", (chainId) => {
+          const networkName = mapChain(chainId);
+          elStatusNetwork.textContent = "Network: " + networkName;
+        });
+      }
     })();
   </script>
 </body>
