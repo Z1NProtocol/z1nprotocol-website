@@ -429,7 +429,8 @@
             The Field never takes custody. You stay in control of your keys and your funds.
           </p>
           <div class="btn-row">
-            <button class="btn btn-primary" id="btnConnect">Connect wallet</button>
+            <!-- NU standaard ghost, niet groen -->
+            <button class="btn btn-ghost" id="btnConnect">Connect wallet</button>
           </div>
           <div id="noWalletHint" class="wallet-hint">
             No compatible wallet detected. Install
@@ -476,6 +477,7 @@
             It cannot be sold, transferred, or traded unless you transfer your private key.
           </p>
           <div class="btn-row">
+            <!-- Mint is groen maar disabled tot na sign -->
             <button class="btn btn-primary btn-disabled" id="btnMint" disabled>Mint your Key</button>
           </div>
           <div class="mini-status">
@@ -592,6 +594,8 @@
     }
 
     async function connectWallet() {
+      console.log("Connect wallet clicked");
+
       // Probe for EVM-capable providers
       const provider =
         window.ethereum ||
@@ -600,7 +604,7 @@
         window.coinbaseWalletExtension;
 
       if (!provider) {
-        // Geen wallet gedetecteerd → hint tonen
+        console.warn("No EVM wallet provider detected.");
         if (noWalletHintEl) {
           noWalletHintEl.style.display = "block";
         }
@@ -615,6 +619,7 @@
 
       try {
         const accounts = await provider.request({ method: "eth_requestAccounts" });
+        console.log("Accounts from provider:", accounts);
 
         if (!accounts || !accounts.length) {
           alert("Wallet detected but no accounts returned.");
@@ -631,9 +636,10 @@
         statusNetwork.textContent = "Network: " + networkName;
         statusKeys.textContent    = "Keys (this address): – (to be wired)";
 
+        // Maak de connect-knop nu groen en 'connected'
         connectBtn.textContent = "Wallet connected";
-        connectBtn.classList.remove("btn-primary");
-        connectBtn.classList.add("btn-ghost");
+        connectBtn.classList.remove("btn-ghost");
+        connectBtn.classList.add("btn-primary");
 
         // Enable STEP 2
         setBtnDisabled(signBtn, false);
@@ -672,16 +678,17 @@
         "Address: " + currentAccount;
 
       try {
-        await provider.request({
+        const sig = await provider.request({
           method: "personal_sign",
           params: [message, currentAccount]
         });
+        console.log("Ritual signature:", sig);
 
         statusStep2.textContent = "Ritual signed. This address is remembered for mint.";
         statusStep2.classList.remove("warn");
         statusStep2.classList.add("ok");
 
-        // Enable mint (green but now clickable)
+        // Enable mint (groen, klikbaar)
         setBtnDisabled(mintBtn, false);
         mintBtn.classList.remove("btn-disabled");
         statusMint.textContent = "Ready to mint your Key.";
@@ -699,8 +706,7 @@
         return;
       }
 
-      // TODO: hier koppel je straks je echte Z1N Issuance / mint call
-      // via een onchain contract (Polygon). Voor nu is het een placeholder.
+      // TODO: hier komt straks de echte contract-call (Polygon) naar jouw Issuance / Z1NKey.
       statusMint.textContent = "Mint transaction not wired yet (placeholder).";
       alert(
         "Minting logic is not yet wired to the live Z1N contract.\n" +
