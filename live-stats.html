@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Live Stats – Z1N Protocol</title>
+  <title>Z1N Protocol – Live Stats</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex,nofollow" />
 
@@ -15,10 +15,6 @@
       --accent: #66d69a;
       --accent-soft: #3a9f63;
       --card-border: rgba(148, 163, 184, 0.25);
-
-      /* ✅ single source of truth for alignment */
-      --wrap: 1200px; /* change to 1040px if artefacts.html uses 1040 */
-      --pad: 24px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,15 +28,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* ✅ shared wrapper (header + page identical) */
-    .wrap {
-      width: 100%;
-      max-width: var(--wrap);
-      margin: 0 auto;
-      padding: 0 var(--pad);
-    }
-
-    /* HEADER – aligned with page */
+    /* HEADER – EXACT like artefacts.html */
     header {
       height: 72px;
       display: flex;
@@ -51,6 +39,10 @@
     }
 
     .nav-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;      /* ✅ force same centering as page */
+      padding: 0 24px;     /* ✅ same left edge as page */
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -96,9 +88,7 @@
 
     .nav-links a { position: relative; }
 
-    .nav-links a.active {
-      color: var(--accent);
-    }
+    .nav-links a.active { color: var(--accent); }
 
     .nav-links a.active::after {
       content: "";
@@ -111,11 +101,28 @@
       background: linear-gradient(to right, var(--accent), var(--accent-soft));
     }
 
-    /* PAGE */
-    .page {
-      padding: 40px 0 72px; /* horizontal padding is handled by .wrap */
+    @media(max-width: 900px){
+      .nav-inner { padding: 0 16px; }
+      .nav-links {
+        font-size: 12px;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
     }
 
+    /* PAGE WRAPPER – EXACT like artefacts.html */
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 72px;
+    }
+
+    @media(max-width: 900px){
+      .page { padding: 32px 18px 56px; }
+    }
+
+    /* TITLE + INTRO – EXACT like artefacts.html */
     h1 {
       font-size: 40px;
       margin: 0 0 10px 0;
@@ -174,10 +181,22 @@
       line-height: 1.55;
     }
 
-    /* FOOTER – same as artefacts.html */
+    @media(max-width: 900px){
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media(max-width: 600px){
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* FOOTER – EXACT like artefacts.html */
     footer {
       border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 20px 0;
+      padding: 20px;
       font-size: 12px;
       text-align: center;
       opacity: 0.85;
@@ -194,41 +213,15 @@
       gap: 18px;
       font-size: 13px;
     }
-
-    /* RESPONSIVE */
-    @media(max-width: 900px){
-      :root { --pad: 16px; }
-
-      .nav-links {
-        font-size: 12px;
-        gap: 14px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
-
-      .page {
-        padding: 32px 0 56px;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0,1fr));
-      }
-    }
-
-    @media(max-width: 600px){
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-    }
   </style>
 </head>
 
 <body>
 
 <header>
-  <div class="wrap nav-inner">
+  <div class="nav-inner">
     <div class="logo-wrap">
-      <a href="index.html" class="logo-link">
+      <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
         <div class="logo-dot">Ω</div>
         <div class="logo-text">Z1N PROTOCOL</div>
       </a>
@@ -244,7 +237,7 @@
   </div>
 </header>
 
-<main class="wrap page">
+<main class="page">
   <h1>Live stats of the field</h1>
 
   <p class="lead">
@@ -278,12 +271,10 @@
 </main>
 
 <footer>
-  <div class="wrap">
-    <div class="tagline">Your presence is real · The Field remembers</div>
-    <div class="links">
-      <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-      <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
-    </div>
+  <div class="tagline">Your presence is real · The Field remembers</div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
 </footer>
 
