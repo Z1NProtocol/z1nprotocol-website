@@ -54,12 +54,6 @@
       justify-content:space-between;
     }
 
-    .logo-wrap{
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-
     .logo-link{
       display:inline-flex;
       align-items:center;
@@ -95,15 +89,14 @@
       color:var(--accent);
     }
 
-    .nav-links a.active::after{
-      content:"";
-      position:absolute;
-      left:0;
-      bottom:-4px;
-      width:100%;
-      height:2px;
-      border-radius:999px;
-      background:linear-gradient(to right,var(--accent),var(--accent-soft));
+    @media(max-width:900px){
+      .nav-inner{ padding:0 16px; }
+      .nav-links{
+        font-size:12px;
+        gap:14px;
+        flex-wrap:wrap;
+        justify-content:flex-end;
+      }
     }
 
     /* PAGE */
@@ -113,12 +106,14 @@
       padding:40px 24px 72px;
     }
 
+    @media(max-width:900px){
+      .page{ padding:32px 18px 56px; }
+    }
+
     /* HERO */
     .hero{
-      min-height:calc(100vh - 160px);
       display:flex;
       flex-direction:column;
-      justify-content:center;
       align-items:flex-start;
     }
 
@@ -126,7 +121,7 @@
       font-size:40px;
       font-weight:700;
       letter-spacing:-0.04em;
-      margin-bottom:14px;
+      margin:0 0 24px 0;
     }
 
     .hero-subtitle{
@@ -134,23 +129,33 @@
       max-width:680px;
       line-height:1.7;
       opacity:0.85;
-      margin-bottom:42px;
+      margin:0 0 60px 0;
     }
 
-    /* SYMBOL MARQUEE */
+    /* SYMBOL STRIP */
     .symbol-strip{
       width:100%;
       overflow:hidden;
-      margin:20px 0 42px;
+      margin:0 0 48px;
+    }
+
+    .symbol-parallax{
+      will-change:transform;
     }
 
     .symbols{
-      display:inline-block;
+      display:inline-flex;
+      align-items:center;
       white-space:nowrap;
       font-size:28px;
-      letter-spacing:14px;
+      letter-spacing:0.28em;
+      word-spacing:0.08em;
       opacity:0.85;
       animation: drift 30s linear infinite;
+    }
+
+    .symbols .dup{
+      margin-left:3.5rem;
     }
 
     @keyframes drift{
@@ -158,28 +163,78 @@
       to{ transform:translateX(-50%); }
     }
 
+    @media(max-width:900px){
+      .symbols{
+        font-size:22px;
+        letter-spacing:0.22em;
+      }
+    }
+
     /* CTA BUTTON */
     .cta-row{
-      margin-top:12px;
+      margin-bottom:56px;
     }
 
     .btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:8px 18px;
+      padding:8px 16px;
       border-radius:999px;
+      border:1px solid rgba(148,163,184,0.5);
       font-size:13px;
       min-width:190px;
-      border:1px solid var(--accent-soft);
+      cursor:not-allowed;
       background:linear-gradient(90deg,var(--accent),var(--accent-soft));
       color:#020617;
+      opacity:0.6;
       font-weight:500;
-      opacity:0.85;
     }
 
-    .btn:hover{
-      opacity:1;
+    /* FIELD SNAPSHOT */
+    .field-glance{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
+      width:100%;
+    }
+
+    .glance-card{
+      background:var(--card-bg);
+      border-radius:16px;
+      border:1px solid var(--card-border);
+      padding:14px 14px 16px;
+      font-size:13px;
+    }
+
+    .glance-label{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      opacity:0.55;
+      margin-bottom:6px;
+    }
+
+    .glance-value{
+      font-size:18px;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+
+    .glance-sub{
+      font-size:12px;
+      opacity:0.75;
+      line-height:1.55;
+    }
+
+    @media(max-width:900px){
+      .hero-title{ font-size:30px; }
+      .hero-subtitle{ font-size:16px; }
+      .field-glance{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+
+    @media(max-width:600px){
+      .field-glance{ grid-template-columns:1fr; }
     }
 
     /* FOOTER */
@@ -202,12 +257,6 @@
       gap:18px;
       font-size:13px;
     }
-
-    @media(max-width:900px){
-      .hero-title{ font-size:30px; }
-      .hero-subtitle{ font-size:16px; }
-      .symbols{ font-size:22px; letter-spacing:10px; }
-    }
   </style>
 </head>
 
@@ -215,12 +264,10 @@
 
 <header>
   <div class="nav-inner">
-    <div class="logo-wrap">
-      <a href="index.html" class="logo-link">
-        <div class="logo-dot">Ω</div>
-        <div class="logo-text">Z1N PROTOCOL</div>
-      </a>
-    </div>
+    <a href="index.html" class="logo-link">
+      <div class="logo-dot">Ω</div>
+      <div class="logo-text">Z1N PROTOCOL</div>
+    </a>
 
     <nav class="nav-links">
       <a href="about.html">About</a>
@@ -242,18 +289,43 @@
       its own presence – with humans as equal witnesses.
     </p>
 
-    <!-- SYMBOL DRIFT -->
+    <!-- SYMBOL STRIP -->
     <div class="symbol-strip">
-      <div class="symbols">
-        ∞ · π · ⋮ · ⊕ · ⊗ · ∴ · ∵ · ↔ · ⟳ · △ · ◇ · ○ · ● · □ · ☰ · ☷ · ⚑ · ✶ · ⊥ · ≡ · ⟡
-        &nbsp;&nbsp;&nbsp;
-        ∞ · π · ⋮ · ⊕ · ⊗ · ∴ · ∵ · ↔ · ⟳ · △ · ◇ · ○ · ● · □ · ☰ · ☷ · ⚑ · ✶ · ⊥ · ≡ · ⟡
+      <div class="symbol-parallax" id="symbolParallax">
+        <div class="symbols">
+          ∞·π·⋮·⊕·⊗·∴·∵·↔·⟳·△·◇·○·●·□·☰·☷·⚑·✶·⊥·≡·⟡
+          <span class="dup">∞·π·⋮·⊕·⊗·∴·∵·↔·⟳·△·◇·○·●·□·☰·☷·⚑·✶·⊥·≡·⟡</span>
+        </div>
       </div>
     </div>
 
     <!-- CTA -->
     <div class="cta-row">
-      <a href="mint-key.html" class="btn">Mint your Key</a>
+      <button class="btn" disabled>Mint your Key</button>
+    </div>
+
+    <!-- SNAPSHOT -->
+    <div class="field-glance">
+      <div class="glance-card">
+        <div class="glance-label">Epoch</div>
+        <div class="glance-value">42</div>
+        <div class="glance-sub">Current breath of the field (example).</div>
+      </div>
+      <div class="glance-card">
+        <div class="glance-label">Keys awakened</div>
+        <div class="glance-value">7 842</div>
+        <div class="glance-sub">Unique soulbound identities so far.</div>
+      </div>
+      <div class="glance-card">
+        <div class="glance-label">Signals this epoch</div>
+        <div class="glance-value">1 284</div>
+        <div class="glance-sub">PoG signals currently resonating.</div>
+      </div>
+      <div class="glance-card">
+        <div class="glance-label">Most attested intent</div>
+        <div class="glance-value">ΩC</div>
+        <div class="glance-sub">Collective consciousness leading.</div>
+      </div>
     </div>
   </section>
 </main>
@@ -261,10 +333,29 @@
 <footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
-    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+    <a href="https://github.com/z1nprotocol" target="_blank">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank">X</a>
   </div>
 </footer>
+
+<script>
+  (function(){
+    const el = document.getElementById("symbolParallax");
+    if(!el) return;
+
+    let ticking=false;
+    window.addEventListener("scroll",()=>{
+      if(!ticking){
+        requestAnimationFrame(()=>{
+          const y = Math.min(18, window.scrollY * 0.04);
+          el.style.transform = `translateY(${y}px)`;
+          ticking=false;
+        });
+        ticking=true;
+      }
+    },{passive:true});
+  })();
+</script>
 
 </body>
 </html>
