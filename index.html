@@ -64,19 +64,6 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
-      position:relative;
-    }
-
-    /* ✅ underline only when active (index only) */
-    .logo-link.active::after{
-      content:"";
-      position:absolute;
-      left:0;
-      bottom:-6px;
-      width:100%;
-      height:2px;
-      border-radius:999px;
-      background:linear-gradient(to right,var(--accent),var(--accent-soft));
     }
 
     .logo-dot{
@@ -245,8 +232,8 @@
   <header>
     <div class="nav-inner">
       <div class="logo-wrap">
-        <!-- ✅ active ONLY on index -->
-        <a href="index.html" class="logo-link active" aria-label="Z1N Protocol home">
+        <!-- ✅ no underline on index/landing -->
+        <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
           <div class="logo-dot">Ω</div>
           <div class="logo-text">Z1N PROTOCOL</div>
         </a>
