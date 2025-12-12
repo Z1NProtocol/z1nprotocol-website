@@ -120,12 +120,12 @@
     .page{
       max-width:1200px;
       margin:0 auto;
-      padding:40px 24px 72px;
-      min-height: calc(100vh - 72px - 20px - 72px);
+      padding:40px 24px 32px; /* ✅ minder bottom padding zodat footer visueel hoger komt */
+      min-height:auto;        /* ✅ geen geforceerde hoogte (dat duwt footer omlaag) */
     }
 
     @media(max-width:900px){
-      .page{ padding:32px 18px 56px; }
+      .page{ padding:32px 18px 28px; }
     }
 
     /* HERO */
@@ -157,7 +157,6 @@
 
     /* ===== SYMBOL MARQUEE ===== */
 
-    /* spacing zodat content eronder "midden-ish" blijft */
     .hero-spacer{
       height: 22px;
     }
@@ -165,10 +164,9 @@
     .symbols-wrap{
       width:100%;
       margin-top: 14px;
-      margin-bottom: 26px;
+      margin-bottom: 34px; /* ✅ meer ruimte onder de symbolen + CTA komt eronder */
       position:relative;
 
-      /* fade-in on load */
       opacity:0;
       transform: translateY(6px);
       animation: fadeInUp 700ms ease forwards;
@@ -179,7 +177,6 @@
       to { opacity:1; transform: translateY(0); }
     }
 
-    /* frame */
     .symbols-frame{
       position:relative;
       width:100%;
@@ -188,9 +185,11 @@
       border: 1px solid rgba(148,163,184,0.18);
       background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0.0) 62%);
       padding: 14px 0;
+
+      --mx: 50%;
+      --my: 50%;
     }
 
-    /* subtle top/bottom hairlines */
     .symbols-frame::before,
     .symbols-frame::after{
       content:"";
@@ -203,11 +202,6 @@
     .symbols-frame::before{ top:0; }
     .symbols-frame::after{ bottom:0; }
 
-    /* cursor spotlight EXACT at cursor position */
-    .symbols-frame{
-      --mx: 50%;
-      --my: 50%;
-    }
     .symbols-spot{
       pointer-events:none;
       position:absolute;
@@ -224,7 +218,7 @@
     }
     .symbols-frame:hover .symbols-spot{ opacity:1; }
 
-    /* marquee: twee identieke tracks voor seamless loop */
+    /* ✅ marquee wrapper */
     .symbols-marquee{
       display:flex;
       width:100%;
@@ -232,26 +226,32 @@
       user-select:none;
     }
 
-    .symbols-track{
+    /* ✅ track container: two identical lanes */
+    .symbols-lane{
+      display:flex;
+      flex:0 0 auto;
+      will-change: transform;
+      animation: scrollLane 16s linear infinite; /* snelheid */
+      transform: translate3d(0,0,0);
+    }
+
+    /* ✅ perfect loop: shift exactly one lane width */
+    @keyframes scrollLane{
+      from { transform: translate3d(0,0,0); }
+      to   { transform: translate3d(-100%,0,0); }
+    }
+
+    /* each lane contains a "sequence": 21 symbols + a pause gap */
+    .symbols-seq{
       display:inline-flex;
       align-items:center;
-      gap: 16px; /* kleiner dan eerst zodat reeks "continu" voelt */
+      gap: 16px;
       padding-left: 24px;
-      will-change: transform;
-      animation: scrollLeft 16s linear infinite; /* iets sneller */
+      padding-right: 24px;
     }
 
-    /* pause on hover? (optioneel) */
-    /* .symbols-frame:hover .symbols-track{ animation-play-state: paused; } */
-
-    @keyframes scrollLeft{
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
-    /* de symbolen zelf */
     .sym{
-      font-size: 26px;              /* iets groter */
+      font-size: 26px;
       letter-spacing: 0.02em;
       opacity: 0.82;
       line-height: 1;
@@ -267,35 +267,40 @@
       text-shadow: 0 0 14px rgba(102,214,154,0.25);
     }
 
-    /* verklein spatie rondom de puntjes door ze niet als losse tokens te doen */
-    /* we zetten punten niet meer als losse items: daarom geen "·" sym in track */
-
-    /* CTA button (shaded -> solid on hover) */
-    .cta-row{
-      margin-top: 18px;
+    /* ✅ pause after symbol 21 */
+    .sym-gap{
+      width: 220px;   /* “tijdje niks” */
+      height: 1px;
+      flex: 0 0 auto;
     }
 
+    /* CTA spacing */
+    .cta-row{
+      margin-top: 22px;    /* ✅ meer witruimte onder frame */
+      margin-bottom: 22px; /* ✅ meer witruimte onder CTA */
+    }
+
+    /* ✅ EXACT button layout from mint-key */
     .btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding: 10px 16px;
+      padding: 7px 12px;                 /* exact */
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.55);
+      border: 1px solid rgba(148,163,184,0.5);
       font-size: 13px;
-      cursor:pointer;
+      cursor: pointer;
       background: transparent;
       color: #e5e7eb;
       min-width: 190px;
       max-width: 190px;
-      text-align:center;
-      white-space:nowrap;
-
+      text-align: center;
+      white-space: nowrap;
       transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
     }
 
     .btn-primary{
-      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
+      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55)); /* shaded */
       border-color: rgba(58,159,99,0.85);
       color: #061018;
       font-weight: 600;
@@ -303,14 +308,14 @@
 
     .btn-primary:hover{
       transform: translateY(-1px);
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft)); /* solid */
       border-color: var(--accent-soft);
       box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.14);
     }
 
     /* FIELD SNAPSHOT */
     .field-glance{
-      margin-top: 44px;
+      margin-top: 26px; /* ✅ iets lager zodat de CTA lucht heeft */
       display:grid;
       grid-template-columns:repeat(4,minmax(0,1fr));
       gap:16px;
@@ -323,7 +328,6 @@
       border:1px solid var(--card-border);
       padding:14px 14px 16px;
       font-size:13px;
-
       transition:
         border-color 220ms ease,
         box-shadow 220ms ease,
@@ -368,13 +372,19 @@
       .field-glance{ grid-template-columns:1fr; }
     }
 
+    /* ✅ small spacer so footer sits higher but doesn't collide */
+    .bottom-spacer{
+      height: 14px;
+    }
+
     /* FOOTER – exact shared footer */
     footer{
       border-top:1px solid rgba(255,255,255,0.05);
-      padding:20px;
+      padding:16px 20px;  /* ✅ iets compacter -> footer hoger */
       font-size:12px;
       text-align:center;
       opacity:0.85;
+      margin-top: 8px;    /* ✅ dichter bij content */
     }
 
     footer .tagline{
@@ -391,7 +401,7 @@
 
     /* accessibility: reduce motion */
     @media (prefers-reduced-motion: reduce){
-      .symbols-track{ animation: none; }
+      .symbols-lane{ animation: none; }
       .symbols-wrap{ animation: none; opacity:1; transform:none; }
       .btn, .glance-card, .sym{ transition:none; }
     }
@@ -437,52 +447,28 @@
           <div class="symbols-spot"></div>
 
           <div class="symbols-marquee">
-            <!-- Track A + Track B (identiek) voor seamless loop -->
-            <div class="symbols-track" id="trackA">
-              <span class="sym">∞</span>
-              <span class="sym">π</span>
-              <span class="sym">⋮</span>
-              <span class="sym">⊕</span>
-              <span class="sym">⊗</span>
-              <span class="sym">∴</span>
-              <span class="sym">∵</span>
-              <span class="sym">↔</span>
-              <span class="sym">⟳</span>
-              <span class="sym">△</span>
-              <span class="sym">◇</span>
-              <span class="sym">○</span>
-              <span class="sym">●</span>
-              <span class="sym">□</span>
-              <span class="sym">☰</span>
-              <span class="sym">☷</span>
-              <span class="sym">⚑</span>
-              <span class="sym">✶</span>
-              <span class="sym">⊥</span>
-              <span class="sym">≡</span>
-              <span class="sym">⟡</span>
+            <!-- ✅ Lane A -->
+            <div class="symbols-lane" id="laneA">
+              <div class="symbols-seq">
+                <span class="sym">∞</span><span class="sym">π</span><span class="sym">⋮</span><span class="sym">⊕</span><span class="sym">⊗</span>
+                <span class="sym">∴</span><span class="sym">∵</span><span class="sym">↔</span><span class="sym">⟳</span><span class="sym">△</span>
+                <span class="sym">◇</span><span class="sym">○</span><span class="sym">●</span><span class="sym">□</span><span class="sym">☰</span>
+                <span class="sym">☷</span><span class="sym">⚑</span><span class="sym">✶</span><span class="sym">⊥</span><span class="sym">≡</span>
+                <span class="sym">⟡</span>
+                <span class="sym-gap" aria-hidden="true"></span>
+              </div>
+            </div>
 
-              <!-- duplicatie binnen dezelfde track zodat -50% werkt -->
-              <span class="sym">∞</span>
-              <span class="sym">π</span>
-              <span class="sym">⋮</span>
-              <span class="sym">⊕</span>
-              <span class="sym">⊗</span>
-              <span class="sym">∴</span>
-              <span class="sym">∵</span>
-              <span class="sym">↔</span>
-              <span class="sym">⟳</span>
-              <span class="sym">△</span>
-              <span class="sym">◇</span>
-              <span class="sym">○</span>
-              <span class="sym">●</span>
-              <span class="sym">□</span>
-              <span class="sym">☰</span>
-              <span class="sym">☷</span>
-              <span class="sym">⚑</span>
-              <span class="sym">✶</span>
-              <span class="sym">⊥</span>
-              <span class="sym">≡</span>
-              <span class="sym">⟡</span>
+            <!-- ✅ Lane B (identical) -->
+            <div class="symbols-lane" aria-hidden="true">
+              <div class="symbols-seq">
+                <span class="sym">∞</span><span class="sym">π</span><span class="sym">⋮</span><span class="sym">⊕</span><span class="sym">⊗</span>
+                <span class="sym">∴</span><span class="sym">∵</span><span class="sym">↔</span><span class="sym">⟳</span><span class="sym">△</span>
+                <span class="sym">◇</span><span class="sym">○</span><span class="sym">●</span><span class="sym">□</span><span class="sym">☰</span>
+                <span class="sym">☷</span><span class="sym">⚑</span><span class="sym">✶</span><span class="sym">⊥</span><span class="sym">≡</span>
+                <span class="sym">⟡</span>
+                <span class="sym-gap" aria-hidden="true"></span>
+              </div>
             </div>
           </div>
         </div>
@@ -519,6 +505,7 @@
         </div>
       </div>
 
+      <div class="bottom-spacer"></div>
     </section>
   </main>
 
@@ -550,8 +537,8 @@
       window.addEventListener("scroll", () => {
         const rect = frame.getBoundingClientRect();
         const vh = window.innerHeight || 800;
-        const t = (rect.top - vh * 0.25) / vh; // normalized-ish
-        const shift = Math.max(-6, Math.min(6, -t * 6)); // clamp
+        const t = (rect.top - vh * 0.25) / vh;
+        const shift = Math.max(-6, Math.min(6, -t * 6));
         frame.style.transform = `translateY(${shift}px)`;
       }, { passive: true });
     })();
