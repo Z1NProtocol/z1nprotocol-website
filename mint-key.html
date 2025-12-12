@@ -28,7 +28,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* HEADER – zelfde basis als index */
+    /* HEADER – same basis as other pages */
     header {
       height: 72px;
       display: flex;
@@ -164,7 +164,7 @@
       line-height: 1.7;
     }
 
-    /* LAYOUT: twee kolommen */
+    /* LAYOUT: two columns */
     .mint-layout {
       margin-top: 24px;
       display: grid;
@@ -174,9 +174,7 @@
     }
 
     @media(max-width: 900px){
-      .mint-layout {
-        grid-template-columns: 1fr;
-      }
+      .mint-layout { grid-template-columns: 1fr; }
     }
 
     .card {
@@ -221,9 +219,7 @@
       margin-bottom: 8px;
     }
 
-    .step-row {
-      margin-bottom: 14px;
-    }
+    .step-row { margin-bottom: 14px; }
 
     /* BUTTONS */
     .btn-row {
@@ -242,11 +238,19 @@
       cursor: pointer;
       background: transparent;
       color: #e5e7eb;
-      /* alle BI-buttons even lang */
-      min-width: 145px;
-      max-width: 145px;
+
+      /* keep buttons consistent */
+      min-width: 190px;
+      max-width: 190px;
       text-align: center;
       white-space: nowrap;
+
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease,
+        color 180ms ease;
     }
 
     .btn:hover:not([disabled]) {
@@ -256,13 +260,25 @@
     .btn[disabled] {
       opacity: 0.55;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
-    .btn-primary {
+    /* ✅ Primary aligned with homepage feel: green ring + glow on hover */
+    .btn-primary{
       background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-      border-color: var(--accent-soft);
+      border-color: rgba(58,159,99,0.95);
       color: #020617;
-      font-weight: 500;
+      font-weight: 600;
+      box-shadow: 0 0 0 1px rgba(102,214,154,0.18);
+    }
+
+    .btn-primary:hover:not([disabled]){
+      transform: translateY(-1px);
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(102,214,154,0.22),
+        0 0 18px rgba(102,214,154,0.14);
     }
 
     .btn-primary[disabled] {
@@ -275,7 +291,7 @@
       font-size: 12px;
     }
 
-    /* special style for Connect Wallet: groene rand, transparant */
+    /* Connect Wallet: green border, transparent */
     .btn-connect {
       border-color: var(--accent-soft);
       color: #e5e7eb;
@@ -288,11 +304,9 @@
       line-height: 1.6;
     }
 
-    .status-error {
-      color: var(--danger);
-    }
+    .status-error { color: var(--danger); }
 
-    /* BI STATUS BOX – nu onder STEP 2 */
+    /* BI STATUS BOX – under Step 2 */
     .status-box {
       margin-top: 6px;
       padding: 8px 10px;
@@ -303,11 +317,9 @@
       color: var(--text-soft);
     }
 
-    .status-box div + div {
-      margin-top: 2px;
-    }
+    .status-box div + div { margin-top: 2px; }
 
-    /* NBI "code" stijl */
+    /* NBI code style */
     .code-block {
       font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
       font-size: 12px;
@@ -335,9 +347,7 @@
       opacity: 0.85;
     }
 
-    footer .tagline {
-      margin-bottom: 6px;
-    }
+    footer .tagline { margin-bottom: 6px; }
 
     footer .links {
       display: flex;
@@ -434,7 +444,7 @@
           Waiting for wallet. Ritual not signed yet.
         </div>
 
-        <!-- STATUS BOX ONDER STEP 2 -->
+        <!-- STATUS BOX -->
         <div class="status-box" id="biStatusBox">
           <div id="statusWallet">Status: Wallet not connected</div>
           <div id="statusAddress">Address: –</div>
@@ -453,7 +463,6 @@
           mint for. It cannot be sold, transferred, or traded unless you transfer your private key.
         </p>
         <div class="btn-row">
-          <!-- Groen, maar disabled tot na ritueel -->
           <button id="btnMint" class="btn btn-primary" type="button" disabled>
             Mint your Key
           </button>
@@ -484,12 +493,12 @@ assert(<span class="code-func">unique</span>(glyphs))
 
 tokenId ← <span class="code-field">key.mint</span>(self, genesis=false)
 <span class="code-field">field.record</span>(tokenId, epoch, glyphs)
-flow := {{
+flow := {
   key: tokenId,
   epoch: epoch,
   Ωmix: self.intent(),
   variance: self.entropy()
-}}
+}
 <span class="code-field">field.integrate</span>(flow)
         </div>
       </div>
@@ -529,11 +538,7 @@ flow := {{
     // --- UI helper ---
     function setBtnPrimary(btn, isPrimary) {
       if (!btn) return;
-      if (isPrimary) {
-        btn.classList.add("btn-primary");
-      } else {
-        btn.classList.remove("btn-primary");
-      }
+      btn.classList.toggle("btn-primary", !!isPrimary);
     }
 
     const btnConnect   = document.getElementById("btnConnect");
@@ -549,57 +554,72 @@ flow := {{
     const btnCopyForge = document.getElementById("btnCopyForge");
     const copyStatus   = document.getElementById("copyStatus");
 
-    // provider detect (MetaMask of Phantom EVM)
+    // -----------------------------
+    // ✅ Provider selection (EIP-6963) + fallback
+    // -----------------------------
     let provider = null;
-    if (typeof window !== "undefined") {
-      if (window.ethereum && typeof window.ethereum.request === "function") {
-        provider = window.ethereum;
-      } else if (window.phantom && window.phantom.ethereum && typeof window.phantom.ethereum.request === "function") {
-        provider = window.phantom.ethereum;
-      }
+    let providers = [];
+
+    function pickProvider(prefer = "MetaMask") {
+      const byName = providers.find(p => (p?.info?.name || "").toLowerCase().includes(prefer.toLowerCase()));
+      return byName?.provider || providers[0]?.provider || window.ethereum || null;
     }
 
-    if (!provider && noWallet) {
-      noWallet.style.display = "block";
-    }
+    window.addEventListener("eip6963:announceProvider", (event) => {
+      providers.push(event.detail);
+      provider = pickProvider("MetaMask");
+      attachListeners(provider);
+    });
+
+    window.dispatchEvent(new Event("eip6963:requestProvider"));
+
+    setTimeout(() => {
+      if (!provider) provider = pickProvider("MetaMask");
+      if (!provider && noWallet) noWallet.style.display = "block";
+      attachListeners(provider);
+    }, 200);
 
     let currentAccount = null;
 
+    async function ensureChainLabel(p) {
+      try {
+        const chainId = await p.request({ method: "eth_chainId" });
+        if (statusNet) statusNet.textContent = "Network: " + chainId;
+      } catch (e) {
+        if (statusNet) statusNet.textContent = "Network: unknown";
+      }
+    }
+
     async function connectWallet() {
+      provider = provider || pickProvider("MetaMask");
+
       if (!provider) {
-        if (noWallet) {
-          noWallet.style.display = "block";
-        }
+        if (noWallet) noWallet.style.display = "block";
         return;
       }
+
       try {
-        const accounts = await provider.request({
-          method: "eth_requestAccounts"
-        });
+        const accounts = await provider.request({ method: "eth_requestAccounts" });
         if (!accounts || !accounts.length) return;
 
         currentAccount = accounts[0];
 
-        // Buttons: connect wordt groen, sign wordt enabled
         setBtnPrimary(btnConnect, true);
         if (btnSign) btnSign.disabled = false;
 
-        // Status
         if (statusWallet) statusWallet.textContent = "Status: Wallet connected";
         if (statusAddr)   statusAddr.textContent   = "Address: " + currentAccount;
-
-        // Network info (best effort)
-        try {
-          const chainId = await provider.request({ method: "eth_chainId" });
-          if (statusNet) statusNet.textContent = "Network: " + chainId + " (raw chainId)";
-        } catch (e) {
-          if (statusNet) statusNet.textContent = "Network: unknown";
-        }
+        await ensureChainLabel(provider);
 
         if (statusKeys) statusKeys.textContent = "Keys (this address): – (to be wired to backend)";
-
+        if (noWallet) noWallet.style.display = "none";
       } catch (err) {
         console.error("Connect error", err);
+        if (statusWallet) {
+          statusWallet.textContent = (err?.code === 4001)
+            ? "Status: Connection rejected in wallet"
+            : "Status: Could not connect (see console)";
+        }
       }
     }
 
@@ -622,7 +642,9 @@ flow := {{
       } catch (err) {
         console.error("Sign error", err);
         if (signStatus) {
-          signStatus.textContent = "Ritual not signed (user rejected or error).";
+          signStatus.textContent = (err?.code === 4001)
+            ? "Ritual not signed (user rejected)."
+            : "Ritual not signed (error).";
         }
       }
     }
@@ -630,17 +652,38 @@ flow := {{
     async function mintKey() {
       if (!provider || !currentAccount) return;
       try {
-        // TODO: echte mint-TX naar Z1N Issuance/Key contract koppelen.
+        // TODO: wire real mint TX to Z1N contracts
         if (mintStatus) {
-          mintStatus.textContent = "Mint transaction would be sent from " +
-            currentAccount + " (wire to Z1N contracts once ready).";
+          mintStatus.textContent =
+            "Mint transaction would be sent from " + currentAccount +
+            " (wire to Z1N contracts once ready).";
         }
       } catch (err) {
         console.error("Mint error", err);
-        if (mintStatus) {
-          mintStatus.textContent = "Mint failed or cancelled.";
-        }
+        if (mintStatus) mintStatus.textContent = "Mint failed or cancelled.";
       }
+    }
+
+    function attachListeners(p){
+      if (!p || !p.on) return;
+
+      // prevent double-binding if this runs multiple times
+      if (p.__z1n_listeners_attached) return;
+      p.__z1n_listeners_attached = true;
+
+      p.on("accountsChanged", (accs) => {
+        currentAccount = accs?.[0] || null;
+        if (statusAddr) statusAddr.textContent = "Address: " + (currentAccount || "–");
+        if (!currentAccount) {
+          if (statusWallet) statusWallet.textContent = "Status: Wallet not connected";
+          if (btnSign) btnSign.disabled = true;
+          if (btnMint) btnMint.disabled = true;
+        }
+      });
+
+      p.on("chainChanged", () => {
+        ensureChainLabel(p);
+      });
     }
 
     if (btnConnect) btnConnect.addEventListener("click", connectWallet);
@@ -667,9 +710,7 @@ flow := {
 field.integrate(flow)`;
         navigator.clipboard.writeText(snippet).then(function () {
           copyStatus.style.display = "block";
-          setTimeout(function () {
-            copyStatus.style.display = "none";
-          }, 2000);
+          setTimeout(function () { copyStatus.style.display = "none"; }, 2000);
         });
       });
     }
