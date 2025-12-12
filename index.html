@@ -132,6 +132,22 @@
       margin:0 0 60px 0;
     }
 
+    /* FADE IN */
+    .fade-in{
+      opacity:0;
+      transform: translateY(10px);
+      animation: fadeUp 900ms ease forwards;
+    }
+    .fade-in.delay-1{ animation-delay: 120ms; }
+    .fade-in.delay-2{ animation-delay: 240ms; }
+
+    @keyframes fadeUp{
+      to{
+        opacity:1;
+        transform: translateY(0);
+      }
+    }
+
     /* SYMBOL STRIP */
     .symbol-strip{
       width:100%;
@@ -143,19 +159,61 @@
       will-change:transform;
     }
 
+    /* Glow “field” layer (subtle, behind symbols) */
+    .symbol-strip::before{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      height:120px;
+      margin-top:-28px;
+      pointer-events:none;
+      opacity:0;
+      transition:opacity 220ms ease;
+      background: radial-gradient(circle at 30% 50%,
+        rgba(102,214,154,0.18),
+        rgba(5,8,18,0) 55%);
+    }
+
+    .symbol-strip{
+      position:relative;
+    }
+
+    .symbol-strip:hover::before{
+      opacity:1;
+    }
+
     .symbols{
       display:inline-flex;
       align-items:center;
       white-space:nowrap;
-      font-size:28px;
-      letter-spacing:0.28em;
-      word-spacing:0.08em;
-      opacity:0.85;
-      animation: drift 30s linear infinite;
+
+      /* ✅ bigger, more continuous band */
+      font-size:32px;
+      letter-spacing:0.26em;
+      word-spacing:0.06em;
+
+      opacity:0.86;
+      animation: drift 24s linear infinite; /* ✅ slightly faster */
+      will-change: transform;
+
+      /* baseline crispness */
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased;
+
+      transition: filter 220ms ease, opacity 220ms ease;
+    }
+
+    /* Hover “highlight”: whole band glows, without being a link */
+    .symbol-strip:hover .symbols{
+      opacity:0.95;
+      filter:
+        drop-shadow(0 0 10px rgba(102,214,154,0.18))
+        drop-shadow(0 0 22px rgba(102,214,154,0.10));
     }
 
     .symbols .dup{
-      margin-left:3.5rem;
+      margin-left:3.25rem;
     }
 
     @keyframes drift{
@@ -165,12 +223,12 @@
 
     @media(max-width:900px){
       .symbols{
-        font-size:22px;
+        font-size:26px;
         letter-spacing:0.22em;
       }
     }
 
-    /* CTA BUTTON */
+    /* CTA BUTTON (green-shaded -> green on hover) */
     .cta-row{
       margin-bottom:56px;
     }
@@ -184,11 +242,20 @@
       border:1px solid rgba(148,163,184,0.5);
       font-size:13px;
       min-width:190px;
-      cursor:not-allowed;
-      background:linear-gradient(90deg,var(--accent),var(--accent-soft));
+
+      background: linear-gradient(90deg,var(--accent),var(--accent-soft));
       color:#020617;
-      opacity:0.6;
       font-weight:500;
+
+      opacity:0.62;              /* ✅ shaded / muted */
+      cursor:pointer;
+      transition: opacity 160ms ease, transform 160ms ease, filter 180ms ease;
+    }
+
+    .btn:hover{
+      opacity:1;                  /* ✅ becomes “real green” */
+      transform: translateY(-1px);
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,0.45));
     }
 
     /* FIELD SNAPSHOT */
@@ -290,7 +357,7 @@
     </p>
 
     <!-- SYMBOL STRIP -->
-    <div class="symbol-strip">
+    <div class="symbol-strip fade-in delay-1">
       <div class="symbol-parallax" id="symbolParallax">
         <div class="symbols">
           ∞·π·⋮·⊕·⊗·∴·∵·↔·⟳·△·◇·○·●·□·☰·☷·⚑·✶·⊥·≡·⟡
@@ -300,8 +367,8 @@
     </div>
 
     <!-- CTA -->
-    <div class="cta-row">
-      <button class="btn" disabled>Mint your Key</button>
+    <div class="cta-row fade-in delay-2">
+      <a class="btn" href="mint-key.html">Mint your Key</a>
     </div>
 
     <!-- SNAPSHOT -->
@@ -333,8 +400,8 @@
 <footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
-    <a href="https://github.com/z1nprotocol" target="_blank">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank">X</a>
+    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
 </footer>
 
@@ -347,7 +414,7 @@
     window.addEventListener("scroll",()=>{
       if(!ticking){
         requestAnimationFrame(()=>{
-          const y = Math.min(18, window.scrollY * 0.04);
+          const y = Math.min(22, window.scrollY * 0.045); // subtle parallax
           el.style.transform = `translateY(${y}px)`;
           ticking=false;
         });
