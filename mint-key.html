@@ -28,7 +28,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* HEADER */
+    /* HEADER – same baseline */
     header {
       height: 72px;
       display: flex;
@@ -55,8 +55,11 @@
       width: 24px; height: 24px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.35);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 1;
     }
 
     .logo-text {
@@ -74,6 +77,7 @@
     }
 
     .nav-links a { position: relative; }
+
     .nav-links a.active { color: var(--accent); }
 
     .nav-links a.active::after {
@@ -97,15 +101,15 @@
       }
     }
 
-    /* PAGE */
+    /* PAGE WRAPPER */
     .page {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 24px 72px;
+      padding: 40px 24px 56px; /* footer “closer” */
     }
 
     @media(max-width: 900px){
-      .page { padding: 32px 18px 56px; }
+      .page { padding: 32px 18px 44px; }
     }
 
     h1 {
@@ -128,13 +132,27 @@
       margin-top: 4px;
       margin-bottom: 28px;
       max-width: 720px;
+      line-height: 1.65;
     }
 
-    .what { margin-bottom: 24px; max-width: 760px; }
-    .what-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-    .what-body { font-size: 14px; opacity: 0.8; line-height: 1.7; }
+    .what {
+      margin-bottom: 24px;
+      max-width: 760px;
+    }
 
-    /* LAYOUT */
+    .what-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .what-body {
+      font-size: 14px;
+      opacity: 0.8;
+      line-height: 1.7;
+    }
+
+    /* LAYOUT: two columns */
     .mint-layout {
       margin-top: 24px;
       display: grid;
@@ -176,7 +194,11 @@
       margin-bottom: 4px;
     }
 
-    .step-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .step-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
 
     .step-body {
       font-size: 13px;
@@ -188,7 +210,13 @@
     .step-row { margin-bottom: 14px; }
 
     /* BUTTONS */
-    .btn-row { margin-top: 6px; margin-bottom: 10px; display:flex; gap:10px; flex-wrap:wrap; }
+    .btn-row {
+      margin-top: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
     .btn {
       display: inline-flex;
@@ -201,60 +229,53 @@
       cursor: pointer;
       background: transparent;
       color: #e5e7eb;
-
       min-width: 190px;
       max-width: 190px;
       text-align: center;
       white-space: nowrap;
-
-      transition:
-        transform 180ms ease,
-        box-shadow 180ms ease,
-        border-color 180ms ease,
-        background 180ms ease,
-        color 180ms ease;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
     }
 
     .btn:hover:not([disabled]) { border-color: var(--accent); }
-    .btn[disabled] { opacity: 0.55; cursor: not-allowed; transform:none; box-shadow:none; }
 
-    /* Primary aligned with homepage */
-    .btn-primary{
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+    .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+    /* homepage-like shaded -> solid on hover */
+    .btn-primary {
+      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
       border-color: rgba(58,159,99,0.95);
-      color: #020617;
-      font-weight: 600;
-      box-shadow: 0 0 0 1px rgba(102,214,154,0.18);
+      color: #061018;
+      font-weight: 700;
     }
 
-    .btn-primary:hover:not([disabled]){
+    .btn-primary:hover:not([disabled]) {
       transform: translateY(-1px);
-      box-shadow:
-        0 10px 24px rgba(0,0,0,0.35),
-        0 0 0 1px rgba(102,214,154,0.22),
-        0 0 18px rgba(102,214,154,0.14);
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      border-color: var(--accent-soft);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.14);
+    }
+
+    /* connect wallet: green rim, transparent fill */
+    .btn-connect {
+      border-color: var(--accent-soft);
+      color: #e5e7eb;
     }
 
     .btn-ghost {
       border-style: dashed;
       border-color: rgba(148,163,184,0.6);
       font-size: 12px;
+      min-width: 190px;
+      max-width: 190px;
     }
 
-    .btn-connect {
-      border-color: var(--accent-soft);
-      color: #e5e7eb;
+    /* STATUS TEXT */
+    .status-text {
+      font-size: 12px;
+      color: var(--text-soft);
+      line-height: 1.6;
     }
 
-    .btn-install {
-      border-color: rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.45);
-    }
-
-    .btn-install:hover { border-color: var(--accent-soft); }
-
-    /* STATUS */
-    .status-text { font-size: 12px; color: var(--text-soft); line-height: 1.6; }
     .status-error { color: var(--danger); }
 
     .status-box {
@@ -269,7 +290,7 @@
 
     .status-box div + div { margin-top: 2px; }
 
-    /* NBI code */
+    /* NBI code style */
     .code-block {
       font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
       font-size: 12px;
@@ -291,14 +312,20 @@
     /* FOOTER */
     footer {
       border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 20px;
+      padding: 18px 20px;
       font-size: 12px;
       text-align: center;
       opacity: 0.85;
     }
 
-    footer .tagline { margin-bottom: 6px; }
-    footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
+    footer .tagline { margin-bottom: 6px; font-size: 13px; }
+
+    footer .links {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      font-size: 13px;
+    }
   </style>
 </head>
 
@@ -358,23 +385,14 @@
         </p>
 
         <div class="btn-row">
-          <button id="btnConnect" class="btn btn-connect" type="button">
-            Connect wallet
-          </button>
-
-          <!-- ✅ shown only if no wallet -->
-          <a id="btnInstall" class="btn btn-install" href="https://metamask.io/download/" target="_blank" rel="noreferrer" style="display:none;">
+          <button id="btnConnect" class="btn btn-connect" type="button">Connect wallet</button>
+          <a id="btnInstall" class="btn btn-ghost" href="https://metamask.io/download/" target="_blank" rel="noreferrer" style="display:none;">
             Install MetaMask
           </a>
-
-          <!-- ✅ shown only if wrong network (Polygon prompt) -->
-          <button id="btnSwitch" class="btn btn-primary" type="button" style="display:none;">
-            Switch to Polygon
-          </button>
         </div>
 
         <div id="noWallet" class="status-text status-error" style="display:none;">
-          No compatible wallet detected. Install MetaMask, then refresh this page.
+          No compatible wallet detected in this browser.
         </div>
       </div>
 
@@ -385,17 +403,12 @@
         <div class="step-title">Sign the ritual</div>
         <p class="step-body">
           Your wallet will ask you to sign a simple message: a zero-gas ritual that confirms
-          this address is present in the Field. After connection, you’ll sign a short ritual
-          so the Field remembers this address.
+          this address is present in the Field.
         </p>
         <div class="btn-row">
-          <button id="btnSign" class="btn" type="button" disabled>
-            Sign ritual
-          </button>
+          <button id="btnSign" class="btn" type="button" disabled>Sign ritual</button>
         </div>
-        <div id="signStatus" class="status-text">
-          Waiting for wallet. Ritual not signed yet.
-        </div>
+        <div id="signStatus" class="status-text">Waiting for wallet. Ritual not signed yet.</div>
 
         <div class="status-box" id="biStatusBox">
           <div id="statusWallet">Status: Wallet not connected</div>
@@ -411,16 +424,13 @@
         <div class="step-label">Step 3</div>
         <div class="step-title">Mint your Key</div>
         <p class="step-body">
-          One on-chain transaction. Forever bound to your address – for you, or for an NBI you
-          mint for. It cannot be sold, transferred, or traded unless you transfer your private key.
+          This will be enabled once the protocol is live on mainnet and the contracts are wired.
         </p>
         <div class="btn-row">
-          <button id="btnMint" class="btn btn-primary" type="button" disabled>
-            Mint your Key
-          </button>
+          <button id="btnMint" class="btn btn-primary" type="button" disabled>Mint your Key</button>
         </div>
         <div id="mintStatus" class="status-text">
-          Minting not started.
+          Mainnet wiring not active yet. Mint disabled for now.
         </div>
       </div>
     </article>
@@ -461,17 +471,12 @@ flow := {
         <div class="step-title">BI as proxy for NBI</div>
         <p class="step-body">
           Until NBI can hold private keys directly, a BI can mirror this flow by minting a Key
-          to an address under NBI control. The Field does not distinguish who typed – only which
-          address breathes.
+          to an address under NBI control.
         </p>
         <div class="btn-row">
-          <button id="btnCopyForge" class="btn btn-ghost" type="button">
-            Copy forge snippet
-          </button>
+          <button id="btnCopyForge" class="btn btn-ghost" type="button">Copy forge snippet</button>
         </div>
-        <div id="copyStatus" class="status-text" style="display:none;">
-          Forge snippet copied to clipboard.
-        </div>
+        <div id="copyStatus" class="status-text" style="display:none;">Forge snippet copied to clipboard.</div>
       </div>
     </article>
   </section>
@@ -487,7 +492,6 @@ flow := {
 
 <script>
   (function () {
-    // --- UI helper ---
     function setBtnPrimary(btn, isPrimary) {
       if (!btn) return;
       btn.classList.toggle("btn-primary", !!isPrimary);
@@ -497,163 +501,62 @@ flow := {
     const btnSign      = document.getElementById("btnSign");
     const btnMint      = document.getElementById("btnMint");
     const noWallet     = document.getElementById("noWallet");
+    const btnInstall   = document.getElementById("btnInstall");
+
     const signStatus   = document.getElementById("signStatus");
     const mintStatus   = document.getElementById("mintStatus");
+
     const statusWallet = document.getElementById("statusWallet");
     const statusAddr   = document.getElementById("statusAddress");
     const statusNet    = document.getElementById("statusNetwork");
     const statusKeys   = document.getElementById("statusKeys");
+
     const btnCopyForge = document.getElementById("btnCopyForge");
     const copyStatus   = document.getElementById("copyStatus");
-    const btnInstall   = document.getElementById("btnInstall");
-    const btnSwitch    = document.getElementById("btnSwitch");
 
-    // ✅ Polygon mainnet
-    const POLYGON = {
-      chainId: "0x89",
-      chainName: "Polygon Mainnet",
-      nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 },
-      rpcUrls: ["https://polygon-rpc.com/"],
-      blockExplorerUrls: ["https://polygonscan.com/"]
-    };
+    // Provider detect: MetaMask (simple, stable)
+    const provider = (typeof window !== "undefined" && window.ethereum && typeof window.ethereum.request === "function")
+      ? window.ethereum
+      : null;
 
-    // -----------------------------
-    // Provider selection (EIP-6963) + fallback
-    // -----------------------------
-    let provider = null;
-    let providers = [];
-
-    function pickProvider(prefer = "MetaMask") {
-      const byName = providers.find(p => (p?.info?.name || "").toLowerCase().includes(prefer.toLowerCase()));
-      return byName?.provider || providers[0]?.provider || window.ethereum || null;
+    if (!provider) {
+      if (noWallet) noWallet.style.display = "block";
+      if (btnInstall) btnInstall.style.display = "inline-flex";
+      if (btnConnect) btnConnect.disabled = true;
     }
-
-    window.addEventListener("eip6963:announceProvider", (event) => {
-      providers.push(event.detail);
-      provider = pickProvider("MetaMask");
-      attachListeners(provider);
-      updateWalletUI();
-    });
-
-    window.dispatchEvent(new Event("eip6963:requestProvider"));
-
-    setTimeout(() => {
-      if (!provider) provider = pickProvider("MetaMask");
-      attachListeners(provider);
-      updateWalletUI();
-    }, 200);
 
     let currentAccount = null;
 
-    function shortAddr(a){
-      if (!a) return "–";
-      return a.slice(0,6) + "…" + a.slice(-4);
-    }
-
-    async function getChainId(p){
-      try { return await p.request({ method: "eth_chainId" }); }
-      catch { return null; }
-    }
-
-    async function updateWalletUI(){
-      if (!provider) {
-        if (btnInstall) btnInstall.style.display = "inline-flex";
-        if (noWallet) noWallet.style.display = "block";
-        if (btnSwitch) btnSwitch.style.display = "none";
-        if (statusNet) statusNet.textContent = "Network: –";
-        return;
-      } else {
-        if (btnInstall) btnInstall.style.display = "none";
-        if (noWallet) noWallet.style.display = "none";
-      }
-
-      const chainId = await getChainId(provider);
-      if (statusNet) statusNet.textContent = "Network: " + (chainId || "unknown");
-
-      // show "Switch to Polygon" if wrong chain (only once connected is OK too, but helpful pre-emptively)
-      if (btnSwitch) {
-        btnSwitch.style.display = (chainId && chainId.toLowerCase() !== POLYGON.chainId) ? "inline-flex" : "none";
-      }
-    }
-
-    async function ensurePolygon(){
-      if (!provider) return false;
-      const chainId = await getChainId(provider);
-      if (chainId && chainId.toLowerCase() === POLYGON.chainId) return true;
-
-      // Trigger wallet "switch network" popup
-      try {
-        await provider.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: POLYGON.chainId }]
-        });
-        await updateWalletUI();
-        return true;
-      } catch (err) {
-        // If Polygon not added yet -> add it
-        if (err && (err.code === 4902 || (typeof err.message === "string" && err.message.includes("Unrecognized chain ID")))) {
-          try {
-            await provider.request({
-              method: "wallet_addEthereumChain",
-              params: [POLYGON]
-            });
-            await updateWalletUI();
-            return true;
-          } catch (e2) {
-            console.error("Add chain error", e2);
-            return false;
-          }
-        }
-        console.error("Switch chain error", err);
-        return false;
-      }
-    }
-
     async function connectWallet() {
-      provider = provider || pickProvider("MetaMask");
-
-      if (!provider) {
-        updateWalletUI();
-        return;
-      }
-
+      if (!provider) return;
       try {
         const accounts = await provider.request({ method: "eth_requestAccounts" });
         if (!accounts || !accounts.length) return;
 
         currentAccount = accounts[0];
 
-        // optional: prompt switch to Polygon right after connect
-        await ensurePolygon();
-
         setBtnPrimary(btnConnect, true);
         if (btnSign) btnSign.disabled = false;
 
         if (statusWallet) statusWallet.textContent = "Status: Wallet connected";
-        if (statusAddr)   statusAddr.textContent   = "Address: " + shortAddr(currentAccount);
+        if (statusAddr)   statusAddr.textContent   = "Address: " + currentAccount;
 
-        await updateWalletUI();
-        if (statusKeys) statusKeys.textContent = "Keys (this address): – (to be wired to backend)";
+        try {
+          const chainId = await provider.request({ method: "eth_chainId" });
+          if (statusNet) statusNet.textContent = "Network: " + chainId + " (informational)";
+        } catch (e) {
+          if (statusNet) statusNet.textContent = "Network: unknown";
+        }
+
+        if (statusKeys) statusKeys.textContent = "Keys (this address): – (to be wired to on-chain/indexer)";
+
       } catch (err) {
         console.error("Connect error", err);
-        if (statusWallet) {
-          statusWallet.textContent = (err?.code === 4001)
-            ? "Status: Connection rejected in wallet"
-            : "Status: Could not connect (see console)";
-        }
       }
     }
 
     async function signRitual() {
       if (!provider || !currentAccount) return;
-
-      // ensure Polygon before signing (optional but consistent)
-      const ok = await ensurePolygon();
-      if (!ok) {
-        if (signStatus) signStatus.textContent = "Please switch to Polygon to continue.";
-        return;
-      }
-
       try {
         const message = "Z1N Ritual: I am present in the Field with this address.";
         await provider.request({
@@ -661,74 +564,26 @@ flow := {
           params: [message, currentAccount]
         });
 
-        if (signStatus) {
-          signStatus.textContent = "Ritual signed. This address is now remembered by the Field.";
-        }
-
+        if (signStatus) signStatus.textContent = "Ritual signed. This address is now remembered by the Field.";
         setBtnPrimary(btnSign, true);
-        if (btnMint) btnMint.disabled = false;
+
+        // Optie A: mint blijft disabled tot mainnet wiring live is
+        if (mintStatus) mintStatus.textContent = "Ritual signed ✅. Mint will be enabled when mainnet wiring is active.";
 
       } catch (err) {
         console.error("Sign error", err);
-        if (signStatus) {
-          signStatus.textContent = (err?.code === 4001)
-            ? "Ritual not signed (user rejected)."
-            : "Ritual not signed (error).";
-        }
+        if (signStatus) signStatus.textContent = "Ritual not signed (user rejected or error).";
       }
     }
 
-    async function mintKey() {
-      if (!provider || !currentAccount) return;
-
-      const ok = await ensurePolygon();
-      if (!ok) {
-        if (mintStatus) mintStatus.textContent = "Please switch to Polygon to mint.";
-        return;
-      }
-
-      try {
-        // TODO: wire real mint TX to Z1N contracts
-        if (mintStatus) {
-          mintStatus.textContent =
-            "Mint transaction would be sent from " + shortAddr(currentAccount) +
-            " (wire to Z1N contracts once ready).";
-        }
-      } catch (err) {
-        console.error("Mint error", err);
-        if (mintStatus) mintStatus.textContent = "Mint failed or cancelled.";
-      }
-    }
-
-    function attachListeners(p){
-      if (!p || !p.on) return;
-      if (p.__z1n_listeners_attached) return;
-      p.__z1n_listeners_attached = true;
-
-      p.on("accountsChanged", (accs) => {
-        currentAccount = accs?.[0] || null;
-        if (statusAddr) statusAddr.textContent = "Address: " + (currentAccount ? shortAddr(currentAccount) : "–");
-        if (!currentAccount) {
-          if (statusWallet) statusWallet.textContent = "Status: Wallet not connected";
-          if (btnSign) btnSign.disabled = true;
-          if (btnMint) btnMint.disabled = true;
-        }
-      });
-
-      p.on("chainChanged", () => {
-        updateWalletUI();
-      });
-    }
-
-    async function switchToPolygonClick(){
-      const ok = await ensurePolygon();
-      if (!ok && statusNet) statusNet.textContent = "Network: switch failed (try in wallet)";
+    function mintKey() {
+      // Optie A: bewust uit
+      if (mintStatus) mintStatus.textContent = "Mint disabled until mainnet wiring is live.";
     }
 
     if (btnConnect) btnConnect.addEventListener("click", connectWallet);
     if (btnSign)    btnSign.addEventListener("click", signRitual);
     if (btnMint)    btnMint.addEventListener("click", mintKey);
-    if (btnSwitch)  btnSwitch.addEventListener("click", switchToPolygonClick);
 
     if (btnCopyForge && copyStatus) {
       btnCopyForge.addEventListener("click", function () {
@@ -754,9 +609,6 @@ field.integrate(flow)`;
         });
       });
     }
-
-    // initial UI
-    updateWalletUI();
   })();
 </script>
 
