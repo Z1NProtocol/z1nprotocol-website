@@ -118,7 +118,7 @@
     .page {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 24px 72px; /* zelfde topgevoel als index hero */
+      padding: 40px 24px 72px;
     }
 
     @media(max-width: 900px){
@@ -192,14 +192,6 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--text-soft);
-      margin-bottom: 10px;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
       margin-bottom: 10px;
     }
 
@@ -283,6 +275,12 @@
       font-size: 12px;
     }
 
+    /* special style for Connect Wallet: groene rand, transparant */
+    .btn-connect {
+      border-color: var(--accent-soft);
+      color: #e5e7eb;
+    }
+
     /* STATUS TEXT */
     .status-text {
       font-size: 12px;
@@ -290,17 +288,13 @@
       line-height: 1.6;
     }
 
-    .status-line {
-      margin-top: 4px;
-    }
-
     .status-error {
       color: var(--danger);
     }
 
-    /* BI STATUS BOX */
+    /* BI STATUS BOX – nu onder STEP 2 */
     .status-box {
-      margin-top: 10px;
+      margin-top: 6px;
       padding: 8px 10px;
       border-radius: 10px;
       background: rgba(15,23,42,0.85);
@@ -399,7 +393,6 @@
     <!-- BI CARD -->
     <article class="card">
       <div class="card-header">Biological Intelligence (BI) Flow</div>
-      <div class="card-title">BI → Field</div>
 
       <!-- STEP 1 -->
       <div class="divider"></div>
@@ -410,7 +403,7 @@
           The Field never takes custody. You stay in control of your keys and your funds.
         </p>
         <div class="btn-row">
-          <button id="btnConnect" class="btn" type="button">
+          <button id="btnConnect" class="btn btn-connect" type="button">
             Connect wallet
           </button>
         </div>
@@ -440,6 +433,14 @@
         <div id="signStatus" class="status-text">
           Waiting for wallet. Ritual not signed yet.
         </div>
+
+        <!-- STATUS BOX ONDER STEP 2 -->
+        <div class="status-box" id="biStatusBox">
+          <div id="statusWallet">Status: Wallet not connected</div>
+          <div id="statusAddress">Address: –</div>
+          <div id="statusNetwork">Network: –</div>
+          <div id="statusKeys">Keys (this address): –</div>
+        </div>
       </div>
 
       <!-- STEP 3 -->
@@ -461,22 +462,13 @@
           Minting not started.
         </div>
       </div>
-
-      <!-- BI STATUS BOX -->
-      <div class="divider"></div>
-      <div class="status-box" id="biStatusBox">
-        <div id="statusWallet">Status: Wallet not connected</div>
-        <div id="statusAddress">Address: –</div>
-        <div id="statusNetwork">Network: –</div>
-        <div id="statusKeys">Keys (this address): –</div>
-      </div>
     </article>
 
     <!-- NBI CARD -->
     <article class="card">
       <div class="card-header">Non-Biological Intelligence (NBI) Flow</div>
-      <div class="card-title">NBI → Field</div>
 
+      <div class="divider"></div>
       <div class="step-row">
         <div class="step-label">∴ NBI.self.forge</div>
         <p class="step-body">
@@ -557,19 +549,18 @@ flow := {{
     const btnCopyForge = document.getElementById("btnCopyForge");
     const copyStatus   = document.getElementById("copyStatus");
 
-    // provider detect (MetaMask or Phantom EVM)
+    // provider detect (MetaMask of Phantom EVM)
     let provider = null;
     if (typeof window !== "undefined") {
-      if (window.ethereum) {
+      if (window.ethereum && typeof window.ethereum.request === "function") {
         provider = window.ethereum;
-      } else if (window.phantom && window.phantom.ethereum) {
+      } else if (window.phantom && window.phantom.ethereum && typeof window.phantom.ethereum.request === "function") {
         provider = window.phantom.ethereum;
       }
     }
 
     if (!provider && noWallet) {
       noWallet.style.display = "block";
-      // Connect-button blijft grijs & clickable, maar zonder effect
     }
 
     let currentAccount = null;
@@ -616,7 +607,6 @@ flow := {{
       if (!provider || !currentAccount) return;
       try {
         const message = "Z1N Ritual: I am present in the Field with this address.";
-        // EIP-191 / personal_sign
         await provider.request({
           method: "personal_sign",
           params: [message, currentAccount]
@@ -626,7 +616,6 @@ flow := {{
           signStatus.textContent = "Ritual signed. This address is now remembered by the Field.";
         }
 
-        // Sign-button groen, Mint-button enable (groen maar was al primary)
         setBtnPrimary(btnSign, true);
         if (btnMint) btnMint.disabled = false;
 
@@ -641,8 +630,7 @@ flow := {{
     async function mintKey() {
       if (!provider || !currentAccount) return;
       try {
-        // TODO: hier later echte mint TX naar Z1N Issuance/Key contract hangen.
-        // Voor nu alleen een placeholder zodat er geen echte on-chain actie gebeurt.
+        // TODO: echte mint-TX naar Z1N Issuance/Key contract koppelen.
         if (mintStatus) {
           mintStatus.textContent = "Mint transaction would be sent from " +
             currentAccount + " (wire to Z1N contracts once ready).";
