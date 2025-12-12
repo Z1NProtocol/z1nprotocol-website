@@ -19,6 +19,12 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ✅ IMPORTANT: keep layout perfectly aligned vs pages with scrollbars */
+    html {
+      scrollbar-gutter: stable; /* modern browsers */
+      overflow-y: scroll;       /* fallback */
+    }
+
     body {
       background: var(--bg);
       color: var(--text-main);
@@ -41,8 +47,8 @@
     .nav-inner {
       width: 100%;
       max-width: 1200px;
-      margin: 0 auto;      /* ✅ force same centering as page */
-      padding: 0 24px;     /* ✅ same left edge as page */
+      margin: 0 auto;
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -217,7 +223,6 @@
 </head>
 
 <body>
-
 <header>
   <div class="nav-inner">
     <div class="logo-wrap">
@@ -277,6 +282,5 @@
     <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
 </footer>
-
 </body>
 </html>
