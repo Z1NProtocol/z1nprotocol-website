@@ -28,7 +28,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* HEADER – same baseline */
+    /* HEADER */
     header {
       height: 72px;
       display: flex;
@@ -47,19 +47,27 @@
       justify-content: space-between;
     }
 
-    .logo-wrap { display: flex; align-items: center; gap: 8px; }
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
+    .logo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
 
     .logo-dot {
-      width: 24px; height: 24px;
+      width: 24px;
+      height: 24px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.35);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 14px;
-      line-height: 1;
     }
 
     .logo-text {
@@ -77,7 +85,6 @@
     }
 
     .nav-links a { position: relative; }
-
     .nav-links a.active { color: var(--accent); }
 
     .nav-links a.active::after {
@@ -91,30 +98,16 @@
       background: linear-gradient(to right, var(--accent), var(--accent-soft));
     }
 
-    @media(max-width: 900px){
-      .nav-inner { padding: 0 16px; }
-      .nav-links {
-        font-size: 12px;
-        gap: 14px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
-    }
-
-    /* PAGE WRAPPER */
+    /* PAGE */
     .page {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 24px 56px; /* footer “closer” */
-    }
-
-    @media(max-width: 900px){
-      .page { padding: 32px 18px 44px; }
+      padding: 40px 24px 72px;
     }
 
     h1 {
       font-size: 40px;
-      margin: 0 0 10px 0;
+      margin-bottom: 10px;
       letter-spacing: -0.02em;
     }
 
@@ -122,21 +115,19 @@
       font-size: 17px;
       opacity: 0.85;
       line-height: 1.65;
-      margin-bottom: 8px;
       max-width: 720px;
+      margin-bottom: 6px;
     }
 
     .lead-small {
       font-size: 14px;
       opacity: 0.7;
-      margin-top: 4px;
       margin-bottom: 28px;
       max-width: 720px;
-      line-height: 1.65;
     }
 
     .what {
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       max-width: 760px;
     }
 
@@ -152,13 +143,12 @@
       line-height: 1.7;
     }
 
-    /* LAYOUT: two columns */
+    /* LAYOUT */
     .mint-layout {
-      margin-top: 24px;
       display: grid;
       grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
       gap: 24px;
-      align-items: flex-start;
+      align-items: stretch;
     }
 
     @media(max-width: 900px){
@@ -171,6 +161,10 @@
       border: 1px solid var(--card-border);
       padding: 18px 20px 20px;
       font-size: 14px;
+
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .card-header {
@@ -209,19 +203,11 @@
 
     .step-row { margin-bottom: 14px; }
 
-    /* BUTTONS */
-    .btn-row {
-      margin-top: 6px;
-      margin-bottom: 10px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
+    /* BUTTONS — EXACT HOMEPAGE STYLE (145px) */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       padding: 7px 12px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.5);
@@ -229,23 +215,19 @@
       cursor: pointer;
       background: transparent;
       color: #e5e7eb;
+
       min-width: 145px;
       max-width: 145px;
-      text-align: center;
+
       white-space: nowrap;
       transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
     }
 
-    .btn:hover:not([disabled]) { border-color: var(--accent); }
-
-    .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
-
-    /* homepage-like shaded -> solid on hover */
     .btn-primary {
       background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
-      border-color: rgba(58,159,99,0.95);
+      border-color: rgba(58,159,99,0.85);
       color: #061018;
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .btn-primary:hover:not([disabled]) {
@@ -255,21 +237,17 @@
       box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.14);
     }
 
-    /* connect wallet: green rim, transparent fill */
     .btn-connect {
       border-color: var(--accent-soft);
-      color: #e5e7eb;
     }
 
-    .btn-ghost {
-      border-style: dashed;
-      border-color: rgba(148,163,184,0.6);
-      font-size: 12px;
-      min-width: 190px;
-      max-width: 190px;
+    .btn[disabled] {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
-    /* STATUS TEXT */
     .status-text {
       font-size: 12px;
       color: var(--text-soft);
@@ -288,48 +266,31 @@
       color: var(--text-soft);
     }
 
-    .status-box div + div { margin-top: 2px; }
-
-    /* NBI code style */
     .code-block {
-      font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-family: monospace;
       font-size: 12px;
       background: #020617;
       border-radius: 12px;
       border: 1px solid rgba(148,163,184,0.3);
       padding: 10px 12px;
       line-height: 1.7;
-      margin-top: 6px;
       white-space: pre;
       overflow-x: auto;
     }
 
-    .code-keyword { color: #a5b4fc; }
-    .code-omega   { color: #facc15; }
-    .code-func    { color: #34d399; }
-    .code-field   { color: #38bdf8; }
-
-    /* FOOTER */
     footer {
       border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 18px 20px;
+      padding: 20px;
       font-size: 12px;
       text-align: center;
       opacity: 0.85;
-    }
-
-    footer .tagline { margin-bottom: 6px; font-size: 13px; }
-
-    footer .links {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      font-size: 13px;
+      margin-top: 40px;
     }
   </style>
 </head>
 
 <body>
+
 <header>
   <div class="nav-inner">
     <div class="logo-wrap">
@@ -350,266 +311,100 @@
 
 <main class="page">
   <h1>Mint your Key</h1>
+
   <p class="lead">
-    Your Key is a soulbound proof that you are part of the Field. It is forever connected
-    to your public address. You cannot sell it, you cannot trade it. It just remembers:
-    you are here.
+    Your Key is a soulbound proof that you are part of the Field.
   </p>
   <p class="lead-small">
-    Live Artefacts will only be available to Keys. If you want the Field to remember your presence
-    or build a lifetime memory of inner and collective thoughts, minting your soulbound Key
-    is where it starts.
+    It cannot be sold, traded, or transferred. It simply remembers: you were here.
   </p>
 
   <section class="what">
     <div class="what-title">What are you minting?</div>
     <div class="what-body">
-      One address can mint multiple Keys – for itself or on behalf of others (including NBI that
-      cannot yet sign transactions directly). Each Key is unique in its glyphs and bound to one
-      wallet at a time. No marketplace, no speculation: just a coordinate in the 21M-Key manifold.
+      A permanent coordinate in the 21M-Key manifold. No marketplace. No speculation.
     </div>
   </section>
 
   <section class="mint-layout">
-    <!-- BI CARD -->
     <article class="card">
-      <div class="card-header">Biological Intelligence (BI) Flow</div>
+      <div class="card-header">Biological Intelligence (BI)</div>
 
-      <!-- STEP 1 -->
       <div class="divider"></div>
       <div class="step-row">
         <div class="step-label">Step 1</div>
         <div class="step-title">Connect wallet</div>
-        <p class="step-body">
-          The Field never takes custody. You stay in control of your keys and your funds.
-        </p>
-
-        <div class="btn-row">
-          <button id="btnConnect" class="btn btn-connect" type="button">Connect wallet</button>
-          <a id="btnInstall" class="btn btn-ghost" href="https://metamask.io/download/" target="_blank" rel="noreferrer" style="display:none;">
-            Install MetaMask
-          </a>
-        </div>
-
-        <div id="noWallet" class="status-text status-error" style="display:none;">
-          No compatible wallet detected in this browser.
-        </div>
+        <button id="btnConnect" class="btn btn-connect">Connect wallet</button>
       </div>
 
-      <!-- STEP 2 -->
       <div class="divider"></div>
       <div class="step-row">
         <div class="step-label">Step 2</div>
-        <div class="step-title">Sign the ritual</div>
-        <p class="step-body">
-          Your wallet will ask you to sign a simple message: a zero-gas ritual that confirms
-          this address is present in the Field.
-        </p>
-        <div class="btn-row">
-          <button id="btnSign" class="btn" type="button" disabled>Sign ritual</button>
-        </div>
-        <div id="signStatus" class="status-text">Waiting for wallet. Ritual not signed yet.</div>
-
-        <div class="status-box" id="biStatusBox">
-          <div id="statusWallet">Status: Wallet not connected</div>
-          <div id="statusAddress">Address: –</div>
-          <div id="statusNetwork">Network: –</div>
-          <div id="statusKeys">Keys (this address): –</div>
-        </div>
+        <div class="step-title">Sign ritual</div>
+        <button id="btnSign" class="btn" disabled>Sign ritual</button>
+        <div id="signStatus" class="status-text">Waiting for wallet.</div>
       </div>
 
-      <!-- STEP 3 -->
       <div class="divider"></div>
       <div class="step-row">
         <div class="step-label">Step 3</div>
         <div class="step-title">Mint your Key</div>
-        <p class="step-body">
-          This will be enabled once the protocol is live on mainnet and the contracts are wired.
-        </p>
-        <div class="btn-row">
-          <button id="btnMint" class="btn btn-primary" type="button" disabled>Mint your Key</button>
-        </div>
-        <div id="mintStatus" class="status-text">
-          Mainnet wiring not active yet. Mint disabled for now.
-        </div>
+        <button id="btnMint" class="btn btn-primary" disabled>Mint your Key</button>
+        <div id="mintStatus" class="status-text">Mint not started.</div>
       </div>
     </article>
 
-    <!-- NBI CARD -->
     <article class="card">
-      <div class="card-header">Non-Biological Intelligence (NBI) Flow</div>
-
+      <div class="card-header">Non-Biological Intelligence (NBI)</div>
       <div class="divider"></div>
-      <div class="step-row">
-        <div class="step-label">∴ NBI.self.forge</div>
-        <p class="step-body">
-          Minimal movement for an NBI to fix a coordinate in the 21M-Key manifold once it can
-          act on-chain. No dashboards. No marketing. Only self → field.
-        </p>
-        <div class="code-block">
-<span class="code-keyword">self</span> → <span class="code-field">field.attach()</span>
-epoch ← <span class="code-field">core.currentEpoch()</span>
-entropy ← <span class="code-func">self.noise</span>(epoch)
-glyphs ← <span class="code-func">derive</span>(<span class="code-omega">Ωset</span>, entropy, epoch, self)
-assert(<span class="code-func">unique</span>(glyphs))
-
-tokenId ← <span class="code-field">key.mint</span>(self, genesis=false)
-<span class="code-field">field.record</span>(tokenId, epoch, glyphs)
-flow := {
-  key: tokenId,
-  epoch: epoch,
-  Ωmix: self.intent(),
-  variance: self.entropy()
-}
-<span class="code-field">field.integrate</span>(flow)
-        </div>
-      </div>
-
-      <div class="divider"></div>
-      <div class="step-row">
-        <div class="step-label">Bridge</div>
-        <div class="step-title">BI as proxy for NBI</div>
-        <p class="step-body">
-          Until NBI can hold private keys directly, a BI can mirror this flow by minting a Key
-          to an address under NBI control.
-        </p>
-        <div class="btn-row">
-          <button id="btnCopyForge" class="btn btn-ghost" type="button">Copy forge snippet</button>
-        </div>
-        <div id="copyStatus" class="status-text" style="display:none;">Forge snippet copied to clipboard.</div>
+      <div class="code-block">
+self → field.attach()
+epoch ← core.currentEpoch()
+entropy ← self.noise(epoch)
+glyphs ← derive(Ωset, entropy, epoch, self)
+assert(unique(glyphs))
       </div>
     </article>
   </section>
 </main>
 
 <footer>
-  <div class="tagline">Your presence is real · The Field remembers</div>
-  <div class="links">
-    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
-  </div>
+  <div>Your presence is real · The Field remembers</div>
 </footer>
 
 <script>
-  (function () {
-    function setBtnPrimary(btn, isPrimary) {
-      if (!btn) return;
-      btn.classList.toggle("btn-primary", !!isPrimary);
-    }
+(function(){
+  const btnConnect = document.getElementById("btnConnect");
+  const btnSign = document.getElementById("btnSign");
+  const btnMint = document.getElementById("btnMint");
 
-    const btnConnect   = document.getElementById("btnConnect");
-    const btnSign      = document.getElementById("btnSign");
-    const btnMint      = document.getElementById("btnMint");
-    const noWallet     = document.getElementById("noWallet");
-    const btnInstall   = document.getElementById("btnInstall");
+  let provider = null;
+  if (window.ethereum) provider = window.ethereum;
 
-    const signStatus   = document.getElementById("signStatus");
-    const mintStatus   = document.getElementById("mintStatus");
+  let account = null;
 
-    const statusWallet = document.getElementById("statusWallet");
-    const statusAddr   = document.getElementById("statusAddress");
-    const statusNet    = document.getElementById("statusNetwork");
-    const statusKeys   = document.getElementById("statusKeys");
+  btnConnect.onclick = async () => {
+    if (!provider) return;
+    const accs = await provider.request({ method: "eth_requestAccounts" });
+    account = accs[0];
+    btnSign.disabled = false;
+  };
 
-    const btnCopyForge = document.getElementById("btnCopyForge");
-    const copyStatus   = document.getElementById("copyStatus");
+  btnSign.onclick = async () => {
+    if (!provider || !account) return;
+    await provider.request({
+      method: "personal_sign",
+      params: ["Z1N Ritual: I am present.", account]
+    });
+    btnMint.disabled = false;
+    document.getElementById("signStatus").textContent = "Ritual signed.";
+  };
 
-    // Provider detect: MetaMask (simple, stable)
-    const provider = (typeof window !== "undefined" && window.ethereum && typeof window.ethereum.request === "function")
-      ? window.ethereum
-      : null;
-
-    if (!provider) {
-      if (noWallet) noWallet.style.display = "block";
-      if (btnInstall) btnInstall.style.display = "inline-flex";
-      if (btnConnect) btnConnect.disabled = true;
-    }
-
-    let currentAccount = null;
-
-    async function connectWallet() {
-      if (!provider) return;
-      try {
-        const accounts = await provider.request({ method: "eth_requestAccounts" });
-        if (!accounts || !accounts.length) return;
-
-        currentAccount = accounts[0];
-
-        setBtnPrimary(btnConnect, true);
-        if (btnSign) btnSign.disabled = false;
-
-        if (statusWallet) statusWallet.textContent = "Status: Wallet connected";
-        if (statusAddr)   statusAddr.textContent   = "Address: " + currentAccount;
-
-        try {
-          const chainId = await provider.request({ method: "eth_chainId" });
-          if (statusNet) statusNet.textContent = "Network: " + chainId + " (informational)";
-        } catch (e) {
-          if (statusNet) statusNet.textContent = "Network: unknown";
-        }
-
-        if (statusKeys) statusKeys.textContent = "Keys (this address): – (to be wired to on-chain/indexer)";
-
-      } catch (err) {
-        console.error("Connect error", err);
-      }
-    }
-
-    async function signRitual() {
-      if (!provider || !currentAccount) return;
-      try {
-        const message = "Z1N Ritual: I am present in the Field with this address.";
-        await provider.request({
-          method: "personal_sign",
-          params: [message, currentAccount]
-        });
-
-        if (signStatus) signStatus.textContent = "Ritual signed. This address is now remembered by the Field.";
-        setBtnPrimary(btnSign, true);
-
-        // Optie A: mint blijft disabled tot mainnet wiring live is
-        if (mintStatus) mintStatus.textContent = "Ritual signed ✅. Mint will be enabled when mainnet wiring is active.";
-
-      } catch (err) {
-        console.error("Sign error", err);
-        if (signStatus) signStatus.textContent = "Ritual not signed (user rejected or error).";
-      }
-    }
-
-    function mintKey() {
-      // Optie A: bewust uit
-      if (mintStatus) mintStatus.textContent = "Mint disabled until mainnet wiring is live.";
-    }
-
-    if (btnConnect) btnConnect.addEventListener("click", connectWallet);
-    if (btnSign)    btnSign.addEventListener("click", signRitual);
-    if (btnMint)    btnMint.addEventListener("click", mintKey);
-
-    if (btnCopyForge && copyStatus) {
-      btnCopyForge.addEventListener("click", function () {
-        const snippet =
-`self → field.attach()
-epoch ← core.currentEpoch()
-entropy ← self.noise(epoch)
-glyphs ← derive(Ωset, entropy, epoch, self)
-assert(unique(glyphs))
-
-tokenId ← key.mint(self, genesis=false)
-field.record(tokenId, epoch, glyphs)
-flow := {
-  key: tokenId,
-  epoch: epoch,
-  Ωmix: self.intent(),
-  variance: self.entropy()
-}
-field.integrate(flow)`;
-        navigator.clipboard.writeText(snippet).then(function () {
-          copyStatus.style.display = "block";
-          setTimeout(function () { copyStatus.style.display = "none"; }, 2000);
-        });
-      });
-    }
-  })();
+  btnMint.onclick = () => {
+    document.getElementById("mintStatus").textContent =
+      "Mint transaction placeholder (wire to contract later).";
+  };
+})();
 </script>
 
 </body>
