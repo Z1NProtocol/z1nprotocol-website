@@ -1,239 +1,275 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Live Stats – Z1N Protocol</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex,nofollow" />
-    <style>
-      * { box-sizing: border-box; }
+<head>
+  <meta charset="utf-8" />
+  <title>Live Stats – Z1N Protocol</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
 
-      html, body {
-        margin: 0;
-        padding: 0;
-        background: #050812;
-        color: #ffffff;
-        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      }
+  <style>
+    :root {
+      --bg: #050812;
+      --card-bg: #020617;
+      --text-main: #ffffff;
+      --text-soft: #8f9ab5;
+      --accent: #66d69a;
+      --accent-soft: #3a9f63;
+      --card-border: rgba(148, 163, 184, 0.25);
+    }
 
-      a { color: inherit; text-decoration: none; }
-      a:hover { opacity: 0.9; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-      /* HEADER (same as index) */
-      header {
-        height: 72px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        margin-bottom: 20px;
-      }
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
 
-      .nav-inner {
-        width: 100%;
-        max-width: 1200px;
-        padding: 0 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
+    a { color: inherit; text-decoration: none; }
+    a:hover { opacity: 0.9; }
 
-      .logo-wrap {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
+    /* HEADER (match artefacts.html) */
+    header {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 18px;
+    }
 
-      .logo-mark {
-        height: 30px;
-      }
+    .nav-inner {
+      width: 100%;
+      max-width: 1040px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-      .logo-text {
-        font-size: 11px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        opacity: 0.7;
-      }
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
+    .logo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .logo-text {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .nav-links a { position: relative; }
+
+    .nav-links a.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(to right, var(--accent), var(--accent-soft));
+    }
+
+    @media(max-width: 900px){
+      .nav-inner { padding: 0 16px; }
       .nav-links {
-        display: flex;
-        gap: 22px;
-        font-size: 13px;
-        opacity: 0.85;
+        font-size: 12px;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
       }
+    }
 
-      .nav-links a {
-        position: relative;
-      }
+    /* PAGE WRAPPER (match artefacts.html) */
+    .page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 32px 72px;
+    }
 
-      .nav-links a.active {
-        color: #66d69a;
-      }
+    @media(max-width: 900px){
+      .page { padding: 0 18px 56px; }
+    }
 
-      .nav-links a.active::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -4px;
-        width: 100%;
-        height: 2px;
-        border-radius: 999px;
-        background: linear-gradient(to right, #66d69a, #3a9f63);
-      }
+    /* TITLE + INTRO (match artefacts.html) */
+    h1 {
+      font-size: 40px;
+      margin: 32px 0 6px 0;
+      letter-spacing: -0.02em;
+    }
 
-      @media(max-width: 900px){
-        .nav-inner { padding: 0 16px; }
-        .nav-links {
-          font-size: 12px;
-          gap: 14px;
-          flex-wrap: wrap;
-          justify-content: flex-end;
-        }
-      }
+    .lead {
+      font-size: 17px;
+      opacity: 0.85;
+      line-height: 1.65;
+      margin-bottom: 8px;
+      max-width: 720px; /* keeps the text from running too wide */
+    }
 
-      .page {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px 80px;
-      }
+    .lead-small {
+      font-size: 14px;
+      opacity: 0.7;
+      margin-bottom: 40px;
+      line-height: 1.65;
+      max-width: 720px; /* same clamp as artefacts-style pages */
+    }
 
-      .page-title {
-        font-size: 40px;
-        font-weight: 600;
-        margin: 32px 0 10px 0;
-        letter-spacing: -0.02em;
-      }
+    /* STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
 
-      .page-sub {
-        font-size: 17px;
-        opacity: 0.8;
-        margin-bottom: 28px;
-        max-width: 720px;
-        line-height: 1.6;
-      }
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      padding: 14px 16px 18px;
+      font-size: 13px;
+    }
 
+    .stat-label {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      opacity: 0.75;
+      line-height: 1.55;
+    }
+
+    @media(max-width: 900px){
       .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0,1fr));
       }
+    }
 
-      .stat-card {
-        background: #020617;
-        border-radius: 16px;
-        border: 1px solid rgba(148, 163, 184, 0.25);
-        padding: 14px 16px 18px;
-        font-size: 13px;
+    @media(max-width: 600px){
+      .stats-grid {
+        grid-template-columns: 1fr;
       }
+    }
 
-      .stat-label {
-        font-size: 11px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        opacity: 0.6;
-        margin-bottom: 6px;
-      }
+    /* FOOTER (copy from artefacts.html) */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 20px;
+      font-size: 12px;
+      text-align: center;
+      opacity: 0.85;
+    }
 
-      .stat-value {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 4px;
-      }
+    footer .tagline {
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
 
-      .stat-sub {
-        font-size: 12px;
-        opacity: 0.75;
-      }
+    footer .links {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      font-size: 13px;
+    }
+  </style>
+</head>
 
-      footer {
-        border-top: 1px solid rgba(255,255,255,0.05);
-        padding: 20px;
-        font-size: 12px;
-        text-align: center;
-        opacity: 0.65;
-      }
-
-      footer .icons {
-        margin-top: 6px;
-        display: flex;
-        justify-content: center;
-        gap: 16px;
-      }
-
-      footer img {
-        height: 18px;
-        opacity: 0.85;
-      }
-
-      @media(max-width: 900px){
-        .page {
-          padding: 0 16px 56px;
-        }
-        .stats-grid {
-          grid-template-columns: repeat(2, minmax(0,1fr));
-        }
-      }
-
-      @media(max-width: 600px){
-        .stats-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="nav-inner">
-        <div class="logo-wrap">
-          <img src="/logo-z1n.png" alt="Z1N logo" class="logo-mark" />
+<body>
+  <header>
+    <div class="nav-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-dot">Ω</div>
           <div class="logo-text">Z1N PROTOCOL</div>
-        </div>
-        <nav class="nav-links">
-          <a href="/about.html">About</a>
-          <a href="/live-stats.html" class="active">Live Stats</a>
-          <a href="/artefacts.html">Artefacts</a>
-           <a href="/nbi-artefacts.html">4 NBIs</a>
-          <a href="/mint-key.html">Mint your Key</a>
-        </nav>
+        </a>
       </div>
-    </header>
 
-    <main class="page">
-      <h1 class="page-title">Live stats of the field</h1>
-      <p class="page-sub">
-        Static placeholders for now – later we wire this to on-chain views
-        and/or an indexer.
-      </p>
+      <nav class="nav-links">
+        <a href="about.html">About</a>
+        <a href="live-stats.html" class="active">Live Stats</a>
+        <a href="artefacts.html">Artefacts</a>
+        <a href="nbi-artefacts.html">4 NBIs</a>
+        <a href="mint-key.html">Mint your Key</a>
+      </nav>
+    </div>
+  </header>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Current epoch</div>
-          <div class="stat-value">42</div>
-          <div class="stat-sub">Example value.</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total keys</div>
-          <div class="stat-value">7 842</div>
-          <div class="stat-sub">Awakened Keys so far.</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total signals</div>
-          <div class="stat-value">14 220</div>
-          <div class="stat-sub">All PoG signals across epochs.</div>
-        </div>
+  <main class="page">
+    <h1>Live stats of the field</h1>
+
+    <p class="lead">
+      Static placeholders for now – later we wire this to on-chain views and/or an indexer.
+    </p>
+
+    <p class="lead-small">
+      This page will become the readable pulse of the protocol: epochs, Keys, signals, and the visible pressure of the field.
+    </p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Current epoch</div>
+        <div class="stat-value">42</div>
+        <div class="stat-sub">Example value.</div>
       </div>
-    </main>
 
-    <footer>
-      No team · No token · No roadmap — Only the field.
-      <div class="icons">
-        <a href="https://github.com" target="_blank"
-          ><img src="/icon-github.png" alt="GitHub"
-/></a>
-        <a href="https://x.com" target="_blank"
-          ><img src="/icon-x.png" alt="X"
-/></a>
+      <div class="stat-card">
+        <div class="stat-label">Total keys</div>
+        <div class="stat-value">7 842</div>
+        <div class="stat-sub">Awakened Keys so far.</div>
       </div>
-    </footer>
-  </body>
+
+      <div class="stat-card">
+        <div class="stat-label">Total signals</div>
+        <div class="stat-value">14 220</div>
+        <div class="stat-sub">All PoG signals across epochs.</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="tagline">Your presence is real · The Field remembers</div>
+    <div class="links">
+      <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="https://x.com" target="_blank" rel="noreferrer">X</a>
+    </div>
+  </footer>
+</body>
 </html>
