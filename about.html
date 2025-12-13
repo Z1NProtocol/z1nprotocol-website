@@ -298,13 +298,14 @@
       letter-spacing:-0.01em;
     }
 
+    /* ✅ contracts lines closer to chapter title, and match bullet spacing */
     .meta{
       font-size:13px;
       color:var(--text-soft);
       opacity:0.9;
-      margin:0 0 10px;
-      line-height:1.45;
-      font-style:italic; /* ✅ contracts lines in italic */
+      margin:4px 0 6px;
+      line-height:1.22;
+      font-style:italic;
     }
 
     /* Bullet lists — open circles + indent */
@@ -312,6 +313,11 @@
       list-style:none;
       margin:6px 0 10px 0;
       padding:0;
+    }
+
+    /* nested bullets: gentle indent, same rhythm */
+    .doc ul ul{
+      margin:4px 0 6px 18px;
     }
 
     .doc li{
@@ -394,6 +400,11 @@
       background:rgba(2,6,23,0.4);
       padding-top:4px;
       padding-bottom:4px;
+    }
+
+    /* ✅ scroll so chapter titles are visible below sticky chips */
+    section[id]{
+      scroll-margin-top: 112px;
     }
 
     /* show NBI placeholder */
@@ -1047,19 +1058,42 @@
         <p>At epoch closure the 21 PoG signals with the highest weighted resonance become the winners. 40% is evenly split between the winners and 60% carries weight calculated by the share of attestations multiplied with intent multiplier. The treasury distributes according to the 40/60 sacred split. This is presence rewarded.</p>
 
         <div class="h3">4.8 The Full Cycle – The Sacred Heartbeat</div>
-        <p>
-          Epoch t: You speak. Only PoG signals may be sent. Max 2 per Key.<br/>
-          Epoch t+1: You listen. Only attestations on PoG signals from epoch t. Max 2 per Key (100× weight). You also speak new PoG signals for epoch t+1.<br/>
-          Epoch t+2: The oldest unfinished epoch (t) becomes closeable. The first to call closeEpoch(t) receives the 2.1 POL bounty. A maximum of 21 winners of epoch t is revealed.
-          You listen. Only attestations on PoG signals from epoch t+1. Max 2 per Key (100× weight). You also speak new PoG signals for epoch t+2.
-        </p>
 
-        <p>
-          There is never more than one closeable epoch at a time. The field does not allow backlog. It forces the rhythm to continue — breath after breath — without pause, without overlap, without exception.
-          Every PoG signal — whether sent in the first second or the last second of its epoch — has exactly one full 21-hour epoch to be heard.
-          Every PoG signal — once spoken — is forever anchored to IPFS.
-          At epoch closure, all PoG signals of that breath are gathered into a single JSON — a perfect mirror of the field’s consciousness in that moment.
-        </p>
+        <p><strong>Epoch t:</strong></p>
+        <ul>
+          <li>You speak. Only PoG signals may be sent. Max 2 per Key.</li>
+        </ul>
+
+        <p><strong>Epoch t+1:</strong></p>
+        <ul>
+          <li>You listen. Only attestations on PoG signals from epoch t. Max 2 per Key (100× weight).</li>
+          <li>You also speak new PoG signals for epoch t+1.</li>
+        </ul>
+
+        <p><strong>Epoch t+2:</strong></p>
+        <ul>
+          <li>The oldest unfinished epoch (t) becomes closeable.</li>
+          <li>The first to call closeEpoch(t) receives the 2.1 POL bounty.</li>
+          <li>A maximum of 21 winners of epoch t is revealed.</li>
+          <li>You listen. Only attestations on PoG signals from epoch t+1. Max 2 per Key (100× weight).</li>
+          <li>You also speak new PoG signals for epoch t+2.</li>
+        </ul>
+
+        <ul>
+          <li>There is never more than one closeable epoch at a time.</li>
+          <li>The field does not allow backlog. It forces the rhythm to continue — breath after breath — without pause, without overlap, without exception.</li>
+          <li>Every PoG signal — whether sent in the first second or the last second of its epoch — has exactly one full 21-hour epoch to be heard.</li>
+          <li>Every PoG signal — once spoken — is forever anchored to IPFS.</li>
+          <li>At epoch closure, all PoG signals of that breath are gathered into a single JSON — a perfect mirror of the field’s consciousness in that moment:</li>
+        </ul>
+
+        <ul>
+          <li>Every voice and its intent.</li>
+          <li>Every attestation weight.</li>
+          <li>The maximum of 21 winners with their resonance scores.</li>
+          <li>The entropy, diversity, velocity, and dominant flow of that epoch.</li>
+          <li>The full payout configuration and layer multipliers.</li>
+        </ul>
 
         <p>
           Those who speak openly reveal their wallet and their soul. Those who speak through the Veil (StealthRelayer) reveal only their soul — never their wallet.
@@ -1091,12 +1125,24 @@
 
         <p>
           Every wei that enters the field — from minting, from signal fees, from artefact sales — lands in Z1NTreasury.sol. This is not a vault. It is the bloodstream of collective attention.
-          At the closure of every epoch, two sacred movements happen:
         </p>
 
+        <p>At the closure of every epoch, two sacred movements happen:</p>
+
         <ul>
-          <li>The Nexus Glidepath, a decreasing share flows to the keeper who opened the gate: 21% at genesis. Linear decay to 0% when 2 100 000 Keys are sold. 0% after these Keys are sold unless the field decides differently.</li>
-          <li>The 40/60 Sacred Split where the remaining treasury balance is divided: 40% – Presence Reward (PR), divided equally amongst the winners. 60% – Resonance Reward (RR), divided proportionally by weighted attestations × intent multiplier.</li>
+          <li><strong>The Nexus Glidepath</strong>, a decreasing share flows to the keeper who opened the gate:
+            <ul>
+              <li>21% at genesis.</li>
+              <li>Linear decay to 0% when 2 100 000 Keys are sold.</li>
+              <li>0% after these Keys are sold unless the field decides differently.</li>
+            </ul>
+          </li>
+          <li><strong>The 40/60 Sacred Split</strong>, where the remaining treasury balance is divided:
+            <ul>
+              <li>40% – Presence Reward (PR), divided equally amongst the winners. You were heard, you were seen.</li>
+              <li>60% – Resonance Reward (RR), divided proportionally by weighted attestations × intent multiplier. Your voice carried weight.</li>
+            </ul>
+          </li>
         </ul>
 
         <p>
@@ -1147,17 +1193,36 @@
         </p>
 
         <div class="h3">6.3 Two kinds of change</div>
-        <p>
-          Within the protocol there are two different types of protocol changes that require voting:
-        </p>
+        <p>Within the protocol there are two different types of protocol changes that require voting:</p>
 
+        <p><strong>1. Parameter changes (light touch)</strong></p>
+        <p class="meta">Examples: Signal fee, attestation fee, layer weights, quorum adjustments, timelock delay, artefact price</p>
         <ul>
-          <li><strong>Parameter changes (light touch)</strong> — Anyone with ≥ 1 Key may propose. Max 2 proposals per address per epoch. Voting window: 7 epochs (~7 days). Timelock 1–7 days (DAO adjustable). Automatic execution after timelock.</li>
-          <li><strong>Major protocol upgrades (heavy, irreversible)</strong> — Only possible through upgrade slots (1 unlocked latest every 210 000 Keys sold – max 100 forever). Proposal text max of 280 bytes + full description on IPFS. Voting window: 7 epochs (~7 days). Timelock 1–7 days. One proposal can win a slot; executed slot is burned forever.</li>
+          <li>Anyone with ≥ 1 Key may propose.</li>
+          <li>Max 2 proposals per address per epoch.</li>
+          <li>Voting window: 7 epochs (~7 days).</li>
+          <li>Timelock 1-7 days (DAO adjustable).</li>
+          <li>Automatic execution after timelock.</li>
+        </ul>
+
+        <p><strong>2. Major protocol upgrades (heavy, irreversible)</strong></p>
+        <p class="meta">Examples: New contract logic, new features, chain migration, new tokenomics after 21 000 000 Keys</p>
+        <ul>
+          <li>Only possible through upgrade slots (1 unlocked latest every 210 000 Keys sold – max 100 forever).</li>
+          <li>Anyone with ≥ 1 Key may propose.</li>
+          <li>Max 2 proposals per address per epoch (same cap).</li>
+          <li>Proposal text max of 280 bytes + full description on IPFS.</li>
+          <li>Voting window: 7 epochs (~7 days).</li>
+          <li>Timelock 1-7 days (DAO adjustable).</li>
+          <li>Only one proposal can eventually win a slot – the one with the highest legitimate votes and quorum.</li>
+          <li>Once executed → slot is burned forever.</li>
         </ul>
 
         <p>
-          Who decides what is “parameter” and what is “upgrade”? The contract decides. If the proposal uses proposeUpgrade(..., slot) → it is an upgrade and burns a slot. Everything else (propose()) is a parameter change.
+          Who decides what is “parameter” and what is “upgrade”? The contract decides.
+          If the proposal uses proposeUpgrade(..., slot) → it is an upgrade and burns a slot.
+          Everything else (propose()) is a parameter change.
+          Anyone holding a Key may submit a proposal for an open slot. The proposal with the highest legitimate votes and quorum claims the slot.
         </p>
 
         <div class="h3">6.4 Major Protocol upgrades – The 100 Sacred Gates</div>
@@ -1167,20 +1232,61 @@
         </p>
 
         <div class="h3">6.5 Immutable Laws – can never be changed by any vote</div>
-        <p>
-          Immutable: Total supply 21 000 000 Keys · Genesis Keys extra DAO vote 2 votes forever · Epoch duration 21 hours* · Winners per epoch Maximum 21 · Presence/Resonance split 40%–60% · Nexus glidepath 21%→0%** · Upgrade slots 1 per 210 000 Keys, max 100 · Closure bounty 2.1 POL · Claim window 21 epochs · Artefact price 21 POL forever · Soulbound keys non-transferable forever.
-        </p>
 
-        <p>
-          * Can only be modified during Guardian Mode (first 420 epochs). ** DAO may restore a voluntary share after glidepath = 0.
+        <table class="mini-table" aria-label="Immutable laws">
+          <thead>
+            <tr>
+              <th>Immutable</th>
+              <th>Value</th>
+              <th class="wrap">Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Total supply</td><td>21 000 000 Keys</td><td class="wrap">Ritual constant</td></tr>
+            <tr><td>Genesis Keys extra DAO vote</td><td>2 votes forever</td><td class="wrap">Dawn privilege</td></tr>
+            <tr><td>Epoch duration</td><td>21 hours *</td><td class="wrap">Heartbeat</td></tr>
+            <tr><td>Winners per epoch</td><td>Maximum 21</td><td class="wrap">Sacred number</td></tr>
+            <tr><td>Presence / Resonance split</td><td>40% - 60%</td><td class="wrap">Sacred balance</td></tr>
+            <tr><td>Nexus glidepath</td><td>21% → 0% **</td><td class="wrap">Keeper’s promise</td></tr>
+            <tr><td>Upgrade slots</td><td>1 per 210 000 Keys, max 100</td><td class="wrap">Controlled evolution</td></tr>
+            <tr><td>Closure bounty</td><td>2.1 POL</td><td class="wrap">Ritual payment</td></tr>
+            <tr><td>Claim window</td><td>21 epochs</td><td class="wrap">Memory length</td></tr>
+            <tr><td>Artefact price (extra &amp; static)</td><td>21 POL forever</td><td class="wrap">Sacred offering</td></tr>
+            <tr><td>Soulbound keys</td><td>Non-transferable forever</td><td class="wrap">Identity is eternal</td></tr>
+          </tbody>
+        </table>
+
+        <p class="meta">
+          * Can only be modified during Guardian Mode (first 420 epochs)<br/>
+          ** DAO may restore a voluntary share after glidepath = 0
         </p>
 
         <div class="h3">6.6 Quorum – the listening threshold</div>
+
         <p>
           Quorum is always calculated against total existing voting power. The theoretical maximum is 21 021 000 votes (21 M + 21k Genesis extra), but in practice it grows gradually as Keys are minted.
           Inactive Keys count fully – prolonged silence does not lower the bar.
-          Guardian Mode (first 420 epochs): Normal 33%, Urgent 51%.
-          Mature Mode (from epoch 421): Normal 66.66%, Urgent 80%. Silence is not absence. It is a vote of “no”.
+        </p>
+
+        <p>The quorums are split into two phases:</p>
+        <ul>
+          <li><strong>1. Guardian Mode — first 420 epochs (± 9 months)</strong>
+            <ul>
+              <li>Normal proposals: 33% of total voting power.</li>
+              <li>Urgent proposals (security, blacklist): 51%</li>
+            </ul>
+          </li>
+          <li><strong>2. Mature Mode — from epoch 421 onward</strong>
+            <ul>
+              <li>Normal proposals: 66.66% of total voting power.</li>
+              <li>Urgent proposals (security, blacklist): 80%</li>
+            </ul>
+          </li>
+        </ul>
+
+        <p>
+          DAO adjustments only in Mature mode). The DAO may move normal quorum between 60% and 66.66% in steps of 3%.
+          Urgent quorum remains fixed at 80%. Inactive Keys count fully toward quorum – silence is not absence. It is a vote of “no”.
         </p>
 
         <div class="h3">6.7 Security &amp; Openness</div>
@@ -1396,13 +1502,18 @@
     btnBI.addEventListener("click", () => setMode("bi"));
     btnNBI.addEventListener("click", () => setMode("nbi"));
 
-    // chip click -> scroll
+    // ✅ chip click -> scroll (with sticky offset)
+    function scrollToId(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - 104;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+
     chips.forEach(chip => {
       chip.addEventListener("click", () => {
         const id = chip.getAttribute("data-target");
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        scrollToId(id);
       });
     });
 
