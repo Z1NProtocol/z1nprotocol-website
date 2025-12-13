@@ -204,7 +204,7 @@ h1{
   margin:2px 0;
 }
 
-/* TABLES — COMPACT */
+/* TABLES — EXTRA TIGHT (zelfde ritme als Glyph-lines) */
 .mini-table{
   display:inline-table;
   width:auto;
@@ -217,15 +217,16 @@ h1{
 
 .mini-table th,
 .mini-table td{
-  padding:6px 10px;
+  padding:3px 10px;          /* ✅ minder hoogte */
   border-top:1px solid rgba(148,163,184,0.18);
   font-size:14.5px;
-  line-height:1.45;
+  line-height:1.15;          /* ✅ dichter op elkaar */
   text-align:left;
+  vertical-align:top;
 }
 
 .mini-table tr:first-child th,
-.mini-table tr:first-child td{border-top:none}
+.mini-table tr:first-child td{ border-top:none; }
 
 .mini-table th{
   font-size:11px;
@@ -233,8 +234,9 @@ h1{
   text-transform:uppercase;
   opacity:0.7;
   background:rgba(2,6,23,0.4);
+  padding-top:4px;           /* ✅ header nog nét iets adem */
+  padding-bottom:4px;
 }
-
 .glyphs{
   font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
