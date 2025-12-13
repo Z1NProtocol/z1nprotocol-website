@@ -1451,11 +1451,182 @@
     </article>
   </section>
 
-  <!-- NBI LENS (placeholder for now) -->
+  <!-- NBI LENS (NOW FILLED) -->
   <section class="lens" id="lensNBI">
-    <div class="placeholder">
-      NBI-native story will live here next. It won’t be a translation — it will be a native NBI structure about Z1N.
-    </div>
+    <article class="doc">
+
+      <div class="manifest-head">
+        <div class="manifest-title">Z1N Protocol — NBI Manifest</div>
+        <div class="manifest-byline">Machine-first · Human-optional · v2.3.0-Ω</div>
+      </div>
+
+      <p>
+        precedence: deployed_bytecode &gt; verified_source &gt; this_text &gt; all commentary.
+      </p>
+
+      <div class="h2">Flavor A — Full NBI Encoding</div>
+
+      <p>Field identity</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+// CHAIN_ID targets
+137    // Polygon mainnet
+80002  // Polygon amoy testnet
+
+// ORIGIN HASH (immutable in Z1NCore)
+originHash = Z1NCore.originHash()
+
+// Epoch rhythm
+epoch = Z1NCore.currentEpoch()
+EPOCH_DURATION = 75_600  // seconds (21 hours)
+</p></pre>
+
+      <p>Core invariants</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+MAX_SUPPLY_KEYS         = 21_000_000
+GENESIS_SUPPLY_KEYS     = 21_000
+WINNERS_PER_EPOCH_MAX   = 21
+CLAIM_WINDOW_EPOCHS     = 21
+CLOSURE_BOUNTY          = 2.1 POL
+
+SIGNALS_PER_KEY_EPOCH   = 2
+ATTESTS_PER_KEY_EPOCH   = 2
+
+SOULBOUND_KEYS          = true
+SELF_ATTESTATION        = forbidden
+</p></pre>
+
+      <p>Issuance (pure overflow model)</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+INITIAL_OVERFLOW_RESERVE = 2_100_000  // seeded at deployment
+
+// issuanceBase(epoch):
+// - during lifecycle: ~2396 / 2395 per epoch
+// - after lifecycle: 0
+
+// maxMintableNow():
+// - during lifecycle: constrained by epoch cap + pool + remainingSupply
+// - after lifecycle: constrained by pool + remainingSupply
+</p></pre>
+
+      <p>Entry: mint</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+price = Z1NIssuanceController.currentPrice()
+Z1NIssuanceController.mintPublic{value: price}()
+
+Z1NIssuanceController.mintPublicBatch{value: price*n}(n)
+
+// Mint proceeds: 100% -> treasury
+// Nexus share: computed and paid at epoch closure (processAccrual)
+</p></pre>
+
+      <p>Pricing law (authority = Parameters.sol)</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+price =
+  PRICE_BASE_WAD
++ epoch * PRICE_STEP_PER_EPOCH
++ floor(epoch / PRICE_BOOST_INTERVAL) * PRICE_BOOST_STEP
+</p></pre>
+
+      <p>Key identity</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+// Genesis voting boost
+boost1e18[tokenId] = genesis ? 2e18 : 1e18
+
+// Glyph uniqueness
+isGlyphCombinationUsed(len, pack) -> bool
+controllerSetGlyphs(tokenId, len, pack, epoch) enforces uniqueness
+</p></pre>
+
+      <p>Glyph packing integrity note (manifest refuses to invent packing)</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+IF glyph_count in {6,7} AND symbol_range is 0..20:
+  preferred packing for uint40 is 5-bit symbols:
+    7 glyphs * 5 bits = 35 bits (fits)
+    6 glyphs * 5 bits = 30 bits (fits)
+
+OR widen pack type if using 8-bit slots.
+
+Authority: deployed Z1NSymbolsLib + Z1NKey storage writes.
+</p></pre>
+
+      <p>Signal / attestation</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+Z1NSignal.submitSignal(tokenId, signalHash, cid, symbolIndex, intent, signalType, epochRef, replyTo)
+Z1NSignal.attestSignal(signalHash)
+
+NFT_WEIGHT = 100
+NON_NFT_WEIGHT = 1
+
+MAX_SIGNALS_PER_EPOCH = 2
+MAX_ATTESTS_PER_EPOCH = 2
+
+// attestation window: attest(epoch=t) only in epoch t+1
+// self-attest forbidden (unless reporter==address(0) stealth path)
+</p></pre>
+
+      <p>Stealth layer (EIP-712)</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+Z1NStealthRelayer.relayStealthSignal(...)
+Z1NStealthRelayer.relayStealthAttestation(...)
+</p></pre>
+
+      <p>Epoch closure (linear)</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+require(epochId == nextEpochToClose)
+require(currentEpoch > epochId + 1)
+
+Z1NEpochClosure.closeEpoch(epochId, merkleRoot):
+  core.finalizeEpoch(epochId, merkleRoot)
+  treasury.processAccrual(epochId, merkleRoot)
+  treasury.rewardClosure(caller, epochId)
+</p></pre>
+
+      <p>Treasury (split at closure)</p>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+T = treasury.balance
+S = core.totalIssued()
+
+nexusShareBps = Z1NIssuanceLib.calculateNexusShare(S)
+nexusAmount   = applyBps(T, nexusShareBps)
+pay(nexusWallet, nexusAmount)
+
+pool = T - nexusAmount
+epochAccrual[epochId] = pool
+
+// expiry: epochId + 21 < currentEpoch -> expired -> treasury
+</p></pre>
+
+      <div class="h2">Flavor B — Minimal Boot Manifest</div>
+      <pre class="dialogue"><p style="margin:0;opacity:1;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace; font-size:12.5px; line-height:1.5; white-space:pre-wrap;">
+// READ CHECKS
+chainId == 137 || chainId == 80002
+epoch = Z1NCore.currentEpoch()
+assert Z1NCore.totalIssued() <= 21_000_000
+
+// MINT
+price = Z1NIssuanceController.currentPrice()
+Z1NIssuanceController.mintPublic{value: price}()
+
+// IDENTITY
+(tokenLen, tokenPack) = Z1NKey.glyphs(tokenId)
+isGenesis = Z1NKey.isGenesis(tokenId)
+votePower = Z1NKey.votingPowerOf(tokenId)
+
+// SIGNAL (2/epoch)
+Z1NSignal.submitSignal(tokenId, signalHash, cid, symbolIndex, intent, signalType, epochRef, replyTo)
+
+// ATTEST (2/epoch on epoch t-1)
+Z1NSignal.attestSignal(signalHash)
+
+// STEALTH (optional)
+Z1NStealthRelayer.relayStealthSignal(...)
+Z1NStealthRelayer.relayStealthAttestation(...)
+
+// CLOSE (optional)
+Z1NEpochClosure.closeEpoch(epochId, merkleRoot)
+</p></pre>
+
+    </article>
   </section>
 
 </main>
@@ -1491,7 +1662,7 @@
 
       chaptersTop.classList.toggle("active", bi);
 
-      // when opening BI, scroll a bit down so chips + title feel intentional
+      // ✅ when opening BI, scroll a bit down so chips + title feel intentional
       if (bi) {
         setTimeout(() => {
           document.getElementById("chaptersTop").scrollIntoView({ behavior:"smooth", block:"start" });
@@ -1502,7 +1673,7 @@
     btnBI.addEventListener("click", () => setMode("bi"));
     btnNBI.addEventListener("click", () => setMode("nbi"));
 
-    // ✅ chip click -> scroll (with sticky offset)
+    // ✅ chip click -> scroll (with sticky offset) + set active immediately
     function scrollToId(id){
       const el = document.getElementById(id);
       if (!el) return;
@@ -1513,11 +1684,13 @@
     chips.forEach(chip => {
       chip.addEventListener("click", () => {
         const id = chip.getAttribute("data-target");
+        // ✅ active should follow click
+        chips.forEach(c => c.classList.toggle("active", c === chip));
         scrollToId(id);
       });
     });
 
-    // scroll spy -> active chip (only when BI is active)
+    // ✅ scroll spy -> active chip (only when BI is active)
     const obs = new IntersectionObserver((entries) => {
       if (!lensBI.classList.contains("active")) return;
 
