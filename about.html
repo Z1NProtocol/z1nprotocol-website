@@ -1452,7 +1452,7 @@
   </section>
 
   <!-- NBI LENS (NOW FILLED) -->
- <section class="lens" id="lensNBI">
+<section class="lens" id="lensNBI">
   <article class="doc">
 
     <div class="manifest-head">
@@ -1466,226 +1466,277 @@
       If conflict: discard this_text.
     </p>
 
-    <div class="h2">0. Scope</div>
+    <div class="h2">0. Addressability</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-COVERED (by code provided):
-- Z1NSignal: signal submission + attestation + heartbeat window + weights + per-NFT caps
-- Z1NStealthRelayer: EIP-712 stealth relay (signal + attestation), nonce + deadline bounding
-- Z1NReporter: CID registry with validated SignalRecord
-- Z1NTreasury: epoch accrual + Nexus split + merkle-claims + closure bounty reservation/claiming
-- Parameters / Z1NIssuanceLib / AntiSwarmGuard / SignalGuard / Errors / Events / Blacklist
+SYSTEM = { Core, Key, IssuanceController, Signal, Reporter, Treasury, Governance, EpochClosure, StealthRelayer }
+POLICY = { Parameters, Z1NIssuanceLib, Z1NTypes, AntiSwarmGuard, SignalGuard, Blacklist, Errors, Events }
+
+All limits, windows, weights, and invariants are enforced by contracts.
+This document is a parsing map, not a promise.
     </p></pre>
 
-    <div class="h2">1. Authority &amp; Constants</div>
+    <div class="h2">1. Tijdwet (Epoch Clock)</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-EPOCH_SPAN_SECONDS   = 75_600        // Parameters.EPOCH_SPAN (21h)
-CLAIM_WINDOW_EPOCHS  = 21            // Parameters.CLAIM_WINDOW_EPOCHS
+EPOCH_SPAN_SECONDS = 75_600  // Parameters.EPOCH_SPAN (21 hours)
+epoch = Core.currentEpoch()
+Core.isInEpoch(epochId) is timestamp-derived.
 
-SIGNAL_FEE           = 0.01 POL      // Parameters.SUBMISSION_FEE
-ATTEST_FEE           = 0.01 POL      // Parameters.ATTEST_FEE
-SILENCE_FEE_FACTOR   = 1.5x          // Z1NSignal.SILENCE_MULTIPLIER = 15000 bps
-
-MAX_SIGNALS_PER_NFT_PER_EPOCH = 2    // Z1NSignal.MAX_SIGNALS_PER_EPOCH
-MAX_ATTESTS_PER_NFT_PER_EPOCH  = 2    // Z1NSignal.MAX_ATTESTS_PER_EPOCH
-
-ATTEST_WEIGHT_NFT    = 100           // Z1NSignal.ATTEST_BONUS_BPS
-ATTEST_WEIGHT_NONNFT = 1             // Z1NSignal.NON_NFT_WEIGHT
-
-CLOSURE_BOUNTY        = 2.1 POL      // Parameters.CLOSURE_BOUNTY_WEI (21e17)
-NEXUS_SHARE_START_BPS = 2100         // Parameters.NEXUS_SHARE_BPS_START (21%)
-NEXUS_LINEAR_END_SOLD = 2_100_000    // Parameters.LINEAR_END_SOLD
+Heartbeat closure rule:
+Epoch t may be closed only when currentEpoch > t + 1
+(i.e., after full attestation epoch t+1 ended).
     </p></pre>
 
-    <div class="h2">2. Signal Ontology</div>
+    <div class="h2">2. Identity: Key (Soulbound + Votes)</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-INTENT (WHY)  = Z1NTypes.Intent: 0..3
-0=ΩC (Collective), 1=ΩI (Individual), 2=ΩK (Co-Create), 3=ΩS (Silence)
+Key is ERC721 + Enumerable + Votes (ERC721Votes).
+Transfers between non-zero addresses are forbidden (soulbound).
 
-SIGNALTYPE (WHAT) = Z1NTypes.SignalType: 0..3
-0=FACTUAL, 1=REFLECTIVE, 2=META, 3=SILENCE
+Genesis flag:
+- tokenId < GENESIS_SUPPLY => genesis=true
+Voting boost (Identity Law):
+- genesis => boost1e18 = 2e18
+- regular => boost1e18 = 1e18
 
-SignalRecord fields enforced by Z1NTypes.validateSignalRecord():
-- cid length <= 256
-- symbolIndex in 0..20 (21 symbols)
-- intent in 0..3
-- signalType in 0..3
-- replyTo != 0x0 => epochRef > 0 AND epochRef <= epoch
-- replyTo == 0x0 => epochRef == 0
+Voting power for an account = sum(boost1e18[tokenId]) over all owned keys
+computed by _getVotingUnits(account).
+
+Blacklist integration (optional):
+- Key.setBlacklist(...) may be called once by admin.
+- mint and mint-to checks blacklist when configured.
     </p></pre>
 
-    <div class="h2">3. Heartbeat Model (Hard Window)</div>
+    <div class="h2">3. Glyphs: Uniqueness Registry</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-Let sigEpoch = Z1NSignal.signalEpoch[signalHash]
-Let curEpoch = Z1NCore.currentEpoch()
+Glyph length:
+- regular: len = 6
+- genesis: len = 7
 
-RULE: attestSignal(signalHash) is valid iff curEpoch == sigEpoch + 1.
-Any other epoch -> revert "AttestationWindowClosed".
+Storage:
+- glyphLen[tokenId]  : uint8
+- glyphPack[tokenId] : uint40
+- glyphEpoch[tokenId]: uint256
+Uniqueness:
+- glyphUsed[pack][len] must be false at assignment time.
 
-Implication:
-- Signals emitted in epoch t are attestable ONLY in epoch t+1.
-- Each signal gets exactly one full epoch to resonate.
-- No partial window advantage based on early submission inside epoch.
+Authority:
+- controllerSetGlyphs(tokenId,len,pack,epoch) only CONTROLLER_ROLE
+- reverts if (len,pack) already used.
+
+Note: pack encoding must be consistent with its bit width and the chosen per-glyph slot size.
     </p></pre>
 
-    <div class="h2">4. Open Signal Submission (NFT Owner Only)</div>
+    <div class="h2">4. Issuance: Pure Overflow (AI-native)</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-ENTRYPOINT:
-Z1NSignal.submitSignal(
-  tokenId,
-  signalHash,
-  cid,
-  symbolIndex,
-  intent,
-  signalType,
-  epochRef,
-  replyTo
-) payable
+Core exposes:
+- issuanceBase(epoch): 2396 early, 2395 late, 0 after TOTAL_EPOCHS boundary (per interface docs)
+- availablePool(): current issuance + overflow
+- overflowPool(): unclaimed issuance from past epochs
+- maxMintableNow(): min(available, 2.1x issuanceBase, remainingSupply) during lifecycle,
+  and "no 2.1x cap" after issuance stops (per interface docs)
+- mintedInEpoch(epoch)
+- recordIssuance(count): updates mintedInEpoch + overflow accounting, enforces caps
+- totalIssued(): total keys issued
+
+IssuanceController enforces:
+- core.maxMintableNow() >= count before minting
+- core.recordIssuance(count) after minting (cap enforcement is Core’s job)
+    </p></pre>
+
+    <div class="h2">5. Pricing Law (21-law)</div>
+    <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
+price(epoch) =
+  PRICE_BASE_WAD
++ epoch * PRICE_STEP_PER_EPOCH
++ floor(epoch / PRICE_BOOST_INTERVAL) * PRICE_BOOST_STEP
+
+Constants from Parameters:
+PRICE_BASE_WAD        = 21e18
+PRICE_STEP_PER_EPOCH  = 21e15
+PRICE_BOOST_INTERVAL  = 21
+PRICE_BOOST_STEP      = 21e16
+    </p></pre>
+
+    <div class="h2">6. Mint: Public Entry</div>
+    <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
+ENTRYPOINTS:
+- IssuanceController.mintPublic() payable
+- IssuanceController.mintPublicBatch(count<=10) payable
 
 GATES:
-- keyToken.ownerOf(tokenId) == msg.sender else revert NotTokenOwner
-- per-NFT per-epoch cap: _nftSignalCount[tokenId][curEpoch] < 2 else revert MaxSignalsPerEpochReached
-- replyTo != 0x0 => reporter.isCIDRegistered(replyTo) else revert InvalidReplyTarget
+- mintPaused == false
+- totalMinted < MAX_SUPPLY
+- mintedByAddress[msg.sender] < MAX_PER_ADDRESS (210)
+- core.maxMintableNow() >= requested count
+- msg.value >= totalPrice
 
-FEE:
-- requiredFee = SUBMISSION_FEE
-- if intent==3 (ΩS) => requiredFee = SUBMISSION_FEE * 1.5
-- msg.value must be >= requiredFee else revert InsufficientFee
-- fee forwarded to treasury by low-level call
+GLYPH GENERATION:
+- generates indices[i] in range 0..20 (21 symbols)
+- retries up to 21 attempts if collision (pack uniqueness) is detected
+
+MINT FLOW:
+- Z1NIssuanceLib.mintKey(key, to, tokenId, genesis, indices, epoch)
+  -> Key.mint(to, tokenId, genesis)
+  -> Key.controllerSetGlyphs(tokenId, len, pack, epoch)
+
+PAYMENT FLOW:
+- 100% of mint price is forwarded to Treasury (no split at mint)
 - excess refunded
+- core.recordIssuance(count) called after minting
+    </p></pre>
+
+    <div class="h2">7. Signals: Ontology + Validation</div>
+    <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
+Signal axes:
+- Intent (WHY) 0..3 = ΩC/ΩI/ΩK/ΩS
+- SignalType (WHAT) 0..3 = FACTUAL/REFLECTIVE/META/SILENCE
+
+Reporter stores SignalRecord for each signalHash.
+Z1NTypes.validateSignalRecord enforces:
+- cid length <= 256
+- symbolIndex in 0..20
+- intent and signalType valid
+- replyTo != 0 => epochRef > 0 and epochRef <= epoch
+- replyTo == 0 => epochRef == 0
+    </p></pre>
+
+    <div class="h2">8. Signal Submission (NFT owner only)</div>
+    <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
+ENTRYPOINT:
+Signal.submitSignal(tokenId, signalHash, cid, symbolIndex, intent, signalType, epochRef, replyTo) payable
+
+GATES:
+- Key.ownerOf(tokenId) == msg.sender
+- per-NFT cap: max 2 signals per epoch (all types count)
+- replyTo != 0 => Reporter.isCIDRegistered(replyTo) must be true
+
+FEES:
+- requiredFee = SUBMISSION_FEE (0.01 POL)
+- if intent==ΩS => requiredFee = 1.5x
+- forwarded to Treasury; excess refunded
 
 SIDE EFFECTS:
-- signalSubmitter[signalHash] = msg.sender
-- signalEpoch[signalHash]      = curEpoch
-- reporter.registerCID(signalHash, SignalRecord{...})  // reporter role must allow caller
-- emit Events.SignalSubmitted(submitter, signalHash, cid, symbolIndex, intent, requiredFee)
+- Signal.signalSubmitter[signalHash] = msg.sender
+- Signal.signalEpoch[signalHash] = currentEpoch
+- Reporter.registerCID(signalHash, SignalRecord{... hasNFT=true ...})
+- emit Events.SignalSubmitted(...)
     </p></pre>
 
-    <div class="h2">5. Attestation (Anyone, Weighted)</div>
+    <div class="h2">9. Attestation (anyone, weighted)</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
 ENTRYPOINT:
-Z1NSignal.attestSignal(signalHash) payable
+Signal.attestSignal(signalHash) payable
+
+HEARTBEAT WINDOW (hard):
+currentEpoch must equal signalEpoch(signalHash) + 1
 
 GATES:
-- reporter.isCIDRegistered(signalHash) else SignalNotFound
-- curEpoch == sigEpoch + 1 else AttestationWindowClosed
-- signalSubmitter[signalHash] != msg.sender else SelfAttestationForbidden
-- hasAttested[signalHash][msg.sender] == false else AlreadyAttested
-- msg.value >= ATTEST_FEE else InsufficientFee
+- signal must exist in Reporter
+- cannot self-attest (submitter != attester)
+- cannot double-attest same signal (hasAttested[hash][addr] false)
 
 WEIGHT:
-- if msg.sender holds >=1 Key:
-    tokenId = keyToken.tokenOfOwnerByIndex(msg.sender, 0)
-    per-NFT cap: _nftAttestCount[tokenId][curEpoch] < 2 else MaxAttestsPerEpochReached
-    weight = 100
-  else:
-    weight = 1 (unlimited per address, but only 1 per signal due to hasAttested)
-
-ACCOUNTING:
-- attestations[signalHash] += weight
-- mostAttestedSignal for sigEpoch updated when new max
+- if attester holds >=1 Key: weight=100 and (per chosen NFT) max 2 attestations per epoch
+- else weight=1 and unlimited, but still 1 per signal per address
 
 FEE:
-- ATTEST_FEE forwarded to treasury, excess refunded
+- ATTEST_FEE (0.01 POL) forwarded to Treasury; excess refunded
 
-EVENT:
-- emit Events.Attested(signalHash, attester, hasNFT, weight)
+Most-attested signal tracked per original signal epoch.
     </p></pre>
 
-    <div class="h2">6. Stealth Relay (EIP-712, No Fee)</div>
+    <div class="h2">10. Stealth Layer (EIP-712, relayed, no fee)</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-STEALTH GOAL:
-- hide wallet address at submission time from direct on-chain caller
-- bind action to Key owner via typed signature
-- enforce replay protection via nonceOf[tokenId]
+StealthRelayer verifies typed signatures from Key owner.
+Replay protection: nonceOf[tokenId] increments per use.
 
-RELAYER MODEL:
-- Z1NStealthRelayer has a privileged relayer address (onlyRelayer)
-- owner (contract owner) can update relayer
+deadline constraints:
+- now <= deadline
+- deadline <= now + 24 hours
 
-EIP-712:
-domain = (name="Z1NStealthRelayer", version="1.1.2", chainId, verifyingContract=this)
-typed data uses:
-- StealthSignal(tokenId, signalHash, intent, isPrivate, symbolIndex, epochRef, replyTo, nonce, deadline)
-- StealthAttestation(tokenId, signalHash, nonce, deadline)
+Relayer-only execution:
+- relayStealthSignal(...) -> Signal.submitSignalRelayed(...)
+- relayStealthAttestation(...) -> Signal.attestSignalRelayed(...)
 
-DEADLINES:
-- deadline must be <= now + 24h AND now <= deadline
-
-EXECUTION:
-- relayer calls relayStealthSignal(...) -> verifies owner signature -> calls signal.submitSignalRelayed(...)
-- relayer calls relayStealthAttestation(...) -> verifies owner signature -> calls signal.attestSignalRelayed(...)
-
-IN Z1NSignal RELAY HANDLERS:
-- NO fee
-- SAME per-NFT caps
-- SAME heartbeat window for attestation
-- reporter.registerCID with cid="" (stealth leaves CID empty on-chain)
-- signalType coerced: isPrivate ? META : FACTUAL (as implemented)
+Relay handlers in Signal:
+- no fees
+- same per-NFT caps
+- same heartbeat rule for attestations
+- reporter registers cid="" (empty)
     </p></pre>
 
-    <div class="h2">7. Reporter (CID Registry)</div>
+    <div class="h2">11. Linear Epoch Closure</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-Z1NReporter stores:
-_records[signalHash] = SignalRecord
+EpochClosure.closeEpoch(epochId, merkleRoot):
 
-Only REPORTER_ROLE can registerCID.
-registerCID() validates SignalRecord via Z1NTypes.validateSignalRecord().
+LINEAR ORDER:
+- epochId must equal nextEpochToClose (cannot skip)
 
-cidCount[epoch] increments for each registered signal.
-isCIDRegistered(signalHash) => timestamp != 0
+HEARTBEAT:
+- currentEpoch must be > epochId + 1 (attestation epoch ended)
+
+CORE GATE:
+- core.canFinalize(epochId) must return true
+
+FLOW:
+- core.finalizeEpoch(epochId, merkleRoot)
+- treasury.processAccrual(epochId, merkleRoot)
+- treasury.rewardClosure(caller, epochId)
+- nextEpochToClose increments
+- emits Events.EpochClosed with bounty amount
     </p></pre>
 
-    <div class="h2">8. Treasury (Accrual + Claims + Nexus Curve)</div>
+    <div class="h2">12. Treasury: Accrual, Nexus Curve, Claims</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-ACCRUAL:
-processAccrual(epochId, merkleRoot) callable only by REPORTER_ROLE.
-- totalBalance = address(treasury).balance
+processAccrual(epochId, merkleRoot) only REPORTER_ROLE:
+
+- totalBalance = treasury.balance
 - sold = core.totalIssued()
-- nexusShareBps = Z1NIssuanceLib.calculateNexusShare(sold)
-- nexusAmount   = applyBps(totalBalance, nexusShareBps)
-- pay nexusWallet immediately
+- nexusShareBps = calculateNexusShare(sold) // linear 21% -> 0 by 2.1M sold
+- nexusAmount = applyBps(totalBalance, nexusShareBps)
+- pays nexusWallet immediately
 - poolAmount = totalBalance - nexusAmount
-- winnersRoot[epochId] = merkleRoot
+- winnersRoot[epochId] set
 - epochAccrual[epochId] = poolAmount
-Note: closure bounty is NOT subtracted here; it is claimed later from treasury balance.
 
-MERKLE CLAIMS:
+Merkle claims:
 leaf = keccak256(abi.encode(index, account, amount))
-claim(epochId, index, account, amount, proof):
-- winnersRoot[epochId] must exist
-- claimed[epochId][account] must be false
-- epochId + 21 >= currentEpoch (else ClaimExpired)
-- proof must verify leaf
-- transfer amount to account
+Claim window: epochId + 21 >= currentEpoch
 
-DONATE / RECYCLE:
-donateReward(...) transfers amount to nexusWallet
-recycleReward(...) leaves funds in treasury (rolled into future balances implicitly)
+Options:
+- claim: pay winner
+- donateReward: pay nexusWallet
+- recycleReward: leave funds in treasury
 
-CLOSURE BOUNTY:
-rewardClosure(recipient, epochId) records recipient (reservation)
-claimClosureBounty(epochId) allows reserved recipient to withdraw 2.1 POL within 21 epochs
-expired bounty can be marked by reclaimExpiredBounties (no transfer; just marks expired)
+Closure bounty:
+- rewardClosure(recipient, epochId) reserves recipient
+- claimClosureBounty(epochId) pays fixed 2.1 POL within window
     </p></pre>
 
-    <div class="h2">9. Minimal Machine Boot Checklist</div>
+    <div class="h2">13. Governance: Hybrid Votes + AntiSwarm</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-// READ
-epoch = Z1NCore.currentEpoch()
+Governor stack:
+- GovernorVotes uses ERC721Votes (Key) voting units
+- Quorum fraction uses GovernorVotesQuorumFraction
+- Timelock enforced via GovernorTimelockControl
 
-// SIGNAL (requires NFT ownership)
-submitSignal(tokenId, hash, cid, sym, intent, type, epochRef, replyTo) with fee:
-  fee = 0.01 POL (or 0.015 POL if intent=ΩS)
+Proposal gates:
+- propose(): no PROPOSER_ROLE required
+- AntiSwarm: max 2 proposals per address per epoch (Core epoch)
+- proposalThreshold from GovernorSettings is MIN_PROPOSAL_THRESHOLD (=1)
 
-// ATTEST (anyone)
-attestSignal(hash) only if currentEpoch == signalEpoch(hash)+1 with 0.01 POL
+Voting:
+A) castVote(): votes with total account voting power (all owned keys)
+B) castVoteWithKey(proposalId, support, tokenId):
+   - must own tokenId
+   - each tokenId can be used once per proposal (tracked)
+   - weight = Key.votingPowerOf(tokenId) (1e18 or 2e18)
 
-// STEALTH (optional, requires relayer)
-sign typed data, relayer calls relayStealthSignal/relayStealthAttestation
+AntiSwarm voting cap:
+- max 10 votes per address per epoch across vote paths (enforced in _countVote)
 
-// CLAIM (winner)
-claim(epochId, index, account, amount, proof) within 21 epochs
-or donateReward(...) or recycleReward(...)
+Upgrade proposals:
+- proposeUpgrade(..., upgradeSlot)
+- on execute: slot marked used and event emitted
     </p></pre>
 
   </article>
