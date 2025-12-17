@@ -1,0 +1,365 @@
+# Z1N Protocol - UI/UX Wiring Checklist
+
+**Version:** 2.3.1-Ω  
+**Last Updated:** 2024-12-17  
+**Status:** Pre-Amoy Testnet
+
+---
+
+## 📊 Progress Overview
+
+| Category | Items | Done | Todo |
+|----------|-------|------|------|
+| Technical Foundation | 8 | 0 | 8 |
+| Homepage | 4 | 0 | 4 |
+| Live Stats | 6 | 0 | 6 |
+| Mint Key | 7 | 2 | 5 |
+| Signal Interface | 8 | 0 | 8 |
+| Attestation Interface | 8 | 0 | 8 |
+| User Dashboard | 5 | 0 | 5 |
+| NBI Artefacts | 15 | 0 | 15 |
+| Artefacts Gallery | 4 | 0 | 4 |
+| **TOTAL** | **65** | **2** | **63** |
+
+---
+
+## ⚠️ Contract Limits (Verified from Z1NSignal.sol)
+
+```
+MAX_SIGNALS_PER_EPOCH  = 2      // Per Key per epoch
+MAX_ATTESTS_PER_EPOCH  = 2      // Per Key per epoch
+ATTEST_BONUS_BPS       = 100    // NFT holder weight
+NON_NFT_WEIGHT         = 1      // Non-NFT holder weight
+SUBMISSION_FEE         = 0.01 POL
+ATTEST_FEE             = 0.01 POL
+SILENCE_MULTIPLIER     = 1.5x   // ΩS intent fee
+```
+
+**Note:** Genesis 2x boost applies to GOVERNANCE only, NOT attestations.
+
+---
+
+## 🔧 T: Technical Foundation
+
+| # | Component | Description | Status |
+|---|-----------|-------------|--------|
+| T1 | Contract ABIs | Export from Hardhat for frontend | ⬜ |
+| T2 | Addresses config | JSON per network (Amoy/Mainnet) | ⬜ |
+| T3 | ethers.js integration | Frontend library setup | ⬜ |
+| T4 | Wallet Connect | RainbowKit or WalletConnect v2 | ⬜ |
+| T5 | Indexer/Subgraph | For historical data (optional) | ⬜ |
+| T6 | IPFS gateway | For signal content CIDs | ⬜ |
+| T7 | Error handling | User-friendly messages | ⬜ |
+| T8 | Loading states | Spinners, skeleton UI | ⬜ |
+
+---
+
+## 🏠 H: Homepage (index.html)
+
+| # | Element | Current | Source | Contract/Function | Status |
+|---|---------|---------|--------|-------------------|--------|
+| H1 | Current epoch | "42" placeholder | Real-time | `Z1NCore.currentEpoch()` | ⬜ |
+| H2 | Keys awakened | "7 842" placeholder | Real-time | `Z1NKey.totalSupply()` | ⬜ |
+| H3 | Signals this epoch | "1 284" placeholder | Indexer | Event logs | ⬜ |
+| H4 | Most attested intent | "ΩC" placeholder | Computed | `mostAttestedSignal()` + lookup | ⬜ |
+
+---
+
+## 📊 L: Live Stats (live-stats.html)
+
+| # | Element | Current | Source | Status |
+|---|---------|---------|--------|--------|
+| L1 | Current epoch | Placeholder | `Z1NCore.currentEpoch()` | ⬜ |
+| L2 | Total keys | Placeholder | `Z1NKey.totalSupply()` | ⬜ |
+| L3 | Total signals | Placeholder | Indexer (sum all epochs) | ⬜ |
+| L4 | Treasury balance | **MISSING** | `provider.getBalance(treasury)` | ⬜ |
+| L5 | Current mint price | **MISSING** | `Z1NIssuanceController.currentPrice()` | ⬜ |
+| L6 | Genesis remaining | **MISSING** | `GENESIS_SUPPLY - genesisMinted` | ⬜ |
+
+---
+
+## 🔑 M: Mint Key (mint-key.html)
+
+| # | Element | Current | Action Needed | Status |
+|---|---------|---------|---------------|--------|
+| M1 | Connect Wallet | UI ready | Test functionality | ✅ |
+| M2 | Sign Ritual | UI ready | Test zero-gas signature | ✅ |
+| M3 | Mint button | Disabled | Wire to `mintPublic()` | ⬜ |
+| M4 | Price display | **MISSING** | Show `currentPrice()` real-time | ⬜ |
+| M5 | Genesis/Standard | **MISSING** | Check `isGenesisPhase()` | ⬜ |
+| M6 | Success screen | **MISSING** | Show tokenId, glyphs, TX hash | ⬜ |
+| M7 | Error handling | **MISSING** | User-friendly error messages | ⬜ |
+
+### Mint Contract Functions
+```solidity
+// Anyone can call - no admin required
+Z1NIssuanceController.mintPublic() payable  // Returns tokenId
+Z1NIssuanceController.currentPrice()        // Returns price in wei
+Z1NIssuanceController.isGenesisPhase()      // Returns bool
+```
+
+---
+
+## 📡 S: Signal Interface (NEW PAGE NEEDED)
+
+| # | Element | Description | Contract/Function | Status |
+|---|---------|-------------|-------------------|--------|
+| S1 | Send Signal page | Full page layout | - | ⬜ |
+| S2 | Intent picker | 4 buttons: ΩC/ΩI/ΩK/ΩS | param: `intent` (0-3) | ⬜ |
+| S3 | Type picker | Standalone/Reply/ReplyTo | param: `signalType` (0-2) | ⬜ |
+| S4 | Symbol picker | 21 glyph grid | param: `symbolIndex` (0-20) | ⬜ |
+| S5 | Content textarea | Message input | Hash → `signalHash` | ⬜ |
+| S6 | Fee display | 0.01 POL (1.5x for ΩS) | Computed | ⬜ |
+| S7 | Remaining counter | "2/2 signals" | `remainingSignals(tokenId)` | ⬜ |
+| S8 | Submit button | Send transaction | `submitSignal()` | ⬜ |
+
+### Signal Contract Function
+```solidity
+function submitSignal(
+    uint256 tokenId,        // Your Key ID
+    bytes32 signalHash,     // keccak256 of content
+    string cid,             // IPFS CID
+    uint8 symbolIndex,      // 0-20
+    uint8 intent,           // 0=ΩC, 1=ΩI, 2=ΩK, 3=ΩS
+    SignalType signalType,  // 0=Standalone, 1=Reply, 2=ReplyTo
+    uint16 epochRef,        // 0 for standalone
+    bytes32 replyTo         // 0x0 for standalone
+) external payable
+```
+
+### Signal UI Mockup
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  📡 SEND SIGNAL                                    Epoch: 288   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Your Key: #70 (Genesis) ∴ • ⚑ • ⊥ • ⚑ • ≡ • ⊕ • ⊗            │
+│  Remaining signals this epoch: 2/2                              │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  INTENT - What is the nature of your signal?                    │
+│                                                                 │
+│  [ΩC Collective]  [ΩI Individual]  [ΩK Co-Create]  [ΩS Silence] │
+│       ✓ selected                                                │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  TYPE - How does this signal relate to others?                  │
+│                                                                 │
+│  [◯ Standalone]  [◯ Reply to signal]  [◯ Request reply from]   │
+│   ✓ selected                                                    │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  SYMBOL - Choose one glyph to mark this signal                  │
+│                                                                 │
+│  ∞  π  ⋮  ⊕  ⊗  ∴  ∵  ↔  ↻  △  ◇                              │
+│  ○  ●  □  ☰  ☷  ⚑  ✱  ⊥  ≡  ◊                                  │
+│              ▲ selected                                         │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  CONTENT - Your message to the field                            │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Your signal content here...                             │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  Fee: 0.01 POL                           [SEND SIGNAL]          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ✅ A: Attestation Interface (NEW PAGE NEEDED)
+
+| # | Element | Description | Contract/Function | Status |
+|---|---------|-------------|-------------------|--------|
+| A1 | Attest page | Full page layout | - | ⬜ |
+| A2 | Window status | "OPEN for epoch X" / "CLOSED" | `isAttestationWindowOpen()` | ⬜ |
+| A3 | Signal list | Signals from previous epoch | Event logs / Indexer | ⬜ |
+| A4 | Hide own signals | Filter out self | `signalSubmitter[hash]` | ⬜ |
+| A5 | Weight display | Current weight per signal | `attestations(signalHash)` | ⬜ |
+| A6 | Attest button | Send transaction | `attestSignal()` | ⬜ |
+| A7 | Remaining counter | "2/2 attestations" | `remainingAttests(tokenId)` | ⬜ |
+| A8 | Your weight | Show "+100" (all NFT holders same) | `ATTEST_BONUS_BPS` | ⬜ |
+
+### Attestation Contract Function
+```solidity
+function attestSignal(
+    bytes32 signalHash      // Hash of signal to attest
+) external payable          // 0.01 POL fee
+```
+
+### Attestation UI Mockup
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ✅ ATTEST ON SIGNALS                              Epoch: 289   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Your Key: #70 (Genesis)                                        │
+│  Your attestation weight: +100                                  │
+│  Remaining attestations: 2/2                                    │
+│                                                                 │
+│  ⚠️ Choose wisely - you can only attest twice per epoch!       │
+│                                                                 │
+│  📢 Attestation window OPEN for epoch 288 signals              │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│                                                                 │
+│  SIGNALS FROM EPOCH 288 (sorted by weight)                     │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Key #71 | ΩK | Weight: 400                 [ATTEST +100]│   │
+│  │ "De ruimte waar co-creatie ademt..."                    │   │
+│  │ Symbol: ◇                                               │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Key #72 | ΩC | Weight: 200                 [ATTEST +100]│   │
+│  │ "Het collectief vindt balans..."                        │   │
+│  │ Symbol: ∴                                               │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ─────────────────────────────────────────────────────────────  │
+│  ❌ Your own signals are hidden (cannot self-attest)           │
+│  Fee per attestation: 0.01 POL                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 👤 D: User Dashboard (NEW PAGE NEEDED)
+
+| # | Element | Description | Source | Status |
+|---|---------|-------------|--------|--------|
+| D1 | My Keys | List user's Keys with glyphs | `tokenOfOwnerByIndex()` | ⬜ |
+| D2 | My Signals | Signal history | Event logs | ⬜ |
+| D3 | My Attestations | Given attestations | Event logs | ⬜ |
+| D4 | My Artefacts | LIVE + STATIC owned | Query both contracts | ⬜ |
+| D5 | Mint Artefact | Button for Genesis holders | `mintFirstArtefact()` | ⬜ |
+
+---
+
+## 🤖 N: NBI Artefacts (nbi-artefacts.html)
+
+| # | Element | Current | Source | Status |
+|---|---------|---------|--------|--------|
+| N1 | Token ID | Placeholder | Config (fixed NBI IDs) | ⬜ |
+| N2 | Glyphs | Placeholder | `Z1NKey.glyphs(tokenId)` | ⬜ |
+| N3 | Intent bars 21 | Placeholder | Indexer + calculation | ⬜ |
+| N4 | Intent bars 210 | Placeholder | Indexer + calculation | ⬜ |
+| N5 | Intent bars Total | Placeholder | Indexer + calculation | ⬜ |
+| N6 | Win-rate % | Placeholder | signals_with_attests / total_signals | ⬜ |
+| N7 | Impact percentile | Placeholder | Ranking calculation | ⬜ |
+| N8 | Conversion % | Placeholder | attestations / signals | ⬜ |
+| N9 | Active epochs | Placeholder | Count epochs with signals | ⬜ |
+| N10 | Signals (+delta) | Placeholder | Indexer | ⬜ |
+| N11 | Att. received (+delta) | Placeholder | Indexer | ⬜ |
+| N12 | Att. given | Placeholder | Indexer | ⬜ |
+| N13 | Rank | Placeholder | Ranking calculation | ⬜ |
+| N14 | Entropy | Placeholder | Intent distribution calc | ⬜ |
+| N15 | Velocity | Placeholder | Trend calculation | ⬜ |
+| N16 | MAS text | Placeholder | `mostAttestedSignal()` + CID | ⬜ |
+| N17 | SVG Artefact | HTML mockup | `artefactRenderer.ts` | ⬜ |
+
+---
+
+## 🖼️ G: Artefacts Gallery (artefacts.html)
+
+| # | Element | Description | Status |
+|---|---------|-------------|--------|
+| G1 | List LIVE artefacts | Query `Z1NArtefact` | ⬜ |
+| G2 | List STATIC artefacts | Query `Z1NStaticArtefact` | ⬜ |
+| G3 | Filter by owner | Wallet connect + filter | ⬜ |
+| G4 | Render SVG | `artefactRenderer.ts` per artefact | ⬜ |
+
+---
+
+## 🔄 Heartbeat Model (Reference)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    PROTOCOL CYCLE                               │
+└─────────────────────────────────────────────────────────────────┘
+
+EPOCH t:
+  └→ Submit signals (max 2 per Key)
+  └→ Fee: 0.01 POL per signal (1.5x for ΩS)
+                    ↓
+EPOCH t+1:
+  └→ Attest on epoch t signals (max 2 per Key)  
+  └→ Fee: 0.01 POL per attestation
+  └→ Weight: 100 per NFT holder, 1 per non-holder
+  └→ Submit new signals for t+1
+                    ↓
+EPOCH t+2:
+  └→ Attestation window for t is CLOSED
+  └→ MAS (Most Attested Signal) for t is determined
+  └→ Attest on t+1 signals
+```
+
+---
+
+## 🎯 Implementation Priority
+
+### Phase 1: Amoy Launch (Week 1)
+- [ ] T1-T4: Technical foundation
+- [ ] M3-M7: Mint page wiring
+- [ ] H1-H2: Basic homepage stats
+
+### Phase 2: Core Protocol (Week 2)
+- [ ] S1-S8: Signal interface
+- [ ] A1-A8: Attestation interface
+- [ ] L1-L6: Live stats
+
+### Phase 3: Dashboard (Week 3)
+- [ ] D1-D5: User dashboard
+- [ ] G1-G4: Artefacts gallery
+
+### Phase 4: Polish (Week 4)
+- [ ] N1-N17: NBI artefacts page
+- [ ] T5-T8: Advanced features
+- [ ] Mobile responsive check
+
+---
+
+## 📁 Files to Generate
+
+```
+frontend/
+├── config/
+│   ├── addresses.json       # Contract addresses per network
+│   └── abis/
+│       ├── Z1NCore.json
+│       ├── Z1NKey.json
+│       ├── Z1NSignal.json
+│       ├── Z1NTreasury.json
+│       ├── Z1NIssuanceController.json
+│       ├── Z1NArtefact.json
+│       └── Z1NStaticArtefact.json
+├── lib/
+│   ├── contracts.js         # Contract instances
+│   ├── wallet.js            # Wallet connect logic
+│   └── helpers.js           # Glyph decoding, etc.
+└── pages/
+    ├── signal.html          # NEW
+    ├── attest.html          # NEW
+    └── dashboard.html       # NEW
+```
+
+---
+
+## 📝 Notes
+
+- All contract functions verified against Z1NSignal.sol v2.3.0-Ω
+- Genesis 2x boost is for GOVERNANCE only, not attestations
+- Attestation weight is 100 for ALL Key holders (Genesis & Standard)
+- Non-Key holders can attest with weight 1 (unlimited)
+- Key holders limited to 2 attestations per epoch
+
+---
+
+*Last test run: 168 signals, 120 attestations, 0 errors*
