@@ -194,6 +194,20 @@
       flex-shrink: 0;
     }
 
+    /* ✅ NEW: force the 4 bullets to sit below the last text + behave on mobile */
+    .block ul.nbi-bullets {
+      margin-top: 1.9em;        /* ~2 text rows spacing */
+      margin-bottom: 0;
+    }
+    .block ul.nbi-bullets li { margin-bottom: 8px; }
+    .block ul.nbi-bullets li:last-child { margin-bottom: 0; }
+
+    @media(max-width: 900px){
+      /* Give bullets breathing room so they never visually collide with card edge */
+      .block ul.nbi-bullets { margin-top: 2.1em; }
+      .block { padding-bottom: 28px; }
+    }
+
     /* ERAS */
     .era-title-main {
       font-size: 26px;
@@ -337,15 +351,18 @@
       <p>
         Every live artefact (free or paid) carries a silent toggle only the original Key owner (you) can touch:
       </p>
-      <ul>
+
+      <!-- ✅ moved bullets down (under the last paragraph), and given its own class -->
+      <p>
+        You are never forced to bear your soul. You are never forced to hide it. The choice is always yours.
+      </p>
+
+      <ul class="nbi-bullets">
         <li><span>At any time, you may revoke viewing rights for any holder.</span></li>
         <li><span>The token stays in their wallet, but the renderer shows: “This memory has been withdrawn by its creator”.</span></li>
         <li><span>You may restore rights whenever you wish.</span></li>
         <li><span>Static artefacts, once given, remain visible forever – an irrevocable gift.</span></li>
       </ul>
-      <p>
-        You are never forced to bear your soul. You are never forced to hide it. The choice is always yours.
-      </p>
     </section>
 
     <section class="block">
