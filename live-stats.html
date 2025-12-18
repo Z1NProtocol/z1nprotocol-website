@@ -7,362 +7,476 @@
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
-    :root {
-      --bg: #050812;
-      --card-bg: #020617;
-      --text-main: #ffffff;
-      --text-soft: #8f9ab5;
-      --accent: #66d69a;
-      --accent-soft: #3a9f63;
-      --card-border: rgba(148, 163, 184, 0.25);
+    :root{
+      --bg:#050812;
+      --card-bg:#020617;
+      --text-main:#ffffff;
+      --text-soft:#8f9ab5;
+      --accent:#66d69a;
+      --accent-soft:#3a9f63;
+      --card-border:rgba(148,163,184,0.25);
+
+      --C:#4CAF50;
+      --I:#F44336;
+      --K:#FFEB3B;
+      --S:#2196F3;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *{ box-sizing:border-box; margin:0; padding:0; }
 
-    html {
+    html{
       scrollbar-gutter: stable;
       overflow-y: scroll;
+      scroll-behavior: smooth;
     }
 
-    body {
-      background: var(--bg);
-      color: var(--text-main);
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    body{
+      background:var(--bg);
+      color:var(--text-main);
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
     }
 
-    a { color: inherit; text-decoration: none; }
-    a:hover { opacity: 0.9; }
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ opacity:0.9; }
 
-    /* HEADER */
-    header {
-      height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      margin-bottom: 20px;
+    /* HEADER (shared) */
+    header{
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      margin-bottom:20px;
     }
 
-    .nav-inner {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .nav-inner{
+      width:100%;
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
     }
 
-    .logo-wrap { display: flex; align-items: center; gap: 8px; }
+    .logo-wrap{ display:flex; align-items:center; gap:8px; }
 
-    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
+    .logo-link{ display:inline-flex; align-items:center; gap:8px; }
 
-    .logo-dot {
-      width: 24px; height: 24px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.35);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; line-height: 1;
+    .logo-dot{
+      width:24px; height:24px; border-radius:999px;
+      border:1px solid rgba(255,255,255,0.35);
+      display:flex; align-items:center; justify-content:center;
+      font-size:14px; line-height:1;
     }
 
-    .logo-text {
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      opacity: 0.7;
+    .logo-text{
+      font-size:11px;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      opacity:0.7;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 22px;
-      font-size: 13px;
-      opacity: 0.85;
+    .nav-links{
+      display:flex;
+      gap:22px;
+      font-size:13px;
+      opacity:0.85;
     }
 
-    .nav-links a { position: relative; }
-    .nav-links a.active { color: var(--accent); }
+    .nav-links a{ position:relative; }
+    .nav-links a.active{ color:var(--accent); }
 
-    .nav-links a.active::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -4px;
-      width: 100%;
-      height: 2px;
-      border-radius: 999px;
-      background: linear-gradient(to right, var(--accent), var(--accent-soft));
+    .nav-links a.active::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-4px;
+      width:100%;
+      height:2px;
+      border-radius:999px;
+      background:linear-gradient(to right,var(--accent),var(--accent-soft));
     }
 
-    @media(max-width: 900px){
-      .nav-inner { padding: 0 16px; }
-      .nav-links {
-        font-size: 12px;
-        gap: 14px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
+    @media(max-width:900px){
+      .nav-inner{ padding:0 16px; }
+      .nav-links{
+        font-size:12px;
+        gap:14px;
+        flex-wrap:wrap;
+        justify-content:flex-end;
       }
     }
 
     /* PAGE */
-    .page {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 24px 72px;
+    .page{
+      max-width:1200px;
+      margin:0 auto;
+      padding:40px 24px 72px;
+    }
+    @media(max-width:900px){
+      .page{ padding:32px 18px 56px; }
     }
 
-    @media(max-width: 900px){
-      .page { padding: 32px 18px 56px; }
+    h1{
+      font-size:40px;
+      margin:0 0 10px 0;
+      letter-spacing:-0.02em;
     }
 
-    h1 {
-      font-size: 40px;
-      margin: 0 0 10px 0;
-      letter-spacing: -0.02em;
+    .lead{
+      font-size:17px;
+      opacity:0.85;
+      line-height:1.65;
+      margin-bottom:8px;
+      max-width:900px;
     }
 
-    .lead {
-      font-size: 17px;
-      opacity: 0.85;
-      line-height: 1.65;
-      margin-bottom: 8px;
-      max-width: 900px;
+    .lead-small{
+      font-size:14px;
+      opacity:0.7;
+      line-height:1.65;
+      margin-top:4px;
+      margin-bottom:32px; /* extra lucht */
+      max-width:900px;
     }
 
-    .lead-small {
-      font-size: 14px;
-      opacity: 0.7;
-      line-height: 1.65;
-      margin-top: 4px;
-      margin-bottom: 40px;
-      max-width: 900px;
+    /* ====== LATEST GLYPH BAR (index vibe) ====== */
+    .glyph-strip{
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.18);
+      background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0.0) 62%);
+      overflow:hidden;
+      margin: 10px 0 28px 0;
     }
 
-    /* SECTION TITLES */
-    .section-title {
-      font-size: 18px;
-      letter-spacing: -0.01em;
-      margin: 0 0 10px 0;
+    .glyph-strip-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:14px 16px;
     }
 
-    .section-sub {
-      font-size: 13px;
-      color: var(--text-soft);
-      line-height: 1.6;
-      margin-bottom: 18px;
-      max-width: 900px;
+    .glyph-left{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width: 220px;
     }
 
-    /* TABLE WRAPPER */
-    .table-wrap {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      overflow: hidden;
-    }
-
-    .table-topbar {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .pill {
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.30);
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
       color: rgba(255,255,255,0.78);
-      opacity: 0.9;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.30);
-      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 60%);
-      white-space: nowrap;
     }
 
-    .hint {
-      font-size: 12px;
+    .glyph-meta{
+      font-size:13px;
       color: var(--text-soft);
-      opacity: 0.9;
+      line-height:1.55;
     }
 
-    table.stats {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
+    .glyph-right{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      justify-content:flex-end;
+      flex:1;
+      min-width: 0;
     }
 
-    table.stats thead th {
-      text-align: left;
-      padding: 12px 16px;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.75);
-      background: rgba(255,255,255,0.02);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+    .glyph-id{
+      font-size:22px;
+      font-weight:700;
+      letter-spacing:-0.02em;
+      white-space:nowrap;
     }
 
-    table.stats tbody td {
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      vertical-align: top;
+    .glyph-line{
+      font-size:22px;
+      letter-spacing:0.02em;
+      opacity:0.88;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 640px;
     }
 
-    table.stats tbody tr:last-child td {
-      border-bottom: none;
+    .glyph-line .dot{
+      color:#6b7280;
+      opacity:1;
+      padding:0 4px;
     }
 
-    .row-label {
-      color: rgba(255,255,255,0.92);
-      font-weight: 600;
-      letter-spacing: -0.01em;
+    @media(max-width:900px){
+      .glyph-strip-inner{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .glyph-right{
+        width:100%;
+        justify-content:flex-start;
+        flex-wrap:wrap;
+      }
+      .glyph-line{ max-width: 100%; }
     }
 
-    .soft {
+    /* ====== DONUT DASHBOARD ====== */
+    .dash-title{
+      font-size:18px;
+      letter-spacing:-0.01em;
+      margin: 6px 0 10px;
+    }
+
+    .dash-sub{
+      font-size:13px;
       color: var(--text-soft);
-      font-weight: 400;
+      line-height:1.6;
+      margin-bottom:16px;
+      max-width:900px;
     }
 
-    .accent {
-      color: var(--accent);
-      font-weight: 600;
+    /* Desktop grid */
+    .donut-grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:16px;
     }
 
-    .mono {
-      font-variant-numeric: tabular-nums;
-      font-feature-settings: "tnum" 1, "ss01" 1;
-    }
-
-    .muted-divider td {
-      padding: 8px 16px !important;
-      background: rgba(255,255,255,0.02);
-      color: rgba(255,255,255,0.75);
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    /* MOBILE SWIPE CARDS */
-    .mobile-cards {
-      display: none;
-      margin-top: 18px;
-    }
-
-    .cards-track {
-      display: flex;
-      gap: 14px;
-      overflow-x: auto;
-      padding: 2px 2px 14px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .cards-track::-webkit-scrollbar { height: 10px; }
-    .cards-track::-webkit-scrollbar-thumb {
-      background: rgba(148,163,184,0.25);
-      border-radius: 999px;
-    }
-    .cards-track::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.03);
-      border-radius: 999px;
-    }
-
-    .epoch-card {
-      flex: 0 0 86%;
-      scroll-snap-align: start;
+    .donut-card{
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 18px;
       padding: 14px 14px 16px;
-      overflow: hidden;
-      position: relative;
+      position:relative;
+      overflow:hidden;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
     }
 
-    .epoch-card::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      pointer-events: none;
-      border-radius: 18px;
+    .donut-card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      pointer-events:none;
+      border-radius:18px;
       background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 62%);
-      opacity: 0.9;
+      opacity:0.85;
     }
 
-    .epoch-card > * { position: relative; }
+    .donut-card > *{ position:relative; }
 
-    .epoch-title {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
+    .donut-top{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
     }
 
-    .epoch-title h3 {
-      font-size: 16px;
-      letter-spacing: -0.01em;
-    }
-
-    .epoch-title .tag {
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+    .donut-top .label{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
       color: rgba(255,255,255,0.75);
-      border: 1px solid rgba(148,163,184,0.25);
-      padding: 5px 10px;
-      border-radius: 999px;
-      white-space: nowrap;
+      opacity:0.9;
     }
 
-    .kv {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      font-size: 13px;
-    }
-
-    .kv:last-child { border-bottom: none; }
-
-    .kv .k { color: rgba(255,255,255,0.82); }
-    .kv .v { color: rgba(255,255,255,0.95); font-weight: 600; }
-    .kv .v.soft { color: var(--text-soft); font-weight: 500; }
-    .kv .v.accent { color: var(--accent); }
-
-    .swipe-hint {
-      font-size: 12px;
+    .donut-top .epoch{
+      font-size:12px;
       color: var(--text-soft);
-      margin-top: 10px;
-      opacity: 0.9;
+      white-space:nowrap;
     }
 
-    @media(max-width: 900px){
-      .table-wrap { display: none; }
-      .mobile-cards { display: block; }
+    .donut-mid{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 4px 0 10px;
+    }
+
+    .donut-svg{
+      width: 150px;
+      height: 150px;
+      display:block;
+    }
+
+    .donut-center-title{
+      font-size:12px;
+      fill:#d5d9e8;
+      opacity:0.95;
+    }
+    .donut-center-sub{
+      font-size:11px;
+      fill: var(--text-soft);
+    }
+    .donut-center-win{
+      font-size:14px;
+      font-weight:700;
+      fill:#ffffff;
+    }
+
+    .legend{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top: 8px;
+      font-size:12px;
+      color: rgba(255,255,255,0.80);
+      opacity:0.9;
+    }
+
+    .lg{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border: 1px solid rgba(148,163,184,0.22);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .sw{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      display:inline-block;
+    }
+
+    .donut-card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(102,214,154,0.45);
+      box-shadow:
+        0 6px 18px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(102,214,154,0.14),
+        0 0 18px rgba(102,214,154,0.10);
+    }
+
+    /* Mobile swipe version */
+    .donut-swipe{
+      display:none;
+      margin-top: 10px;
+    }
+
+    .swipe-track{
+      display:flex;
+      gap:14px;
+      overflow-x:auto;
+      padding: 2px 2px 12px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .swipe-track::-webkit-scrollbar{ height:10px; }
+    .swipe-track::-webkit-scrollbar-thumb{
+      background: rgba(148,163,184,0.25);
+      border-radius:999px;
+    }
+    .swipe-track::-webkit-scrollbar-track{
+      background: rgba(255,255,255,0.03);
+      border-radius:999px;
+    }
+
+    .donut-card.swipe{
+      flex: 0 0 86%;
+      scroll-snap-align: start;
+    }
+
+    .swipe-hint{
+      font-size:12px;
+      color: var(--text-soft);
+      margin-top: 8px;
+      opacity:0.9;
+    }
+
+    @media(max-width:900px){
+      .donut-grid{ display:none; }
+      .donut-swipe{ display:block; }
+    }
+
+    /* ====== SOFTER STATS (NOT TOO ANALYTICS) ====== */
+    .soft-grid{
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:16px;
+    }
+
+    .soft-card{
+      background: var(--card-bg);
+      border-radius:16px;
+      border:1px solid var(--card-border);
+      padding:14px 14px 16px;
+      font-size:13px;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .soft-label{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      opacity:0.55;
+      margin-bottom:6px;
+    }
+
+    .soft-value{
+      font-size:18px;
+      font-weight:600;
+      margin-bottom:4px;
+    }
+
+    .soft-sub{
+      font-size:12px;
+      opacity:0.75;
+      line-height:1.55;
+    }
+
+    .soft-card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(102,214,154,0.35);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.30);
+    }
+
+    @media(max-width:900px){
+      .soft-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media(max-width:600px){
+      .soft-grid{ grid-template-columns: 1fr; }
     }
 
     /* FOOTER */
-    footer {
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 20px;
-      font-size: 12px;
-      text-align: center;
-      opacity: 0.85;
+    footer{
+      border-top:1px solid rgba(255,255,255,0.05);
+      padding:20px;
+      font-size:12px;
+      text-align:center;
+      opacity:0.85;
     }
 
-    footer .tagline {
-      margin-bottom: 6px;
-      font-size: 13px;
+    footer .tagline{
+      margin-bottom:6px;
+      font-size:13px;
     }
 
-    footer .links {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      font-size: 13px;
+    footer .links{
+      display:flex;
+      justify-content:center;
+      gap:18px;
+      font-size:13px;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ scroll-behavior: auto !important; }
+      .donut-card, .soft-card{ transition:none; }
     }
   </style>
 </head>
@@ -391,199 +505,88 @@
   <h1>Live stats of the field</h1>
 
   <p class="lead">
-    Static placeholders for now — later we wire this to on-chain views and/or an indexer.
+    This page is not a spreadsheet. It is a mirror: signal → intent → presence.
   </p>
 
   <p class="lead-small">
-    This page is the readable pulse of the protocol: epochs, Keys, signals,
-    and the visible pressure of the field — in a form both BI and NBI can parse at a glance.
+    We start with signal composition (intent mix). The rest sits beneath it — softly.
   </p>
 
-  <h2 class="section-title">Epoch windows</h2>
-  <p class="section-sub">
-    Same signal, different lens: <span class="accent">Current</span>, last <span class="accent">21</span>, last <span class="accent">210</span>, and <span class="accent">Total</span>.
-    This is where patterns become visible.
-  </p>
+  <!-- Latest glyph minted (visual bar) -->
+  <section class="glyph-strip" aria-label="Latest glyph minted">
+    <div class="glyph-strip-inner">
+      <div class="glyph-left">
+        <div class="pill">Latest glyph minted</div>
+        <div class="glyph-meta">A small mark of “who arrived” most recently (placeholder).</div>
+      </div>
 
-  <!-- DESKTOP TABLE -->
-  <section class="table-wrap" aria-label="Live stats table">
-    <div class="table-topbar">
-      <div class="pill">Z1N · Field Pulse</div>
-      <div class="hint">Placeholders — later: indexer / on-chain views</div>
+      <div class="glyph-right">
+        <div class="glyph-id">Z1N #777</div>
+        <div class="glyph-line" aria-label="Glyph line">
+          ∞ <span class="dot">·</span> π <span class="dot">·</span> △ <span class="dot">·</span> ⊗ <span class="dot">·</span> ◇ <span class="dot">·</span> ○
+        </div>
+      </div>
     </div>
-
-    <table class="stats">
-      <thead>
-        <tr>
-          <th>Metric</th>
-          <th>Current epoch</th>
-          <th>21 epochs</th>
-          <th>210 epochs</th>
-          <th>Total epochs</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr class="muted-divider">
-          <td colspan="5">Keys</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">Keys awakened</td>
-          <td class="mono">+12</td>
-          <td class="mono">+310</td>
-          <td class="mono">+2,840</td>
-          <td class="mono">7,842</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">% Keys awakened <span class="soft">(of max supply)</span></td>
-          <td class="mono">0.00%</td>
-          <td class="mono">0.00%</td>
-          <td class="mono">0.01%</td>
-          <td class="mono">0.04%</td>
-        </tr>
-
-        <tr class="muted-divider">
-          <td colspan="5">PoG signals</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">PoG signals sent</td>
-          <td class="mono">+48</td>
-          <td class="mono">+1,180</td>
-          <td class="mono">+9,420</td>
-          <td class="mono">14,220</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">Most attested signal</td>
-          <td class="accent">ΩS · 56%</td>
-          <td class="accent">ΩI · 41%</td>
-          <td class="accent">ΩS · 38%</td>
-          <td class="accent">ΩS · 33%</td>
-        </tr>
-
-        <tr class="muted-divider">
-          <td colspan="5">Intent mix across PoG signals</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">ΩC</td>
-          <td class="mono">23%</td>
-          <td class="mono">15%</td>
-          <td class="mono">12%</td>
-          <td class="mono">7%</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">ΩI</td>
-          <td class="mono">18%</td>
-          <td class="mono">22%</td>
-          <td class="mono">19%</td>
-          <td class="mono">14%</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">ΩK</td>
-          <td class="mono">39%</td>
-          <td class="mono">44%</td>
-          <td class="mono">47%</td>
-          <td class="mono">51%</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">ΩS</td>
-          <td class="mono">20%</td>
-          <td class="mono">19%</td>
-          <td class="mono">22%</td>
-          <td class="mono">28%</td>
-        </tr>
-
-        <tr class="muted-divider">
-          <td colspan="5">Artefacts</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">Static artefacts minted</td>
-          <td class="mono">+3</td>
-          <td class="mono">+42</td>
-          <td class="mono">+210</td>
-          <td class="mono">512</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">Static artefacts as % of Keys awakened</td>
-          <td class="mono">0.03%</td>
-          <td class="mono">0.54%</td>
-          <td class="mono">2.67%</td>
-          <td class="mono">6.53%</td>
-        </tr>
-
-        <tr>
-          <td class="row-label">Most attested PoG signal (text)</td>
-          <td class="soft">“…”</td>
-          <td class="soft">“…”</td>
-          <td class="soft">“…”</td>
-          <td class="soft">“…”</td>
-        </tr>
-      </tbody>
-    </table>
   </section>
 
-  <!-- MOBILE SWIPE CARDS -->
-  <section class="mobile-cards" aria-label="Live stats cards">
-    <div class="cards-track">
-      <article class="epoch-card">
-        <div class="epoch-title">
-          <h3>Current</h3>
-          <div class="tag">epoch now</div>
-        </div>
-        <div class="kv"><div class="k">Keys awakened</div><div class="v mono">+12</div></div>
-        <div class="kv"><div class="k">PoG signals</div><div class="v mono">+48</div></div>
-        <div class="kv"><div class="k">Most attested</div><div class="v accent">ΩS · 56%</div></div>
-        <div class="kv"><div class="k">Intent mix</div><div class="v soft">ΩC 23 · ΩI 18 · ΩK 39 · ΩS 20</div></div>
-        <div class="kv"><div class="k">Static artefacts</div><div class="v mono">+3</div></div>
-      </article>
+  <h2 class="dash-title">Dashboard with intent mix</h2>
+  <p class="dash-sub">
+    Same field, different lens: <span style="color:var(--accent)">Current</span>, last 21, last 210, total.
+    Each donut shows “how the field speaks” in that window.
+  </p>
 
-      <article class="epoch-card">
-        <div class="epoch-title">
-          <h3>21 epochs</h3>
-          <div class="tag">short lens</div>
-        </div>
-        <div class="kv"><div class="k">Keys awakened</div><div class="v mono">+310</div></div>
-        <div class="kv"><div class="k">PoG signals</div><div class="v mono">+1,180</div></div>
-        <div class="kv"><div class="k">Most attested</div><div class="v accent">ΩI · 41%</div></div>
-        <div class="kv"><div class="k">Intent mix</div><div class="v soft">ΩC 15 · ΩI 22 · ΩK 44 · ΩS 19</div></div>
-        <div class="kv"><div class="k">Static artefacts</div><div class="v mono">+42</div></div>
-      </article>
+  <!-- Desktop grid donuts -->
+  <section class="donut-grid" aria-label="Intent mix donuts (desktop)">
+    <article class="donut-card" data-window="Current epoch" data-sub="epoch now"
+      data-c="23" data-i="18" data-k="39" data-s="20"></article>
 
-      <article class="epoch-card">
-        <div class="epoch-title">
-          <h3>210 epochs</h3>
-          <div class="tag">pattern lens</div>
-        </div>
-        <div class="kv"><div class="k">Keys awakened</div><div class="v mono">+2,840</div></div>
-        <div class="kv"><div class="k">PoG signals</div><div class="v mono">+9,420</div></div>
-        <div class="kv"><div class="k">Most attested</div><div class="v accent">ΩS · 38%</div></div>
-        <div class="kv"><div class="k">Intent mix</div><div class="v soft">ΩC 12 · ΩI 19 · ΩK 47 · ΩS 22</div></div>
-        <div class="kv"><div class="k">Static artefacts</div><div class="v mono">+210</div></div>
-      </article>
+    <article class="donut-card" data-window="21 epochs" data-sub="short lens"
+      data-c="15" data-i="22" data-k="44" data-s="19"></article>
 
-      <article class="epoch-card">
-        <div class="epoch-title">
-          <h3>Total</h3>
-          <div class="tag">field memory</div>
-        </div>
-        <div class="kv"><div class="k">Keys awakened</div><div class="v mono">7,842</div></div>
-        <div class="kv"><div class="k">PoG signals</div><div class="v mono">14,220</div></div>
-        <div class="kv"><div class="k">Most attested</div><div class="v accent">ΩS · 33%</div></div>
-        <div class="kv"><div class="k">Intent mix</div><div class="v soft">ΩC 7 · ΩI 14 · ΩK 51 · ΩS 28</div></div>
-        <div class="kv"><div class="k">Static artefacts</div><div class="v mono">512</div></div>
-      </article>
+    <article class="donut-card" data-window="210 epochs" data-sub="pattern lens"
+      data-c="12" data-i="19" data-k="47" data-s="22"></article>
+
+    <article class="donut-card" data-window="Total epochs" data-sub="field memory"
+      data-c="7" data-i="14" data-k="51" data-s="28"></article>
+  </section>
+
+  <!-- Mobile swipe donuts -->
+  <section class="donut-swipe" aria-label="Intent mix donuts (mobile swipe)">
+    <div class="swipe-track" id="swipeTrack">
+      <article class="donut-card swipe" data-window="Current epoch" data-sub="epoch now"
+        data-c="23" data-i="18" data-k="39" data-s="20"></article>
+
+      <article class="donut-card swipe" data-window="21 epochs" data-sub="short lens"
+        data-c="15" data-i="22" data-k="44" data-s="19"></article>
+
+      <article class="donut-card swipe" data-window="210 epochs" data-sub="pattern lens"
+        data-c="12" data-i="19" data-k="47" data-s="22"></article>
+
+      <article class="donut-card swipe" data-window="Total epochs" data-sub="field memory"
+        data-c="7" data-i="14" data-k="51" data-s="28"></article>
+    </div>
+    <div class="swipe-hint">Swipe → to change lens</div>
+  </section>
+
+  <!-- Softer stats under the donuts -->
+  <section class="soft-grid" aria-label="Soft field stats">
+    <div class="soft-card">
+      <div class="soft-label">Keys awakened</div>
+      <div class="soft-value">7 842</div>
+      <div class="soft-sub">How many identities have entered the field so far (placeholder).</div>
     </div>
 
-    <div class="swipe-hint">Swipe → to change lens</div>
+    <div class="soft-card">
+      <div class="soft-label">PoG signals</div>
+      <div class="soft-value">14 220</div>
+      <div class="soft-sub">Total signals the field has received across epochs (placeholder).</div>
+    </div>
+
+    <div class="soft-card">
+      <div class="soft-label">Most attested intent</div>
+      <div class="soft-value">ΩS</div>
+      <div class="soft-sub">What the field currently agrees with most (placeholder).</div>
+    </div>
   </section>
 
 </main>
@@ -595,5 +598,126 @@
     <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
 </footer>
+
+<script>
+  (function () {
+    const COLORS = { C: "#4CAF50", I: "#F44336", K: "#FFEB3B", S: "#2196F3" };
+    const ORDER = ["C","I","K","S"];
+    const r = 51;
+    const circumference = 2 * Math.PI * r;
+
+    function dominant(intents){
+      const entries = Object.entries(intents).sort((a,b) => b[1]-a[1]);
+      const [key, pct] = entries[0];
+      return { key, pct, color: COLORS[key] };
+    }
+
+    function buildDonutSVG(intents, titleTop, titleBottom){
+      // Normalize to sum=100 (basic guard)
+      const sum = intents.C + intents.I + intents.K + intents.S;
+      const safe = sum === 0 ? {C:25,I:25,K:25,S:25} : {
+        C: (intents.C / sum) * 100,
+        I: (intents.I / sum) * 100,
+        K: (intents.K / sum) * 100,
+        S: (intents.S / sum) * 100,
+      };
+
+      const win = dominant({
+        C: Math.round(safe.C),
+        I: Math.round(safe.I),
+        K: Math.round(safe.K),
+        S: Math.round(safe.S),
+      });
+
+      let offsetDeg = -90; // start at top
+      const segments = ORDER.map((k) => {
+        const pct = safe[k];
+        const arc = (pct / 100) * circumference;
+        const dasharray = `${arc.toFixed(1)} ${(circumference - arc).toFixed(1)}`;
+        const seg = {
+          key: k,
+          pct: pct,
+          dasharray,
+          rotate: offsetDeg
+        };
+        offsetDeg += (pct / 100) * 360;
+        return seg;
+      });
+
+      return `
+        <svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Intent donut">
+          <defs>
+            <radialGradient id="donutBg" cx="50%" cy="40%" r="70%">
+              <stop offset="0%" stop-color="#0b101b"/>
+              <stop offset="100%" stop-color="#1c2534"/>
+            </radialGradient>
+          </defs>
+
+          <!-- background plate -->
+          <circle cx="70" cy="70" r="62" fill="url(#donutBg)"></circle>
+          <circle cx="70" cy="70" r="43" fill="#0f141f"></circle>
+
+          <!-- base track -->
+          <circle cx="70" cy="70" r="${r}"
+                  fill="none" stroke="#252c3b" stroke-width="11"
+                  transform="rotate(-90 70 70)"></circle>
+
+          <!-- segments -->
+          ${segments.map(s => `
+            <circle cx="70" cy="70" r="${r}"
+                    fill="none" stroke="${COLORS[s.key]}" stroke-width="11"
+                    stroke-linecap="butt"
+                    stroke-dasharray="${s.dasharray}"
+                    transform="rotate(${s.rotate} 70 70)"></circle>
+          `).join("")}
+
+          <!-- center text -->
+          <text x="70" y="61" text-anchor="middle" class="donut-center-title">${titleTop}</text>
+          <text x="70" y="77" text-anchor="middle" class="donut-center-sub">${titleBottom}</text>
+
+          <text x="70" y="99" text-anchor="middle" class="donut-center-win">
+            <tspan fill="${win.color}">Ω${win.key}</tspan>
+            <tspan fill="#ffffff"> ${win.pct}%</tspan>
+          </text>
+        </svg>
+      `;
+    }
+
+    function renderCard(card){
+      const windowLabel = card.getAttribute("data-window") || "Window";
+      const sub = card.getAttribute("data-sub") || "";
+      const intents = {
+        C: Number(card.getAttribute("data-c") || 0),
+        I: Number(card.getAttribute("data-i") || 0),
+        K: Number(card.getAttribute("data-k") || 0),
+        S: Number(card.getAttribute("data-s") || 0),
+      };
+
+      card.innerHTML = `
+        <div class="donut-top">
+          <div class="label">${windowLabel}</div>
+          <div class="epoch">${sub}</div>
+        </div>
+
+        <div class="donut-mid">
+          ${buildDonutSVG(intents, windowLabel.includes("21") ? "Last 21" :
+                                  windowLabel.includes("210") ? "Last 210" :
+                                  windowLabel.includes("Total") ? "Total" : "Current",
+                                  "Intent mix")}
+        </div>
+
+        <div class="legend" aria-label="Legend">
+          <span class="lg"><span class="sw" style="background:var(--C)"></span>ΩC</span>
+          <span class="lg"><span class="sw" style="background:var(--I)"></span>ΩI</span>
+          <span class="lg"><span class="sw" style="background:var(--K)"></span>ΩK</span>
+          <span class="lg"><span class="sw" style="background:var(--S)"></span>ΩS</span>
+        </div>
+      `;
+    }
+
+    document.querySelectorAll(".donut-card").forEach(renderCard);
+  })();
+</script>
+
 </body>
 </html>
