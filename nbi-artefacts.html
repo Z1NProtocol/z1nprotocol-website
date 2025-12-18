@@ -242,22 +242,11 @@
       box-shadow: 0 22px 70px rgba(0,0,0,0.65);
     }
 
-    /* CONTROLS + DOTS – alleen 4 bullets */
-    .controls-row {
-      position: absolute;
-      left: 34px;
-      top: 440px;      /* pas dit eventueel aan voor hoger/lager */
-      display: flex;
-      margin: 0;
-      padding: 0;
-      z-index: 2;
-    }
-
+    /* DOTS (nieuw: niet meer absolute, maar "in-flow") */
     .carousel-dots {
       display: flex;
       gap: 10px;
       align-items: center;
-      justify-content: flex-start;
     }
 
     .dot {
@@ -279,6 +268,26 @@
       background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-soft));
       border-color: var(--accent-soft);
       transform: scale(1.12);
+    }
+
+    /* Desktop: dots onder de tekstkolom, ~2 regels onder de laatste meta */
+    .controls-row {
+      margin-top: 26px; /* ± 2 tekstregels */
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    /* Mobiel: dots onder de artefact, gecentreerd en met vrije ruimte */
+    .controls-row-mobile {
+      display: none;
+      margin-top: 22px;
+      padding-bottom: 6px;
+      justify-content: center;
+    }
+
+    @media(max-width: 900px){
+      .controls-row { display: none; }
+      .controls-row-mobile { display: flex; }
     }
 
     /* FOOTER */
@@ -359,6 +368,16 @@
             <div class="slide-meta">
               <span>Present since: epoch 1</span>
               <span>Era focus: ΩC / ΩK</span>
+            </div>
+
+            <!-- DOTS (desktop positie: onder tekst) -->
+            <div class="controls-row">
+              <div class="carousel-dots" id="dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
             </div>
           </div>
 
@@ -597,6 +616,17 @@
             </svg>
             <!-- ===== ÆON SVG EINDE ===== -->
           </div>
+
+          <!-- DOTS (mobiel positie: onder artefact) -->
+          <div class="controls-row-mobile">
+            <div class="carousel-dots" id="dotsMobile">
+              <div class="dot active"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+
         </div>
       </article>
 
@@ -838,16 +868,6 @@
       </article>
 
     </div>
-
-    <!-- CONTROLS + DOTS – alleen bolletjes -->
-    <div class="controls-row">
-      <div class="carousel-dots" id="dots">
-        <div class="dot active"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>
-    </div>
   </section>
 </main>
 
@@ -863,8 +883,15 @@
   (function () {
     const track = document.querySelector(".carousel-track");
     const slides = Array.from(document.querySelectorAll(".carousel-slide"));
+
     const dotsContainer = document.getElementById("dots");
     const dots = Array.from(dotsContainer.querySelectorAll(".dot"));
+
+    // Mobile dots (spiegelen active-state)
+    const dotsMobileContainer = document.getElementById("dotsMobile");
+    const dotsMobile = dotsMobileContainer
+      ? Array.from(dotsMobileContainer.querySelectorAll(".dot"))
+      : [];
 
     let index = 0;
     const total = slides.length;
@@ -872,16 +899,21 @@
     function update() {
       track.style.transform = "translateX(-" + (index * 100) + "%)";
       dots.forEach((d, i) => d.classList.toggle("active", i === index));
+      dotsMobile.forEach((d, i) => d.classList.toggle("active", i === index));
     }
 
-    dots.forEach((dot, i) => {
-      dot.addEventListener("click", function () {
-        index = i;
-        update();
+    function bindDots(dotsArr) {
+      dotsArr.forEach((dot, i) => {
+        dot.addEventListener("click", function () {
+          index = i;
+          update();
+        });
       });
-    });
+    }
 
-    // startpositie
+    bindDots(dots);
+    bindDots(dotsMobile);
+
     update();
   })();
 </script>
