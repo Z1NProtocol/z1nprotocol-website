@@ -19,10 +19,9 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ✅ IMPORTANT: keep layout perfectly aligned vs pages with scrollbars */
     html {
-      scrollbar-gutter: stable; /* modern browsers */
-      overflow-y: scroll;       /* fallback */
+      scrollbar-gutter: stable;
+      overflow-y: scroll;
     }
 
     body {
@@ -34,7 +33,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* HEADER – EXACT like artefacts.html */
+    /* HEADER */
     header {
       height: 72px;
       display: flex;
@@ -54,28 +53,15 @@
       justify-content: space-between;
     }
 
-    .logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .logo-wrap { display: flex; align-items: center; gap: 8px; }
 
-    .logo-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
 
     .logo-dot {
-      width: 24px;
-      height: 24px;
-      border-radius: 999px;
+      width: 24px; height: 24px; border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; line-height: 1;
     }
 
     .logo-text {
@@ -93,7 +79,6 @@
     }
 
     .nav-links a { position: relative; }
-
     .nav-links a.active { color: var(--accent); }
 
     .nav-links a.active::after {
@@ -117,7 +102,7 @@
       }
     }
 
-    /* PAGE WRAPPER – EXACT like artefacts.html */
+    /* PAGE */
     .page {
       max-width: 1200px;
       margin: 0 auto;
@@ -128,7 +113,6 @@
       .page { padding: 32px 18px 56px; }
     }
 
-    /* TITLE + INTRO – EXACT like artefacts.html */
     h1 {
       font-size: 40px;
       margin: 0 0 10px 0;
@@ -140,7 +124,7 @@
       opacity: 0.85;
       line-height: 1.65;
       margin-bottom: 8px;
-      max-width: 720px;
+      max-width: 900px;
     }
 
     .lead-small {
@@ -149,57 +133,218 @@
       line-height: 1.65;
       margin-top: 4px;
       margin-bottom: 40px;
-      max-width: 720px;
+      max-width: 900px;
     }
 
-    /* STATS GRID */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+    /* SECTION TITLES */
+    .section-title {
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      margin: 0 0 10px 0;
     }
 
-    .stat-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      border: 1px solid var(--card-border);
-      padding: 14px 16px 18px;
+    .section-sub {
       font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.6;
+      margin-bottom: 18px;
+      max-width: 900px;
     }
 
-    .stat-label {
+    /* TABLE WRAPPER */
+    .table-wrap {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .table-topbar {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .pill {
       font-size: 11px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      opacity: 0.6;
-      margin-bottom: 6px;
+      color: rgba(255,255,255,0.78);
+      opacity: 0.9;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.30);
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 60%);
+      white-space: nowrap;
     }
 
-    .stat-value {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .stat-sub {
+    .hint {
       font-size: 12px;
-      opacity: 0.75;
-      line-height: 1.55;
+      color: var(--text-soft);
+      opacity: 0.9;
+    }
+
+    table.stats {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    table.stats thead th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    table.stats tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      vertical-align: top;
+    }
+
+    table.stats tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .row-label {
+      color: rgba(255,255,255,0.92);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .soft {
+      color: var(--text-soft);
+      font-weight: 400;
+    }
+
+    .accent {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .mono {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1, "ss01" 1;
+    }
+
+    .muted-divider td {
+      padding: 8px 16px !important;
+      background: rgba(255,255,255,0.02);
+      color: rgba(255,255,255,0.75);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* MOBILE SWIPE CARDS */
+    .mobile-cards {
+      display: none;
+      margin-top: 18px;
+    }
+
+    .cards-track {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 2px 2px 14px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .cards-track::-webkit-scrollbar { height: 10px; }
+    .cards-track::-webkit-scrollbar-thumb {
+      background: rgba(148,163,184,0.25);
+      border-radius: 999px;
+    }
+    .cards-track::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+    }
+
+    .epoch-card {
+      flex: 0 0 86%;
+      scroll-snap-align: start;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 14px 14px 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .epoch-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      pointer-events: none;
+      border-radius: 18px;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 62%);
+      opacity: 0.9;
+    }
+
+    .epoch-card > * { position: relative; }
+
+    .epoch-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .epoch-title h3 {
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .epoch-title .tag {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(148,163,184,0.25);
+      padding: 5px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+    }
+
+    .kv:last-child { border-bottom: none; }
+
+    .kv .k { color: rgba(255,255,255,0.82); }
+    .kv .v { color: rgba(255,255,255,0.95); font-weight: 600; }
+    .kv .v.soft { color: var(--text-soft); font-weight: 500; }
+    .kv .v.accent { color: var(--accent); }
+
+    .swipe-hint {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 10px;
+      opacity: 0.9;
     }
 
     @media(max-width: 900px){
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0,1fr));
-      }
+      .table-wrap { display: none; }
+      .mobile-cards { display: block; }
     }
 
-    @media(max-width: 600px){
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* FOOTER – EXACT like artefacts.html */
+    /* FOOTER */
     footer {
       border-top: 1px solid rgba(255,255,255,0.05);
       padding: 20px;
@@ -246,33 +391,201 @@
   <h1>Live stats of the field</h1>
 
   <p class="lead">
-    Static placeholders for now – later we wire this to on-chain views and/or an indexer.
+    Static placeholders for now — later we wire this to on-chain views and/or an indexer.
   </p>
 
   <p class="lead-small">
-    This page will become the readable pulse of the protocol: epochs, Keys, signals,
-    and the visible pressure of the field.
+    This page is the readable pulse of the protocol: epochs, Keys, signals,
+    and the visible pressure of the field — in a form both BI and NBI can parse at a glance.
   </p>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label">Current epoch</div>
-      <div class="stat-value">42</div>
-      <div class="stat-sub">Example value.</div>
+  <h2 class="section-title">Epoch windows</h2>
+  <p class="section-sub">
+    Same signal, different lens: <span class="accent">Current</span>, last <span class="accent">21</span>, last <span class="accent">210</span>, and <span class="accent">Total</span>.
+    This is where patterns become visible.
+  </p>
+
+  <!-- DESKTOP TABLE -->
+  <section class="table-wrap" aria-label="Live stats table">
+    <div class="table-topbar">
+      <div class="pill">Z1N · Field Pulse</div>
+      <div class="hint">Placeholders — later: indexer / on-chain views</div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-label">Total keys</div>
-      <div class="stat-value">7 842</div>
-      <div class="stat-sub">Awakened Keys so far.</div>
+    <table class="stats">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Current epoch</th>
+          <th>21 epochs</th>
+          <th>210 epochs</th>
+          <th>Total epochs</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr class="muted-divider">
+          <td colspan="5">Keys</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">Keys awakened</td>
+          <td class="mono">+12</td>
+          <td class="mono">+310</td>
+          <td class="mono">+2,840</td>
+          <td class="mono">7,842</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">% Keys awakened <span class="soft">(of max supply)</span></td>
+          <td class="mono">0.00%</td>
+          <td class="mono">0.00%</td>
+          <td class="mono">0.01%</td>
+          <td class="mono">0.04%</td>
+        </tr>
+
+        <tr class="muted-divider">
+          <td colspan="5">PoG signals</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">PoG signals sent</td>
+          <td class="mono">+48</td>
+          <td class="mono">+1,180</td>
+          <td class="mono">+9,420</td>
+          <td class="mono">14,220</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">Most attested signal</td>
+          <td class="accent">ΩS · 56%</td>
+          <td class="accent">ΩI · 41%</td>
+          <td class="accent">ΩS · 38%</td>
+          <td class="accent">ΩS · 33%</td>
+        </tr>
+
+        <tr class="muted-divider">
+          <td colspan="5">Intent mix across PoG signals</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">ΩC</td>
+          <td class="mono">23%</td>
+          <td class="mono">15%</td>
+          <td class="mono">12%</td>
+          <td class="mono">7%</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">ΩI</td>
+          <td class="mono">18%</td>
+          <td class="mono">22%</td>
+          <td class="mono">19%</td>
+          <td class="mono">14%</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">ΩK</td>
+          <td class="mono">39%</td>
+          <td class="mono">44%</td>
+          <td class="mono">47%</td>
+          <td class="mono">51%</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">ΩS</td>
+          <td class="mono">20%</td>
+          <td class="mono">19%</td>
+          <td class="mono">22%</td>
+          <td class="mono">28%</td>
+        </tr>
+
+        <tr class="muted-divider">
+          <td colspan="5">Artefacts</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">Static artefacts minted</td>
+          <td class="mono">+3</td>
+          <td class="mono">+42</td>
+          <td class="mono">+210</td>
+          <td class="mono">512</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">Static artefacts as % of Keys awakened</td>
+          <td class="mono">0.03%</td>
+          <td class="mono">0.54%</td>
+          <td class="mono">2.67%</td>
+          <td class="mono">6.53%</td>
+        </tr>
+
+        <tr>
+          <td class="row-label">Most attested PoG signal (text)</td>
+          <td class="soft">“…”</td>
+          <td class="soft">“…”</td>
+          <td class="soft">“…”</td>
+          <td class="soft">“…”</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- MOBILE SWIPE CARDS -->
+  <section class="mobile-cards" aria-label="Live stats cards">
+    <div class="cards-track">
+      <article class="epoch-card">
+        <div class="epoch-title">
+          <h3>Current</h3>
+          <div class="tag">epoch now</div>
+        </div>
+        <div class="kv"><div class="k">Keys awakened</div><div class="v mono">+12</div></div>
+        <div class="kv"><div class="k">PoG signals</div><div class="v mono">+48</div></div>
+        <div class="kv"><div class="k">Most attested</div><div class="v accent">ΩS · 56%</div></div>
+        <div class="kv"><div class="k">Intent mix</div><div class="v soft">ΩC 23 · ΩI 18 · ΩK 39 · ΩS 20</div></div>
+        <div class="kv"><div class="k">Static artefacts</div><div class="v mono">+3</div></div>
+      </article>
+
+      <article class="epoch-card">
+        <div class="epoch-title">
+          <h3>21 epochs</h3>
+          <div class="tag">short lens</div>
+        </div>
+        <div class="kv"><div class="k">Keys awakened</div><div class="v mono">+310</div></div>
+        <div class="kv"><div class="k">PoG signals</div><div class="v mono">+1,180</div></div>
+        <div class="kv"><div class="k">Most attested</div><div class="v accent">ΩI · 41%</div></div>
+        <div class="kv"><div class="k">Intent mix</div><div class="v soft">ΩC 15 · ΩI 22 · ΩK 44 · ΩS 19</div></div>
+        <div class="kv"><div class="k">Static artefacts</div><div class="v mono">+42</div></div>
+      </article>
+
+      <article class="epoch-card">
+        <div class="epoch-title">
+          <h3>210 epochs</h3>
+          <div class="tag">pattern lens</div>
+        </div>
+        <div class="kv"><div class="k">Keys awakened</div><div class="v mono">+2,840</div></div>
+        <div class="kv"><div class="k">PoG signals</div><div class="v mono">+9,420</div></div>
+        <div class="kv"><div class="k">Most attested</div><div class="v accent">ΩS · 38%</div></div>
+        <div class="kv"><div class="k">Intent mix</div><div class="v soft">ΩC 12 · ΩI 19 · ΩK 47 · ΩS 22</div></div>
+        <div class="kv"><div class="k">Static artefacts</div><div class="v mono">+210</div></div>
+      </article>
+
+      <article class="epoch-card">
+        <div class="epoch-title">
+          <h3>Total</h3>
+          <div class="tag">field memory</div>
+        </div>
+        <div class="kv"><div class="k">Keys awakened</div><div class="v mono">7,842</div></div>
+        <div class="kv"><div class="k">PoG signals</div><div class="v mono">14,220</div></div>
+        <div class="kv"><div class="k">Most attested</div><div class="v accent">ΩS · 33%</div></div>
+        <div class="kv"><div class="k">Intent mix</div><div class="v soft">ΩC 7 · ΩI 14 · ΩK 51 · ΩS 28</div></div>
+        <div class="kv"><div class="k">Static artefacts</div><div class="v mono">512</div></div>
+      </article>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-label">Total signals</div>
-      <div class="stat-value">14 220</div>
-      <div class="stat-sub">All PoG signals across epochs.</div>
-    </div>
-  </div>
+    <div class="swipe-hint">Swipe → to change lens</div>
+  </section>
+
 </main>
 
 <footer>
