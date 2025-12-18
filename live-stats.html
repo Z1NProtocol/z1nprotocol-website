@@ -61,7 +61,6 @@
     }
 
     .logo-wrap{ display:flex; align-items:center; gap:8px; }
-
     .logo-link{ display:inline-flex; align-items:center; gap:8px; }
 
     .logo-dot{
@@ -130,7 +129,7 @@
       opacity:0.85;
       line-height:1.65;
       margin-bottom:8px;
-      max-width:900px;
+      max-width:920px;
     }
 
     .lead-small{
@@ -138,8 +137,104 @@
       opacity:0.7;
       line-height:1.65;
       margin-top:4px;
-      margin-bottom:28px;
-      max-width:900px;
+      margin-bottom:22px;
+      max-width:920px;
+    }
+
+    /* ====== LATEST MINTED (index vibe) ====== */
+    .latest-wrap{
+      width:100%;
+      margin: 10px 0 18px;
+    }
+
+    .latest-frame{
+      position:relative;
+      width:100%;
+      overflow:hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.18);
+      background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0.0) 62%);
+      padding: 14px 16px;
+
+      --mx: 50%;
+      --my: 50%;
+    }
+
+    .latest-spot{
+      pointer-events:none;
+      position:absolute;
+      inset:-45%;
+      background:
+        radial-gradient(
+          220px 110px at var(--mx) var(--my),
+          rgba(102,214,154,0.22),
+          rgba(102,214,154,0.08) 38%,
+          rgba(102,214,154,0.00) 70%
+        );
+      opacity:0;
+      transition: opacity 160ms ease;
+    }
+    .latest-frame:hover .latest-spot{ opacity:1; }
+
+    .latest-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .latest-left{
+      min-width: 240px;
+    }
+
+    .latest-label{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,0.72);
+      opacity:0.85;
+      margin-bottom:6px;
+    }
+
+    .latest-key{
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:-0.01em;
+      margin-bottom:4px;
+    }
+
+    .latest-sub{
+      font-size:12px;
+      color: var(--text-soft);
+      opacity:0.85;
+    }
+
+    .latest-glyphs{
+      flex: 1 1 auto;
+      text-align:right;
+      font-size:22px;
+      letter-spacing:0.02em;
+      opacity:0.86;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .latest-glyphs .dot{
+      color: rgba(148,163,184,0.55);
+      padding: 0 6px;
+    }
+
+    @media(max-width:900px){
+      .latest-row{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .latest-glyphs{
+        width:100%;
+        text-align:left;
+        font-size:20px;
+      }
     }
 
     /* ====== TOP LEGEND (like artefact) ====== */
@@ -150,7 +245,7 @@
       align-items:center;
       justify-content:center;
       gap:6px;
-      margin: 8px 0 14px;
+      margin: 6px 0 14px;
       user-select:none;
     }
 
@@ -240,19 +335,10 @@
       display:block;
     }
 
-    .donut-center-title{
-      font-size:12px;
-      fill:#d5d9e8;
-      opacity:0.95;
-    }
-    .donut-center-sub{
-      font-size:11px;
-      fill: var(--text-soft);
-    }
     .donut-center-win{
-      font-size:14px;
-      font-weight:700;
-      fill:#ffffff;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:0.01em;
     }
 
     .donut-card:hover{
@@ -266,11 +352,11 @@
 
     /* ACTIVE donut clearly */
     .donut-card.active{
-      border-color: rgba(102,214,154,0.75);
+      border-color: rgba(102,214,154,0.85);
       box-shadow:
         0 10px 28px rgba(0,0,0,0.45),
-        0 0 0 1px rgba(102,214,154,0.20),
-        0 0 26px rgba(102,214,154,0.16);
+        0 0 0 1px rgba(102,214,154,0.22),
+        0 0 28px rgba(102,214,154,0.18);
       transform: translateY(-1px);
     }
 
@@ -301,7 +387,7 @@
 
     .donut-card.swipe{
       flex: 0 0 86%;
-      scroll-snap-align: start;
+      scroll-snap-align: center;
     }
 
     .swipe-hint{
@@ -317,7 +403,7 @@
       .donut-swipe{ display:block; }
     }
 
-    /* ====== FIELD CARDS (dynamic) ====== */
+    /* ====== FIELD CARDS (dynamic values; fixed labels/subtext) ====== */
     .field-cards{
       margin-top: 10px;
       display:grid;
@@ -388,13 +474,13 @@
       .field-cards{ grid-template-columns: 1fr; }
     }
 
-    /* ====== FIELD SIGNAL (MAS vibe) ====== */
+    /* ====== FIELD SIGNAL ====== */
     .field-signal{
       margin-top: 18px;
       background: var(--card-bg);
       border-radius: 18px;
       border: 1px solid var(--card-border);
-      padding: 18px 18px 18px;
+      padding: 18px;
       overflow:hidden;
       position:relative;
     }
@@ -474,6 +560,7 @@
     @media (prefers-reduced-motion: reduce){
       *{ scroll-behavior: auto !important; }
       .donut-card, .field-card{ transition:none; }
+      .latest-spot{ transition:none; }
     }
   </style>
 </head>
@@ -502,14 +589,33 @@
   <h1>Live stats of the field</h1>
 
   <p class="lead">
-    The field is readable when it’s felt through signals first.
+    Read the field through signals first — the numbers follow.
   </p>
 
   <p class="lead-small">
-    Choose a lens. The cards below will shift to match it.
+    Hover to preview. Click to lock. On mobile: swipe to shift the lens.
   </p>
 
-  <!-- SINGLE legend like artefact -->
+  <!-- Latest minted header bar -->
+  <section class="latest-wrap" aria-label="Latest minted Key">
+    <div class="latest-frame" id="latestFrame">
+      <div class="latest-spot" aria-hidden="true"></div>
+
+      <div class="latest-row">
+        <div class="latest-left">
+          <div class="latest-label">Latest minted Key</div>
+          <div class="latest-key" id="latestKey">Z1N #721</div>
+          <div class="latest-sub" id="latestSub">Freshly awakened — placeholder until wired on-chain.</div>
+        </div>
+
+        <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">
+          ↔ <span class="dot">·</span> ⟡ <span class="dot">·</span> ∴ <span class="dot">·</span> ◇ <span class="dot">·</span> ○ <span class="dot">·</span> ●
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Single legend like artefact -->
   <div class="intent-legend" aria-label="Intent legend">
     <div class="title">Intent mix across epochs</div>
     <div class="row">
@@ -522,72 +628,96 @@
 
   <!-- Desktop donuts -->
   <section class="donut-grid" aria-label="Intent mix donuts (desktop)">
-    <article class="donut-card" data-key="current" data-window="Current epoch" data-sub="epoch now"
+    <article class="donut-card"
+      data-key="last"
+      data-window="Last epoch"
+      data-sub="last completed breath"
       data-c="23" data-i="18" data-k="39" data-s="20"></article>
 
-    <article class="donut-card" data-key="21" data-window="21 epochs" data-sub="short lens"
+    <article class="donut-card"
+      data-key="21"
+      data-window="21 epochs"
+      data-sub="short lens"
       data-c="15" data-i="22" data-k="44" data-s="19"></article>
 
-    <article class="donut-card" data-key="210" data-window="210 epochs" data-sub="pattern lens"
+    <article class="donut-card"
+      data-key="210"
+      data-window="210 epochs"
+      data-sub="pattern lens"
       data-c="12" data-i="19" data-k="47" data-s="22"></article>
 
-    <article class="donut-card" data-key="total" data-window="Total epochs" data-sub="field memory"
+    <article class="donut-card"
+      data-key="total"
+      data-window="Total epochs"
+      data-sub="field memory"
       data-c="7" data-i="14" data-k="51" data-s="28"></article>
   </section>
 
   <!-- Mobile swipe donuts -->
   <section class="donut-swipe" aria-label="Intent mix donuts (mobile swipe)">
     <div class="swipe-track" id="swipeTrack">
-      <article class="donut-card swipe" data-key="current" data-window="Current epoch" data-sub="epoch now"
+      <article class="donut-card swipe"
+        data-key="last"
+        data-window="Last epoch"
+        data-sub="last completed breath"
         data-c="23" data-i="18" data-k="39" data-s="20"></article>
 
-      <article class="donut-card swipe" data-key="21" data-window="21 epochs" data-sub="short lens"
+      <article class="donut-card swipe"
+        data-key="21"
+        data-window="21 epochs"
+        data-sub="short lens"
         data-c="15" data-i="22" data-k="44" data-s="19"></article>
 
-      <article class="donut-card swipe" data-key="210" data-window="210 epochs" data-sub="pattern lens"
+      <article class="donut-card swipe"
+        data-key="210"
+        data-window="210 epochs"
+        data-sub="pattern lens"
         data-c="12" data-i="19" data-k="47" data-s="22"></article>
 
-      <article class="donut-card swipe" data-key="total" data-window="Total epochs" data-sub="field memory"
+      <article class="donut-card swipe"
+        data-key="total"
+        data-window="Total epochs"
+        data-sub="field memory"
         data-c="7" data-i="14" data-k="51" data-s="28"></article>
     </div>
-    <div class="swipe-hint">Swipe → to change lens (tap to select)</div>
+    <div class="swipe-hint">Swipe → the lens updates automatically</div>
   </section>
 
-  <!-- Dynamic field cards (default: Total epochs) -->
+  <!-- Dynamic values only (labels/subtext stay stable) -->
   <section class="field-cards" aria-label="Field cards">
     <div class="field-card">
       <div class="fc-label">Keys awakened</div>
       <div class="fc-value" id="vKeys">—</div>
-      <div class="fc-sub" id="sKeys">—</div>
+      <div class="fc-sub">Unique identities awakened in this lens.</div>
     </div>
 
     <div class="field-card">
       <div class="fc-label">PoG signals</div>
       <div class="fc-value" id="vSignals">—</div>
-      <div class="fc-sub" id="sSignals">—</div>
+      <div class="fc-sub">Signals written into the field for this horizon.</div>
     </div>
 
     <div class="field-card">
       <div class="fc-label">% signals attested</div>
       <div class="fc-value" id="vAttested">—</div>
-      <div class="fc-sub" id="sAttested">—</div>
+      <div class="fc-sub">Share of signals that received ≥1 attestation.</div>
     </div>
 
     <div class="field-card">
       <div class="fc-label">Artefacts minted</div>
       <div class="fc-value" id="vArtefacts">—</div>
-      <div class="fc-sub" id="sArtefacts">—</div>
+      <div class="fc-sub">Mirrors minted from presence — not a sales dashboard.</div>
     </div>
   </section>
 
   <!-- Field signal -->
   <section class="field-signal" aria-label="Field PoG signal">
     <div class="fs-top">
-      <div class="fs-title" id="fsTitle">Field Signal</div>
+      <div class="fs-title">Field Signal</div>
       <div class="fs-epoch" id="fsEpoch">Epoch —</div>
     </div>
     <div class="fs-quote" id="fsQuote">"—"</div>
-    <div class="fs-sub" id="fsSub">—</div>
+    <div class="fs-sub" id="fsSub">Winning PoG signal: —</div>
   </section>
 
 </main>
@@ -607,53 +737,74 @@
     const r = 51;
     const circumference = 2 * Math.PI * r;
 
-    // Placeholder data per lens (swap later with real on-chain/indexer)
+    // Detect “desktop-like hover”
+    const HAS_HOVER = window.matchMedia && window.matchMedia("(hover: hover)").matches;
+
+    // ====== Placeholder (swap later with on-chain/indexer) ======
     const LENS_DATA = {
-      current: {
-        cards: {
-          keys: { value: "7 842", sub: "Same total, but read as “present context”." },
-          signals: { value: "1 284", sub: "Signals resonating in the current breath (example)." },
-          attested: { value: "37%", sub: "Share of signals that received attestation (example)." },
-          artefacts: { value: "19", sub: "Minted this epoch (example)." }
-        },
-        signal: { epoch: 42, quote: "De ruimte waar ΩS ademt", sub: "Most attested signal of the previous epoch (placeholder)." }
+      last: {
+        cards: { keys: "7 842", signals: "1 284", attested: "37%", artefacts: "19" },
+        signal: { epoch: 41, quote: "De ruimte waar ΩS ademt" }
       },
       "21": {
-        cards: {
-          keys: { value: "7 842", sub: "Keys do not change often. Lens changes interpretation." },
-          signals: { value: "8 420", sub: "Signals in the last 21 epochs (example)." },
-          attested: { value: "41%", sub: "Attestation rate in the short lens (example)." },
-          artefacts: { value: "112", sub: "Minted in last 21 epochs (example)." }
-        },
-        signal: { epoch: 41, quote: "Waar ΩK bouwt, blijft ΩC nabij", sub: "Short-lens field echo (placeholder)." }
+        cards: { keys: "7 842", signals: "8 420", attested: "41%", artefacts: "112" },
+        signal: { epoch: 40, quote: "Waar ΩK bouwt, blijft ΩC nabij" }
       },
       "210": {
-        cards: {
-          keys: { value: "7 842", sub: "A stable count; meaning shifts with the horizon." },
-          signals: { value: "14 220", sub: "Signals across the last 210 epochs (example)." },
-          attested: { value: "46%", sub: "Attestation rate in the pattern lens (example)." },
-          artefacts: { value: "880", sub: "Minted in last 210 epochs (example)." }
-        },
-        signal: { epoch: 35, quote: "ΩI kijkt terug — en kiest opnieuw", sub: "Pattern-lens resonance (placeholder)." }
+        cards: { keys: "7 842", signals: "14 220", attested: "46%", artefacts: "880" },
+        signal: { epoch: 35, quote: "ΩI kijkt terug — en kiest opnieuw" }
       },
       total: {
-        cards: {
-          keys: { value: "7 842", sub: "All awakened Keys across the protocol (placeholder)." },
-          signals: { value: "14 220", sub: "All PoG signals ever sent (placeholder)." },
-          attested: { value: "44%", sub: "Total share of signals with ≥1 attestation (example)." },
-          artefacts: { value: "1 842", sub: "All minted artefacts so far (placeholder)." }
-        },
-        signal: { epoch: 175, quote: "De stilte tussen attesten is ook een stem", sub: "Field MAS / PoG signal (placeholder)." }
+        cards: { keys: "7 842", signals: "14 220", attested: "44%", artefacts: "1 842" },
+        signal: { epoch: 175, quote: "De stilte tussen attesten is ook een stem" }
       }
     };
 
-    function dominant(intents){
-      const entries = Object.entries(intents).sort((a,b) => b[1]-a[1]);
-      const [key, pct] = entries[0];
-      return { key, pct, color: COLORS[key] };
+    // Latest minted placeholder (swap later)
+    const LATEST = {
+      key: "Z1N #721",
+      glyphs: ["↔","⟡","∴","◇","○","●"],
+      sub: "Freshly awakened — placeholder until wired on-chain."
+    };
+
+    // ====== Latest minted render ======
+    function renderLatest(){
+      const latestKey = document.getElementById("latestKey");
+      const latestGlyphs = document.getElementById("latestGlyphs");
+      const latestSub = document.getElementById("latestSub");
+      if (latestKey) latestKey.textContent = LATEST.key;
+      if (latestSub) latestSub.textContent = LATEST.sub;
+
+      if (latestGlyphs){
+        latestGlyphs.innerHTML = LATEST.glyphs
+          .map((g, i) => i === 0 ? g : `<span class="dot">·</span> ${g}`)
+          .join(" ");
+      }
     }
 
-    function buildDonutSVG(intents, titleTop, titleBottom){
+    // Spotlight cursor on latest frame (same vibe as index)
+    (function latestSpotlight(){
+      const frame = document.getElementById("latestFrame");
+      if (!frame) return;
+
+      function setPos(e){
+        const r = frame.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        frame.style.setProperty("--mx", x.toFixed(2) + "%");
+        frame.style.setProperty("--my", y.toFixed(2) + "%");
+      }
+
+      frame.addEventListener("mousemove", setPos, { passive: true });
+    })();
+
+    // ====== Donut helpers ======
+    function dominantKey(intents){
+      const entries = Object.entries(intents).sort((a,b) => b[1]-a[1]);
+      return { key: entries[0][0], pct: entries[0][1] };
+    }
+
+    function buildDonutSVG(intents){
       const sum = intents.C + intents.I + intents.K + intents.S;
       const safe = sum === 0 ? {C:25,I:25,K:25,S:25} : {
         C: (intents.C / sum) * 100,
@@ -662,12 +813,14 @@
         S: (intents.S / sum) * 100,
       };
 
-      const win = dominant({
+      // Rounded for display, but keep donut continuous
+      const win = dominantKey({
         C: Math.round(safe.C),
         I: Math.round(safe.I),
         K: Math.round(safe.K),
         S: Math.round(safe.S),
       });
+      const winColor = COLORS[win.key];
 
       let offsetDeg = -90;
       const segments = ORDER.map((k) => {
@@ -703,17 +856,15 @@
                     transform="rotate(${s.rotate} 70 70)"></circle>
           `).join("")}
 
-          <text x="70" y="61" text-anchor="middle" class="donut-center-title">${titleTop}</text>
-          <text x="70" y="77" text-anchor="middle" class="donut-center-sub">${titleBottom}</text>
-          <text x="70" y="99" text-anchor="middle" class="donut-center-win">
-            <tspan fill="${win.color}">Ω${win.key}</tspan>
-            <tspan fill="#ffffff"> ${win.pct}%</tspan>
+          <!-- Only winner intent + % (both in winner color) -->
+          <text x="70" y="78" text-anchor="middle" class="donut-center-win" fill="${winColor}">
+            Ω${win.key} ${win.pct}%
           </text>
         </svg>
       `;
     }
 
-    function renderCard(card){
+    function renderDonutCard(card){
       const windowLabel = card.getAttribute("data-window") || "Window";
       const sub = card.getAttribute("data-sub") || "";
       const intents = {
@@ -723,64 +874,142 @@
         S: Number(card.getAttribute("data-s") || 0),
       };
 
-      const topLabel =
-        windowLabel.includes("21") ? "Last 21" :
-        windowLabel.includes("210") ? "Last 210" :
-        windowLabel.includes("Total") ? "Total" : "Current";
-
       card.innerHTML = `
         <div class="donut-top">
           <div class="label">${windowLabel}</div>
           <div class="sub">${sub}</div>
         </div>
-
         <div class="donut-mid">
-          ${buildDonutSVG(intents, topLabel, "Epochs")}
+          ${buildDonutSVG(intents)}
         </div>
       `;
     }
 
-    function setActiveLens(lensKey){
+    // ====== State: hover-preview vs locked ======
+    let lockedKey = "last";     // default lock
+    let activeKey = lockedKey;  // current view
+
+    function getWinnerFromCardKey(lensKey){
+      // We use the donut’s own intent mix to compute winner.
+      // Find any card matching lensKey.
+      const card = document.querySelector(`.donut-card[data-key="${lensKey}"]`);
+      if (!card) return { key:"C", pct:0 };
+      const intents = {
+        C: Number(card.getAttribute("data-c") || 0),
+        I: Number(card.getAttribute("data-i") || 0),
+        K: Number(card.getAttribute("data-k") || 0),
+        S: Number(card.getAttribute("data-s") || 0),
+      };
+      const sum = intents.C + intents.I + intents.K + intents.S || 1;
+      const rounded = {
+        C: Math.round((intents.C/sum)*100),
+        I: Math.round((intents.I/sum)*100),
+        K: Math.round((intents.K/sum)*100),
+        S: Math.round((intents.S/sum)*100),
+      };
+      return dominantKey(rounded);
+    }
+
+    function setActiveLens(lensKey, opts){
+      const { lock=false } = opts || {};
+      if (lock) lockedKey = lensKey;
+      activeKey = lensKey;
+
       // active class on ALL donuts with same data-key
       document.querySelectorAll(".donut-card").forEach(el => {
         el.classList.toggle("active", el.getAttribute("data-key") === lensKey);
       });
 
       const data = LENS_DATA[lensKey] || LENS_DATA.total;
-
-      // Cards
-      document.getElementById("vKeys").textContent = data.cards.keys.value;
-      document.getElementById("sKeys").textContent = data.cards.keys.sub;
-
-      document.getElementById("vSignals").textContent = data.cards.signals.value;
-      document.getElementById("sSignals").textContent = data.cards.signals.sub;
-
-      document.getElementById("vAttested").textContent = data.cards.attested.value;
-      document.getElementById("sAttested").textContent = data.cards.attested.sub;
-
-      document.getElementById("vArtefacts").textContent = data.cards.artefacts.value;
-      document.getElementById("sArtefacts").textContent = data.cards.artefacts.sub;
+      document.getElementById("vKeys").textContent = data.cards.keys;
+      document.getElementById("vSignals").textContent = data.cards.signals;
+      document.getElementById("vAttested").textContent = data.cards.attested;
+      document.getElementById("vArtefacts").textContent = data.cards.artefacts;
 
       // Field signal
       document.getElementById("fsEpoch").textContent = "Epoch " + data.signal.epoch;
       document.getElementById("fsQuote").textContent = `"${data.signal.quote}"`;
-      document.getElementById("fsSub").textContent = data.signal.sub;
+
+      const win = getWinnerFromCardKey(lensKey);
+      document.getElementById("fsSub").textContent = `Winning PoG signal: Ω${win.key}`;
     }
 
-    // Render all donuts
-    document.querySelectorAll(".donut-card").forEach(card => {
-      renderCard(card);
-      card.addEventListener("click", () => {
+    // ====== Desktop hover-preview + click lock ======
+    function wireDesktopBehavior(){
+      const cards = Array.from(document.querySelectorAll(".donut-grid .donut-card"));
+
+      cards.forEach(card => {
         const key = card.getAttribute("data-key") || "total";
-        setActiveLens(key);
+
+        card.addEventListener("mouseenter", () => {
+          setActiveLens(key, { lock:false });
+        });
+
+        card.addEventListener("mouseleave", () => {
+          setActiveLens(lockedKey, { lock:false });
+        });
+
+        card.addEventListener("click", () => {
+          setActiveLens(key, { lock:true });
+        });
       });
-    });
+    }
 
-    // Default landing: TOTAL
-    setActiveLens("total");
+    // ====== Mobile swipe auto-select ======
+    function wireMobileSwipeAutoSelect(){
+      const track = document.getElementById("swipeTrack");
+      if (!track) return;
 
-    // Mobile: if user scrolls/swipes but doesn't tap, keep selection as-is.
-    // (We keep "tap to select" for clarity and avoid unexpected changes.)
+      const swipeCards = Array.from(track.querySelectorAll(".donut-card.swipe"));
+      if (!swipeCards.length) return;
+
+      // Tap still works (optional)
+      swipeCards.forEach(card => {
+        const key = card.getAttribute("data-key") || "total";
+        card.addEventListener("click", () => setActiveLens(key, { lock:true }));
+      });
+
+      // Auto select when a card is most visible
+      const io = new IntersectionObserver((entries) => {
+        // pick the entry with highest intersection ratio
+        let best = null;
+        for (const e of entries){
+          if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
+        }
+        if (best && best.isIntersecting){
+          const key = best.target.getAttribute("data-key") || "total";
+          // On mobile we follow swipe; we do NOT require a click.
+          // If user locked via tap, you can comment the next line and keep lock.
+          setActiveLens(key, { lock:false });
+        }
+      }, {
+        root: track,
+        threshold: [0.35, 0.5, 0.65, 0.8]
+      });
+
+      swipeCards.forEach(c => io.observe(c));
+
+      // Ensure last epoch is centered at load on mobile (nice default)
+      // (Only if user is on mobile width)
+      if (window.matchMedia && window.matchMedia("(max-width: 900px)").matches) {
+        const first = swipeCards.find(c => (c.getAttribute("data-key") || "") === "last") || swipeCards[0];
+        first.scrollIntoView({ behavior: "instant", inline: "center", block: "nearest" });
+      }
+    }
+
+    // Render all donut card HTML first
+    document.querySelectorAll(".donut-card").forEach(card => renderDonutCard(card));
+
+    // Latest minted
+    renderLatest();
+
+    // Default landing: LAST epoch locked
+    setActiveLens("last", { lock:true });
+
+    if (HAS_HOVER){
+      wireDesktopBehavior();
+    }
+    wireMobileSwipeAutoSelect();
   })();
 </script>
 
