@@ -173,27 +173,18 @@
     .block p:last-child { margin-bottom: 0; }
 
     .block ul {
-      list-style: none;
-      margin: 6px 0 0 0;
-      padding: 0;
+      list-style:none;
+      margin:6px 0 10px 0;
+      padding:0;
     }
 
-    .block li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .block li::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.75);
-      margin-top: 6px;
-      flex-shrink: 0;
-    }
+    .block li{
+    position:relative;
+    padding-left:20px;      /* same indent */
+    margin:2px 0;           /* tight vertical rhythm */
+    line-height:1.22;       /* same line-height */
+    opacity:0.92;
+  }
 
     /* ERAS */
     .era-title-main {
