@@ -174,25 +174,28 @@
 
     .block ul {
       list-style: none;
-      margin: 6px 0 0 0;
+      margin: 6px 0 10px 0;
       padding: 0;
     }
 
-    .block li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 6px;
+     .block li {
+      position: relative;
+      padding-left: 20px;
+      margin: 2px 0;
+      line-height: 1.22;
+      opacity: 0.92;
     }
 
     .block li::before {
       content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
       width: 8px;
       height: 8px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.75);
-      margin-top: 6px;
-      flex-shrink: 0;
+      transform: translateY(-50%);
     }
 
     /* ERAS */
