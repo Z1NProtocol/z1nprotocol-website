@@ -1791,6 +1791,54 @@ Timelock truth note:
       .map(c => document.getElementById(c.dataset.target))
       .filter(Boolean);
 
+    function setActive(id){
+      chips.forEach(c => c.classList.toggle("active", c.dataset.target === id));
+    }
+
+    function stickyOffset(){
+      // header is 72px. chaptersTop is sticky and sits at top:0
+      const headerH = 72;
+      const chaptersH = chaptersTop ? chaptersTop.offsetHeight : 0;
+      return headerH + chaptersH + 12; // reading line just below sticky
+    }
+
+    function scrollToId(id){
+      const el = document.getElementById(id);
+      if (!el) return;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - stickyOffset();
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+
+    function updateActiveFromScroll(){
+      if (!lensBI.classList.contains("active")) return;
+      if (!sections.length) return;
+
+      const probeY = stickyOffset(); // viewport coordinate
+      let bestId = sections[0].id;
+      let bestTop = -Infinity;
+
+      // pick the last section whose top is above the reading line
+      for (const s of sections){
+        const top = s.getBoundingClientRect().top;
+        if (top <= probeY && top > bestTop){
+          bestTop = top;
+          bestId = s.id;
+        }
+      }
+
+      setActive(bestId);
+    }
+
+    let raf = null;
+    function onScroll(){
+      if (!lensBI.classList.contains("active")) return;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        updateActiveFromScroll();
+      });
+    }
+
     function setMode(mode){
       const bi = mode === "bi";
       btnBI.classList.toggle("active", bi);
@@ -1801,10 +1849,12 @@ Timelock truth note:
 
       chaptersTop.classList.toggle("active", bi);
 
-      // ✅ when opening BI, scroll a bit down so chips + title feel intentional
       if (bi) {
+        // keep your “intentional” scroll-in
         setTimeout(() => {
-          document.getElementById("chaptersTop").scrollIntoView({ behavior:"smooth", block:"start" });
+          chaptersTop.scrollIntoView({ behavior:"smooth", block:"start" });
+          // after scroll starts, compute correct active chip
+          setTimeout(updateActiveFromScroll, 120);
         }, 30);
       }
     }
@@ -1812,45 +1862,21 @@ Timelock truth note:
     btnBI.addEventListener("click", () => setMode("bi"));
     btnNBI.addEventListener("click", () => setMode("nbi"));
 
-    // ✅ chip click -> scroll (with sticky offset) + set active immediately
-    function scrollToId(id){
-      const el = document.getElementById(id);
-      if (!el) return;
-      const y = el.getBoundingClientRect().top + window.pageYOffset - 104;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-
     chips.forEach(chip => {
       chip.addEventListener("click", () => {
-        const id = chip.getAttribute("data-target");
-        // ✅ active should follow click
-        chips.forEach(c => c.classList.toggle("active", c === chip));
-        scrollToId(id);
+        const id = chip.dataset.target;
+        setActive(id);      // instant feedback
+        scrollToId(id);     // scroll to exact offset
       });
     });
 
-    // ✅ scroll spy -> active chip (only when BI is active)
-    const obs = new IntersectionObserver((entries) => {
-      if (!lensBI.classList.contains("active")) return;
+    window.addEventListener("scroll", onScroll, { passive:true });
+    window.addEventListener("resize", () => updateActiveFromScroll());
 
-      const visible = entries
-        .filter(e => e.isIntersecting)
-        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-
-      const id = visible.target.id;
-      chips.forEach(c => c.classList.toggle("active", c.dataset.target === id));
-    }, {
-      root: null,
-      threshold: [0.25, 0.45, 0.6],
-      rootMargin: "-10% 0px -70% 0px"
-    });
-
-    sections.forEach(s => obs.observe(s));
-
-    // default: nothing shown until user clicks BI/NBI (as requested)
+    // nothing shown until BI/NBI is chosen (same as your requirement)
   })();
 </script>
+
 
 </body>
 </html>
