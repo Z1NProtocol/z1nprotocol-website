@@ -732,42 +732,136 @@
 
 <script>
   (function () {
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CONFIGURATION - Change for different environments
+    // ═══════════════════════════════════════════════════════════════════════════
+    const API_BASE = "http://localhost:3002/api";  // Local dev
+    // const API_BASE = "https://api.z1nprotocol.xyz/api";  // Production
+
     const COLORS = { C: "#4CAF50", I: "#F44336", K: "#FFEB3B", S: "#2196F3" };
     const ORDER = ["C","I","K","S"];
     const r = 51;
     const circumference = 2 * Math.PI * r;
 
-    // Detect “desktop-like hover”
+    // Detect "desktop-like hover"
     const HAS_HOVER = window.matchMedia && window.matchMedia("(hover: hover)").matches;
 
-    // ====== Placeholder (swap later with on-chain/indexer) ======
-    const LENS_DATA = {
+    // ═══════════════════════════════════════════════════════════════════════════
+    // LENS DATA - Will be populated from API, fallback to these defaults
+    // ═══════════════════════════════════════════════════════════════════════════
+    let LENS_DATA = {
       last: {
-        cards: { keys: "7 842", signals: "1 284", attested: "37%", artefacts: "19" },
+        cards: { keys: "7 842", signals: "1 284", attested: "37%", artefacts: "19" },
         signal: { epoch: 41, quote: "De ruimte waar ΩS ademt" }
       },
       "21": {
-        cards: { keys: "7 842", signals: "8 420", attested: "41%", artefacts: "112" },
+        cards: { keys: "7 842", signals: "8 420", attested: "41%", artefacts: "112" },
         signal: { epoch: 40, quote: "Waar ΩK bouwt, blijft ΩC nabij" }
       },
       "210": {
-        cards: { keys: "7 842", signals: "14 220", attested: "46%", artefacts: "880" },
+        cards: { keys: "7 842", signals: "14 220", attested: "46%", artefacts: "880" },
         signal: { epoch: 35, quote: "ΩI kijkt terug — en kiest opnieuw" }
       },
       total: {
-        cards: { keys: "7 842", signals: "14 220", attested: "44%", artefacts: "1 842" },
+        cards: { keys: "7 842", signals: "14 220", attested: "44%", artefacts: "1 842" },
         signal: { epoch: 175, quote: "De stilte tussen attesten is ook een stem" }
       }
     };
 
-    // Latest minted placeholder (swap later)
-    const LATEST = {
+    // Latest minted - will be populated from API
+    let LATEST = {
       key: "Z1N #721",
       glyphs: ["↔","⟡","∴","◇","○","●"],
       sub: "Freshly awakened — placeholder until wired on-chain."
     };
 
-    // ====== Latest minted render ======
+    // ═══════════════════════════════════════════════════════════════════════════
+    // API FETCH
+    // ═══════════════════════════════════════════════════════════════════════════
+    async function fetchFieldData() {
+      try {
+        const res = await fetch(`${API_BASE}/field`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch (e) {
+        console.error("Failed to fetch field data:", e);
+        return null;
+      }
+    }
+
+    function formatNumber(n) {
+      if (n === undefined || n === null || n === "—") return "—";
+      return n.toLocaleString("en-US").replace(/,/g, " ");
+    }
+
+    // Update LENS_DATA and LATEST from API response
+    function updateDataFromAPI(data) {
+      if (!data) return;
+
+      const keys = formatNumber(data.totalKeys);
+      const signals = formatNumber(data.totalSignals);
+      const attestations = data.totalAttestations || 0;
+      const signalsNum = data.totalSignals || 0;
+      const attested = signalsNum > 0 ? Math.round((attestations / signalsNum) * 100) + "%" : "—";
+      const artefacts = formatNumber(data.totalArtefacts || 0);
+
+      // All lenses show same totals (for now - can be refined later with per-lens data)
+      const cards = { keys, signals, attested, artefacts };
+
+      // Get dominant intent for quote
+      const dist = data.intentDistribution?.total || { ΩC: 25, ΩI: 25, ΩK: 25, ΩS: 25 };
+      const dominant = Object.entries(dist).sort((a, b) => b[1] - a[1])[0];
+      const quotes = {
+        "ΩC": "The collective breathes as one",
+        "ΩI": "Individual voices shape the field",
+        "ΩK": "Co-creation weaves new patterns",
+        "ΩS": "In silence, the field listens"
+      };
+
+      LENS_DATA = {
+        last: { cards, signal: { epoch: data.currentEpoch, quote: quotes[dominant[0]] || "The field is listening" } },
+        "21": { cards, signal: { epoch: data.currentEpoch, quote: quotes[dominant[0]] || "The field is listening" } },
+        "210": { cards, signal: { epoch: data.currentEpoch, quote: quotes[dominant[0]] || "The field is listening" } },
+        total: { cards, signal: { epoch: data.currentEpoch, quote: quotes[dominant[0]] || "The field is listening" } }
+      };
+
+      // Update latest key
+      if (data.latestKey) {
+        LATEST = {
+          key: `Z1N #${data.latestKey.tokenId}`,
+          glyphs: data.latestKey.glyphLine ? data.latestKey.glyphLine.split("").filter(g => g.trim()) : ["↔","⟡","∴","◇","○","●"],
+          sub: data.latestKey.isGenesis ? "Genesis Key" : "Standard Key"
+        };
+      }
+
+      // Update donut data attributes from API intent distribution
+      if (data.intentDistribution) {
+        const mapping = {
+          last: data.intentDistribution.lastEpoch,
+          "21": data.intentDistribution.last21Epochs,
+          "210": data.intentDistribution.last210Epochs,
+          total: data.intentDistribution.total
+        };
+
+        document.querySelectorAll(".donut-card").forEach(card => {
+          const key = card.getAttribute("data-key");
+          const intentData = mapping[key];
+
+          if (intentData) {
+            card.setAttribute("data-c", intentData.ΩC || 0);
+            card.setAttribute("data-i", intentData.ΩI || 0);
+            card.setAttribute("data-k", intentData.ΩK || 0);
+            card.setAttribute("data-s", intentData.ΩS || 0);
+            renderDonutCard(card);
+          }
+        });
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // RENDER FUNCTIONS (unchanged from original)
+    // ═══════════════════════════════════════════════════════════════════════════
+
     function renderLatest(){
       const latestKey = document.getElementById("latestKey");
       const latestGlyphs = document.getElementById("latestGlyphs");
@@ -890,8 +984,6 @@
     let activeKey = lockedKey;  // current view
 
     function getWinnerFromCardKey(lensKey){
-      // We use the donut’s own intent mix to compute winner.
-      // Find any card matching lensKey.
       const card = document.querySelector(`.donut-card[data-key="${lensKey}"]`);
       if (!card) return { key:"C", pct:0 };
       const intents = {
@@ -963,23 +1055,18 @@
       const swipeCards = Array.from(track.querySelectorAll(".donut-card.swipe"));
       if (!swipeCards.length) return;
 
-      // Tap still works (optional)
       swipeCards.forEach(card => {
         const key = card.getAttribute("data-key") || "total";
         card.addEventListener("click", () => setActiveLens(key, { lock:true }));
       });
 
-      // Auto select when a card is most visible
       const io = new IntersectionObserver((entries) => {
-        // pick the entry with highest intersection ratio
         let best = null;
         for (const e of entries){
           if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
         }
         if (best && best.isIntersecting){
           const key = best.target.getAttribute("data-key") || "total";
-          // On mobile we follow swipe; we do NOT require a click.
-          // If user locked via tap, you can comment the next line and keep lock.
           setActiveLens(key, { lock:false });
         }
       }, {
@@ -989,27 +1076,51 @@
 
       swipeCards.forEach(c => io.observe(c));
 
-      // Ensure last epoch is centered at load on mobile (nice default)
-      // (Only if user is on mobile width)
       if (window.matchMedia && window.matchMedia("(max-width: 900px)").matches) {
         const first = swipeCards.find(c => (c.getAttribute("data-key") || "") === "last") || swipeCards[0];
         first.scrollIntoView({ behavior: "instant", inline: "center", block: "nearest" });
       }
     }
 
-    // Render all donut card HTML first
-    document.querySelectorAll(".donut-card").forEach(card => renderDonutCard(card));
+    // ═══════════════════════════════════════════════════════════════════════════
+    // INITIALIZE
+    // ═══════════════════════════════════════════════════════════════════════════
 
-    // Latest minted
-    renderLatest();
+    async function init() {
+      // Render all donut card HTML first with default data
+      document.querySelectorAll(".donut-card").forEach(card => renderDonutCard(card));
 
-    // Default landing: LAST epoch locked
-    setActiveLens("last", { lock:true });
+      // Latest minted (with default)
+      renderLatest();
 
-    if (HAS_HOVER){
-      wireDesktopBehavior();
+      // Default landing: LAST epoch locked
+      setActiveLens("last", { lock:true });
+
+      if (HAS_HOVER){
+        wireDesktopBehavior();
+      }
+      wireMobileSwipeAutoSelect();
+
+      // Fetch real data from API
+      const apiData = await fetchFieldData();
+      if (apiData) {
+        updateDataFromAPI(apiData);
+        renderLatest();
+        setActiveLens(lockedKey, { lock: true }); // Re-render with new data
+      }
+
+      // Auto-refresh every 30 seconds
+      setInterval(async () => {
+        const newData = await fetchFieldData();
+        if (newData) {
+          updateDataFromAPI(newData);
+          renderLatest();
+          setActiveLens(activeKey, { lock: false }); // Update current view
+        }
+      }, 30000);
     }
-    wireMobileSwipeAutoSelect();
+
+    init();
   })();
 </script>
 
