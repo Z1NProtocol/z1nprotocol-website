@@ -536,6 +536,17 @@
       opacity:0.85;
     }
 
+    /* Loading state */
+    .loading {
+      opacity: 0.5;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
+    }
+
     /* FOOTER */
     footer{
       border-top:1px solid rgba(255,255,255,0.05);
@@ -604,12 +615,12 @@
       <div class="latest-row">
         <div class="latest-left">
           <div class="latest-label">Latest minted Key</div>
-          <div class="latest-key" id="latestKey">Z1N #721</div>
-          <div class="latest-sub" id="latestSub">Freshly awakened — placeholder until wired on-chain.</div>
+          <div class="latest-key" id="latestKey">Z1N #—</div>
+          <div class="latest-sub" id="latestSub">Loading...</div>
         </div>
 
         <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">
-          ↔ <span class="dot">·</span> ⟡ <span class="dot">·</span> ∴ <span class="dot">·</span> ◇ <span class="dot">·</span> ○ <span class="dot">·</span> ●
+          ◇ <span class="dot">·</span> ○ <span class="dot">·</span> ●
         </div>
       </div>
     </div>
@@ -632,25 +643,25 @@
       data-key="last"
       data-window="Last epoch"
       data-sub="last completed breath"
-      data-c="23" data-i="18" data-k="39" data-s="20"></article>
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
     <article class="donut-card"
       data-key="21"
       data-window="21 epochs"
       data-sub="short lens"
-      data-c="15" data-i="22" data-k="44" data-s="19"></article>
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
     <article class="donut-card"
       data-key="210"
       data-window="210 epochs"
       data-sub="pattern lens"
-      data-c="12" data-i="19" data-k="47" data-s="22"></article>
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
     <article class="donut-card"
       data-key="total"
       data-window="Total epochs"
       data-sub="field memory"
-      data-c="7" data-i="14" data-k="51" data-s="28"></article>
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
   </section>
 
   <!-- Mobile swipe donuts -->
@@ -660,25 +671,25 @@
         data-key="last"
         data-window="Last epoch"
         data-sub="last completed breath"
-        data-c="23" data-i="18" data-k="39" data-s="20"></article>
+        data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
       <article class="donut-card swipe"
         data-key="21"
         data-window="21 epochs"
         data-sub="short lens"
-        data-c="15" data-i="22" data-k="44" data-s="19"></article>
+        data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
       <article class="donut-card swipe"
         data-key="210"
         data-window="210 epochs"
         data-sub="pattern lens"
-        data-c="12" data-i="19" data-k="47" data-s="22"></article>
+        data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
       <article class="donut-card swipe"
         data-key="total"
         data-window="Total epochs"
         data-sub="field memory"
-        data-c="7" data-i="14" data-k="51" data-s="28"></article>
+        data-c="25" data-i="25" data-k="25" data-s="25"></article>
     </div>
     <div class="swipe-hint">Swipe → the lens updates automatically</div>
   </section>
@@ -694,30 +705,30 @@
     <div class="field-card">
       <div class="fc-label">PoG signals</div>
       <div class="fc-value" id="vSignals">—</div>
-      <div class="fc-sub">Signals send to the Field.</div>
+      <div class="fc-sub">Signals sent to the Field.</div>
     </div>
 
     <div class="field-card">
-      <div class="fc-label">% signals attested</div>
-      <div class="fc-value" id="vAttested">—</div>
-      <div class="fc-sub">Share of signals that received attestation.</div>
+      <div class="fc-label">Attestations</div>
+      <div class="fc-value" id="vAttestations">—</div>
+      <div class="fc-sub">Peer validations of signals.</div>
     </div>
 
     <div class="field-card">
-      <div class="fc-label">Artefacts minted</div>
-      <div class="fc-value" id="vArtefacts">—</div>
-      <div class="fc-sub">Mirrors as a memory of presence.</div>
+      <div class="fc-label">Treasury</div>
+      <div class="fc-value" id="vTreasury">—</div>
+      <div class="fc-sub">POL in the reward pool.</div>
     </div>
   </section>
 
   <!-- Field signal -->
   <section class="field-signal" aria-label="Field PoG signal">
     <div class="fs-top">
-      <div class="fs-title">Field Signal</div>
+      <div class="fs-title">Current Epoch</div>
       <div class="fs-epoch" id="fsEpoch">Epoch —</div>
     </div>
-    <div class="fs-quote" id="fsQuote">"—"</div>
-    <div class="fs-sub" id="fsSub">Winning PoG signal: —</div>
+    <div class="fs-quote" id="fsQuote">"The field is listening..."</div>
+    <div class="fs-sub" id="fsSub">Epochs closed: — | Last closed: —</div>
   </section>
 
 </main>
@@ -731,286 +742,355 @@
 </footer>
 
 <script>
-  (function () {
-    const COLORS = { C: "#4CAF50", I: "#F44336", K: "#FFEB3B", S: "#2196F3" };
-    const ORDER = ["C","I","K","S"];
-    const r = 51;
-    const circumference = 2 * Math.PI * r;
+(function () {
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CONFIGURATION - Change this for different environments
+  // ═══════════════════════════════════════════════════════════════════════════
+  const API_BASE = "http://localhost:3002/api";  // Local dev
+  // const API_BASE = "https://api.z1nprotocol.xyz/api";  // Production
+  
+  const COLORS = { C: "#4CAF50", I: "#F44336", K: "#FFEB3B", S: "#2196F3" };
+  const ORDER = ["C","I","K","S"];
+  const r = 51;
+  const circumference = 2 * Math.PI * r;
 
-    // Detect “desktop-like hover”
-    const HAS_HOVER = window.matchMedia && window.matchMedia("(hover: hover)").matches;
+  // Detect "desktop-like hover"
+  const HAS_HOVER = window.matchMedia && window.matchMedia("(hover: hover)").matches;
 
-    // ====== Placeholder (swap later with on-chain/indexer) ======
-    const LENS_DATA = {
-      last: {
-        cards: { keys: "7 842", signals: "1 284", attested: "37%", artefacts: "19" },
-        signal: { epoch: 41, quote: "De ruimte waar ΩS ademt" }
-      },
-      "21": {
-        cards: { keys: "7 842", signals: "8 420", attested: "41%", artefacts: "112" },
-        signal: { epoch: 40, quote: "Waar ΩK bouwt, blijft ΩC nabij" }
-      },
-      "210": {
-        cards: { keys: "7 842", signals: "14 220", attested: "46%", artefacts: "880" },
-        signal: { epoch: 35, quote: "ΩI kijkt terug — en kiest opnieuw" }
-      },
-      total: {
-        cards: { keys: "7 842", signals: "14 220", attested: "44%", artefacts: "1 842" },
-        signal: { epoch: 175, quote: "De stilte tussen attesten is ook een stem" }
-      }
-    };
+  // ═══════════════════════════════════════════════════════════════════════════
+  // STATE
+  // ═══════════════════════════════════════════════════════════════════════════
+  let fieldData = null;
+  let lockedKey = "last";
+  let activeKey = lockedKey;
 
-    // Latest minted placeholder (swap later)
-    const LATEST = {
-      key: "Z1N #721",
-      glyphs: ["↔","⟡","∴","◇","○","●"],
-      sub: "Freshly awakened — placeholder until wired on-chain."
-    };
+  // ═══════════════════════════════════════════════════════════════════════════
+  // API FETCH
+  // ═══════════════════════════════════════════════════════════════════════════
+  async function fetchFieldData() {
+    try {
+      const res = await fetch(`${API_BASE}/field`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (e) {
+      console.error("Failed to fetch field data:", e);
+      return null;
+    }
+  }
 
-    // ====== Latest minted render ======
-    function renderLatest(){
-      const latestKey = document.getElementById("latestKey");
-      const latestGlyphs = document.getElementById("latestGlyphs");
-      const latestSub = document.getElementById("latestSub");
-      if (latestKey) latestKey.textContent = LATEST.key;
-      if (latestSub) latestSub.textContent = LATEST.sub;
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RENDER FUNCTIONS
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function formatNumber(n) {
+    if (n === undefined || n === null) return "—";
+    return n.toLocaleString("en-US").replace(/,/g, " ");
+  }
 
-      if (latestGlyphs){
-        latestGlyphs.innerHTML = LATEST.glyphs
-          .map((g, i) => i === 0 ? g : `<span class="dot">·</span> ${g}`)
-          .join(" ");
-      }
+  function renderLatest(data) {
+    const latestKey = document.getElementById("latestKey");
+    const latestGlyphs = document.getElementById("latestGlyphs");
+    const latestSub = document.getElementById("latestSub");
+
+    if (!data || !data.latestKey) {
+      if (latestKey) latestKey.textContent = "Z1N #—";
+      if (latestSub) latestSub.textContent = "No keys minted yet";
+      return;
     }
 
-    // Spotlight cursor on latest frame (same vibe as index)
-    (function latestSpotlight(){
-      const frame = document.getElementById("latestFrame");
-      if (!frame) return;
+    const key = data.latestKey;
+    if (latestKey) latestKey.textContent = `Z1N #${key.tokenId}`;
+    if (latestSub) latestSub.textContent = key.isGenesis ? "Genesis Key" : "Standard Key";
 
-      function setPos(e){
-        const r = frame.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width) * 100;
-        const y = ((e.clientY - r.top) / r.height) * 100;
-        frame.style.setProperty("--mx", x.toFixed(2) + "%");
-        frame.style.setProperty("--my", y.toFixed(2) + "%");
-      }
-
-      frame.addEventListener("mousemove", setPos, { passive: true });
-    })();
-
-    // ====== Donut helpers ======
-    function dominantKey(intents){
-      const entries = Object.entries(intents).sort((a,b) => b[1]-a[1]);
-      return { key: entries[0][0], pct: entries[0][1] };
+    if (latestGlyphs && key.glyphLine) {
+      const glyphs = key.glyphLine.split("");
+      latestGlyphs.innerHTML = glyphs
+        .filter(g => g.trim())
+        .map((g, i) => i === 0 ? g : `<span class="dot">·</span> ${g}`)
+        .join(" ");
     }
+  }
 
-    function buildDonutSVG(intents){
-      const sum = intents.C + intents.I + intents.K + intents.S;
-      const safe = sum === 0 ? {C:25,I:25,K:25,S:25} : {
-        C: (intents.C / sum) * 100,
-        I: (intents.I / sum) * 100,
-        K: (intents.K / sum) * 100,
-        S: (intents.S / sum) * 100,
+  function renderFieldCards(data) {
+    if (!data) return;
+
+    const vKeys = document.getElementById("vKeys");
+    const vSignals = document.getElementById("vSignals");
+    const vAttestations = document.getElementById("vAttestations");
+    const vTreasury = document.getElementById("vTreasury");
+
+    if (vKeys) vKeys.textContent = formatNumber(data.totalKeys);
+    if (vSignals) vSignals.textContent = formatNumber(data.totalSignals);
+    if (vAttestations) vAttestations.textContent = formatNumber(data.totalAttestations);
+    if (vTreasury) vTreasury.textContent = `${data.treasuryBalancePOL} POL`;
+  }
+
+  function renderFieldSignal(data) {
+    if (!data) return;
+
+    const fsEpoch = document.getElementById("fsEpoch");
+    const fsQuote = document.getElementById("fsQuote");
+    const fsSub = document.getElementById("fsSub");
+
+    if (fsEpoch) fsEpoch.textContent = `Epoch ${data.currentEpoch}`;
+    
+    // Calculate dominant intent from total distribution
+    const dist = data.intentDistribution?.total || { ΩC: 25, ΩI: 25, ΩK: 25, ΩS: 25 };
+    const dominant = Object.entries(dist).sort((a, b) => b[1] - a[1])[0];
+    
+    if (fsQuote) {
+      const quotes = {
+        "ΩC": "The collective breathes as one",
+        "ΩI": "Individual voices shape the field",
+        "ΩK": "Co-creation weaves new patterns",
+        "ΩS": "In silence, the field listens"
       };
+      fsQuote.textContent = `"${quotes[dominant[0]] || "The field is listening..."}"`;
+    }
 
-      // Rounded for display, but keep donut continuous
-      const win = dominantKey({
-        C: Math.round(safe.C),
-        I: Math.round(safe.I),
-        K: Math.round(safe.K),
-        S: Math.round(safe.S),
-      });
-      const winColor = COLORS[win.key];
+    if (fsSub) {
+      fsSub.textContent = `Epochs closed: ${data.lastClosedEpoch + 1} | Dominant: ${dominant[0]} (${dominant[1]}%)`;
+    }
+  }
 
-      let offsetDeg = -90;
-      const segments = ORDER.map((k) => {
-        const pct = safe[k];
-        const arc = (pct / 100) * circumference;
-        const dasharray = `${arc.toFixed(1)} ${(circumference - arc).toFixed(1)}`;
-        const seg = { key:k, dasharray, rotate: offsetDeg };
-        offsetDeg += (pct / 100) * 360;
-        return seg;
-      });
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DONUT HELPERS
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function dominantKey(intents) {
+    const entries = Object.entries(intents).sort((a, b) => b[1] - a[1]);
+    return { key: entries[0][0], pct: entries[0][1] };
+  }
 
-      return `
-        <svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Intent donut">
-          <defs>
-            <radialGradient id="donutBg" cx="50%" cy="40%" r="70%">
-              <stop offset="0%" stop-color="#0b101b"/>
-              <stop offset="100%" stop-color="#1c2534"/>
-            </radialGradient>
-          </defs>
+  function buildDonutSVG(intents) {
+    const sum = intents.C + intents.I + intents.K + intents.S;
+    const safe = sum === 0 ? { C: 25, I: 25, K: 25, S: 25 } : {
+      C: (intents.C / sum) * 100,
+      I: (intents.I / sum) * 100,
+      K: (intents.K / sum) * 100,
+      S: (intents.S / sum) * 100,
+    };
 
-          <circle cx="70" cy="70" r="62" fill="url(#donutBg)"></circle>
-          <circle cx="70" cy="70" r="43" fill="#0f141f"></circle>
+    const win = dominantKey({
+      C: Math.round(safe.C),
+      I: Math.round(safe.I),
+      K: Math.round(safe.K),
+      S: Math.round(safe.S),
+    });
+    const winColor = COLORS[win.key];
 
+    let offsetDeg = -90;
+    const segments = ORDER.map((k) => {
+      const pct = safe[k];
+      const arc = (pct / 100) * circumference;
+      const dasharray = `${arc.toFixed(1)} ${(circumference - arc).toFixed(1)}`;
+      const seg = { key: k, dasharray, rotate: offsetDeg };
+      offsetDeg += (pct / 100) * 360;
+      return seg;
+    });
+
+    return `
+      <svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Intent donut">
+        <defs>
+          <radialGradient id="donutBg" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#0b101b"/>
+            <stop offset="100%" stop-color="#1c2534"/>
+          </radialGradient>
+        </defs>
+
+        <circle cx="70" cy="70" r="62" fill="url(#donutBg)"></circle>
+        <circle cx="70" cy="70" r="43" fill="#0f141f"></circle>
+
+        <circle cx="70" cy="70" r="${r}"
+                fill="none" stroke="#252c3b" stroke-width="11"
+                transform="rotate(-90 70 70)"></circle>
+
+        ${segments.map(s => `
           <circle cx="70" cy="70" r="${r}"
-                  fill="none" stroke="#252c3b" stroke-width="11"
-                  transform="rotate(-90 70 70)"></circle>
+                  fill="none" stroke="${COLORS[s.key]}" stroke-width="11"
+                  stroke-linecap="butt"
+                  stroke-dasharray="${s.dasharray}"
+                  transform="rotate(${s.rotate} 70 70)"></circle>
+        `).join("")}
 
-          ${segments.map(s => `
-            <circle cx="70" cy="70" r="${r}"
-                    fill="none" stroke="${COLORS[s.key]}" stroke-width="11"
-                    stroke-linecap="butt"
-                    stroke-dasharray="${s.dasharray}"
-                    transform="rotate(${s.rotate} 70 70)"></circle>
-          `).join("")}
+        <text x="70" y="78" text-anchor="middle" class="donut-center-win" fill="${winColor}">
+          Ω${win.key} ${win.pct}%
+        </text>
+      </svg>
+    `;
+  }
 
-          <!-- Only winner intent + % (both in winner color) -->
-          <text x="70" y="78" text-anchor="middle" class="donut-center-win" fill="${winColor}">
-            Ω${win.key} ${win.pct}%
-          </text>
-        </svg>
-      `;
-    }
+  function renderDonutCard(card) {
+    const windowLabel = card.getAttribute("data-window") || "Window";
+    const sub = card.getAttribute("data-sub") || "";
+    const intents = {
+      C: Number(card.getAttribute("data-c") || 0),
+      I: Number(card.getAttribute("data-i") || 0),
+      K: Number(card.getAttribute("data-k") || 0),
+      S: Number(card.getAttribute("data-s") || 0),
+    };
 
-    function renderDonutCard(card){
-      const windowLabel = card.getAttribute("data-window") || "Window";
-      const sub = card.getAttribute("data-sub") || "";
-      const intents = {
-        C: Number(card.getAttribute("data-c") || 0),
-        I: Number(card.getAttribute("data-i") || 0),
-        K: Number(card.getAttribute("data-k") || 0),
-        S: Number(card.getAttribute("data-s") || 0),
-      };
+    card.innerHTML = `
+      <div class="donut-top">
+        <div class="label">${windowLabel}</div>
+        <div class="sub">${sub}</div>
+      </div>
+      <div class="donut-mid">
+        ${buildDonutSVG(intents)}
+      </div>
+    `;
+  }
 
-      card.innerHTML = `
-        <div class="donut-top">
-          <div class="label">${windowLabel}</div>
-          <div class="sub">${sub}</div>
-        </div>
-        <div class="donut-mid">
-          ${buildDonutSVG(intents)}
-        </div>
-      `;
-    }
+  function updateDonutData(data) {
+    if (!data || !data.intentDistribution) return;
 
-    // ====== State: hover-preview vs locked ======
-    let lockedKey = "last";     // default lock
-    let activeKey = lockedKey;  // current view
+    const dist = data.intentDistribution;
 
-    function getWinnerFromCardKey(lensKey){
-      // We use the donut’s own intent mix to compute winner.
-      // Find any card matching lensKey.
-      const card = document.querySelector(`.donut-card[data-key="${lensKey}"]`);
-      if (!card) return { key:"C", pct:0 };
-      const intents = {
-        C: Number(card.getAttribute("data-c") || 0),
-        I: Number(card.getAttribute("data-i") || 0),
-        K: Number(card.getAttribute("data-k") || 0),
-        S: Number(card.getAttribute("data-s") || 0),
-      };
-      const sum = intents.C + intents.I + intents.K + intents.S || 1;
-      const rounded = {
-        C: Math.round((intents.C/sum)*100),
-        I: Math.round((intents.I/sum)*100),
-        K: Math.round((intents.K/sum)*100),
-        S: Math.round((intents.S/sum)*100),
-      };
-      return dominantKey(rounded);
-    }
+    // Map API data to donut cards
+    const mapping = {
+      last: dist.lastEpoch,
+      "21": dist.last21Epochs,
+      "210": dist.last210Epochs,
+      total: dist.total
+    };
 
-    function setActiveLens(lensKey, opts){
-      const { lock=false } = opts || {};
-      if (lock) lockedKey = lensKey;
-      activeKey = lensKey;
+    document.querySelectorAll(".donut-card").forEach(card => {
+      const key = card.getAttribute("data-key");
+      const intentData = mapping[key];
 
-      // active class on ALL donuts with same data-key
-      document.querySelectorAll(".donut-card").forEach(el => {
-        el.classList.toggle("active", el.getAttribute("data-key") === lensKey);
-      });
-
-      const data = LENS_DATA[lensKey] || LENS_DATA.total;
-      document.getElementById("vKeys").textContent = data.cards.keys;
-      document.getElementById("vSignals").textContent = data.cards.signals;
-      document.getElementById("vAttested").textContent = data.cards.attested;
-      document.getElementById("vArtefacts").textContent = data.cards.artefacts;
-
-      // Field signal
-      document.getElementById("fsEpoch").textContent = "Epoch " + data.signal.epoch;
-      document.getElementById("fsQuote").textContent = `"${data.signal.quote}"`;
-
-      const win = getWinnerFromCardKey(lensKey);
-      document.getElementById("fsSub").textContent = `Winning PoG signal: Ω${win.key}`;
-    }
-
-    // ====== Desktop hover-preview + click lock ======
-    function wireDesktopBehavior(){
-      const cards = Array.from(document.querySelectorAll(".donut-grid .donut-card"));
-
-      cards.forEach(card => {
-        const key = card.getAttribute("data-key") || "total";
-
-        card.addEventListener("mouseenter", () => {
-          setActiveLens(key, { lock:false });
-        });
-
-        card.addEventListener("mouseleave", () => {
-          setActiveLens(lockedKey, { lock:false });
-        });
-
-        card.addEventListener("click", () => {
-          setActiveLens(key, { lock:true });
-        });
-      });
-    }
-
-    // ====== Mobile swipe auto-select ======
-    function wireMobileSwipeAutoSelect(){
-      const track = document.getElementById("swipeTrack");
-      if (!track) return;
-
-      const swipeCards = Array.from(track.querySelectorAll(".donut-card.swipe"));
-      if (!swipeCards.length) return;
-
-      // Tap still works (optional)
-      swipeCards.forEach(card => {
-        const key = card.getAttribute("data-key") || "total";
-        card.addEventListener("click", () => setActiveLens(key, { lock:true }));
-      });
-
-      // Auto select when a card is most visible
-      const io = new IntersectionObserver((entries) => {
-        // pick the entry with highest intersection ratio
-        let best = null;
-        for (const e of entries){
-          if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
-        }
-        if (best && best.isIntersecting){
-          const key = best.target.getAttribute("data-key") || "total";
-          // On mobile we follow swipe; we do NOT require a click.
-          // If user locked via tap, you can comment the next line and keep lock.
-          setActiveLens(key, { lock:false });
-        }
-      }, {
-        root: track,
-        threshold: [0.35, 0.5, 0.65, 0.8]
-      });
-
-      swipeCards.forEach(c => io.observe(c));
-
-      // Ensure last epoch is centered at load on mobile (nice default)
-      // (Only if user is on mobile width)
-      if (window.matchMedia && window.matchMedia("(max-width: 900px)").matches) {
-        const first = swipeCards.find(c => (c.getAttribute("data-key") || "") === "last") || swipeCards[0];
-        first.scrollIntoView({ behavior: "instant", inline: "center", block: "nearest" });
+      if (intentData) {
+        card.setAttribute("data-c", intentData.ΩC || 0);
+        card.setAttribute("data-i", intentData.ΩI || 0);
+        card.setAttribute("data-k", intentData.ΩK || 0);
+        card.setAttribute("data-s", intentData.ΩS || 0);
+        renderDonutCard(card);
       }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LENS STATE MANAGEMENT
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function setActiveLens(lensKey, opts) {
+    const { lock = false } = opts || {};
+    if (lock) lockedKey = lensKey;
+    activeKey = lensKey;
+
+    document.querySelectorAll(".donut-card").forEach(el => {
+      el.classList.toggle("active", el.getAttribute("data-key") === lensKey);
+    });
+  }
+
+  function wireDesktopBehavior() {
+    const cards = Array.from(document.querySelectorAll(".donut-grid .donut-card"));
+
+    cards.forEach(card => {
+      const key = card.getAttribute("data-key") || "total";
+
+      card.addEventListener("mouseenter", () => {
+        setActiveLens(key, { lock: false });
+      });
+
+      card.addEventListener("mouseleave", () => {
+        setActiveLens(lockedKey, { lock: false });
+      });
+
+      card.addEventListener("click", () => {
+        setActiveLens(key, { lock: true });
+      });
+    });
+  }
+
+  function wireMobileSwipeAutoSelect() {
+    const track = document.getElementById("swipeTrack");
+    if (!track) return;
+
+    const swipeCards = Array.from(track.querySelectorAll(".donut-card.swipe"));
+    if (!swipeCards.length) return;
+
+    swipeCards.forEach(card => {
+      const key = card.getAttribute("data-key") || "total";
+      card.addEventListener("click", () => setActiveLens(key, { lock: true }));
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      let best = null;
+      for (const e of entries) {
+        if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
+      }
+      if (best && best.isIntersecting) {
+        const key = best.target.getAttribute("data-key") || "total";
+        setActiveLens(key, { lock: false });
+      }
+    }, {
+      root: track,
+      threshold: [0.35, 0.5, 0.65, 0.8]
+    });
+
+    swipeCards.forEach(c => io.observe(c));
+
+    if (window.matchMedia && window.matchMedia("(max-width: 900px)").matches) {
+      const first = swipeCards.find(c => (c.getAttribute("data-key") || "") === "last") || swipeCards[0];
+      first.scrollIntoView({ behavior: "instant", inline: "center", block: "nearest" });
+    }
+  }
+
+  // Spotlight cursor on latest frame
+  (function latestSpotlight() {
+    const frame = document.getElementById("latestFrame");
+    if (!frame) return;
+
+    function setPos(e) {
+      const r = frame.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      frame.style.setProperty("--mx", x.toFixed(2) + "%");
+      frame.style.setProperty("--my", y.toFixed(2) + "%");
     }
 
-    // Render all donut card HTML first
+    frame.addEventListener("mousemove", setPos, { passive: true });
+  })();
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // INITIALIZE
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  async function init() {
+    // Render initial donuts with placeholder data
     document.querySelectorAll(".donut-card").forEach(card => renderDonutCard(card));
+    setActiveLens("last", { lock: true });
 
-    // Latest minted
-    renderLatest();
-
-    // Default landing: LAST epoch locked
-    setActiveLens("last", { lock:true });
-
-    if (HAS_HOVER){
+    if (HAS_HOVER) {
       wireDesktopBehavior();
     }
     wireMobileSwipeAutoSelect();
-  })();
+
+    // Fetch real data
+    fieldData = await fetchFieldData();
+
+    if (fieldData) {
+      renderLatest(fieldData);
+      renderFieldCards(fieldData);
+      renderFieldSignal(fieldData);
+      updateDonutData(fieldData);
+    }
+
+    // Auto-refresh every 30 seconds
+    setInterval(async () => {
+      const newData = await fetchFieldData();
+      if (newData) {
+        fieldData = newData;
+        renderLatest(fieldData);
+        renderFieldCards(fieldData);
+        renderFieldSignal(fieldData);
+        updateDonutData(fieldData);
+      }
+    }, 30000);
+  }
+
+  init();
+})();
 </script>
 
 </body>
