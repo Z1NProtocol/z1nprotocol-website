@@ -327,6 +327,104 @@
 
     footer .tagline { margin-bottom: 6px; font-size: 13px; }
     footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
+
+    /* WALLET MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px;
+      max-width: 360px;
+      width: 90%;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .wallet-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .wallet-option:hover {
+      border-color: var(--accent);
+      background: rgba(102,214,154,0.05);
+    }
+
+    .wallet-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .wallet-name {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .modal-close {
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .modal-close button {
+      background: none;
+      border: none;
+      color: var(--text-soft);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .modal-close button:hover {
+      color: var(--text-main);
+    }
+
+    .no-wallet-msg {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .no-wallet-msg p {
+      margin-bottom: 16px;
+      color: var(--text-soft);
+    }
+
+    .no-wallet-msg a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -349,6 +447,17 @@
   </div>
 </header>
 
+<!-- WALLET SELECTION MODAL -->
+<div id="walletModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">Select Wallet</div>
+    <div id="walletOptions"></div>
+    <div class="modal-close">
+      <button id="modalClose">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <main class="page">
   <h1>Mint your Key</h1>
   <p class="lead">
@@ -367,7 +476,7 @@
     <div class="what-body">
       One address can mint multiple Keys – for itself or on behalf of others (including NBI that
       cannot yet sign transactions directly). Each Key is unique in its glyphs and bound to one
-      wallet at a time. Your Key reflects your pressence in the field.
+      wallet at a time. No marketplace, no speculation: just a coordinate in the 21M-Key manifold.
     </div>
   </section>
 
@@ -387,14 +496,9 @@
 
         <div class="btn-row">
           <button id="btnConnect" class="btn btn-connect" type="button">Connect wallet</button>
-          <a id="btnInstall" class="btn btn-ghost" href="https://metamask.io/download/" target="_blank" rel="noreferrer" style="display:none;">
-            Install MetaMask
-          </a>
         </div>
 
-        <div id="noWallet" class="status-text status-error" style="display:none;">
-          No compatible wallet detected in this browser.
-        </div>
+        <div id="connectError" class="status-text status-error" style="display:none;"></div>
       </div>
 
       <!-- STEP 2 -->
@@ -431,7 +535,7 @@
 
         <div class="price-display">
           <div class="price-main" id="priceMain">– POL</div>
-          <div class="price-detail" id="priceDetail">Calculating price...</div>
+          <div class="price-detail" id="priceDetail">Connect wallet to see price</div>
           <div class="price-usd" id="priceUsd"></div>
         </div>
 
@@ -517,8 +621,7 @@ flow := {
   var btnConnect = document.getElementById("btnConnect");
   var btnSign = document.getElementById("btnSign");
   var btnMint = document.getElementById("btnMint");
-  var noWallet = document.getElementById("noWallet");
-  var btnInstall = document.getElementById("btnInstall");
+  var connectError = document.getElementById("connectError");
   var signStatus = document.getElementById("signStatus");
   var mintStatus = document.getElementById("mintStatus");
   var statusWallet = document.getElementById("statusWallet");
@@ -531,27 +634,63 @@ flow := {
   var priceUsd = document.getElementById("priceUsd");
   var btnCopyForge = document.getElementById("btnCopyForge");
   var copyStatus = document.getElementById("copyStatus");
+  var walletModal = document.getElementById("walletModal");
+  var walletOptions = document.getElementById("walletOptions");
+  var modalClose = document.getElementById("modalClose");
 
   // ═══════════════════════════════════════════════════════════════════
   // STATE
   // ═══════════════════════════════════════════════════════════════════
+  var selectedProvider = null;
   var currentAccount = null;
   var ritualSigned = false;
   var currentPriceWei = null;
   var currentEpoch = 0;
 
   // ═══════════════════════════════════════════════════════════════════
-  // PROVIDER CHECK
+  // DETECT WALLETS
   // ═══════════════════════════════════════════════════════════════════
-  var provider = null;
-  if (typeof window !== "undefined" && window.ethereum) {
-    provider = window.ethereum;
-  }
+  function detectWallets() {
+    var wallets = [];
 
-  if (!provider) {
-    if (noWallet) noWallet.style.display = "block";
-    if (btnInstall) btnInstall.style.display = "inline-flex";
-    if (btnConnect) btnConnect.disabled = true;
+    // Check for providers array (EIP-5749 / multiple wallets)
+    if (window.ethereum && window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+      window.ethereum.providers.forEach(function(p) {
+        if (p.isMetaMask && !p.isPhantom) {
+          wallets.push({ name: 'MetaMask', icon: '🦊', provider: p });
+        } else if (p.isPhantom) {
+          wallets.push({ name: 'Phantom', icon: '👻', provider: p });
+        } else if (p.isCoinbaseWallet) {
+          wallets.push({ name: 'Coinbase', icon: '🔵', provider: p });
+        } else if (p.isBraveWallet) {
+          wallets.push({ name: 'Brave', icon: '🦁', provider: p });
+        }
+      });
+    }
+    
+    // Fallback: single provider
+    if (wallets.length === 0 && window.ethereum) {
+      var p = window.ethereum;
+      if (p.isMetaMask && !p.isPhantom) {
+        wallets.push({ name: 'MetaMask', icon: '🦊', provider: p });
+      } else if (p.isPhantom) {
+        wallets.push({ name: 'Phantom', icon: '👻', provider: p });
+      } else if (p.isCoinbaseWallet) {
+        wallets.push({ name: 'Coinbase', icon: '🔵', provider: p });
+      } else if (p.isBraveWallet) {
+        wallets.push({ name: 'Brave', icon: '🦁', provider: p });
+      } else {
+        // Unknown wallet
+        wallets.push({ name: 'Browser Wallet', icon: '💳', provider: p });
+      }
+    }
+
+    // Check for standalone Phantom (Solana wallet with EVM support)
+    if (window.phantom && window.phantom.ethereum && wallets.every(function(w) { return w.name !== 'Phantom'; })) {
+      wallets.push({ name: 'Phantom', icon: '👻', provider: window.phantom.ethereum });
+    }
+
+    return wallets;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -565,9 +704,18 @@ flow := {
     if (btn) btn.classList.toggle("btn-primary", on);
   }
 
-  // Calculate price from epoch (21-Law)
+  function showError(msg) {
+    if (connectError) {
+      connectError.textContent = msg;
+      connectError.style.display = 'block';
+    }
+  }
+
+  function hideError() {
+    if (connectError) connectError.style.display = 'none';
+  }
+
   function calculatePrice(epoch) {
-    // price = 0.021 + (epoch × 0.021) + (floor(epoch / 21) × 0.21) POL
     var base = 0.021;
     var epochStep = epoch * 0.021;
     var boostStep = Math.floor(epoch / 21) * 0.21;
@@ -575,18 +723,169 @@ flow := {
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // LOAD EPOCH FROM CHAIN
+  // MODAL
   // ═══════════════════════════════════════════════════════════════════
-  function loadEpochAndPrice() {
-    if (!provider) {
-      if (priceDetail) priceDetail.textContent = "Connect wallet to see price";
+  function showModal() {
+    walletModal.classList.add('show');
+  }
+
+  function hideModal() {
+    walletModal.classList.remove('show');
+  }
+
+  function renderWalletOptions(wallets) {
+    walletOptions.innerHTML = '';
+
+    if (wallets.length === 0) {
+      walletOptions.innerHTML = '<div class="no-wallet-msg"><p>No wallet detected.</p><p><a href="https://metamask.io/download/" target="_blank">Install MetaMask</a> to continue.</p></div>';
       return;
     }
 
-    // Call currentEpoch() on Z1NCore
-    var data = '0xb97a4423'; // currentEpoch() selector
+    wallets.forEach(function(wallet) {
+      var div = document.createElement('div');
+      div.className = 'wallet-option';
+      div.innerHTML = '<div class="wallet-icon">' + wallet.icon + '</div><div class="wallet-name">' + wallet.name + '</div>';
+      div.onclick = function() {
+        hideModal();
+        connectWithProvider(wallet.provider, wallet.name);
+      };
+      walletOptions.appendChild(div);
+    });
+  }
 
-    provider.request({
+  // ═══════════════════════════════════════════════════════════════════
+  // CONNECT
+  // ═══════════════════════════════════════════════════════════════════
+  function handleConnect() {
+    hideError();
+    var wallets = detectWallets();
+
+    if (wallets.length === 0) {
+      renderWalletOptions([]);
+      showModal();
+      return;
+    }
+
+    if (wallets.length === 1) {
+      // Auto-connect if only one wallet
+      connectWithProvider(wallets[0].provider, wallets[0].name);
+    } else {
+      // Show selection modal
+      renderWalletOptions(wallets);
+      showModal();
+    }
+  }
+
+  function connectWithProvider(provider, walletName) {
+    selectedProvider = provider;
+    btnConnect.textContent = 'Connecting...';
+    btnConnect.disabled = true;
+
+    provider.request({ method: 'eth_requestAccounts' })
+      .then(function(accounts) {
+        if (!accounts || !accounts.length) {
+          btnConnect.textContent = 'Connect wallet';
+          btnConnect.disabled = false;
+          showError('No accounts returned. Please unlock your wallet.');
+          return;
+        }
+
+        currentAccount = accounts[0];
+        return provider.request({ method: 'eth_chainId' });
+      })
+      .then(function(chainId) {
+        if (!currentAccount) return;
+
+        var networkName = chainId;
+
+        if (chainId !== EXPECTED_CHAIN_ID) {
+          provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: EXPECTED_CHAIN_ID }]
+          }).then(function() {
+            networkName = CHAIN_NAME;
+            finishConnect(walletName, networkName);
+          }).catch(function(err) {
+            // Chain not added, try to add it
+            if (err.code === 4902) {
+              provider.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: EXPECTED_CHAIN_ID,
+                  chainName: 'Polygon Amoy Testnet',
+                  nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 },
+                  rpcUrls: ['https://rpc-amoy.polygon.technology'],
+                  blockExplorerUrls: ['https://amoy.polygonscan.com']
+                }]
+              }).then(function() {
+                networkName = CHAIN_NAME;
+                finishConnect(walletName, networkName);
+              }).catch(function() {
+                networkName = chainId + ' (add Amoy)';
+                finishConnect(walletName, networkName);
+              });
+            } else {
+              networkName = chainId + ' (switch to Amoy)';
+              finishConnect(walletName, networkName);
+            }
+          });
+        } else {
+          networkName = CHAIN_NAME;
+          finishConnect(walletName, networkName);
+        }
+      })
+      .catch(function(err) {
+        console.error('Connect error:', err);
+        btnConnect.textContent = 'Connect wallet';
+        btnConnect.disabled = false;
+        showError('Connection failed: ' + (err.message || 'User rejected'));
+      });
+  }
+
+  function finishConnect(walletName, networkName) {
+    setBtnPrimary(btnConnect, true);
+    btnConnect.textContent = walletName + ' ✓';
+
+    if (btnSign) btnSign.disabled = false;
+    if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected via ' + walletName + '</span>';
+    if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
+    if (statusNet) statusNet.textContent = 'Network: ' + networkName;
+
+    loadEpochAndPrice();
+
+    // Listen for account changes
+    if (selectedProvider && selectedProvider.on) {
+      selectedProvider.on('accountsChanged', function(accounts) {
+        if (accounts.length === 0) {
+          window.location.reload();
+        } else {
+          currentAccount = accounts[0];
+          ritualSigned = false;
+          if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
+          if (btnSign) {
+            btnSign.disabled = false;
+            btnSign.textContent = 'Sign ritual';
+            setBtnPrimary(btnSign, false);
+          }
+          if (btnMint) btnMint.disabled = true;
+          if (signStatus) {
+            signStatus.textContent = "Account changed. Sign ritual again.";
+            signStatus.className = "status-text";
+          }
+        }
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // LOAD EPOCH & PRICE
+  // ═══════════════════════════════════════════════════════════════════
+  function loadEpochAndPrice() {
+    if (!selectedProvider) return;
+
+    var data = '0xb97a4423'; // currentEpoch()
+
+    selectedProvider.request({
       method: 'eth_call',
       params: [{ to: Z1N_CORE, data: data }, 'latest']
     }).then(function(result) {
@@ -596,10 +895,10 @@ flow := {
 
       if (priceMain) priceMain.textContent = price.toFixed(3) + ' POL';
       if (priceDetail) {
-        priceDetail.textContent = 'Epoch ' + currentEpoch + ' · Base 0.021 + ' + (currentEpoch * 0.021).toFixed(3) + ' + ' + (Math.floor(currentEpoch / 21) * 0.21).toFixed(2);
+        priceDetail.textContent = 'Epoch ' + currentEpoch + ' · 21-Law pricing';
       }
 
-      // Try to get USD price
+      // USD price
       fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd')
         .then(function(r) { return r.json(); })
         .then(function(d) {
@@ -617,86 +916,17 @@ flow := {
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // CONNECT WALLET
-  // ═══════════════════════════════════════════════════════════════════
-  function connectWallet() {
-    if (!provider) {
-      alert('No wallet detected. Please install MetaMask.');
-      return;
-    }
-
-    btnConnect.textContent = 'Connecting...';
-    btnConnect.disabled = true;
-
-    provider.request({ method: 'eth_requestAccounts' })
-      .then(function(accounts) {
-        if (!accounts || !accounts.length) {
-          btnConnect.textContent = 'Connect wallet';
-          btnConnect.disabled = false;
-          return;
-        }
-
-        currentAccount = accounts[0];
-
-        // Check chain
-        return provider.request({ method: 'eth_chainId' });
-      })
-      .then(function(chainId) {
-        if (!currentAccount) return;
-
-        var networkName = chainId;
-
-        if (chainId !== EXPECTED_CHAIN_ID) {
-          // Try to switch
-          provider.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: EXPECTED_CHAIN_ID }]
-          }).then(function() {
-            networkName = CHAIN_NAME;
-            updateUI(networkName);
-          }).catch(function() {
-            networkName = chainId + ' (switch to Amoy)';
-            updateUI(networkName);
-          });
-        } else {
-          networkName = CHAIN_NAME;
-          updateUI(networkName);
-        }
-      })
-      .catch(function(err) {
-        console.log('Connect error:', err);
-        btnConnect.textContent = 'Connect wallet';
-        btnConnect.disabled = false;
-      });
-  }
-
-  function updateUI(networkName) {
-    setBtnPrimary(btnConnect, true);
-    btnConnect.textContent = 'Connected';
-
-    if (btnSign) btnSign.disabled = false;
-    if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected</span>';
-    if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
-    if (statusNet) statusNet.textContent = 'Network: ' + networkName;
-    if (statusKeys) statusKeys.textContent = 'Keys owned: (loading...)';
-    if (statusSlots) statusSlots.textContent = 'Mint slots: –';
-
-    // Load epoch/price now that we're connected
-    loadEpochAndPrice();
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
   // SIGN RITUAL
   // ═══════════════════════════════════════════════════════════════════
   function signRitual() {
-    if (!provider || !currentAccount) return;
+    if (!selectedProvider || !currentAccount) return;
 
     btnSign.textContent = 'Signing...';
     btnSign.disabled = true;
 
     var message = "Z1N Ritual: I am present in the Field with this address.";
 
-    provider.request({
+    selectedProvider.request({
       method: 'personal_sign',
       params: [message, currentAccount]
     })
@@ -730,7 +960,7 @@ flow := {
   // MINT KEY
   // ═══════════════════════════════════════════════════════════════════
   function mintKey() {
-    if (!provider || !currentAccount || !ritualSigned) return;
+    if (!selectedProvider || !currentAccount || !ritualSigned) return;
 
     if (!currentPriceWei) {
       if (mintStatus) {
@@ -750,7 +980,7 @@ flow := {
 
     var valueHex = '0x' + BigInt(currentPriceWei).toString(16);
 
-    provider.request({
+    selectedProvider.request({
       method: 'eth_sendTransaction',
       params: [{
         from: currentAccount,
@@ -766,7 +996,6 @@ flow := {
         mintStatus.className = "status-text";
       }
 
-      // Poll for receipt
       var attempts = 0;
       var poll = setInterval(function() {
         attempts++;
@@ -778,7 +1007,7 @@ flow := {
           return;
         }
 
-        provider.request({
+        selectedProvider.request({
           method: 'eth_getTransactionReceipt',
           params: [txHash]
         }).then(function(receipt) {
@@ -826,38 +1055,18 @@ flow := {
   // ═══════════════════════════════════════════════════════════════════
   // EVENT LISTENERS
   // ═══════════════════════════════════════════════════════════════════
-  if (btnConnect) btnConnect.onclick = connectWallet;
+  if (btnConnect) btnConnect.onclick = handleConnect;
   if (btnSign) btnSign.onclick = signRitual;
   if (btnMint) btnMint.onclick = mintKey;
   if (btnCopyForge) btnCopyForge.onclick = copyForgeSnippet;
+  if (modalClose) modalClose.onclick = hideModal;
 
-  // Account changes
-  if (provider && provider.on) {
-    provider.on('accountsChanged', function(accounts) {
-      if (accounts.length === 0) {
-        window.location.reload();
-      } else {
-        currentAccount = accounts[0];
-        ritualSigned = false;
-        if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
-        if (btnSign) {
-          btnSign.disabled = false;
-          btnSign.textContent = 'Sign ritual';
-          setBtnPrimary(btnSign, false);
-        }
-        if (btnMint) btnMint.disabled = true;
-        if (signStatus) {
-          signStatus.textContent = "Account changed. Sign ritual again.";
-          signStatus.className = "status-text";
-        }
-      }
-    });
+  // Close modal on overlay click
+  if (walletModal) {
+    walletModal.onclick = function(e) {
+      if (e.target === walletModal) hideModal();
+    };
   }
-
-  // ═══════════════════════════════════════════════════════════════════
-  // INIT - Try to load price (will work after wallet connect)
-  // ═══════════════════════════════════════════════════════════════════
-  if (priceDetail) priceDetail.textContent = "Connect wallet to see price";
 
 })();
 </script>
