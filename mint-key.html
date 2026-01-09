@@ -892,49 +892,54 @@ flow := {
       return;
     }
 
-    console.log('loadEpochAndPrice: calling Z1N_CORE', Z1N_CORE);
+    console.log('loadEpochAndPrice: calling IssuanceController.currentPrice()');
     
-    var data = '0xb97a4423'; // currentEpoch()
+    // Call currentPrice() on IssuanceController - returns exact wei amount
+    var priceSelector = '0x9d1b464a'; // currentPrice()
+    var epochSelector = '0xb97a4423'; // currentEpoch()
 
+    // Get price from IssuanceController
     selectedProvider.request({
       method: 'eth_call',
-      params: [{ to: Z1N_CORE, data: data }, 'latest']
-    }).then(function(result) {
-      console.log('currentEpoch result:', result);
-      currentEpoch = parseInt(result, 16);
-      var price = calculatePrice(currentEpoch);
-      currentPriceWei = Math.floor(price * 1e18).toString();
+      params: [{ to: ISSUANCE_CONTROLLER, data: priceSelector }, 'latest']
+    }).then(function(priceResult) {
+      console.log('currentPrice result:', priceResult);
       
-      console.log('Price calculated:', { epoch: currentEpoch, price: price, priceWei: currentPriceWei });
+      // Price is returned as uint256 in wei
+      currentPriceWei = BigInt(priceResult).toString();
+      var priceInPol = Number(BigInt(priceResult)) / 1e18;
+      
+      console.log('Price from contract:', { priceWei: currentPriceWei, pricePol: priceInPol });
 
-      if (priceMain) priceMain.textContent = price.toFixed(3) + ' POL';
-      if (priceDetail) {
-        priceDetail.textContent = 'Epoch ' + currentEpoch + ' · 21-Law pricing';
-      }
+      if (priceMain) priceMain.textContent = priceInPol.toFixed(3) + ' POL';
+      
+      // Get epoch for display
+      return selectedProvider.request({
+        method: 'eth_call',
+        params: [{ to: Z1N_CORE, data: epochSelector }, 'latest']
+      }).then(function(epochResult) {
+        currentEpoch = parseInt(epochResult, 16);
+        if (priceDetail) {
+          priceDetail.textContent = 'Epoch ' + currentEpoch + ' · 21-Law pricing';
+        }
+      });
 
+    }).then(function() {
       // USD price
       fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd')
         .then(function(r) { return r.json(); })
         .then(function(d) {
           var rate = d['matic-network'] && d['matic-network'].usd;
-          if (rate && priceUsd) {
-            priceUsd.textContent = '≈ $' + (price * rate).toFixed(2) + ' USD';
+          if (rate && priceUsd && currentPriceWei) {
+            var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
+            priceUsd.textContent = '≈ $' + (priceInPol * rate).toFixed(2) + ' USD';
           }
         })
         .catch(function() {});
 
     }).catch(function(err) {
-      console.error('Could not load epoch:', err);
-      // Fallback: use hardcoded epoch estimate or allow manual price
-      if (priceDetail) priceDetail.textContent = "Could not load from chain. Using estimate.";
-      
-      // Fallback price based on rough epoch estimate (around epoch 150)
-      currentEpoch = 150;
-      var price = calculatePrice(currentEpoch);
-      currentPriceWei = Math.floor(price * 1e18).toString();
-      
-      if (priceMain) priceMain.textContent = '~' + price.toFixed(3) + ' POL';
-      console.log('Using fallback price:', { epoch: currentEpoch, price: price });
+      console.error('Could not load price from contract:', err);
+      if (priceDetail) priceDetail.textContent = "Could not load price. Check network.";
     });
   }
 
