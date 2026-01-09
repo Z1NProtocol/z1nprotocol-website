@@ -966,7 +966,31 @@ flow := {
   // MINT KEY
   // ═══════════════════════════════════════════════════════════════════
   function mintKey() {
-    if (!selectedProvider || !currentAccount || !ritualSigned) return;
+    console.log('mintKey called', { selectedProvider: !!selectedProvider, currentAccount, ritualSigned, currentPriceWei });
+    
+    if (!selectedProvider) {
+      if (mintStatus) {
+        mintStatus.textContent = "No wallet connected. Please connect first.";
+        mintStatus.className = "status-text status-error";
+      }
+      return;
+    }
+    
+    if (!currentAccount) {
+      if (mintStatus) {
+        mintStatus.textContent = "No account selected. Please reconnect.";
+        mintStatus.className = "status-text status-error";
+      }
+      return;
+    }
+    
+    if (!ritualSigned) {
+      if (mintStatus) {
+        mintStatus.textContent = "Please sign the ritual first (Step 2).";
+        mintStatus.className = "status-text status-error";
+      }
+      return;
+    }
 
     if (!currentPriceWei) {
       if (mintStatus) {
