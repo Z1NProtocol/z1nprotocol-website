@@ -590,11 +590,16 @@ flow := {
         priceDetail.textContent = `Base: ${data.priceBreakdown.base} + Epoch: ${data.priceBreakdown.epochStep} + Boost: ${data.priceBreakdown.boostStep}`;
       }
 
-      if (fieldEpoch) fieldEpoch.textContent = data.currentEpoch;
-      if (fieldMinted) fieldMinted.textContent = data.totalMinted.toLocaleString();
-      if (fieldPhase) {
-        fieldPhase.textContent = data.isGenesisPhase ? '⭐ Genesis (7 glyphs, 2x boost)' : 'Regular (6 glyphs)';
-        fieldPhase.className = data.isGenesisPhase ? 'genesis' : 'highlight';
+      // Fetch USD price
+      try {
+        const polPrice = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd');
+        const polData = await polPrice.json();
+        const usdRate = polData['matic-network']?.usd || 0;
+        const usdValue = (parseFloat(data.currentPrice) * usdRate).toFixed(2);
+        const priceUsd = document.getElementById('priceUsd');
+        if (priceUsd && usdRate > 0) priceUsd.textContent = `≈ $${usdValue} USD`;
+      } catch (e) {
+        console.log('Could not fetch USD rate');
       }
 
     } catch (err) {
