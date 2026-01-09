@@ -887,17 +887,25 @@ flow := {
   // LOAD EPOCH & PRICE
   // ═══════════════════════════════════════════════════════════════════
   function loadEpochAndPrice() {
-    if (!selectedProvider) return;
+    if (!selectedProvider) {
+      console.log('loadEpochAndPrice: no provider');
+      return;
+    }
 
+    console.log('loadEpochAndPrice: calling Z1N_CORE', Z1N_CORE);
+    
     var data = '0xb97a4423'; // currentEpoch()
 
     selectedProvider.request({
       method: 'eth_call',
       params: [{ to: Z1N_CORE, data: data }, 'latest']
     }).then(function(result) {
+      console.log('currentEpoch result:', result);
       currentEpoch = parseInt(result, 16);
       var price = calculatePrice(currentEpoch);
       currentPriceWei = Math.floor(price * 1e18).toString();
+      
+      console.log('Price calculated:', { epoch: currentEpoch, price: price, priceWei: currentPriceWei });
 
       if (priceMain) priceMain.textContent = price.toFixed(3) + ' POL';
       if (priceDetail) {
@@ -916,8 +924,17 @@ flow := {
         .catch(function() {});
 
     }).catch(function(err) {
-      console.log('Could not load epoch:', err);
-      if (priceDetail) priceDetail.textContent = "Could not load price";
+      console.error('Could not load epoch:', err);
+      // Fallback: use hardcoded epoch estimate or allow manual price
+      if (priceDetail) priceDetail.textContent = "Could not load from chain. Using estimate.";
+      
+      // Fallback price based on rough epoch estimate (around epoch 150)
+      currentEpoch = 150;
+      var price = calculatePrice(currentEpoch);
+      currentPriceWei = Math.floor(price * 1e18).toString();
+      
+      if (priceMain) priceMain.textContent = '~' + price.toFixed(3) + ' POL';
+      console.log('Using fallback price:', { epoch: currentEpoch, price: price });
     });
   }
 
