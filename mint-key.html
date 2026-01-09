@@ -15,6 +15,7 @@
       --accent-soft: #3a9f63;
       --card-border: rgba(148, 163, 184, 0.25);
       --danger: #f97373;
+      --warning: #facc15;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +29,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* HEADER – same baseline */
+    /* HEADER */
     header {
       height: 72px;
       display: flex;
@@ -48,7 +49,6 @@
     }
 
     .logo-wrap { display: flex; align-items: center; gap: 8px; }
-
     .logo-link { display: inline-flex; align-items: center; gap: 8px; }
 
     .logo-dot {
@@ -77,7 +77,6 @@
     }
 
     .nav-links a { position: relative; }
-
     .nav-links a.active { color: var(--accent); }
 
     .nav-links a.active::after {
@@ -93,24 +92,17 @@
 
     @media(max-width: 900px){
       .nav-inner { padding: 0 16px; }
-      .nav-links {
-        font-size: 12px;
-        gap: 14px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
+      .nav-links { font-size: 12px; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
     }
 
     /* PAGE WRAPPER */
     .page {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 24px 56px; /* footer “closer” */
+      padding: 40px 24px 56px;
     }
 
-    @media(max-width: 900px){
-      .page { padding: 32px 18px 44px; }
-    }
+    @media(max-width: 900px){ .page { padding: 32px 18px 44px; } }
 
     h1 {
       font-size: 40px;
@@ -161,9 +153,7 @@
       align-items: flex-start;
     }
 
-    @media(max-width: 900px){
-      .mint-layout { grid-template-columns: 1fr; }
-    }
+    @media(max-width: 900px){ .mint-layout { grid-template-columns: 1fr; } }
 
     .card {
       background: var(--card-bg);
@@ -237,10 +227,8 @@
     }
 
     .btn:hover:not([disabled]) { border-color: var(--accent); }
-
     .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
 
-    /* homepage-like shaded -> solid on hover */
     .btn-primary {
       background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
       border-color: rgba(58,159,99,0.95);
@@ -255,11 +243,7 @@
       box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.14);
     }
 
-    /* connect wallet: green rim, transparent fill */
-    .btn-connect {
-      border-color: var(--accent-soft);
-      color: #e5e7eb;
-    }
+    .btn-connect { border-color: var(--accent-soft); color: #e5e7eb; }
 
     .btn-ghost {
       border-style: dashed;
@@ -277,6 +261,8 @@
     }
 
     .status-error { color: var(--danger); }
+    .status-success { color: var(--accent); }
+    .status-warning { color: var(--warning); }
 
     .status-box {
       margin-top: 6px;
@@ -289,6 +275,8 @@
     }
 
     .status-box div + div { margin-top: 2px; }
+    .status-box .highlight { color: var(--accent); font-weight: 600; }
+    .status-box .genesis { color: var(--warning); }
 
     /* NBI code style */
     .code-block {
@@ -309,6 +297,27 @@
     .code-func    { color: #34d399; }
     .code-field   { color: #38bdf8; }
 
+    /* PRICE DISPLAY */
+    .price-display {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(102,214,154,0.08);
+      border: 1px solid rgba(102,214,154,0.25);
+    }
+
+    .price-main {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .price-detail {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
     /* FOOTER */
     footer {
       border-top: 1px solid rgba(255,255,255,0.05);
@@ -319,13 +328,7 @@
     }
 
     footer .tagline { margin-bottom: 6px; font-size: 13px; }
-
-    footer .links {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      font-size: 13px;
-    }
+    footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
   </style>
 </head>
 
@@ -414,7 +417,8 @@
           <div id="statusWallet">Status: Wallet not connected</div>
           <div id="statusAddress">Address: –</div>
           <div id="statusNetwork">Network: –</div>
-          <div id="statusKeys">Keys (this address): –</div>
+          <div id="statusKeys">Keys owned: –</div>
+          <div id="statusSlots">Mint slots: –</div>
         </div>
       </div>
 
@@ -424,13 +428,19 @@
         <div class="step-label">Step 3</div>
         <div class="step-title">Mint your Key</div>
         <p class="step-body">
-          This will be enabled once the protocol is live on mainnet and the contracts are wired.
+          Pay the current epoch price to mint your soulbound Key with unique glyphs.
         </p>
-        <div class="btn-row">
+
+        <div class="price-display">
+          <div class="price-main" id="priceMain">– POL</div>
+          <div class="price-detail" id="priceDetail">Loading price...</div>
+        </div>
+
+        <div class="btn-row" style="margin-top: 12px;">
           <button id="btnMint" class="btn btn-primary" type="button" disabled>Mint your Key</button>
         </div>
         <div id="mintStatus" class="status-text">
-          Mainnet wiring not active yet. Mint disabled for now.
+          Connect wallet and sign ritual to enable minting.
         </div>
       </div>
     </article>
@@ -478,6 +488,17 @@ flow := {
         </div>
         <div id="copyStatus" class="status-text" style="display:none;">Forge snippet copied to clipboard.</div>
       </div>
+
+      <!-- FIELD STATUS -->
+      <div class="divider"></div>
+      <div class="step-row">
+        <div class="step-label">Field Status</div>
+        <div class="status-box">
+          <div>Current epoch: <span id="fieldEpoch" class="highlight">–</span></div>
+          <div>Total keys minted: <span id="fieldMinted">–</span> / 21,000,000</div>
+          <div>Phase: <span id="fieldPhase" class="genesis">–</span></div>
+        </div>
+      </div>
     </article>
   </section>
 </main>
@@ -491,103 +512,321 @@ flow := {
 </footer>
 
 <script>
-  (function () {
-    function setBtnPrimary(btn, isPrimary) {
-      if (!btn) return;
-      btn.classList.toggle("btn-primary", !!isPrimary);
+(function () {
+  // ═══════════════════════════════════════════════════════════════════
+  // CONFIG
+  // ═══════════════════════════════════════════════════════════════════
+  const API_BASE = 'http://localhost:3002/api';
+  const EXPECTED_CHAIN_ID = '0x13882'; // Polygon Amoy (80002)
+  const CHAIN_NAME = 'Polygon Amoy';
+
+  // IssuanceController - set when deployed
+  const ISSUANCE_CONTROLLER = null; // TODO: '0x...' when deployed
+
+  // ═══════════════════════════════════════════════════════════════════
+  // ELEMENTS
+  // ═══════════════════════════════════════════════════════════════════
+  const btnConnect   = document.getElementById("btnConnect");
+  const btnSign      = document.getElementById("btnSign");
+  const btnMint      = document.getElementById("btnMint");
+  const noWallet     = document.getElementById("noWallet");
+  const btnInstall   = document.getElementById("btnInstall");
+
+  const signStatus   = document.getElementById("signStatus");
+  const mintStatus   = document.getElementById("mintStatus");
+
+  const statusWallet = document.getElementById("statusWallet");
+  const statusAddr   = document.getElementById("statusAddress");
+  const statusNet    = document.getElementById("statusNetwork");
+  const statusKeys   = document.getElementById("statusKeys");
+  const statusSlots  = document.getElementById("statusSlots");
+
+  const priceMain    = document.getElementById("priceMain");
+  const priceDetail  = document.getElementById("priceDetail");
+
+  const fieldEpoch   = document.getElementById("fieldEpoch");
+  const fieldMinted  = document.getElementById("fieldMinted");
+  const fieldPhase   = document.getElementById("fieldPhase");
+
+  const btnCopyForge = document.getElementById("btnCopyForge");
+  const copyStatus   = document.getElementById("copyStatus");
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STATE
+  // ═══════════════════════════════════════════════════════════════════
+  let currentAccount = null;
+  let ritualSigned = false;
+  let currentPrice = null;
+  let currentPriceWei = null;
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROVIDER
+  // ═══════════════════════════════════════════════════════════════════
+  const provider = (typeof window !== "undefined" && window.ethereum && typeof window.ethereum.request === "function")
+    ? window.ethereum
+    : null;
+
+  if (!provider) {
+    if (noWallet) noWallet.style.display = "block";
+    if (btnInstall) btnInstall.style.display = "inline-flex";
+    if (btnConnect) btnConnect.disabled = true;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // HELPERS
+  // ═══════════════════════════════════════════════════════════════════
+  function setBtnPrimary(btn, isPrimary) {
+    if (!btn) return;
+    btn.classList.toggle("btn-primary", !!isPrimary);
+  }
+
+  function shortAddress(addr) {
+    return addr.slice(0, 6) + '...' + addr.slice(-4);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // API CALLS
+  // ═══════════════════════════════════════════════════════════════════
+  async function loadMintStatus() {
+    try {
+      const res = await fetch(`${API_BASE}/mint/status`);
+      const data = await res.json();
+
+      currentPrice = data.currentPrice;
+      currentPriceWei = data.currentPriceWei;
+
+      if (priceMain) priceMain.textContent = `${data.currentPrice} POL`;
+      if (priceDetail) {
+        priceDetail.textContent = `Base: ${data.priceBreakdown.base} + Epoch: ${data.priceBreakdown.epochStep} + Boost: ${data.priceBreakdown.boostStep}`;
+      }
+
+      if (fieldEpoch) fieldEpoch.textContent = data.currentEpoch;
+      if (fieldMinted) fieldMinted.textContent = data.totalMinted.toLocaleString();
+      if (fieldPhase) {
+        fieldPhase.textContent = data.isGenesisPhase ? '⭐ Genesis (7 glyphs, 2x boost)' : 'Regular (6 glyphs)';
+        fieldPhase.className = data.isGenesisPhase ? 'genesis' : 'highlight';
+      }
+
+    } catch (err) {
+      console.error('Failed to load mint status:', err);
+      if (priceDetail) priceDetail.textContent = 'Failed to load price';
     }
+  }
 
-    const btnConnect   = document.getElementById("btnConnect");
-    const btnSign      = document.getElementById("btnSign");
-    const btnMint      = document.getElementById("btnMint");
-    const noWallet     = document.getElementById("noWallet");
-    const btnInstall   = document.getElementById("btnInstall");
+  async function loadWalletData(address) {
+    try {
+      const res = await fetch(`${API_BASE}/wallet/${address}`);
+      const data = await res.json();
 
-    const signStatus   = document.getElementById("signStatus");
-    const mintStatus   = document.getElementById("mintStatus");
+      if (statusKeys) {
+        statusKeys.innerHTML = `Keys owned: <span class="highlight">${data.totalKeys}</span>`;
+      }
+      if (statusSlots) {
+        const remaining = 210 - data.totalKeys;
+        statusSlots.innerHTML = `Mint slots: <span class="highlight">${remaining}</span> / 210`;
+      }
 
-    const statusWallet = document.getElementById("statusWallet");
-    const statusAddr   = document.getElementById("statusAddress");
-    const statusNet    = document.getElementById("statusNetwork");
-    const statusKeys   = document.getElementById("statusKeys");
+      return data;
 
-    const btnCopyForge = document.getElementById("btnCopyForge");
-    const copyStatus   = document.getElementById("copyStatus");
-
-    // Provider detect: MetaMask (simple, stable)
-    const provider = (typeof window !== "undefined" && window.ethereum && typeof window.ethereum.request === "function")
-      ? window.ethereum
-      : null;
-
-    if (!provider) {
-      if (noWallet) noWallet.style.display = "block";
-      if (btnInstall) btnInstall.style.display = "inline-flex";
-      if (btnConnect) btnConnect.disabled = true;
+    } catch (err) {
+      console.error('Failed to load wallet data:', err);
+      if (statusKeys) statusKeys.textContent = 'Keys owned: (error)';
+      return null;
     }
+  }
 
-    let currentAccount = null;
+  // ═══════════════════════════════════════════════════════════════════
+  // WALLET CONNECT
+  // ═══════════════════════════════════════════════════════════════════
+  async function connectWallet() {
+    if (!provider) return;
 
-    async function connectWallet() {
-      if (!provider) return;
-      try {
-        const accounts = await provider.request({ method: "eth_requestAccounts" });
-        if (!accounts || !accounts.length) return;
+    try {
+      btnConnect.textContent = 'Connecting...';
+      btnConnect.disabled = true;
 
-        currentAccount = accounts[0];
+      const accounts = await provider.request({ method: "eth_requestAccounts" });
+      if (!accounts || !accounts.length) {
+        btnConnect.textContent = 'Connect wallet';
+        btnConnect.disabled = false;
+        return;
+      }
 
-        setBtnPrimary(btnConnect, true);
-        if (btnSign) btnSign.disabled = false;
+      currentAccount = accounts[0];
 
-        if (statusWallet) statusWallet.textContent = "Status: Wallet connected";
-        if (statusAddr)   statusAddr.textContent   = "Address: " + currentAccount;
+      // Check network
+      const chainId = await provider.request({ method: "eth_chainId" });
+      let networkName = chainId;
 
+      if (chainId !== EXPECTED_CHAIN_ID) {
         try {
-          const chainId = await provider.request({ method: "eth_chainId" });
-          if (statusNet) statusNet.textContent = "Network: " + chainId + " (informational)";
-        } catch (e) {
-          if (statusNet) statusNet.textContent = "Network: unknown";
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: EXPECTED_CHAIN_ID }]
+          });
+          networkName = CHAIN_NAME;
+        } catch (switchErr) {
+          networkName = `${chainId} (⚠️ switch to Amoy)`;
         }
+      } else {
+        networkName = CHAIN_NAME;
+      }
 
-        if (statusKeys) statusKeys.textContent = "Keys (this address): – (to be wired to on-chain/indexer)";
+      // Update UI
+      setBtnPrimary(btnConnect, true);
+      btnConnect.textContent = 'Connected';
+      if (btnSign) btnSign.disabled = false;
 
-      } catch (err) {
-        console.error("Connect error", err);
+      if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected</span>';
+      if (statusAddr) statusAddr.textContent = `Address: ${shortAddress(currentAccount)}`;
+      if (statusNet) statusNet.textContent = `Network: ${networkName}`;
+
+      // Load wallet data
+      await loadWalletData(currentAccount);
+
+    } catch (err) {
+      console.error("Connect error", err);
+      btnConnect.textContent = 'Connect wallet';
+      btnConnect.disabled = false;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SIGN RITUAL
+  // ═══════════════════════════════════════════════════════════════════
+  async function signRitual() {
+    if (!provider || !currentAccount) return;
+
+    try {
+      btnSign.textContent = 'Signing...';
+      btnSign.disabled = true;
+
+      const message = "Z1N Ritual: I am present in the Field with this address.";
+      await provider.request({
+        method: "personal_sign",
+        params: [message, currentAccount]
+      });
+
+      ritualSigned = true;
+
+      if (signStatus) {
+        signStatus.textContent = "✅ Ritual signed. This address is remembered by the Field.";
+        signStatus.className = "status-text status-success";
+      }
+      setBtnPrimary(btnSign, true);
+      btnSign.textContent = 'Signed ✓';
+
+      // Enable mint button if IssuanceController is deployed
+      if (ISSUANCE_CONTROLLER) {
+        if (btnMint) btnMint.disabled = false;
+        if (mintStatus) {
+          mintStatus.textContent = `Ready to mint. Price: ${currentPrice} POL`;
+          mintStatus.className = "status-text status-success";
+        }
+      } else {
+        if (mintStatus) {
+          mintStatus.textContent = "⏳ IssuanceController not deployed yet. Testnet wiring in progress.";
+          mintStatus.className = "status-text status-warning";
+        }
+      }
+
+    } catch (err) {
+      console.error("Sign error", err);
+      btnSign.textContent = 'Sign ritual';
+      btnSign.disabled = false;
+      if (signStatus) {
+        signStatus.textContent = "Ritual not signed (rejected or error).";
+        signStatus.className = "status-text status-error";
       }
     }
+  }
 
-    async function signRitual() {
-      if (!provider || !currentAccount) return;
-      try {
-        const message = "Z1N Ritual: I am present in the Field with this address.";
-        await provider.request({
-          method: "personal_sign",
-          params: [message, currentAccount]
-        });
+  // ═══════════════════════════════════════════════════════════════════
+  // MINT KEY
+  // ═══════════════════════════════════════════════════════════════════
+  async function mintKey() {
+    if (!provider || !currentAccount || !ritualSigned) return;
 
-        if (signStatus) signStatus.textContent = "Ritual signed. This address is now remembered by the Field.";
-        setBtnPrimary(btnSign, true);
+    if (!ISSUANCE_CONTROLLER) {
+      if (mintStatus) {
+        mintStatus.textContent = "IssuanceController not deployed yet.";
+        mintStatus.className = "status-text status-warning";
+      }
+      return;
+    }
 
-        // Optie A: mint blijft disabled tot mainnet wiring live is
-        if (mintStatus) mintStatus.textContent = "Ritual signed ✅. Mint will be enabled when mainnet wiring is active.";
+    try {
+      btnMint.textContent = 'Minting...';
+      btnMint.disabled = true;
 
-      } catch (err) {
-        console.error("Sign error", err);
-        if (signStatus) signStatus.textContent = "Ritual not signed (user rejected or error).";
+      if (mintStatus) {
+        mintStatus.textContent = "Confirm transaction in wallet...";
+        mintStatus.className = "status-text";
+      }
+
+      // Call mintPublic on IssuanceController
+      const tx = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: currentAccount,
+          to: ISSUANCE_CONTROLLER,
+          value: '0x' + BigInt(currentPriceWei).toString(16),
+          data: '0x26092b83', // mintPublic() selector
+          gas: '0xC3500' // 800000
+        }]
+      });
+
+      if (mintStatus) {
+        mintStatus.textContent = "Transaction submitted. Waiting...";
+        mintStatus.className = "status-text";
+      }
+
+      // Poll for confirmation
+      let confirmed = false;
+      for (let i = 0; i < 30 && !confirmed; i++) {
+        await new Promise(r => setTimeout(r, 2000));
+        try {
+          const receipt = await provider.request({
+            method: 'eth_getTransactionReceipt',
+            params: [tx]
+          });
+          if (receipt && receipt.status === '0x1') confirmed = true;
+        } catch (e) {}
+      }
+
+      if (confirmed) {
+        if (mintStatus) {
+          mintStatus.textContent = "✅ Key minted! Welcome to the Field.";
+          mintStatus.className = "status-text status-success";
+        }
+        await loadWalletData(currentAccount);
+        await loadMintStatus();
+      } else {
+        if (mintStatus) {
+          mintStatus.textContent = "Transaction pending or failed.";
+          mintStatus.className = "status-text status-warning";
+        }
+      }
+
+      btnMint.textContent = 'Mint your Key';
+      btnMint.disabled = false;
+
+    } catch (err) {
+      console.error("Mint error", err);
+      btnMint.textContent = 'Mint your Key';
+      btnMint.disabled = false;
+      if (mintStatus) {
+        mintStatus.textContent = "Mint failed: " + (err.message || 'Rejected');
+        mintStatus.className = "status-text status-error";
       }
     }
+  }
 
-    function mintKey() {
-      // Optie A: bewust uit
-      if (mintStatus) mintStatus.textContent = "Mint disabled until mainnet wiring is live.";
-    }
-
-    if (btnConnect) btnConnect.addEventListener("click", connectWallet);
-    if (btnSign)    btnSign.addEventListener("click", signRitual);
-    if (btnMint)    btnMint.addEventListener("click", mintKey);
-
-    if (btnCopyForge && copyStatus) {
-      btnCopyForge.addEventListener("click", function () {
-        const snippet =
+  // ═══════════════════════════════════════════════════════════════════
+  // COPY FORGE SNIPPET
+  // ═══════════════════════════════════════════════════════════════════
+  function copyForgeSnippet() {
+    const snippet =
 `self → field.attach()
 epoch ← core.currentEpoch()
 entropy ← self.noise(epoch)
@@ -603,13 +842,53 @@ flow := {
   variance: self.entropy()
 }
 field.integrate(flow)`;
-        navigator.clipboard.writeText(snippet).then(function () {
-          copyStatus.style.display = "block";
-          setTimeout(function () { copyStatus.style.display = "none"; }, 2000);
-        });
-      });
-    }
-  })();
+
+    navigator.clipboard.writeText(snippet).then(function () {
+      if (copyStatus) {
+        copyStatus.style.display = "block";
+        setTimeout(function () { copyStatus.style.display = "none"; }, 2000);
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // EVENT LISTENERS
+  // ═══════════════════════════════════════════════════════════════════
+  if (btnConnect) btnConnect.addEventListener("click", connectWallet);
+  if (btnSign) btnSign.addEventListener("click", signRitual);
+  if (btnMint) btnMint.addEventListener("click", mintKey);
+  if (btnCopyForge) btnCopyForge.addEventListener("click", copyForgeSnippet);
+
+  // Handle account changes
+  if (provider) {
+    provider.on('accountsChanged', async (accounts) => {
+      if (accounts.length === 0) {
+        location.reload();
+      } else {
+        currentAccount = accounts[0];
+        ritualSigned = false;
+        if (statusAddr) statusAddr.textContent = `Address: ${shortAddress(currentAccount)}`;
+        if (btnSign) {
+          btnSign.disabled = false;
+          btnSign.textContent = 'Sign ritual';
+          setBtnPrimary(btnSign, false);
+        }
+        if (btnMint) btnMint.disabled = true;
+        if (signStatus) {
+          signStatus.textContent = "Account changed. Sign ritual again.";
+          signStatus.className = "status-text";
+        }
+        await loadWalletData(currentAccount);
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════════════
+  loadMintStatus();
+
+})();
 </script>
 
 </body>
