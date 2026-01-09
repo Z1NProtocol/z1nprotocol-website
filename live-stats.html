@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
-    :root{
+    :root{let lockedKey
       --bg:#050812;
       --card-bg:#020617;
       --text-main:#ffffff;
@@ -999,7 +999,7 @@
     }
 
     // ====== State: hover-preview vs locked ======
-    let lockedKey = "last";     // default lock
+    let lockedKey = "total";     // default lock
     let activeKey = lockedKey;  // current view
 
     function getWinnerFromCardKey(lensKey){
