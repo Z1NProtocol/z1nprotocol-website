@@ -884,28 +884,40 @@ flow := {
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // LOAD EPOCH & PRICE
+  // DIRECT RPC CALL (bypass MetaMask for reading)
+  // ═══════════════════════════════════════════════════════════════════
+  function rpcCall(method, params) {
+    return fetch('https://rpc-amoy.polygon.technology', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: method,
+        params: params
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.error) throw new Error(data.error.message);
+      return data.result;
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // LOAD EPOCH & PRICE (direct RPC, not via MetaMask)
   // ═══════════════════════════════════════════════════════════════════
   function loadEpochAndPrice() {
-    if (!selectedProvider) {
-      console.log('loadEpochAndPrice: no provider');
-      return;
-    }
-
-    console.log('loadEpochAndPrice: calling IssuanceController.currentPrice()');
+    console.log('loadEpochAndPrice: using direct RPC');
     
-    // Call currentPrice() on IssuanceController - returns exact wei amount
     var priceSelector = '0x9d1b464a'; // currentPrice()
     var epochSelector = '0xb97a4423'; // currentEpoch()
 
-    // Get price from IssuanceController
-    selectedProvider.request({
-      method: 'eth_call',
-      params: [{ to: ISSUANCE_CONTROLLER, data: priceSelector }, 'latest']
-    }).then(function(priceResult) {
+    // Get price from IssuanceController via direct RPC
+    rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: priceSelector }, 'latest'])
+    .then(function(priceResult) {
       console.log('currentPrice result:', priceResult);
       
-      // Price is returned as uint256 in wei
       currentPriceWei = BigInt(priceResult).toString();
       var priceInPol = Number(BigInt(priceResult)) / 1e18;
       
@@ -914,48 +926,38 @@ flow := {
       if (priceMain) priceMain.textContent = priceInPol.toFixed(3) + ' POL';
       if (priceDetail) priceDetail.textContent = '21-Law pricing';
       
-      // Get epoch for display
-      return selectedProvider.request({
-        method: 'eth_call',
-        params: [{ to: Z1N_CORE, data: epochSelector }, 'latest']
-      }).then(function(epochResult) {
-        currentEpoch = parseInt(epochResult, 16);
-        if (priceDetail) {
-          priceDetail.textContent = 'Epoch ' + currentEpoch + ' · 21-Law pricing';
-        }
-      });
-
-    }).then(function() {
-      // USD price
-      fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd')
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-          var rate = d['matic-network'] && d['matic-network'].usd;
-          if (rate && priceUsd && currentPriceWei) {
-            var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
-            priceUsd.textContent = '≈ $' + (priceInPol * rate).toFixed(2) + ' USD';
-          }
-        })
-        .catch(function() {});
-
-    }).catch(function(err) {
-      console.error('Could not load price from contract:', err);
+      // Get epoch
+      return rpcCall('eth_call', [{ to: Z1N_CORE, data: epochSelector }, 'latest']);
+    })
+    .then(function(epochResult) {
+      currentEpoch = parseInt(epochResult, 16);
+      if (priceDetail) {
+        priceDetail.textContent = 'Epoch ' + currentEpoch + ' · 21-Law pricing';
+      }
       
-      // FALLBACK: Calculate price locally based on estimated epoch
-      // Epoch ~142 at time of writing, increases every 30 min on testnet
+      // USD price
+      return fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd');
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var rate = d['matic-network'] && d['matic-network'].usd;
+      if (rate && priceUsd && currentPriceWei) {
+        var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
+        priceUsd.textContent = '≈ $' + (priceInPol * rate).toFixed(2) + ' USD';
+      }
+    })
+    .catch(function(err) {
+      console.error('Could not load price:', err);
+      
+      // Fallback
       var fallbackEpoch = 145;
-      var base = 0.021;
-      var epochStep = fallbackEpoch * 0.021;
-      var boostStep = Math.floor(fallbackEpoch / 21) * 0.21;
-      var fallbackPrice = base + epochStep + boostStep;
+      var fallbackPrice = 0.021 + (fallbackEpoch * 0.021) + (Math.floor(fallbackEpoch / 21) * 0.21);
       
       currentPriceWei = Math.floor(fallbackPrice * 1e18).toString();
       currentEpoch = fallbackEpoch;
       
       if (priceMain) priceMain.textContent = '~' + fallbackPrice.toFixed(3) + ' POL';
-      if (priceDetail) priceDetail.textContent = 'Estimated price (RPC issue)';
-      
-      console.log('Using fallback price:', fallbackPrice);
+      if (priceDetail) priceDetail.textContent = 'Estimated price';
     });
   }
 
@@ -1142,6 +1144,9 @@ flow := {
       if (e.target === walletModal) hideModal();
     };
   }
+
+  // Load price immediately on page load
+  loadEpochAndPrice();
 
 })();
 </script>
