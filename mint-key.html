@@ -29,7 +29,6 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    /* HEADER */
     header {
       height: 72px;
       display: flex;
@@ -95,7 +94,6 @@
       .nav-links { font-size: 12px; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
     }
 
-    /* PAGE WRAPPER */
     .page {
       max-width: 1200px;
       margin: 0 auto;
@@ -144,7 +142,6 @@
       line-height: 1.7;
     }
 
-    /* LAYOUT: two columns */
     .mint-layout {
       margin-top: 24px;
       display: grid;
@@ -199,7 +196,6 @@
 
     .step-row { margin-bottom: 14px; }
 
-    /* BUTTONS */
     .btn-row {
       margin-top: 6px;
       margin-bottom: 10px;
@@ -253,7 +249,6 @@
       max-width: 190px;
     }
 
-    /* STATUS TEXT */
     .status-text {
       font-size: 12px;
       color: var(--text-soft);
@@ -278,7 +273,6 @@
     .status-box .highlight { color: var(--accent); font-weight: 600; }
     .status-box .genesis { color: var(--warning); }
 
-    /* NBI code style */
     .code-block {
       font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
       font-size: 12px;
@@ -297,7 +291,6 @@
     .code-func    { color: #34d399; }
     .code-field   { color: #38bdf8; }
 
-    /* PRICE DISPLAY */
     .price-display {
       margin-top: 8px;
       padding: 10px 12px;
@@ -318,7 +311,12 @@
       margin-top: 2px;
     }
 
-    /* FOOTER */
+    .price-usd {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
     footer {
       border-top: 1px solid rgba(255,255,255,0.05);
       padding: 18px 20px;
@@ -433,8 +431,8 @@
 
         <div class="price-display">
           <div class="price-main" id="priceMain">– POL</div>
-          <div class="price-detail" id="priceDetail">Loading price...</div>
-          <div class="price-usd" id="priceUsd" style="font-size:12px;color:#8f9ab5;margin-top:4px;"></div>
+          <div class="price-detail" id="priceDetail">Calculating price...</div>
+          <div class="price-usd" id="priceUsd"></div>
         </div>
 
         <div class="btn-row" style="margin-top: 12px;">
@@ -503,58 +501,52 @@ flow := {
 
 <script>
 (function () {
+  "use strict";
+
   // ═══════════════════════════════════════════════════════════════════
   // CONFIG
   // ═══════════════════════════════════════════════════════════════════
-  const API_BASE = 'http://localhost:3002/api';
-  const EXPECTED_CHAIN_ID = '0x13882'; // Polygon Amoy (80002)
-  const CHAIN_NAME = 'Polygon Amoy';
-
-  // IssuanceController - set when deployed
-  const ISSUANCE_CONTROLLER = '0x895f7e893B132979D9bE9e67bf9A6f4E77400C5b'; // TODO: '0x...' when deployed
+  var EXPECTED_CHAIN_ID = '0x13882'; // Polygon Amoy (80002)
+  var CHAIN_NAME = 'Polygon Amoy';
+  var ISSUANCE_CONTROLLER = '0x895f7e893B132979D9bE9e67bf9A6f4E77400C5b';
+  var Z1N_CORE = '0xade14831356722154A39D40a8EBd4ee1FD4c7D6a';
 
   // ═══════════════════════════════════════════════════════════════════
   // ELEMENTS
   // ═══════════════════════════════════════════════════════════════════
-  const btnConnect   = document.getElementById("btnConnect");
-  const btnSign      = document.getElementById("btnSign");
-  const btnMint      = document.getElementById("btnMint");
-  const noWallet     = document.getElementById("noWallet");
-  const btnInstall   = document.getElementById("btnInstall");
-
-  const signStatus   = document.getElementById("signStatus");
-  const mintStatus   = document.getElementById("mintStatus");
-
-  const statusWallet = document.getElementById("statusWallet");
-  const statusAddr   = document.getElementById("statusAddress");
-  const statusNet    = document.getElementById("statusNetwork");
-  const statusKeys   = document.getElementById("statusKeys");
-  const statusSlots  = document.getElementById("statusSlots");
-
-  const priceMain    = document.getElementById("priceMain");
-  const priceDetail  = document.getElementById("priceDetail");
-
-  const fieldEpoch   = document.getElementById("fieldEpoch");
-  const fieldMinted  = document.getElementById("fieldMinted");
-  const fieldPhase   = document.getElementById("fieldPhase");
-
-  const btnCopyForge = document.getElementById("btnCopyForge");
-  const copyStatus   = document.getElementById("copyStatus");
+  var btnConnect = document.getElementById("btnConnect");
+  var btnSign = document.getElementById("btnSign");
+  var btnMint = document.getElementById("btnMint");
+  var noWallet = document.getElementById("noWallet");
+  var btnInstall = document.getElementById("btnInstall");
+  var signStatus = document.getElementById("signStatus");
+  var mintStatus = document.getElementById("mintStatus");
+  var statusWallet = document.getElementById("statusWallet");
+  var statusAddr = document.getElementById("statusAddress");
+  var statusNet = document.getElementById("statusNetwork");
+  var statusKeys = document.getElementById("statusKeys");
+  var statusSlots = document.getElementById("statusSlots");
+  var priceMain = document.getElementById("priceMain");
+  var priceDetail = document.getElementById("priceDetail");
+  var priceUsd = document.getElementById("priceUsd");
+  var btnCopyForge = document.getElementById("btnCopyForge");
+  var copyStatus = document.getElementById("copyStatus");
 
   // ═══════════════════════════════════════════════════════════════════
   // STATE
   // ═══════════════════════════════════════════════════════════════════
-  let currentAccount = null;
-  let ritualSigned = false;
-  let currentPrice = null;
-  let currentPriceWei = null;
+  var currentAccount = null;
+  var ritualSigned = false;
+  var currentPriceWei = null;
+  var currentEpoch = 0;
 
   // ═══════════════════════════════════════════════════════════════════
-  // PROVIDER
+  // PROVIDER CHECK
   // ═══════════════════════════════════════════════════════════════════
-  const provider = (typeof window !== "undefined" && window.ethereum && typeof window.ethereum.request === "function")
-    ? window.ethereum
-    : null;
+  var provider = null;
+  if (typeof window !== "undefined" && window.ethereum) {
+    provider = window.ethereum;
+  }
 
   if (!provider) {
     if (noWallet) noWallet.style.display = "block";
@@ -565,145 +557,151 @@ flow := {
   // ═══════════════════════════════════════════════════════════════════
   // HELPERS
   // ═══════════════════════════════════════════════════════════════════
-  function setBtnPrimary(btn, isPrimary) {
-    if (!btn) return;
-    btn.classList.toggle("btn-primary", !!isPrimary);
-  }
-
   function shortAddress(addr) {
     return addr.slice(0, 6) + '...' + addr.slice(-4);
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // API CALLS
-  // ═══════════════════════════════════════════════════════════════════
-  async function loadMintStatus() {
-    try {
-      const res = await fetch(`${API_BASE}/mint/status`);
-      const data = await res.json();
+  function setBtnPrimary(btn, on) {
+    if (btn) btn.classList.toggle("btn-primary", on);
+  }
 
-      currentPrice = data.currentPrice;
-      currentPriceWei = data.currentPriceWei;
+  // Calculate price from epoch (21-Law)
+  function calculatePrice(epoch) {
+    // price = 0.021 + (epoch × 0.021) + (floor(epoch / 21) × 0.21) POL
+    var base = 0.021;
+    var epochStep = epoch * 0.021;
+    var boostStep = Math.floor(epoch / 21) * 0.21;
+    return base + epochStep + boostStep;
+  }
 
-      if (priceMain) priceMain.textContent = `${data.currentPrice} POL`;
+  // ═══════════════════════════════════════════════════════════════════
+  // LOAD EPOCH FROM CHAIN
+  // ═══════════════════════════════════════════════════════════════════
+  function loadEpochAndPrice() {
+    if (!provider) {
+      if (priceDetail) priceDetail.textContent = "Connect wallet to see price";
+      return;
+    }
+
+    // Call currentEpoch() on Z1NCore
+    var data = '0xb97a4423'; // currentEpoch() selector
+
+    provider.request({
+      method: 'eth_call',
+      params: [{ to: Z1N_CORE, data: data }, 'latest']
+    }).then(function(result) {
+      currentEpoch = parseInt(result, 16);
+      var price = calculatePrice(currentEpoch);
+      currentPriceWei = Math.floor(price * 1e18).toString();
+
+      if (priceMain) priceMain.textContent = price.toFixed(3) + ' POL';
       if (priceDetail) {
-        priceDetail.textContent = `Base: ${data.priceBreakdown.base} + Epoch: ${data.priceBreakdown.epochStep} + Boost: ${data.priceBreakdown.boostStep}`;
+        priceDetail.textContent = 'Epoch ' + currentEpoch + ' · Base 0.021 + ' + (currentEpoch * 0.021).toFixed(3) + ' + ' + (Math.floor(currentEpoch / 21) * 0.21).toFixed(2);
       }
 
-      // Fetch USD price
-      try {
-        const polPrice = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd');
-        const polData = await polPrice.json();
-        const usdRate = polData['matic-network']?.usd || 0;
-        const usdValue = (parseFloat(data.currentPrice) * usdRate).toFixed(2);
-        const priceUsd = document.getElementById('priceUsd');
-        if (priceUsd && usdRate > 0) priceUsd.textContent = `≈ $${usdValue} USD`;
-      } catch (e) {
-        console.log('Could not fetch USD rate');
-      }
+      // Try to get USD price
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          var rate = d['matic-network'] && d['matic-network'].usd;
+          if (rate && priceUsd) {
+            priceUsd.textContent = '≈ $' + (price * rate).toFixed(2) + ' USD';
+          }
+        })
+        .catch(function() {});
 
-    } catch (err) {
-      console.error('Failed to load mint status:', err);
-      if (priceDetail) priceDetail.textContent = 'Failed to load price';
-    }
-  }
-
-  async function loadWalletData(address) {
-    try {
-      const res = await fetch(`${API_BASE}/wallet/${address}`);
-      const data = await res.json();
-
-      if (statusKeys) {
-        statusKeys.innerHTML = `Keys owned: <span class="highlight">${data.totalKeys}</span>`;
-      }
-      if (statusSlots) {
-        const remaining = 210 - data.totalKeys;
-        statusSlots.innerHTML = `Mint slots: <span class="highlight">${remaining}</span> / 210`;
-      }
-
-      return data;
-
-    } catch (err) {
-      console.error('Failed to load wallet data:', err);
-      if (statusKeys) statusKeys.textContent = 'Keys owned: (error)';
-      return null;
-    }
+    }).catch(function(err) {
+      console.log('Could not load epoch:', err);
+      if (priceDetail) priceDetail.textContent = "Could not load price";
+    });
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // WALLET CONNECT
+  // CONNECT WALLET
   // ═══════════════════════════════════════════════════════════════════
-  async function connectWallet() {
-    if (!provider) return;
+  function connectWallet() {
+    if (!provider) {
+      alert('No wallet detected. Please install MetaMask.');
+      return;
+    }
 
-    try {
-      btnConnect.textContent = 'Connecting...';
-      btnConnect.disabled = true;
+    btnConnect.textContent = 'Connecting...';
+    btnConnect.disabled = true;
 
-      const accounts = await provider.request({ method: "eth_requestAccounts" });
-      if (!accounts || !accounts.length) {
-        btnConnect.textContent = 'Connect wallet';
-        btnConnect.disabled = false;
-        return;
-      }
+    provider.request({ method: 'eth_requestAccounts' })
+      .then(function(accounts) {
+        if (!accounts || !accounts.length) {
+          btnConnect.textContent = 'Connect wallet';
+          btnConnect.disabled = false;
+          return;
+        }
 
-      currentAccount = accounts[0];
+        currentAccount = accounts[0];
 
-      // Check network
-      const chainId = await provider.request({ method: "eth_chainId" });
-      let networkName = chainId;
+        // Check chain
+        return provider.request({ method: 'eth_chainId' });
+      })
+      .then(function(chainId) {
+        if (!currentAccount) return;
 
-      if (chainId !== EXPECTED_CHAIN_ID) {
-        try {
-          await provider.request({
+        var networkName = chainId;
+
+        if (chainId !== EXPECTED_CHAIN_ID) {
+          // Try to switch
+          provider.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: EXPECTED_CHAIN_ID }]
+          }).then(function() {
+            networkName = CHAIN_NAME;
+            updateUI(networkName);
+          }).catch(function() {
+            networkName = chainId + ' (switch to Amoy)';
+            updateUI(networkName);
           });
+        } else {
           networkName = CHAIN_NAME;
-        } catch (switchErr) {
-          networkName = `${chainId} (⚠️ switch to Amoy)`;
+          updateUI(networkName);
         }
-      } else {
-        networkName = CHAIN_NAME;
-      }
+      })
+      .catch(function(err) {
+        console.log('Connect error:', err);
+        btnConnect.textContent = 'Connect wallet';
+        btnConnect.disabled = false;
+      });
+  }
 
-      // Update UI
-      setBtnPrimary(btnConnect, true);
-      btnConnect.textContent = 'Connected';
-      if (btnSign) btnSign.disabled = false;
+  function updateUI(networkName) {
+    setBtnPrimary(btnConnect, true);
+    btnConnect.textContent = 'Connected';
 
-      if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected</span>';
-      if (statusAddr) statusAddr.textContent = `Address: ${shortAddress(currentAccount)}`;
-      if (statusNet) statusNet.textContent = `Network: ${networkName}`;
+    if (btnSign) btnSign.disabled = false;
+    if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected</span>';
+    if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
+    if (statusNet) statusNet.textContent = 'Network: ' + networkName;
+    if (statusKeys) statusKeys.textContent = 'Keys owned: (loading...)';
+    if (statusSlots) statusSlots.textContent = 'Mint slots: –';
 
-      // Load wallet data
-      await loadWalletData(currentAccount);
-
-    } catch (err) {
-      console.error("Connect error", err);
-      btnConnect.textContent = 'Connect wallet';
-      btnConnect.disabled = false;
-    }
+    // Load epoch/price now that we're connected
+    loadEpochAndPrice();
   }
 
   // ═══════════════════════════════════════════════════════════════════
   // SIGN RITUAL
   // ═══════════════════════════════════════════════════════════════════
-  async function signRitual() {
+  function signRitual() {
     if (!provider || !currentAccount) return;
 
-    try {
-      btnSign.textContent = 'Signing...';
-      btnSign.disabled = true;
+    btnSign.textContent = 'Signing...';
+    btnSign.disabled = true;
 
-      const message = "Z1N Ritual: I am present in the Field with this address.";
-      await provider.request({
-        method: "personal_sign",
-        params: [message, currentAccount]
-      });
+    var message = "Z1N Ritual: I am present in the Field with this address.";
 
+    provider.request({
+      method: 'personal_sign',
+      params: [message, currentAccount]
+    })
+    .then(function() {
       ritualSigned = true;
-
       if (signStatus) {
         signStatus.textContent = "✅ Ritual signed. This address is remembered by the Field.";
         signStatus.className = "status-text status-success";
@@ -711,137 +709,116 @@ flow := {
       setBtnPrimary(btnSign, true);
       btnSign.textContent = 'Signed ✓';
 
-      // Enable mint button if IssuanceController is deployed
-      if (ISSUANCE_CONTROLLER) {
-        if (btnMint) btnMint.disabled = false;
-        if (mintStatus) {
-          mintStatus.textContent = `Ready to mint. Price: ${currentPrice} POL`;
-          mintStatus.className = "status-text status-success";
-        }
-      } else {
-        if (mintStatus) {
-          mintStatus.textContent = "⏳ IssuanceController not deployed yet. Testnet wiring in progress.";
-          mintStatus.className = "status-text status-warning";
-        }
+      if (btnMint) btnMint.disabled = false;
+      if (mintStatus) {
+        mintStatus.textContent = "Ready to mint!";
+        mintStatus.className = "status-text status-success";
       }
-
-    } catch (err) {
-      console.error("Sign error", err);
+    })
+    .catch(function(err) {
+      console.log('Sign error:', err);
       btnSign.textContent = 'Sign ritual';
       btnSign.disabled = false;
       if (signStatus) {
         signStatus.textContent = "Ritual not signed (rejected or error).";
         signStatus.className = "status-text status-error";
       }
-    }
+    });
   }
 
   // ═══════════════════════════════════════════════════════════════════
   // MINT KEY
   // ═══════════════════════════════════════════════════════════════════
-  async function mintKey() {
+  function mintKey() {
     if (!provider || !currentAccount || !ritualSigned) return;
 
-    if (!ISSUANCE_CONTROLLER) {
+    if (!currentPriceWei) {
       if (mintStatus) {
-        mintStatus.textContent = "IssuanceController not deployed yet.";
-        mintStatus.className = "status-text status-warning";
+        mintStatus.textContent = "Price not loaded. Please refresh.";
+        mintStatus.className = "status-text status-error";
       }
       return;
     }
 
-    try {
-      btnMint.textContent = 'Minting...';
-      btnMint.disabled = true;
+    btnMint.textContent = 'Minting...';
+    btnMint.disabled = true;
 
+    if (mintStatus) {
+      mintStatus.textContent = "Confirm transaction in wallet...";
+      mintStatus.className = "status-text";
+    }
+
+    var valueHex = '0x' + BigInt(currentPriceWei).toString(16);
+
+    provider.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from: currentAccount,
+        to: ISSUANCE_CONTROLLER,
+        value: valueHex,
+        data: '0x26092b83', // mintPublic()
+        gas: '0xC3500'
+      }]
+    })
+    .then(function(txHash) {
       if (mintStatus) {
-        mintStatus.textContent = "Confirm transaction in wallet...";
+        mintStatus.textContent = "Transaction submitted: " + txHash.slice(0, 10) + "...";
         mintStatus.className = "status-text";
       }
 
-      // Call mintPublic on IssuanceController
-      const tx = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          from: currentAccount,
-          to: ISSUANCE_CONTROLLER,
-          value: '0x' + BigInt(currentPriceWei).toString(16),
-          data: '0x26092b83', // mintPublic() selector
-          gas: '0xC3500' // 800000
-        }]
-      });
-
-      if (mintStatus) {
-        mintStatus.textContent = "Transaction submitted. Waiting...";
-        mintStatus.className = "status-text";
-      }
-
-      // Poll for confirmation
-      let confirmed = false;
-      for (let i = 0; i < 30 && !confirmed; i++) {
-        await new Promise(r => setTimeout(r, 2000));
-        try {
-          const receipt = await provider.request({
-            method: 'eth_getTransactionReceipt',
-            params: [tx]
-          });
-          if (receipt && receipt.status === '0x1') confirmed = true;
-        } catch (e) {}
-      }
-
-      if (confirmed) {
-        if (mintStatus) {
-          mintStatus.textContent = "✅ Key minted! Welcome to the Field.";
-          mintStatus.className = "status-text status-success";
+      // Poll for receipt
+      var attempts = 0;
+      var poll = setInterval(function() {
+        attempts++;
+        if (attempts > 60) {
+          clearInterval(poll);
+          mintStatus.textContent = "Taking long... check wallet/explorer.";
+          btnMint.textContent = 'Mint your Key';
+          btnMint.disabled = false;
+          return;
         }
-        await loadWalletData(currentAccount);
-        await loadMintStatus();
-      } else {
-        if (mintStatus) {
-          mintStatus.textContent = "Transaction pending or failed.";
-          mintStatus.className = "status-text status-warning";
-        }
-      }
 
-      btnMint.textContent = 'Mint your Key';
-      btnMint.disabled = false;
-
-    } catch (err) {
-      console.error("Mint error", err);
+        provider.request({
+          method: 'eth_getTransactionReceipt',
+          params: [txHash]
+        }).then(function(receipt) {
+          if (receipt) {
+            clearInterval(poll);
+            if (receipt.status === '0x1') {
+              mintStatus.textContent = "✅ Key minted! Welcome to the Field.";
+              mintStatus.className = "status-text status-success";
+            } else {
+              mintStatus.textContent = "Transaction failed.";
+              mintStatus.className = "status-text status-error";
+            }
+            btnMint.textContent = 'Mint your Key';
+            btnMint.disabled = false;
+            loadEpochAndPrice();
+          }
+        }).catch(function() {});
+      }, 2000);
+    })
+    .catch(function(err) {
+      console.log('Mint error:', err);
       btnMint.textContent = 'Mint your Key';
       btnMint.disabled = false;
       if (mintStatus) {
-        mintStatus.textContent = "Mint failed: " + (err.message || 'Rejected');
+        mintStatus.textContent = "Mint failed or rejected.";
         mintStatus.className = "status-text status-error";
       }
-    }
+    });
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // COPY FORGE SNIPPET
+  // COPY FORGE
   // ═══════════════════════════════════════════════════════════════════
   function copyForgeSnippet() {
-    const snippet =
-`self → field.attach()
-epoch ← core.currentEpoch()
-entropy ← self.noise(epoch)
-glyphs ← derive(Ωset, entropy, epoch, self)
-assert(unique(glyphs))
+    var snippet = 'self → field.attach()\nepoch ← core.currentEpoch()\nentropy ← self.noise(epoch)\nglyphs ← derive(Ωset, entropy, epoch, self)\nassert(unique(glyphs))\n\ntokenId ← key.mint(self, genesis=false)\nfield.record(tokenId, epoch, glyphs)\nflow := {\n  key: tokenId,\n  epoch: epoch,\n  Ωmix: self.intent(),\n  variance: self.entropy()\n}\nfield.integrate(flow)';
 
-tokenId ← key.mint(self, genesis=false)
-field.record(tokenId, epoch, glyphs)
-flow := {
-  key: tokenId,
-  epoch: epoch,
-  Ωmix: self.intent(),
-  variance: self.entropy()
-}
-field.integrate(flow)`;
-
-    navigator.clipboard.writeText(snippet).then(function () {
+    navigator.clipboard.writeText(snippet).then(function() {
       if (copyStatus) {
         copyStatus.style.display = "block";
-        setTimeout(function () { copyStatus.style.display = "none"; }, 2000);
+        setTimeout(function() { copyStatus.style.display = "none"; }, 2000);
       }
     });
   }
@@ -849,20 +826,20 @@ field.integrate(flow)`;
   // ═══════════════════════════════════════════════════════════════════
   // EVENT LISTENERS
   // ═══════════════════════════════════════════════════════════════════
-  if (btnConnect) btnConnect.addEventListener("click", connectWallet);
-  if (btnSign) btnSign.addEventListener("click", signRitual);
-  if (btnMint) btnMint.addEventListener("click", mintKey);
-  if (btnCopyForge) btnCopyForge.addEventListener("click", copyForgeSnippet);
+  if (btnConnect) btnConnect.onclick = connectWallet;
+  if (btnSign) btnSign.onclick = signRitual;
+  if (btnMint) btnMint.onclick = mintKey;
+  if (btnCopyForge) btnCopyForge.onclick = copyForgeSnippet;
 
-  // Handle account changes
-  if (provider) {
-    provider.on('accountsChanged', async (accounts) => {
+  // Account changes
+  if (provider && provider.on) {
+    provider.on('accountsChanged', function(accounts) {
       if (accounts.length === 0) {
-        location.reload();
+        window.location.reload();
       } else {
         currentAccount = accounts[0];
         ritualSigned = false;
-        if (statusAddr) statusAddr.textContent = `Address: ${shortAddress(currentAccount)}`;
+        if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
         if (btnSign) {
           btnSign.disabled = false;
           btnSign.textContent = 'Sign ritual';
@@ -873,15 +850,14 @@ field.integrate(flow)`;
           signStatus.textContent = "Account changed. Sign ritual again.";
           signStatus.className = "status-text";
         }
-        await loadWalletData(currentAccount);
       }
     });
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // INIT
+  // INIT - Try to load price (will work after wallet connect)
   // ═══════════════════════════════════════════════════════════════════
-  loadMintStatus();
+  if (priceDetail) priceDetail.textContent = "Connect wallet to see price";
 
 })();
 </script>
