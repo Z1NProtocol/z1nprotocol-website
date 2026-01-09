@@ -1039,7 +1039,7 @@ flow := {
         to: ISSUANCE_CONTROLLER,
         value: valueHex,
         data: '0x26092b83', // mintPublic()
-        gas: '0xF4240'
+        gas: '0x100000' // 1,048,576 - enough for glyph generation
       }]
     })
     .then(function(txHash) {
@@ -1069,7 +1069,7 @@ flow := {
               mintStatus.textContent = "✅ Key minted! Welcome to the Field.";
               mintStatus.className = "status-text status-success";
             } else {
-              mintStatus.textContent = "Transaction failed.";
+              mintStatus.innerHTML = "❌ Transaction failed. <a href='https://amoy.polygonscan.com/tx/" + txHash + "' target='_blank' style='color:#66d69a;'>View on explorer</a>";
               mintStatus.className = "status-text status-error";
             }
             btnMint.textContent = 'Mint your Key';
@@ -1084,7 +1084,14 @@ flow := {
       btnMint.textContent = 'Mint your Key';
       btnMint.disabled = false;
       if (mintStatus) {
-        mintStatus.textContent = "Mint failed or rejected.";
+        var errMsg = err.message || err.reason || 'Unknown error';
+        if (errMsg.includes('rejected') || errMsg.includes('denied')) {
+          mintStatus.textContent = "Transaction rejected by user.";
+        } else if (errMsg.includes('insufficient funds')) {
+          mintStatus.textContent = "Insufficient POL balance.";
+        } else {
+          mintStatus.textContent = "Mint failed: " + errMsg.slice(0, 100);
+        }
         mintStatus.className = "status-text status-error";
       }
     });
