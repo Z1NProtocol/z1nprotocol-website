@@ -912,6 +912,7 @@ flow := {
       console.log('Price from contract:', { priceWei: currentPriceWei, pricePol: priceInPol });
 
       if (priceMain) priceMain.textContent = priceInPol.toFixed(3) + ' POL';
+      if (priceDetail) priceDetail.textContent = '21-Law pricing';
       
       // Get epoch for display
       return selectedProvider.request({
@@ -939,7 +940,22 @@ flow := {
 
     }).catch(function(err) {
       console.error('Could not load price from contract:', err);
-      if (priceDetail) priceDetail.textContent = "Could not load price. Check network.";
+      
+      // FALLBACK: Calculate price locally based on estimated epoch
+      // Epoch ~142 at time of writing, increases every 30 min on testnet
+      var fallbackEpoch = 145;
+      var base = 0.021;
+      var epochStep = fallbackEpoch * 0.021;
+      var boostStep = Math.floor(fallbackEpoch / 21) * 0.21;
+      var fallbackPrice = base + epochStep + boostStep;
+      
+      currentPriceWei = Math.floor(fallbackPrice * 1e18).toString();
+      currentEpoch = fallbackEpoch;
+      
+      if (priceMain) priceMain.textContent = '~' + fallbackPrice.toFixed(3) + ' POL';
+      if (priceDetail) priceDetail.textContent = 'Estimated price (RPC issue)';
+      
+      console.log('Using fallback price:', fallbackPrice);
     });
   }
 
