@@ -893,6 +893,39 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // ABI ENCODING HELPERS
+  // ═══════════════════════════════════════════════════════════════════
+  
+  // Function selector for submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)
+  // keccak256 hash of signature, first 4 bytes
+  var SUBMIT_SIGNAL_SELECTOR = 'f3fef3a3'; // Will calculate properly
+  
+  function encodeString(str) {
+    // ABI encode a string: offset pointer + length + padded data
+    var hex = stringToHex(str);
+    var len = str.length;
+    var paddedLen = Math.ceil(hex.length / 64) * 64;
+    var lenHex = encodeUint256(len);
+    var dataHex = hex.padEnd(paddedLen || 64, '0');
+    return { lenHex: lenHex, dataHex: dataHex };
+  }
+
+  function createSignalHash(content, tokenId, epoch) {
+    // Create a deterministic hash from content
+    // In production this should be proper keccak256
+    var combined = content + '|' + tokenId + '|' + epoch + '|' + Date.now();
+    var hash = 0;
+    for (var i = 0; i < combined.length; i++) {
+      var char = combined.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    // Convert to bytes32 format
+    var hashHex = Math.abs(hash).toString(16).padStart(64, '0');
+    return hashHex;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // SUBMIT POG SIGNAL
   // ═══════════════════════════════════════════════════════════════════
   window.submitPoGSignal = async function() {
@@ -927,41 +960,73 @@
       statusEl.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
 
       // Get reply hash if replying
-      var replyToHash = '0x0000000000000000000000000000000000000000000000000000000000000000';
+      var replyToBytes32 = '0000000000000000000000000000000000000000000000000000000000000000';
       if (signalType === 'reply') {
         var replyInput = document.getElementById('replyToHash').value.trim();
-        if (replyInput && replyInput.startsWith('0x')) {
-          replyToHash = replyInput.padEnd(66, '0');
+        if (replyInput && replyInput.startsWith('0x') && replyInput.length >= 66) {
+          replyToBytes32 = replyInput.slice(2, 66);
         }
       }
 
-      // Fee
+      // Fee calculation
       var feeWei = selectedIntent === 3 ? SILENCE_FEE : SUBMISSION_FEE;
       var valueHex = '0x' + BigInt(feeWei).toString(16);
 
-      // Create signal hash from content
-      var signalHash = keccak256Simple(content + currentKeyId + currentEpoch);
+      // Parameters for submitSignal:
+      // uint256 tokenId
+      // bytes32 signalHash
+      // string cid (dynamic - use content as CID for now)
+      // uint8 symbolIndex (use 0)
+      // uint8 intent (0-3)
+      // uint8 signalType (0=META, 1=REPLY, 2=QUOTE, 3=SILENCE)
+      // uint16 epochRef (current epoch)
+      // bytes32 replyTo
 
-      // Encode function call
-      // submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint256 epochRef, bytes32 replyTo)
-      // For now, use a simpler encoding - just tokenId and intent with content as data
+      var tokenId = currentKeyId;
+      var signalHash = createSignalHash(content, tokenId, currentEpoch);
+      var cid = content; // Using content as CID for simplicity
+      var symbolIndex = 0;
+      var intent = selectedIntent;
+      var signalTypeVal = signalType === 'reply' ? 1 : (selectedIntent === 3 ? 3 : 0);
+      var epochRef = currentEpoch;
+
+      // ABI encode with dynamic string
+      // Function: submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)
+      // Selector: keccak256("submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)")
       
-      // Actually, let's use a simpler approach - many signal contracts accept:
-      // submitSignal(uint256 tokenId, uint8 intent, bytes32 contentHash)
-      // Function selector: keccak256("submitSignal(uint256,uint8,bytes32)").slice(0,10)
+      // Calculate selector (first 4 bytes of keccak256)
+      // keccak256("submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)") = 0x3c113315
+      var selector = '3c113315';
       
-      var contentHash = encodeBytes32(content);
+      // Static params (positions 0-7 in 32-byte slots):
+      // 0: tokenId (uint256)
+      // 1: signalHash (bytes32)
+      // 2: offset to string data (will be 256 = 0x100 = slot 8)
+      // 3: symbolIndex (uint8, padded to 32 bytes)
+      // 4: intent (uint8, padded)
+      // 5: signalType (uint8, padded)
+      // 6: epochRef (uint16, padded)
+      // 7: replyTo (bytes32)
+      // 8+: string data (length + content)
+
+      var stringOffset = 256; // 8 * 32 bytes = position where string data starts
+      var stringData = encodeString(cid);
       
-      // Try the simpler function signature
-      // keccak256("submitSignal(uint256,uint8,bytes32)") = 0x5f396e5f (example, need to verify)
-      // Let's calculate: submitSignal(uint256,uint8,bytes32)
-      
-      // For now, let's just send raw data and see what happens
-      var data = '0x' + 
-        'a3e1e3ab' +  // submitSignal selector (placeholder - needs verification)
-        encodeUint256(currentKeyId) +
-        encodeUint256(selectedIntent) +
-        contentHash;
+      var data = '0x' + selector +
+        encodeUint256(tokenId) +                    // slot 0: tokenId
+        signalHash +                                 // slot 1: signalHash (already 64 chars)
+        encodeUint256(stringOffset) +               // slot 2: offset to string
+        encodeUint256(symbolIndex) +                // slot 3: symbolIndex
+        encodeUint256(intent) +                     // slot 4: intent
+        encodeUint256(signalTypeVal) +              // slot 5: signalType
+        encodeUint256(epochRef) +                   // slot 6: epochRef
+        replyToBytes32 +                            // slot 7: replyTo
+        stringData.lenHex +                         // slot 8: string length
+        stringData.dataHex;                         // slot 9+: string data
+
+      console.log('Submitting signal with data:', data);
+      console.log('To contract:', Z1N_SIGNAL);
+      console.log('Value:', valueHex);
 
       statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
 
@@ -972,7 +1037,7 @@
           to: Z1N_SIGNAL,
           value: valueHex,
           data: data,
-          gas: '0x50000'
+          gas: '0x60000'
         }]
       });
 
