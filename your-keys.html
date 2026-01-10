@@ -446,16 +446,15 @@
     <p class="lead-small" style="margin-bottom:12px;">
       Connected: <span id="walletAddress" style="color:var(--keys-accent); font-family:monospace;"></span>
     </p>
-    <div class="mode-row" style="margin-top:0;">
-      <button id="btnSwitch" class="mode-btn keys-btn" type="button">Switch Wallet</button>
-      <button id="btnRefresh" class="mode-btn keys-btn" type="button">↻ Refresh Keys</button>
-    </div>
+    <p class="lead-small" style="margin-bottom:12px; font-size:12px; opacity:0.6;">
+      To switch wallets, change the active account in MetaMask
+    </p>
   </div>
 
   <!-- STATE: No keys -->
   <div id="noKeysState" style="display:none;">
     <p class="lead-small" style="margin-bottom:16px;">
-      This wallet has no Z1N Keys. If you own a Key on another wallet, use Switch Wallet above.
+      This wallet has no Z1N Keys. If you own a Key on another wallet, switch accounts in MetaMask.
     </p>
     <div class="mode-row" style="margin-top:0;">
       <a href="mint-key.html" class="mode-btn">Mint your first Key</a>
@@ -463,6 +462,12 @@
   </div>
 
   <!-- STATE: Has keys -->
+  <div id="keysToolbar" style="display:none; margin-bottom:16px;">
+    <div class="mode-row" style="margin-top:0;">
+      <button id="btnRefresh" class="mode-btn keys-btn" type="button">↻ Refresh</button>
+    </div>
+  </div>
+
   <div id="keysContainer" class="keys-grid" style="display:none;">
     <!-- Keys will be rendered here -->
   </div>
@@ -505,13 +510,13 @@
   var connectState = document.getElementById('connectState');
   var connectedInfo = document.getElementById('connectedInfo');
   var walletAddressEl = document.getElementById('walletAddress');
-  var btnSwitch = document.getElementById('btnSwitch');
-  var btnRefresh = document.getElementById('btnRefresh');
   var loadingState = document.getElementById('loadingState');
   var noKeysState = document.getElementById('noKeysState');
+  var keysToolbar = document.getElementById('keysToolbar');
   var keysContainer = document.getElementById('keysContainer');
   var mintMoreSection = document.getElementById('mintMoreSection');
   var btnConnect = document.getElementById('btnConnect');
+  var btnRefresh = document.getElementById('btnRefresh');
 
   // ═══════════════════════════════════════════════════════════════════
   // STATE
@@ -614,6 +619,7 @@
     connectedInfo.style.display = (state === 'loading' || state === 'nokeys' || state === 'keys') ? 'block' : 'none';
     loadingState.style.display = state === 'loading' ? 'block' : 'none';
     noKeysState.style.display = state === 'nokeys' ? 'block' : 'none';
+    keysToolbar.style.display = state === 'keys' ? 'block' : 'none';
     keysContainer.style.display = state === 'keys' ? 'flex' : 'none';
     mintMoreSection.style.display = state === 'keys' ? 'block' : 'none';
     
@@ -672,7 +678,7 @@
     console.log('Loading keys for:', currentAccount);
     
     // Reset no keys message
-    noKeysState.querySelector('p').textContent = 'This wallet has no Z1N Keys. If you own a Key on another wallet, use Switch Wallet above.';
+    noKeysState.querySelector('p').textContent = 'This wallet has no Z1N Keys. If you own a Key on another wallet, switch accounts in MetaMask.';
 
     try {
       var balance = await getKeyBalance(currentAccount);
@@ -756,35 +762,9 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // SWITCH WALLET
-  // ═══════════════════════════════════════════════════════════════════
-  async function switchWallet() {
-    var eth = getProvider();
-    if (!eth) return;
-
-    try {
-      // Request wallet to show account picker
-      await eth.request({
-        method: 'wallet_requestPermissions',
-        params: [{ eth_accounts: {} }]
-      });
-      // After permission granted, get the new account
-      var accounts = await eth.request({ method: 'eth_requestAccounts' });
-      if (accounts[0]) {
-        currentAccount = accounts[0];
-        provider = eth;
-        loadKeys();
-      }
-    } catch (e) {
-      console.error('Switch error:', e);
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
   // INIT
   // ═══════════════════════════════════════════════════════════════════
   btnConnect.onclick = connectWallet;
-  btnSwitch.onclick = switchWallet;
   btnRefresh.onclick = function() {
     if (currentAccount) loadKeys();
   };
