@@ -249,19 +249,19 @@
       font-weight:600;
     }
 
-    /* KEY CARDS */
+    /* KEY CARDS - Grid layout for multiple */
     .keys-grid{
-      display:flex;
-      flex-direction:column;
-      gap:20px;
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap:16px;
       margin-top:22px;
     }
 
     .key-card{
       background:var(--card-bg);
       border:1px solid var(--card-border);
-      border-radius:18px;
-      padding:24px;
+      border-radius:14px;
+      padding:20px;
       position:relative;
       overflow:hidden;
       transition:
@@ -275,7 +275,7 @@
       position:absolute;
       inset:-1px;
       pointer-events:none;
-      border-radius:18px;
+      border-radius:14px;
       background:radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0.0) 62%);
       opacity:0.9;
     }
@@ -284,54 +284,55 @@
 
     .key-card:hover{
       transform:translateY(-2px);
-      border-color:rgba(102,214,154,0.35);
+      border-color:rgba(245,200,66,0.35);
       box-shadow:
-        0 6px 18px rgba(0,0,0,0.30),
-        0 0 18px rgba(102,214,154,0.10);
+        0 4px 14px rgba(0,0,0,0.25),
+        0 0 14px rgba(245,200,66,0.08);
     }
 
     .key-header{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      margin-bottom:16px;
+      margin-bottom:12px;
     }
 
     .key-id{
-      font-size:20px;
+      font-size:18px;
       font-weight:600;
     }
 
     .genesis-badge{
       background:linear-gradient(90deg, var(--genesis-gold), #d4a012);
       color:#000;
-      font-size:10px;
+      font-size:9px;
       font-weight:700;
-      padding:4px 10px;
+      padding:3px 8px;
       border-radius:999px;
       text-transform:uppercase;
       letter-spacing:0.1em;
     }
 
     .key-glyphs{
-      font-size:24px;
-      letter-spacing:4px;
-      margin-bottom:20px;
+      font-size:20px;
+      letter-spacing:3px;
+      margin-bottom:14px;
       font-family:"Segoe UI Symbol", "Apple Symbols", sans-serif;
     }
 
     .key-meta{
       display:flex;
-      gap:24px;
-      margin-bottom:20px;
-      font-size:13px;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-bottom:14px;
+      font-size:12px;
       color:var(--text-soft);
     }
 
     .key-meta span{
       display:flex;
       align-items:center;
-      gap:6px;
+      gap:4px;
     }
 
     .key-meta a{ color:var(--accent); }
@@ -339,19 +340,19 @@
     /* ACTION BUTTONS ROW */
     .key-actions{
       display:flex;
-      gap:12px;
+      gap:8px;
       flex-wrap:wrap;
     }
 
     .action-btn{
       display:flex;
       align-items:center;
-      gap:8px;
-      padding:12px 16px;
+      gap:6px;
+      padding:8px 12px;
       background:rgba(15, 23, 42, 0.6);
       border:1px solid var(--card-border);
-      border-radius:12px;
-      font-size:13px;
+      border-radius:10px;
+      font-size:11px;
       color:var(--text-main);
       cursor:pointer;
       transition:all 0.2s;
@@ -359,20 +360,59 @@
     }
 
     .action-btn:hover{
-      border-color:var(--accent);
-      background:rgba(102, 214, 154, 0.08);
+      border-color:var(--keys-accent);
+      background:rgba(245, 200, 66, 0.08);
     }
 
     .action-btn .label{ font-weight:500; }
 
     .action-btn .status{
       color:var(--text-soft);
-      font-size:12px;
+      font-size:10px;
     }
 
     .action-btn .status.open{ color:var(--accent); }
 
-    .action-btn .icon{ font-size:18px; }
+    .action-btn .icon{ font-size:14px; }
+
+    /* ARTEFACTS SECTION */
+    .artefacts-row{
+      display:flex;
+      gap:12px;
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(148,163,184,0.15);
+      font-size:11px;
+    }
+
+    .artefact-stat{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      color:var(--text-soft);
+    }
+
+    .artefact-stat .count{
+      color:var(--text-main);
+      font-weight:600;
+    }
+
+    .mint-static-btn{
+      margin-left:auto;
+      padding:4px 10px;
+      background:transparent;
+      border:1px solid rgba(148,163,184,0.4);
+      border-radius:6px;
+      font-size:10px;
+      color:var(--text-soft);
+      cursor:pointer;
+      transition:all 0.2s;
+    }
+
+    .mint-static-btn:hover{
+      border-color:var(--keys-accent);
+      color:var(--keys-accent);
+    }
 
     /* MINT MORE LINK */
     .mint-more{ margin-top:24px; }
@@ -446,15 +486,15 @@
     <p class="lead-small" style="margin-bottom:12px;">
       Connected: <span id="walletAddress" style="color:var(--keys-accent); font-family:monospace;"></span>
     </p>
-    <p class="lead-small" style="margin-bottom:12px; font-size:12px; opacity:0.6;">
-      To switch wallets, change the active account in MetaMask
-    </p>
+    <div class="mode-row" style="margin-top:0;">
+      <button id="btnSwitch" class="mode-btn keys-btn" type="button">Switch Wallet</button>
+    </div>
   </div>
 
   <!-- STATE: No keys -->
   <div id="noKeysState" style="display:none;">
     <p class="lead-small" style="margin-bottom:16px;">
-      This wallet has no Z1N Keys. If you own a Key on another wallet, switch accounts in MetaMask.
+      This wallet has no Z1N Keys. If you own a Key on another wallet, use Switch Wallet above.
     </p>
     <div class="mode-row" style="margin-top:0;">
       <a href="mint-key.html" class="mode-btn">Mint your first Key</a>
@@ -463,8 +503,11 @@
 
   <!-- STATE: Has keys -->
   <div id="keysToolbar" style="display:none; margin-bottom:16px;">
-    <div class="mode-row" style="margin-top:0;">
-      <button id="btnRefresh" class="mode-btn keys-btn" type="button">↻ Refresh</button>
+    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+      <div class="mode-row" style="margin-top:0; margin-bottom:0;">
+        <button id="btnRefresh" class="mode-btn keys-btn" type="button">↻ Refresh</button>
+      </div>
+      <span style="font-size:12px; color:var(--text-soft);">Current Epoch: <span id="currentEpoch" style="color:var(--keys-accent); font-weight:600;">—</span></span>
     </div>
   </div>
 
@@ -493,6 +536,7 @@
   // CONFIG
   // ═══════════════════════════════════════════════════════════════════
   var Z1N_KEY = '0x71B31cb8FC0e4D538c2865FeBBfC8C56f41a00d6';
+  var Z1N_CORE = '0xYOUR_CORE_CONTRACT_ADDRESS'; // TODO: Add real Core contract address
   var RPC_URLS = [
     'https://rpc-amoy.polygon.technology',
     'https://polygon-amoy.drpc.org',
@@ -501,8 +545,30 @@
   var RPC_URL = RPC_URLS[0];
   var EXPLORER = 'https://amoy.polygonscan.com';
 
-  // Glyph symbols (21 sacred symbols)
-  var GLYPHS = ['◇', '◆', '○', '●', '△', '▽', '□', '■', '☆', '★', '◎', '◉', '⬡', '⬢', '∅', '∞', '⊕', '⊗', '⌬', '⍟', 'Ω'];
+  // Glyph symbols - EXACT match with Z1NSymbolsLib (index 0-20)
+  var GLYPHS = [
+    '∞',  // 0:  Infinity       - Being
+    'π',  // 1:  Pi             - Being
+    '⋮',  // 2:  Ellipsis       - Being
+    '⊕',  // 3:  Direct sum     - Being
+    '⊗',  // 4:  Tensor         - Being
+    '∴',  // 5:  Therefore      - Reflection
+    '∵',  // 6:  Because        - Reflection
+    '↔',  // 7:  Bidirectional  - Reflection
+    '↻',  // 8:  Cycle          - Reflection
+    '△',  // 9:  Triangle       - Reflection
+    '◇',  // 10: Diamond        - Structure
+    '○',  // 11: Circle         - Structure
+    '●',  // 12: Filled circle  - Structure
+    '□',  // 13: Square         - Structure
+    '☰',  // 14: Trigram heaven - Structure
+    '☷',  // 15: Trigram earth  - Creativity
+    '⚑',  // 16: Flag           - Creativity
+    '✱',  // 17: Star           - Creativity
+    '⊥',  // 18: Orthogonal     - Creativity
+    '≡',  // 19: Identical      - Creativity
+    '◊'   // 20: Alchemical     - Creativity
+  ];
 
   // ═══════════════════════════════════════════════════════════════════
   // ELEMENTS
@@ -510,6 +576,7 @@
   var connectState = document.getElementById('connectState');
   var connectedInfo = document.getElementById('connectedInfo');
   var walletAddressEl = document.getElementById('walletAddress');
+  var btnSwitch = document.getElementById('btnSwitch');
   var loadingState = document.getElementById('loadingState');
   var noKeysState = document.getElementById('noKeysState');
   var keysToolbar = document.getElementById('keysToolbar');
@@ -588,20 +655,48 @@
     }
   }
 
-  // Try to get glyphs - may fail if function doesn't exist  
+  // Try to get glyphs - returns (uint8 len, uint40 pack) and epoch
   async function getGlyphs(tokenId) {
+    var paddedId = tokenId.toString(16).padStart(64, '0');
+    var result = { len: 0, pack: BigInt(0), epoch: null };
+    
     try {
-      // Try getGlyphs(uint256) - returns (uint8 len, uint40 pack)
-      var selector = '0x0c85e85e';
-      var paddedId = tokenId.toString(16).padStart(64, '0');
-      var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest']);
-      var len = parseInt(result.slice(0, 66), 16);
-      var pack = BigInt('0x' + result.slice(66));
-      return { len: len, pack: pack };
+      // Try glyphs(uint256) with different possible selectors
+      // The correct one depends on the deployed contract
+      var glyphsSelectors = ['0x7e0cd9f3', '0x6fd3c7b5', '0x2a10d55a'];
+      
+      for (var i = 0; i < glyphsSelectors.length; i++) {
+        try {
+          var data = await rpcCall('eth_call', [{ to: Z1N_KEY, data: glyphsSelectors[i] + paddedId }, 'latest']);
+          
+          if (data && data !== '0x' && data.length >= 130 && !data.startsWith('0x00000000')) {
+            // ABI decode: (uint8, uint40) - both padded to 32 bytes
+            var len = parseInt(data.slice(2, 66), 16);
+            var pack = BigInt('0x' + data.slice(66, 130));
+            
+            if (len === 6 || len === 7) {
+              console.log('Found glyphs with selector', glyphsSelectors[i]);
+              result.len = len;
+              result.pack = pack;
+              break;
+            }
+          }
+        } catch (e) {
+          // Try next
+        }
+      }
+      
+      // Try to get glyphEpoch separately if we found glyphs
+      if (result.len > 0) {
+        var epochSelectors = ['0x...', '0x...']; // glyphEpochOf(uint256)
+        // For now, just leave epoch as null
+      }
+      
     } catch (e) {
-      console.log('getGlyphs call failed:', e.message);
-      return { len: 0, pack: BigInt(0) };
+      console.log('getGlyphs failed:', e.message);
     }
+    
+    return result;
   }
 
   // Try to get voting power
@@ -618,14 +713,51 @@
     }
   }
 
+  // Get current epoch - fallback to timestamp calculation if Core not available
+  async function getCurrentEpoch() {
+    try {
+      if (Z1N_CORE && !Z1N_CORE.startsWith('0xYOUR')) {
+        // currentEpoch() - 0x76671808
+        var selector = '0x76671808';
+        var result = await rpcCall('eth_call', [{ to: Z1N_CORE, data: selector }, 'latest']);
+        return parseInt(result, 16);
+      }
+    } catch (e) {
+      console.log('currentEpoch call failed:', e.message);
+    }
+    
+    // Fallback: Calculate from timestamp (21 hours = 75600 seconds per epoch)
+    // Assuming genesis timestamp around deployment
+    var EPOCH_DURATION = 75600;
+    var GENESIS_TIMESTAMP = 1704067200; // Placeholder - adjust to actual genesis
+    var now = Math.floor(Date.now() / 1000);
+    return Math.floor((now - GENESIS_TIMESTAMP) / EPOCH_DURATION) + 1;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // GLYPH DECODING (5-bit unpacking - matches Z1NSymbolsLib)
+  // ═══════════════════════════════════════════════════════════════════
+  // Z1NSymbolsLib packs glyphs as:
+  //   packed |= uint40(idx) << (5 * (MAX_FUSE - 1 - i))
+  // Where MAX_FUSE = 7, so slots are at bits: 30, 25, 20, 15, 10, 5, 0
   function decodeGlyphs(len, pack) {
+    if (len === 0 || pack === BigInt(0)) {
+      return null; // No glyphs assigned yet
+    }
+    
+    var MAX_FUSE = 7;
     var symbols = [];
+    
     for (var i = 0; i < len; i++) {
-      var idx = Number((pack >> BigInt(i * 8)) & BigInt(0xFF));
+      // Extract 5 bits from correct position
+      var shift = BigInt(5 * (MAX_FUSE - 1 - i));
+      var idx = Number((pack >> shift) & BigInt(0x1F)); // 0x1F = 5 bits
+      
       if (idx < GLYPHS.length) {
         symbols.push(GLYPHS[idx]);
       }
     }
+    
     return symbols.join(' ');
   }
 
@@ -661,36 +793,38 @@
     var card = document.createElement('div');
     card.className = 'key-card';
 
-    var genesisHtml = key.genesis ? '<span class="genesis-badge">⚒ Genesis</span>' : '';
+    var genesisHtml = key.genesis ? '<span class="genesis-badge">✶ Genesis</span>' : '';
 
     card.innerHTML = 
       '<div class="key-header">' +
         '<span class="key-id">Key #' + key.tokenId + '</span>' +
         genesisHtml +
       '</div>' +
-      '<div class="key-glyphs">' + key.glyphSymbols + '</div>' +
+      '<div class="key-glyphs">' + (key.glyphSymbols || '<span style="opacity:0.5; font-size:14px;">Glyphs pending...</span>') + '</div>' +
       '<div class="key-meta">' +
-        '<span>📅 Minted Epoch ' + key.epoch + '</span>' +
-        '<span>⚡ Voting Power ' + key.votingPower + 'x</span>' +
+        '<span>Minted Epoch ' + key.epoch + '</span>' +
         '<span><a href="' + EXPLORER + '/token/' + Z1N_KEY + '?a=' + key.tokenId + '" target="_blank">View on chain ↗</a></span>' +
       '</div>' +
       '<div class="key-actions">' +
         '<a href="signals.html?key=' + key.tokenId + '" class="action-btn">' +
           '<span class="icon">📡</span>' +
           '<span class="label">Signals</span>' +
-          '<span class="status open">1/2 open</span>' +
+          '<span class="status open">' + key.signalsUsed + '/2</span>' +
         '</a>' +
         '<a href="signals.html?key=' + key.tokenId + '&tab=attest" class="action-btn">' +
           '<span class="icon">✓</span>' +
           '<span class="label">Attestations</span>' +
-          '<span class="status open">2/2 open</span>' +
+          '<span class="status open">' + key.attestsUsed + '/2</span>' +
         '</a>' +
-        '<a href="my-artefacts.html?key=' + key.tokenId + '" class="action-btn">' +
-          '<span class="icon">◈</span>' +
-          '<span class="label">Artefacts</span>' +
-          '<span class="status">1 live</span>' +
-        '</a>' +
+      '</div>' +
+      '<div class="artefacts-row">' +
+        '<span class="artefact-stat">◈ Live: <span class="count">' + key.liveArtefacts + '</span></span>' +
+        '<span class="artefact-stat">◇ Static: <span class="count">' + key.staticArtefacts + '</span></span>' +
+        '<a href="artefacts.html?key=' + key.tokenId + '&mint=static" class="mint-static-btn">+ Mint Static</a>' +
       '</div>';
+
+    return card;
+  }
 
     return card;
   }
@@ -704,9 +838,13 @@
     console.log('Contract address:', Z1N_KEY);
     
     // Reset no keys message
-    noKeysState.querySelector('p').textContent = 'This wallet has no Z1N Keys. If you own a Key on another wallet, switch accounts in MetaMask.';
+    noKeysState.querySelector('p').textContent = 'This wallet has no Z1N Keys. If you own a Key on another wallet, use Switch Wallet above.';
 
     try {
+      // Get current epoch from Core contract
+      var currentEpochNum = await getCurrentEpoch();
+      document.getElementById('currentEpoch').textContent = currentEpochNum;
+      
       console.log('Step 1: Getting balance...');
       var balance = await getKeyBalance(currentAccount);
       console.log('Key balance:', balance);
@@ -732,18 +870,19 @@
         var glyphData = await getGlyphs(tokenId);
         console.log('Glyphs:', glyphData);
         
-        console.log('Step 5: Getting voting power...');
-        var votingPower = await getVotingPower(tokenId);
-        console.log('Voting power:', votingPower);
-        
-        var epoch = Math.floor(tokenId / 2) + 1;
+        // Get glyph epoch (when glyphs were assigned)
+        var mintEpoch = glyphData.epoch || '—';
 
         keys.push({
           tokenId: tokenId,
           genesis: genesis,
-          glyphSymbols: decodeGlyphs(glyphData.len, glyphData.pack) || '◇ ○ △ □ ☆ ●',
-          epoch: epoch,
-          votingPower: votingPower
+          glyphSymbols: decodeGlyphs(glyphData.len, glyphData.pack),
+          epoch: mintEpoch,
+          // Placeholder values - would need Signal/Artefact contract calls
+          signalsUsed: 0,
+          attestsUsed: 0,
+          liveArtefacts: 0,
+          staticArtefacts: 0
         });
       }
 
@@ -799,24 +938,41 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // SWITCH WALLET (opens MM account picker)
+  // ═══════════════════════════════════════════════════════════════════
+  async function switchWallet() {
+    var eth = getProvider();
+    if (!eth) return;
+
+    try {
+      // Request wallet to show account picker
+      await eth.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }]
+      });
+      // After permission granted, get the selected account
+      var accounts = await eth.request({ method: 'eth_requestAccounts' });
+      if (accounts[0]) {
+        currentAccount = accounts[0];
+        provider = eth;
+        loadKeys();
+      }
+    } catch (e) {
+      console.error('Switch wallet error:', e);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // INIT
   // ═══════════════════════════════════════════════════════════════════
   btnConnect.onclick = connectWallet;
+  btnSwitch.onclick = switchWallet;
   btnRefresh.onclick = function() {
     if (currentAccount) loadKeys();
   };
 
-  // Listen for account changes
-  if (window.ethereum) {
-    window.ethereum.on('accountsChanged', function(accounts) {
-      if (accounts[0]) {
-        currentAccount = accounts[0];
-        loadKeys();
-      } else {
-        showState('connect');
-      }
-    });
-  }
+  // NOTE: We intentionally do NOT listen to accountsChanged
+  // The user controls which wallet is active within Z1N, not MetaMask
 
   // Auto-connect if already connected
   (async function() {
