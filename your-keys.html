@@ -633,74 +633,60 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // GET ETHEREUM PROVIDER (prefer MetaMask when multiple wallets)
+  // ═══════════════════════════════════════════════════════════════════
+  function getProvider() {
+    if (window.ethereum?.providers) {
+      // Multiple wallets - find MetaMask
+      return window.ethereum.providers.find(function(p) { return p.isMetaMask; }) || window.ethereum;
+    }
+    return window.ethereum;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // CONNECT WALLET
   // ═══════════════════════════════════════════════════════════════════
   async function connectWallet() {
-    console.log('Connect wallet clicked');
-    
-    // Update button state
+    var eth = getProvider();
+    if (!eth) {
+      alert('Please install a Web3 wallet');
+      return;
+    }
+
     btnConnect.textContent = 'Connecting...';
-    btnConnect.classList.add('active');
 
     try {
-      // Check for wallet
-      var eth = window.ethereum;
-      if (!eth) {
-        throw new Error('No wallet found. Please install MetaMask.');
-      }
-
-      console.log('Ethereum provider found:', eth);
-      console.log('Is MetaMask:', eth.isMetaMask);
-      
-      provider = eth;
-
-      // Request accounts
-      console.log('Requesting accounts...');
       var accounts = await eth.request({ method: 'eth_requestAccounts' });
-      console.log('Accounts received:', accounts);
-
-      if (accounts && accounts.length > 0) {
+      if (accounts[0]) {
         currentAccount = accounts[0];
-        console.log('Connected to:', currentAccount);
+        provider = eth;
         loadKeys();
-      } else {
-        throw new Error('No accounts returned');
       }
-
-    } catch (err) {
-      console.error('Connect error:', err);
-      
-      var msg = 'Connection failed';
-      if (err.code === 4001) {
-        msg = 'Connection rejected by user';
-      } else if (err.code === -32002) {
-        msg = 'Connection request pending - check your wallet';
-      } else if (err.message) {
-        msg = err.message;
-      }
-      
-      alert(msg);
+    } catch (e) {
+      console.error(e);
       btnConnect.textContent = 'Connect Wallet';
-      btnConnect.classList.remove('active');
     }
   }
 
   // ═══════════════════════════════════════════════════════════════════
   // INIT
   // ═══════════════════════════════════════════════════════════════════
-  btnConnect.addEventListener('click', connectWallet);
+  btnConnect.onclick = connectWallet;
 
-  // Check if already connected
-  if (window.ethereum) {
-    window.ethereum.request({ method: 'eth_accounts' })
-      .then(function(accounts) {
-        if (accounts.length > 0) {
-          provider = window.ethereum;
+  // Auto-connect if already connected
+  (async function() {
+    var eth = getProvider();
+    if (eth) {
+      try {
+        var accounts = await eth.request({ method: 'eth_accounts' });
+        if (accounts[0]) {
+          provider = eth;
           currentAccount = accounts[0];
           loadKeys();
         }
-      });
-  }
+      } catch (e) {}
+    }
+  })();
 
 })();
 </script>
