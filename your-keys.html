@@ -396,8 +396,7 @@
     /* ARTEFACTS SECTION */
     .artefact-stats{
       display:flex;
-      flex-direction:column;
-      gap:4px;
+      gap:16px;
       margin-bottom:10px;
       font-size:12px;
     }
@@ -418,26 +417,24 @@
 
     .mint-btn{
       flex:1;
-      padding:6px 10px;
+      padding:7px 12px;
       background:transparent;
-      border:1px solid rgba(148,163,184,0.3);
-      border-radius:6px;
-      font-size:10px;
-      color:var(--text-soft);
+      border:1px solid rgba(102,214,154,0.5);
+      border-radius:999px;
+      font-size:11px;
+      color:#e5e7eb;
       cursor:pointer;
-      transition:all 0.2s;
+      transition:all 0.2s ease;
       text-decoration:none;
       text-align:center;
     }
 
     .mint-btn:hover{
-      border-color:var(--keys-accent);
-      color:var(--keys-accent);
-    }
-
-    .mint-btn.mint-live:hover{
-      border-color:var(--accent);
-      color:var(--accent);
+      background:linear-gradient(90deg,rgba(102,214,154,0.55),rgba(58,159,99,0.55));
+      border-color:rgba(58,159,99,0.95);
+      color:#061018;
+      transform:translateY(-1px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.3),0 0 10px rgba(102,214,154,0.12);
     }
 
     /* MINT MORE LINK */
