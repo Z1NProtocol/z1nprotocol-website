@@ -1057,34 +1057,77 @@
         stringData.lenHex +                         // slot 8: string length
         stringData.dataHex;                         // slot 9+: string data
 
-      console.log('Submitting signal with data:', data);
-      console.log('To contract:', Z1N_SIGNAL);
-      console.log('Value:', valueHex);
-      console.log('Data length:', data.length);
+      console.log('=== SIGNAL SUBMISSION DEBUG ===');
+      console.log('Contract:', Z1N_SIGNAL);
+      console.log('From:', currentAccount);
+      console.log('TokenId:', tokenId);
+      console.log('SignalHash:', signalHash);
+      console.log('CID:', cid);
+      console.log('SymbolIndex:', symbolIndex);
+      console.log('Intent:', intent);
+      console.log('SignalType:', signalTypeVal);
+      console.log('EpochRef:', epochRef);
+      console.log('ReplyTo:', replyToBytes32);
+      console.log('Value (wei):', feeWei);
+      console.log('Value (hex):', valueHex);
+      console.log('Data:', data);
+      console.log('Data length:', data.length, 'chars =', (data.length - 2) / 2, 'bytes');
+      console.log('===============================');
 
-      // First try eth_call to check if it would revert
-      statusEl.innerHTML = '<div class="status-msg pending">Checking transaction...</div>';
+      // First try eth_call via direct RPC to check if it would revert
+      statusEl.innerHTML = '<div class="status-msg pending">Simulating transaction...</div>';
       
+      var simulationPassed = false;
       try {
-        var callResult = await provider.request({
-          method: 'eth_call',
-          params: [{
-            from: currentAccount,
-            to: Z1N_SIGNAL,
-            value: valueHex,
-            data: data
-          }, 'latest']
-        });
-        console.log('eth_call succeeded:', callResult);
+        var callResult = await rpcCall('eth_call', [{
+          from: currentAccount,
+          to: Z1N_SIGNAL,
+          value: valueHex,
+          data: data
+        }, 'latest']);
+        console.log('Simulation succeeded:', callResult);
+        simulationPassed = true;
       } catch (callErr) {
-        console.error('eth_call failed:', callErr);
-        // Try to extract revert reason
-        var revertMsg = callErr.message || 'Unknown error';
-        if (callErr.data && callErr.data.message) {
-          revertMsg = callErr.data.message;
+        console.error('Simulation failed:', callErr);
+        
+        // Parse revert reason from error
+        var revertMsg = 'Unknown contract error';
+        var errStr = String(callErr.message || callErr);
+        console.log('Error string:', errStr);
+        
+        // Try to find known error patterns
+        if (errStr.includes('NotTokenOwner') || errStr.includes('NotKeyOwner')) {
+          revertMsg = 'You do not own this Key with the connected wallet.';
+        } else if (errStr.includes('MaxSignalsPerEpochReached')) {
+          revertMsg = 'Maximum 2 PoG signals already sent this epoch.';
+        } else if (errStr.includes('InsufficientFee')) {
+          revertMsg = 'Insufficient fee - need 0.01 POL (0.015 for Silence).';
+        } else if (errStr.includes('InvalidReplyTarget')) {
+          revertMsg = 'Invalid reply target - signal hash not found.';
+        } else if (errStr.includes('epochRef without replyTo')) {
+          revertMsg = 'epochRef must be 0 for new signals.';
+        } else if (errStr.includes('ReplyTo needs epochRef')) {
+          revertMsg = 'Reply signals require epochRef > 0.';
+        } else if (errStr.includes('CID too long')) {
+          revertMsg = 'Signal content too long (max 256 chars).';
+        } else if (errStr.includes('Invalid symbolIndex')) {
+          revertMsg = 'Invalid symbol index (must be 0-20).';
+        } else if (errStr.includes('Invalid intent')) {
+          revertMsg = 'Invalid intent (must be 0-3).';
+        } else if (errStr.includes('Invalid signalType')) {
+          revertMsg = 'Invalid signal type (must be 0-3).';
+        } else if (errStr.includes('execution reverted')) {
+          revertMsg = 'Contract reverted - check console for details.';
+        } else {
+          revertMsg = errStr.slice(0, 200);
         }
-        statusEl.innerHTML = '<div class="status-msg error">Contract would revert: ' + revertMsg.slice(0, 150) + '</div>';
-        return;
+        
+        statusEl.innerHTML = '<div class="status-msg error">' + revertMsg + '</div>';
+        
+        // Don't return - let user try anyway via MetaMask for more info
+        if (!confirm('Simulation failed: ' + revertMsg + '\n\nTry to send anyway? MetaMask may show more details.')) {
+          return;
+        }
       }
 
       statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
