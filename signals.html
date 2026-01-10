@@ -911,17 +911,29 @@
   }
 
   function createSignalHash(content, tokenId, epoch) {
-    // Create a deterministic hash from content
-    // In production this should be proper keccak256
-    var combined = content + '|' + tokenId + '|' + epoch + '|' + Date.now();
-    var hash = 0;
+    // Create a deterministic hash from content + tokenId + epoch + timestamp
+    // Using a simple but unique hash for each signal
+    var combined = content + '|' + tokenId + '|' + epoch + '|' + Date.now() + '|' + Math.random();
+    
+    // Simple hash function (djb2 variant)
+    var hash1 = 5381;
+    var hash2 = 52711;
     for (var i = 0; i < combined.length; i++) {
       var char = combined.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
+      hash1 = ((hash1 << 5) + hash1) ^ char;
+      hash2 = ((hash2 << 5) + hash2) ^ char;
     }
-    // Convert to bytes32 format
-    var hashHex = Math.abs(hash).toString(16).padStart(64, '0');
+    
+    // Combine into a 64-char hex string (32 bytes)
+    var hex1 = (hash1 >>> 0).toString(16).padStart(8, '0');
+    var hex2 = (hash2 >>> 0).toString(16).padStart(8, '0');
+    var timestamp = Date.now().toString(16).padStart(12, '0');
+    var random = Math.floor(Math.random() * 0xFFFFFFFF).toString(16).padStart(8, '0');
+    
+    // Build 64-char hex (32 bytes)
+    var hashHex = (hex1 + hex2 + timestamp + random).padEnd(64, '0').slice(0, 64);
+    
+    console.log('Generated signalHash:', hashHex);
     return hashHex;
   }
 
@@ -972,16 +984,22 @@
       // string cid (dynamic - use content as CID for now)
       // uint8 symbolIndex (use 0)
       // uint8 intent (0-3)
-      // uint8 signalType (0=META, 1=REPLY, 2=QUOTE, 3=SILENCE)
+      // uint8 signalType (0=FACTUAL, 1=REFLECTIVE, 2=META, 3=SILENCE)
       // uint16 epochRef (0 for new signals, epoch number for replies)
       // bytes32 replyTo (0x0 for new signals, signal hash for replies)
 
       var tokenId = currentKeyId;
       var signalHash = createSignalHash(content, tokenId, currentEpoch);
-      var cid = content; // Using content as CID for simplicity
-      var symbolIndex = 0;
-      var intent = selectedIntent;
-      var signalTypeVal = selectedIntent === 3 ? 3 : 0; // 3=SILENCE, 0=META for new signals
+      var cid = content.slice(0, 250); // Ensure CID <= 256 chars
+      var symbolIndex = 0; // Valid range: 0-20
+      var intent = selectedIntent; // 0=ΩC, 1=ΩI, 2=ΩK, 3=ΩS
+      
+      // signalType enum: FACTUAL=0, REFLECTIVE=1, META=2, SILENCE=3
+      var signalTypeVal = 2; // Default to META for new signals
+      if (selectedIntent === 3) {
+        signalTypeVal = 3; // SILENCE type for ΩS intent
+      }
+      
       var epochRef = 0; // 0 for new signals
       
       // If replying, set epochRef and replyTo
@@ -989,10 +1007,21 @@
         var replyInput = document.getElementById('replyToHash').value.trim();
         if (replyInput && replyInput.startsWith('0x') && replyInput.length >= 66) {
           replyToBytes32 = replyInput.slice(2, 66);
-          signalTypeVal = 1; // REPLY type
-          epochRef = currentEpoch - 1; // Reply to previous epoch's signals
+          signalTypeVal = 1; // REFLECTIVE type for replies
+          epochRef = currentEpoch > 0 ? currentEpoch - 1 : 0; // Reply to previous epoch's signals
         }
       }
+      
+      console.log('Signal params:', {
+        tokenId: tokenId,
+        signalHash: signalHash,
+        cid: cid,
+        symbolIndex: symbolIndex,
+        intent: intent,
+        signalTypeVal: signalTypeVal,
+        epochRef: epochRef,
+        replyToBytes32: replyToBytes32
+      });
 
       // ABI encode with dynamic string
       // Function: submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)
@@ -1031,6 +1060,32 @@
       console.log('Submitting signal with data:', data);
       console.log('To contract:', Z1N_SIGNAL);
       console.log('Value:', valueHex);
+      console.log('Data length:', data.length);
+
+      // First try eth_call to check if it would revert
+      statusEl.innerHTML = '<div class="status-msg pending">Checking transaction...</div>';
+      
+      try {
+        var callResult = await provider.request({
+          method: 'eth_call',
+          params: [{
+            from: currentAccount,
+            to: Z1N_SIGNAL,
+            value: valueHex,
+            data: data
+          }, 'latest']
+        });
+        console.log('eth_call succeeded:', callResult);
+      } catch (callErr) {
+        console.error('eth_call failed:', callErr);
+        // Try to extract revert reason
+        var revertMsg = callErr.message || 'Unknown error';
+        if (callErr.data && callErr.data.message) {
+          revertMsg = callErr.data.message;
+        }
+        statusEl.innerHTML = '<div class="status-msg error">Contract would revert: ' + revertMsg.slice(0, 150) + '</div>';
+        return;
+      }
 
       statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
 
