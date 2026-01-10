@@ -959,14 +959,8 @@
 
       statusEl.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
 
-      // Get reply hash if replying
+      // Get reply hash if replying - initialized to zeros
       var replyToBytes32 = '0000000000000000000000000000000000000000000000000000000000000000';
-      if (signalType === 'reply') {
-        var replyInput = document.getElementById('replyToHash').value.trim();
-        if (replyInput && replyInput.startsWith('0x') && replyInput.length >= 66) {
-          replyToBytes32 = replyInput.slice(2, 66);
-        }
-      }
 
       // Fee calculation
       var feeWei = selectedIntent === 3 ? SILENCE_FEE : SUBMISSION_FEE;
@@ -979,16 +973,26 @@
       // uint8 symbolIndex (use 0)
       // uint8 intent (0-3)
       // uint8 signalType (0=META, 1=REPLY, 2=QUOTE, 3=SILENCE)
-      // uint16 epochRef (current epoch)
-      // bytes32 replyTo
+      // uint16 epochRef (0 for new signals, epoch number for replies)
+      // bytes32 replyTo (0x0 for new signals, signal hash for replies)
 
       var tokenId = currentKeyId;
       var signalHash = createSignalHash(content, tokenId, currentEpoch);
       var cid = content; // Using content as CID for simplicity
       var symbolIndex = 0;
       var intent = selectedIntent;
-      var signalTypeVal = signalType === 'reply' ? 1 : (selectedIntent === 3 ? 3 : 0);
-      var epochRef = currentEpoch;
+      var signalTypeVal = selectedIntent === 3 ? 3 : 0; // 3=SILENCE, 0=META for new signals
+      var epochRef = 0; // 0 for new signals
+      
+      // If replying, set epochRef and replyTo
+      if (signalType === 'reply') {
+        var replyInput = document.getElementById('replyToHash').value.trim();
+        if (replyInput && replyInput.startsWith('0x') && replyInput.length >= 66) {
+          replyToBytes32 = replyInput.slice(2, 66);
+          signalTypeVal = 1; // REPLY type
+          epochRef = currentEpoch - 1; // Reply to previous epoch's signals
+        }
+      }
 
       // ABI encode with dynamic string
       // Function: submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)
