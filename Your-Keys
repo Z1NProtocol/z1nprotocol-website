@@ -1,1 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Z1N Protocol – Your Keys</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <style>
+    :root {
+      --bg: #050812;
+      --card-bg: #020617;
+      --text-main: #ffffff;
+      --text-soft: #8f9ab5;
+      --accent: #66d69a;
+      --accent-soft: #3a9f63;
+      --card-border: rgba(148, 163, 184, 0.25);
+      --danger: #f97373;
+      --warning: #facc15;
+      --genesis-gold: #f5c842;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    a:hover { opacity: 0.9; }
+
+    /* HEADER */
+    header {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-wrap { display: flex; align-items: center; gap: 8px; }
+    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
+
+    .logo-dot {
+      width: 24px; height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .logo-text {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    @media(max-width: 768px) {
+      .nav-links { gap: 12px; font-size: 12px; }
+    }
+
+    /* MAIN */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-soft);
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+
+    /* CONNECT PROMPT */
+    .connect-prompt {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .connect-prompt p {
+      color: var(--text-soft);
+      margin-bottom: 20px;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      font-size: 14px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+
+    .btn:hover { border-color: var(--accent); }
+
+    .btn-primary {
+      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
+      border-color: var(--accent-soft);
+      color: #061018;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 12px;
+    }
+
+    /* KEY CARDS */
+    .keys-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .key-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .key-card:hover {
+      border-color: rgba(102, 214, 154, 0.4);
+    }
+
+    .key-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .key-id {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .genesis-badge {
+      background: linear-gradient(90deg, var(--genesis-gold), #d4a012);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .key-glyphs {
+      font-size: 24px;
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+      font-family: "Segoe UI Symbol", "Apple Symbols", sans-serif;
+    }
+
+    .key-meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .key-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ACTION BUTTONS ROW */
+    .key-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      font-size: 13px;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .action-btn:hover {
+      border-color: var(--accent);
+      background: rgba(102, 214, 154, 0.08);
+    }
+
+    .action-btn .label {
+      font-weight: 500;
+    }
+
+    .action-btn .status {
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .action-btn .status.open {
+      color: var(--accent);
+    }
+
+    .action-btn .status.full {
+      color: var(--warning);
+    }
+
+    .action-btn .icon {
+      font-size: 18px;
+    }
+
+    /* NO KEYS STATE */
+    .no-keys {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .no-keys-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .no-keys h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .no-keys p {
+      color: var(--text-soft);
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    /* FOOTER LINK */
+    .mint-more {
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    /* LOADING STATE */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-soft);
+    }
+
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--card-border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .key-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .key-meta { flex-direction: column; gap: 8px; }
+      .key-actions { flex-direction: column; }
+      .action-btn { width: 100%; }
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 18px 20px;
+      font-size: 12px;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    footer .links {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="logo-wrap">
+      <a href="/index.html" class="logo-link">
+        <div class="logo-dot">Ω</div>
+        <div class="logo-text">Z1N PROTOCOL</div>
+      </a>
+    </div>
+    <nav class="nav-links">
+      <a href="/about.html">About</a>
+      <a href="/live-stats.html">Live Stats</a>
+      <a href="/artefacts.html">Artefacts</a>
+      <a href="/nbi-artefacts.html">4 NBIs</a>
+      <a href="/mint-key.html">Mint your Key</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <h1>Your Keys</h1>
+  <p class="subtitle">Manage your Keys, signals, attestations, and artefacts.</p>
+
+  <!-- STATE: Not connected -->
+  <div id="connectPrompt" class="connect-prompt">
+    <p>Connect your wallet to view your Keys.</p>
+    <button id="btnConnect" class="btn btn-primary">Connect Wallet</button>
+  </div>
+
+  <!-- STATE: Loading -->
+  <div id="loadingState" class="loading" style="display: none;">
+    <div class="loading-spinner"></div>
+    <p>Loading your Keys...</p>
+  </div>
+
+  <!-- STATE: No keys -->
+  <div id="noKeysState" class="no-keys" style="display: none;">
+    <div class="no-keys-icon">🔑</div>
+    <h3>No Keys Found</h3>
+    <p>You don't own any Z1N Keys yet. Mint your first Key to join the Field.</p>
+    <a href="/mint-key.html" class="btn btn-primary">Mint your first Key</a>
+  </div>
+
+  <!-- STATE: Has keys -->
+  <div id="keysContainer" class="keys-grid" style="display: none;">
+    <!-- Keys will be rendered here -->
+  </div>
+
+  <div id="mintMoreSection" class="mint-more" style="display: none;">
+    <a href="/mint-key.html" class="btn">+ Mint Another Key</a>
+  </div>
+</main>
+
+<footer>
+  <div>Your presence is real · The Field remembers</div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank">X</a>
+  </div>
+</footer>
+
+<script>
+(function() {
+  "use strict";
+
+  // ═══════════════════════════════════════════════════════════════════
+  // CONFIG
+  // ═══════════════════════════════════════════════════════════════════
+  var Z1N_KEY = '0x71B31cb8FC0e4D538c2865FeBBfC8C56f41a00d6';
+  var RPC_URL = 'https://rpc-amoy.polygon.technology';
+  var EXPLORER = 'https://amoy.polygonscan.com';
+
+  // Glyph symbols (21 sacred symbols)
+  var GLYPHS = ['◇', '◆', '○', '●', '△', '▽', '□', '■', '☆', '★', '◎', '◉', '⬡', '⬢', '∅', '∞', '⊕', '⊗', '⌬', '⍟', 'Ω'];
+
+  // ═══════════════════════════════════════════════════════════════════
+  // ELEMENTS
+  // ═══════════════════════════════════════════════════════════════════
+  var connectPrompt = document.getElementById('connectPrompt');
+  var loadingState = document.getElementById('loadingState');
+  var noKeysState = document.getElementById('noKeysState');
+  var keysContainer = document.getElementById('keysContainer');
+  var mintMoreSection = document.getElementById('mintMoreSection');
+  var btnConnect = document.getElementById('btnConnect');
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STATE
+  // ═══════════════════════════════════════════════════════════════════
+  var provider = null;
+  var currentAccount = null;
+
+  // ═══════════════════════════════════════════════════════════════════
+  // RPC HELPER
+  // ═══════════════════════════════════════════════════════════════════
+  function rpcCall(method, params) {
+    return fetch(RPC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: method, params: params })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.error) throw new Error(data.error.message);
+      return data.result;
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // CONTRACT HELPERS
+  // ═══════════════════════════════════════════════════════════════════
+  
+  // balanceOf(address) → uint256
+  function getKeyBalance(address) {
+    var selector = '0x70a08231'; // balanceOf
+    var paddedAddr = address.slice(2).toLowerCase().padStart(64, '0');
+    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedAddr }, 'latest'])
+      .then(function(result) { return parseInt(result, 16); });
+  }
+
+  // tokenOfOwnerByIndex(address, index) → uint256
+  function getTokenOfOwnerByIndex(address, index) {
+    var selector = '0x2f745c59';
+    var paddedAddr = address.slice(2).toLowerCase().padStart(64, '0');
+    var paddedIdx = index.toString(16).padStart(64, '0');
+    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedAddr + paddedIdx }, 'latest'])
+      .then(function(result) { return parseInt(result, 16); });
+  }
+
+  // isGenesis(tokenId) → bool
+  function isGenesis(tokenId) {
+    var selector = '0x63240e4e';
+    var paddedId = tokenId.toString(16).padStart(64, '0');
+    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest'])
+      .then(function(result) { return parseInt(result, 16) === 1; });
+  }
+
+  // glyphs(tokenId) → (uint8 len, uint40 pack)
+  function getGlyphs(tokenId) {
+    var selector = '0x0c85e85e';
+    var paddedId = tokenId.toString(16).padStart(64, '0');
+    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest'])
+      .then(function(result) {
+        // Result is 64 bytes: len (32 bytes) + pack (32 bytes)
+        var len = parseInt(result.slice(0, 66), 16);
+        var pack = BigInt('0x' + result.slice(66));
+        return { len: len, pack: pack };
+      });
+  }
+
+  // glyphEpochOf(tokenId) → uint256
+  function getGlyphEpoch(tokenId) {
+    var selector = '0x8c2e5b8e'; // Approximate, check actual
+    var paddedId = tokenId.toString(16).padStart(64, '0');
+    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest'])
+      .then(function(result) { return parseInt(result, 16); })
+      .catch(function() { return 0; }); // Fallback
+  }
+
+  // votingPowerOf(tokenId) → uint256
+  function getVotingPower(tokenId) {
+    var selector = '0x9168ae72';
+    var paddedId = tokenId.toString(16).padStart(64, '0');
+    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest'])
+      .then(function(result) { return parseInt(result, 16) / 1e18; })
+      .catch(function() { return 1; });
+  }
+
+  // Decode packed glyphs to symbols
+  function decodeGlyphs(len, pack) {
+    var symbols = [];
+    for (var i = 0; i < len; i++) {
+      var idx = Number((pack >> BigInt(i * 8)) & BigInt(0xFF));
+      if (idx < GLYPHS.length) {
+        symbols.push(GLYPHS[idx]);
+      }
+    }
+    return symbols.join(' ');
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // UI STATES
+  // ═══════════════════════════════════════════════════════════════════
+  function showState(state) {
+    connectPrompt.style.display = state === 'connect' ? 'block' : 'none';
+    loadingState.style.display = state === 'loading' ? 'block' : 'none';
+    noKeysState.style.display = state === 'nokeys' ? 'block' : 'none';
+    keysContainer.style.display = state === 'keys' ? 'flex' : 'none';
+    mintMoreSection.style.display = state === 'keys' ? 'block' : 'none';
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // RENDER KEY CARD
+  // ═══════════════════════════════════════════════════════════════════
+  function renderKeyCard(key) {
+    var card = document.createElement('div');
+    card.className = 'key-card';
+
+    var genesisHtml = key.genesis ? '<span class="genesis-badge">⚒ Genesis</span>' : '';
+
+    card.innerHTML = 
+      '<div class="key-header">' +
+        '<span class="key-id">Key #' + key.tokenId + '</span>' +
+        genesisHtml +
+      '</div>' +
+      '<div class="key-glyphs">' + key.glyphSymbols + '</div>' +
+      '<div class="key-meta">' +
+        '<span>📅 Minted Epoch ' + key.epoch + '</span>' +
+        '<span>⚡ Voting Power ' + key.votingPower + 'x</span>' +
+        '<span><a href="' + EXPLORER + '/token/' + Z1N_KEY + '?a=' + key.tokenId + '" target="_blank" style="color: var(--accent);">View on chain ↗</a></span>' +
+      '</div>' +
+      '<div class="key-actions">' +
+        '<a href="/signals.html?key=' + key.tokenId + '" class="action-btn">' +
+          '<span class="icon">📡</span>' +
+          '<span class="label">Signals</span>' +
+          '<span class="status open">1/2 open</span>' +
+        '</a>' +
+        '<a href="/signals.html?key=' + key.tokenId + '&tab=attest" class="action-btn">' +
+          '<span class="icon">✓</span>' +
+          '<span class="label">Attestations</span>' +
+          '<span class="status open">2/2 open</span>' +
+        '</a>' +
+        '<a href="/my-artefacts.html?key=' + key.tokenId + '" class="action-btn">' +
+          '<span class="icon">◈</span>' +
+          '<span class="label">Artefacts</span>' +
+          '<span class="status">1 live</span>' +
+        '</a>' +
+      '</div>';
+
+    return card;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // LOAD KEYS
+  // ═══════════════════════════════════════════════════════════════════
+  async function loadKeys() {
+    showState('loading');
+
+    try {
+      var balance = await getKeyBalance(currentAccount);
+      console.log('Key balance:', balance);
+
+      if (balance === 0) {
+        showState('nokeys');
+        return;
+      }
+
+      var keys = [];
+
+      for (var i = 0; i < balance; i++) {
+        var tokenId = await getTokenOfOwnerByIndex(currentAccount, i);
+        var genesis = await isGenesis(tokenId);
+        var glyphData = await getGlyphs(tokenId);
+        var votingPower = await getVotingPower(tokenId);
+        
+        // For epoch, we'll estimate based on tokenId for now
+        // (proper implementation needs glyphEpochOf or event indexing)
+        var epoch = Math.floor(tokenId / 2) + 1; // Rough estimate
+
+        keys.push({
+          tokenId: tokenId,
+          genesis: genesis,
+          glyphSymbols: decodeGlyphs(glyphData.len, glyphData.pack),
+          epoch: epoch,
+          votingPower: votingPower
+        });
+      }
+
+      // Render keys
+      keysContainer.innerHTML = '';
+      keys.forEach(function(key) {
+        keysContainer.appendChild(renderKeyCard(key));
+      });
+
+      showState('keys');
+
+    } catch (err) {
+      console.error('Error loading keys:', err);
+      showState('nokeys');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // CONNECT WALLET
+  // ═══════════════════════════════════════════════════════════════════
+  function connectWallet() {
+    if (!window.ethereum) {
+      alert('Please install MetaMask to use this feature.');
+      return;
+    }
+
+    provider = window.ethereum;
+
+    provider.request({ method: 'eth_requestAccounts' })
+      .then(function(accounts) {
+        if (accounts.length > 0) {
+          currentAccount = accounts[0];
+          loadKeys();
+        }
+      })
+      .catch(function(err) {
+        console.error('Connect error:', err);
+      });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════════════
+  btnConnect.onclick = connectWallet;
+
+  // Check if already connected
+  if (window.ethereum) {
+    window.ethereum.request({ method: 'eth_accounts' })
+      .then(function(accounts) {
+        if (accounts.length > 0) {
+          provider = window.ethereum;
+          currentAccount = accounts[0];
+          loadKeys();
+        }
+      });
+  }
+
+})();
+</script>
+
+</body>
+</html>
