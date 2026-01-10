@@ -351,7 +351,7 @@
       <a href="/artefacts.html">Artefacts</a>
       <a href="/nbi-artefacts.html">4 NBIs</a>
       <a href="/mint-key.html">Mint your Key</a>
-      <a href="/your-keys.html">Your Keys</a>
+      <a href="/your-keys.html class="active"">Your Keys</a>
     </nav>
   </div>
 </header>
