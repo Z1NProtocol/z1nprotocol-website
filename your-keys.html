@@ -635,39 +635,54 @@
   // ═══════════════════════════════════════════════════════════════════
   // CONNECT WALLET
   // ═══════════════════════════════════════════════════════════════════
-  function connectWallet() {
+  async function connectWallet() {
     console.log('Connect wallet clicked');
     
     // Update button state
     btnConnect.textContent = 'Connecting...';
     btnConnect.classList.add('active');
 
-    if (!window.ethereum) {
-      alert('Please install MetaMask or another Web3 wallet to use this feature.');
+    try {
+      // Check for wallet
+      var eth = window.ethereum;
+      if (!eth) {
+        throw new Error('No wallet found. Please install MetaMask.');
+      }
+
+      console.log('Ethereum provider found:', eth);
+      console.log('Is MetaMask:', eth.isMetaMask);
+      
+      provider = eth;
+
+      // Request accounts
+      console.log('Requesting accounts...');
+      var accounts = await eth.request({ method: 'eth_requestAccounts' });
+      console.log('Accounts received:', accounts);
+
+      if (accounts && accounts.length > 0) {
+        currentAccount = accounts[0];
+        console.log('Connected to:', currentAccount);
+        loadKeys();
+      } else {
+        throw new Error('No accounts returned');
+      }
+
+    } catch (err) {
+      console.error('Connect error:', err);
+      
+      var msg = 'Connection failed';
+      if (err.code === 4001) {
+        msg = 'Connection rejected by user';
+      } else if (err.code === -32002) {
+        msg = 'Connection request pending - check your wallet';
+      } else if (err.message) {
+        msg = err.message;
+      }
+      
+      alert(msg);
       btnConnect.textContent = 'Connect Wallet';
       btnConnect.classList.remove('active');
-      return;
     }
-
-    provider = window.ethereum;
-
-    provider.request({ method: 'eth_requestAccounts' })
-      .then(function(accounts) {
-        console.log('Accounts:', accounts);
-        if (accounts.length > 0) {
-          currentAccount = accounts[0];
-          loadKeys();
-        } else {
-          btnConnect.textContent = 'Connect Wallet';
-          btnConnect.classList.remove('active');
-        }
-      })
-      .catch(function(err) {
-        console.error('Connect error:', err);
-        alert('Connection failed: ' + (err.message || 'Unknown error'));
-        btnConnect.textContent = 'Connect Wallet';
-        btnConnect.classList.remove('active');
-      });
   }
 
   // ═══════════════════════════════════════════════════════════════════
