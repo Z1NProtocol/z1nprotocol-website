@@ -7,6 +7,9 @@
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
+    /* ══════════════════════════════════════════════════════════════════
+       EXACT COPY FROM about.html - DO NOT MODIFY THIS SECTION
+       ══════════════════════════════════════════════════════════════════ */
     :root{
       --bg:#050812;
       --card-bg:#020617;
@@ -18,10 +21,8 @@
 
       --border-soft: rgba(148,163,184,0.35);
       --border-strong: rgba(102,214,154,0.75);
-      --card-border: rgba(148,163,184,0.25);
 
       --chip-active-bg: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
-      --genesis-gold:#f5c842;
     }
 
     *{ box-sizing:border-box; margin:0; padding:0; }
@@ -41,7 +42,7 @@
     a{ color:inherit; text-decoration:none; }
     a:hover{ opacity:0.9; }
 
-    /* HEADER — align like about.html */
+    /* HEADER — align like artefacts.html */
     header{
       height:72px;
       display:flex;
@@ -150,8 +151,40 @@
       margin-bottom:18px;
     }
 
-    /* BUTTONS */
-    .btn{
+    /* FOOTER */
+    footer{
+      border-top:1px solid rgba(255,255,255,0.05);
+      padding:20px;
+      font-size:12px;
+      text-align:center;
+      opacity:0.85;
+      margin-top:40px;
+    }
+
+    footer .tagline{
+      margin-bottom:6px;
+      font-size:13px;
+    }
+
+    footer .links{
+      display:flex;
+      justify-content:center;
+      gap:18px;
+      font-size:13px;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════
+       YOUR-KEYS SPECIFIC STYLES
+       ══════════════════════════════════════════════════════════════════ */
+
+    /* Extra CSS variables for this page */
+    :root{
+      --card-border: rgba(148,163,184,0.25);
+      --genesis-gold:#f5c842;
+    }
+
+    /* Mode buttons - same as about.html */
+    .mode-btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
@@ -166,17 +199,15 @@
       transition:transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
     }
 
-    .btn:hover{ border-color:var(--accent); }
+    .mode-btn:hover{
+      border-color:var(--accent);
+    }
 
-    .btn-primary{
+    .mode-btn.active{
       background: var(--chip-active-bg);
       border-color: rgba(58,159,99,0.85);
       color:#061018;
       font-weight:600;
-    }
-
-    .btn-primary:hover{
-      background:linear-gradient(90deg, var(--accent), var(--accent-soft));
     }
 
     /* KEY CARDS */
@@ -314,28 +345,6 @@
       margin-top:22px;
     }
 
-    /* FOOTER — exact copy from about.html */
-    footer{
-      border-top:1px solid rgba(255,255,255,0.05);
-      padding:20px;
-      font-size:12px;
-      text-align:center;
-      opacity:0.85;
-      margin-top:40px;
-    }
-
-    footer .tagline{
-      margin-bottom:6px;
-      font-size:13px;
-    }
-
-    footer .links{
-      display:flex;
-      justify-content:center;
-      gap:18px;
-      font-size:13px;
-    }
-
     /* RESPONSIVE */
     @media (max-width:600px){
       .key-header{ flex-direction:column; align-items:flex-start; gap:8px; }
@@ -365,7 +374,7 @@
       <a href="artefacts.html">Artefacts</a>
       <a href="nbi-artefacts.html">4 NBIs</a>
       <a href="mint-key.html">Mint your Key</a>
-      <a href="your-keys.html" class="active">Your Keys</a>
+      <a href="/your-keys.html" class="active">Your Keys</a>
     </nav>
   </div>
 </header>
@@ -384,7 +393,7 @@
   <!-- STATE: Not connected -->
   <div id="connectState">
     <p class="lead-small" style="margin-bottom:16px;">Connect your wallet to view your Keys.</p>
-    <button id="btnConnect" class="btn btn-primary">Connect Wallet</button>
+    <button id="btnConnect" class="mode-btn active">Connect Wallet</button>
   </div>
 
   <!-- STATE: Loading -->
@@ -395,7 +404,7 @@
   <!-- STATE: No keys -->
   <div id="noKeysState" style="display:none;">
     <p class="lead-small" style="margin-bottom:16px;">You don't own any Z1N Keys yet. Mint your first Key to join the Field and unlock signals, attestations, and artefacts.</p>
-    <a href="mint-key.html" class="btn btn-primary">Mint your first Key</a>
+    <a href="mint-key.html" class="mode-btn active">Mint your first Key</a>
   </div>
 
   <!-- STATE: Has keys -->
@@ -404,7 +413,7 @@
   </div>
 
   <div id="mintMoreSection" class="mint-more" style="display:none;">
-    <a href="mint-key.html" class="btn">+ Mint another Key</a>
+    <a href="mint-key.html" class="mode-btn">+ Mint another Key</a>
   </div>
 </main>
 
