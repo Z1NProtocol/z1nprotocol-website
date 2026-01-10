@@ -573,19 +573,25 @@
   var RPC_URL = RPC_URLS[0];
   var EXPLORER = 'https://amoy.polygonscan.com';
 
-  // Function selectors (keccak256 first 4 bytes)
-  var SELECTORS = {
-    // Z1NKey
-    balanceOf: '0x70a08231',           // balanceOf(address)
-    tokenOfOwnerByIndex: '0x2f745c59', // tokenOfOwnerByIndex(address,uint256)
-    isGenesis: '0x63769853',           // isGenesis(uint256)
-    glyphs: '0x6fd3c7b5',              // glyphs(uint256) - returns (uint8, uint40)
-    glyphEpochOf: '0x1e3dac2b',        // glyphEpochOf(uint256)
+  // Function selectors (keccak256 first 4 bytes - calculated)
+  var SEL = {
+    // Z1NKey (ERC721Enumerable)
+    balanceOf: '0x70a08231',              // balanceOf(address)
+    tokenOfOwnerByIndex: '0x2f745c59',    // tokenOfOwnerByIndex(address,uint256)
+    isGenesis: '0xf1e25ea8',              // isGenesis(uint256)
+    glyphs: '0x887296c3',                 // glyphs(uint256) returns (uint8,uint40)
+    glyphEpochOf: '0x5e5cd9a5',           // glyphEpochOf(uint256)
     // Z1NCore
-    currentEpoch: '0x76671808',        // currentEpoch()
-    // Z1NArtefact (ERC721)
-    artefactBalanceOf: '0x70a08231',   // balanceOf(address) - for artefacts owned
-    // We need artefacts BY KEY, not by address - check contract
+    currentEpoch: '0x76671808',           // currentEpoch()
+    // Z1NSignal
+    signalCount: '0xfd68f0e5',            // signalCount(uint256,uint256)
+    attestCount: '0xfe6569d7',            // attestCount(uint256,uint256)
+    remainingSignals: '0xcf819017',       // remainingSignals(uint256)
+    remainingAttests: '0x3738130b',       // remainingAttests(uint256)
+    // Z1NArtefact
+    primaryArtefactOfKey: '0xff84f877',   // primaryArtefactOfKey(uint256)
+    // Z1NStaticArtefact
+    staticArtefactOfKey: '0x8d6786a8',    // staticArtefactOfKey(uint256)
   };
 
   // Glyph symbols - EXACT match with Z1NSymbolsLib (index 0-20)
@@ -659,129 +665,163 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // CONTRACT HELPERS
+  // CONTRACT HELPERS (with correct selectors from keccak256)
   // ═══════════════════════════════════════════════════════════════════
+  
+  // Helper to encode uint256
+  function encodeUint256(val) {
+    return val.toString(16).padStart(64, '0');
+  }
+  
+  // Helper to encode address
+  function encodeAddress(addr) {
+    return addr.slice(2).toLowerCase().padStart(64, '0');
+  }
   
   // balanceOf(address) - 0x70a08231
   function getKeyBalance(address) {
-    var selector = '0x70a08231';
-    var paddedAddr = address.slice(2).toLowerCase().padStart(64, '0');
-    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedAddr }, 'latest'])
+    var data = SEL.balanceOf + encodeAddress(address);
+    return rpcCall('eth_call', [{ to: Z1N_KEY, data: data }, 'latest'])
       .then(function(result) { 
         var balance = parseInt(result, 16);
-        console.log('Balance for', address, '=', balance);
+        console.log('Key balance for', address, '=', balance);
         return balance;
       });
   }
 
   // tokenOfOwnerByIndex(address,uint256) - 0x2f745c59
   function getTokenOfOwnerByIndex(address, index) {
-    var selector = '0x2f745c59';
-    var paddedAddr = address.slice(2).toLowerCase().padStart(64, '0');
-    var paddedIdx = index.toString(16).padStart(64, '0');
-    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedAddr + paddedIdx }, 'latest'])
+    var data = SEL.tokenOfOwnerByIndex + encodeAddress(address) + encodeUint256(index);
+    return rpcCall('eth_call', [{ to: Z1N_KEY, data: data }, 'latest'])
       .then(function(result) { return parseInt(result, 16); });
   }
 
-  // Try to get genesis status - may fail if function doesn't exist
+  // isGenesis(uint256) - 0xf1e25ea8
   async function isGenesis(tokenId) {
     try {
-      // Try isGenesis(uint256) - 0x63240e4e
-      var selector = '0x63240e4e';
-      var paddedId = tokenId.toString(16).padStart(64, '0');
-      var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest']);
-      return parseInt(result, 16) === 1;
+      var data = SEL.isGenesis + encodeUint256(tokenId);
+      var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: data }, 'latest']);
+      var isGen = parseInt(result, 16) === 1;
+      console.log('isGenesis(' + tokenId + ') =', isGen);
+      return isGen;
     } catch (e) {
-      console.log('isGenesis call failed, assuming false:', e.message);
-      // Genesis keys are tokenId 0-20999
+      console.log('isGenesis call failed, using tokenId < 21000 fallback:', e.message);
       return tokenId < 21000;
     }
   }
 
-  // Try to get glyphs - returns (uint8 len, uint40 pack) and epoch
+  // glyphs(uint256) - 0x887296c3 - returns (uint8 len, uint40 pack)
   async function getGlyphs(tokenId) {
-    var paddedId = tokenId.toString(16).padStart(64, '0');
+    var paddedId = encodeUint256(tokenId);
     var result = { len: 0, pack: BigInt(0), epoch: null };
     
     try {
-      // Try glyphs(uint256) with different possible selectors
-      var glyphsSelectors = ['0x7e0cd9f3', '0x6fd3c7b5', '0x2a10d55a', '0x21e7c498'];
+      // glyphs(uint256) → (uint8, uint40)
+      var data = SEL.glyphs + paddedId;
+      var response = await rpcCall('eth_call', [{ to: Z1N_KEY, data: data }, 'latest']);
       
-      for (var i = 0; i < glyphsSelectors.length; i++) {
-        try {
-          var data = await rpcCall('eth_call', [{ to: Z1N_KEY, data: glyphsSelectors[i] + paddedId }, 'latest']);
-          
-          if (data && data !== '0x' && data.length >= 130) {
-            // ABI decode: (uint8, uint40) - both padded to 32 bytes
-            var len = parseInt(data.slice(2, 66), 16);
-            var pack = BigInt('0x' + data.slice(66, 130));
-            
-            if (len === 6 || len === 7) {
-              console.log('Found glyphs with selector', glyphsSelectors[i], '- len:', len, 'pack:', pack.toString(16));
-              result.len = len;
-              result.pack = pack;
-              break;
-            }
-          }
-        } catch (e) {
-          // Try next
+      if (response && response !== '0x' && response.length >= 130) {
+        // ABI decode: (uint8, uint40) - both padded to 32 bytes
+        var len = parseInt(response.slice(2, 66), 16);
+        var pack = BigInt('0x' + response.slice(66, 130));
+        
+        if (len === 6 || len === 7) {
+          console.log('glyphs(' + tokenId + ') = len:', len, 'pack:', pack.toString(16));
+          result.len = len;
+          result.pack = pack;
         }
       }
       
-      // Try to get glyphEpochOf(uint256)
-      var epochSelectors = ['0x1e3dac2b', '0x8f3d3c97', '0x4a7e7d2b'];
-      for (var j = 0; j < epochSelectors.length; j++) {
-        try {
-          var epochData = await rpcCall('eth_call', [{ to: Z1N_KEY, data: epochSelectors[j] + paddedId }, 'latest']);
-          if (epochData && epochData !== '0x' && epochData.length >= 66) {
-            var epochVal = parseInt(epochData, 16);
-            if (epochVal > 0 && epochVal < 100000) {
-              result.epoch = epochVal;
-              console.log('Found glyph epoch:', epochVal);
-              break;
-            }
-          }
-        } catch (e) {
-          // Try next
+      // glyphEpochOf(uint256) - 0x5e5cd9a5
+      var epochData = SEL.glyphEpochOf + paddedId;
+      var epochResponse = await rpcCall('eth_call', [{ to: Z1N_KEY, data: epochData }, 'latest']);
+      if (epochResponse && epochResponse !== '0x' && epochResponse.length >= 66) {
+        var epochVal = parseInt(epochResponse, 16);
+        if (epochVal >= 0 && epochVal < 100000) {
+          result.epoch = epochVal;
+          console.log('glyphEpochOf(' + tokenId + ') =', epochVal);
         }
       }
       
     } catch (e) {
-      console.log('getGlyphs failed:', e.message);
+      console.log('getGlyphs failed for token', tokenId, ':', e.message);
     }
     
     return result;
   }
 
-  // Get artefact counts for a key (placeholder - needs contract check)
-  async function getArtefactCounts(tokenId) {
-    // TODO: Query Z1NArtefact and Z1NStaticArtefact contracts
-    // Need to find function like: artefactsByKey(uint256) or similar
-    return { live: 0, static: 0 };
-  }
-
-  // Try to get voting power
-  async function getVotingPower(tokenId) {
+  // signalCount(uint256,uint256) - 0xfd68f0e5
+  async function getSignalCount(tokenId, epoch) {
     try {
-      // votingPowerOf(uint256) - 0x9168ae72
-      var selector = '0x9168ae72';
-      var paddedId = tokenId.toString(16).padStart(64, '0');
-      var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest']);
-      return parseInt(result, 16) / 1e18;
+      var data = SEL.signalCount + encodeUint256(tokenId) + encodeUint256(epoch);
+      var result = await rpcCall('eth_call', [{ to: Z1N_SIGNAL, data: data }, 'latest']);
+      var count = parseInt(result, 16);
+      console.log('signalCount(' + tokenId + ', ' + epoch + ') =', count);
+      return count;
     } catch (e) {
-      console.log('votingPowerOf call failed:', e.message);
-      return tokenId < 21000 ? 2 : 1;
+      console.log('signalCount failed:', e.message);
+      return 0;
     }
   }
 
-  // Get current epoch from Core contract
+  // attestCount(uint256,uint256) - 0xfe6569d7
+  async function getAttestCount(tokenId, epoch) {
+    try {
+      var data = SEL.attestCount + encodeUint256(tokenId) + encodeUint256(epoch);
+      var result = await rpcCall('eth_call', [{ to: Z1N_SIGNAL, data: data }, 'latest']);
+      var count = parseInt(result, 16);
+      console.log('attestCount(' + tokenId + ', ' + epoch + ') =', count);
+      return count;
+    } catch (e) {
+      console.log('attestCount failed:', e.message);
+      return 0;
+    }
+  }
+
+  // Get artefact counts for a key
+  // primaryArtefactOfKey(uint256) - 0xff84f877 on Z1NArtefact
+  // staticArtefactOfKey(uint256) - 0x8d6786a8 on Z1NStaticArtefact
+  async function getArtefactCounts(tokenId) {
+    var counts = { live: 0, static: 0 };
+    
+    try {
+      // Check if key has a primary live artefact
+      var liveData = SEL.primaryArtefactOfKey + encodeUint256(tokenId);
+      var liveResult = await rpcCall('eth_call', [{ to: Z1N_ARTEFACT, data: liveData }, 'latest']);
+      if (liveResult && liveResult !== '0x') {
+        var liveId = parseInt(liveResult, 16);
+        if (liveId > 0) {
+          counts.live = 1;
+        }
+      }
+    } catch (e) {
+      console.log('primaryArtefactOfKey failed:', e.message);
+    }
+    
+    try {
+      // Check if key has a static artefact
+      var staticData = SEL.staticArtefactOfKey + encodeUint256(tokenId);
+      var staticResult = await rpcCall('eth_call', [{ to: Z1N_STATIC_ARTEFACT, data: staticData }, 'latest']);
+      if (staticResult && staticResult !== '0x') {
+        var staticId = parseInt(staticResult, 16);
+        if (staticId > 0) {
+          counts.static = 1;
+        }
+      }
+    } catch (e) {
+      console.log('staticArtefactOfKey failed:', e.message);
+    }
+    
+    console.log('artefactCounts(' + tokenId + ') = live:', counts.live, 'static:', counts.static);
+    return counts;
+  }
+
+  // Get current epoch from Core contract - 0x76671808
   async function getCurrentEpoch() {
     try {
-      // currentEpoch() - selector 0x76671808
-      var selector = '0x76671808';
-      var result = await rpcCall('eth_call', [{ to: Z1N_CORE, data: selector }, 'latest']);
+      var result = await rpcCall('eth_call', [{ to: Z1N_CORE, data: SEL.currentEpoch }, 'latest']);
       var epoch = parseInt(result, 16);
-      console.log('Current epoch from Core:', epoch);
+      console.log('currentEpoch() =', epoch);
       return epoch;
     } catch (e) {
       console.log('currentEpoch call failed:', e.message);
@@ -957,7 +997,17 @@
         // Get glyph epoch (when glyphs were assigned)
         var mintEpoch = glyphData.epoch !== null && glyphData.epoch !== undefined ? glyphData.epoch : null;
         
+        // Get signal and attest counts for current epoch
+        console.log('Step 5: Getting signal/attest status...');
+        var signalsUsed = 0;
+        var attestsUsed = 0;
+        if (currentEpochNum !== null) {
+          signalsUsed = await getSignalCount(tokenId, currentEpochNum);
+          attestsUsed = await getAttestCount(tokenId, currentEpochNum);
+        }
+        
         // Get artefact counts
+        console.log('Step 6: Getting artefact counts...');
         var artefacts = await getArtefactCounts(tokenId);
 
         keys.push({
@@ -965,9 +1015,8 @@
           genesis: genesis,
           glyphSymbols: decodeGlyphs(glyphData.len, glyphData.pack),
           epoch: mintEpoch,
-          // Placeholder values - would need Signal contract calls for current epoch
-          signalsUsed: 0,
-          attestsUsed: 0,
+          signalsUsed: signalsUsed,
+          attestsUsed: attestsUsed,
           liveArtefacts: artefacts.live,
           staticArtefacts: artefacts.static
         });
