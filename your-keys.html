@@ -561,7 +561,8 @@
   // CONFIG
   // ═══════════════════════════════════════════════════════════════════
   var Z1N_KEY = '0x71B31cb8FC0e4D538c2865FeBBfC8C56f41a00d6';
-  var Z1N_CORE = '0xYOUR_CORE_CONTRACT_ADDRESS'; // TODO: Add real Core contract address
+  var Z1N_CORE = '0xade14831356722154A39D40a8EBd4ee1FD4c7D6a';
+  var Z1N_SIGNAL = '0x85f0A512cd246A6e659E2D188763482F587dc9f7';
   var RPC_URLS = [
     'https://rpc-amoy.polygon.technology',
     'https://polygon-amoy.drpc.org',
@@ -738,21 +739,19 @@
     }
   }
 
-  // Get current epoch - need Core contract address
+  // Get current epoch from Core contract
   async function getCurrentEpoch() {
     try {
-      if (Z1N_CORE && !Z1N_CORE.startsWith('0xYOUR')) {
-        // currentEpoch() - 0x76671808
-        var selector = '0x76671808';
-        var result = await rpcCall('eth_call', [{ to: Z1N_CORE, data: selector }, 'latest']);
-        return parseInt(result, 16);
-      }
+      // currentEpoch() - selector 0x76671808
+      var selector = '0x76671808';
+      var result = await rpcCall('eth_call', [{ to: Z1N_CORE, data: selector }, 'latest']);
+      var epoch = parseInt(result, 16);
+      console.log('Current epoch from Core:', epoch);
+      return epoch;
     } catch (e) {
       console.log('currentEpoch call failed:', e.message);
+      return null;
     }
-    
-    // Return null if we don't have Core contract
-    return null;
   }
 
   // ═══════════════════════════════════════════════════════════════════
