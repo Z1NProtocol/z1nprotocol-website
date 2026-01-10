@@ -636,8 +636,16 @@
   // CONNECT WALLET
   // ═══════════════════════════════════════════════════════════════════
   function connectWallet() {
+    console.log('Connect wallet clicked');
+    
+    // Update button state
+    btnConnect.textContent = 'Connecting...';
+    btnConnect.classList.add('active');
+
     if (!window.ethereum) {
-      alert('Please install MetaMask to use this feature.');
+      alert('Please install MetaMask or another Web3 wallet to use this feature.');
+      btnConnect.textContent = 'Connect Wallet';
+      btnConnect.classList.remove('active');
       return;
     }
 
@@ -645,20 +653,27 @@
 
     provider.request({ method: 'eth_requestAccounts' })
       .then(function(accounts) {
+        console.log('Accounts:', accounts);
         if (accounts.length > 0) {
           currentAccount = accounts[0];
           loadKeys();
+        } else {
+          btnConnect.textContent = 'Connect Wallet';
+          btnConnect.classList.remove('active');
         }
       })
       .catch(function(err) {
         console.error('Connect error:', err);
+        alert('Connection failed: ' + (err.message || 'Unknown error'));
+        btnConnect.textContent = 'Connect Wallet';
+        btnConnect.classList.remove('active');
       });
   }
 
   // ═══════════════════════════════════════════════════════════════════
   // INIT
   // ═══════════════════════════════════════════════════════════════════
-  btnConnect.onclick = connectWallet;
+  btnConnect.addEventListener('click', connectWallet);
 
   // Check if already connected
   if (window.ethereum) {
