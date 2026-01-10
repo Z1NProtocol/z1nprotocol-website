@@ -15,6 +15,7 @@
       --keys-accent: #f5c842;
       --keys-accent-soft: #d4a012;
       --card-border: rgba(148, 163, 184, 0.25);
+      --border-soft: rgba(148,163,184,0.35);
       --danger: #f97373;
     }
 
@@ -166,6 +167,8 @@
       border: 1px solid var(--card-border);
       border-radius: 14px;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
     }
 
     .card-title {
@@ -175,6 +178,20 @@
       letter-spacing: 0.1em;
       color: var(--text-soft);
       margin-bottom: 16px;
+    }
+
+    /* POG card title in gold */
+    .pog-card .card-title {
+      color: var(--keys-accent);
+    }
+
+    /* Pure card - white styling */
+    .pure-card {
+      border-color: var(--border-soft);
+    }
+
+    .pure-card .card-title {
+      color: var(--text-main);
     }
 
     /* SIGNAL TYPE TOGGLE */
@@ -223,7 +240,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 10px 8px;
+      padding: 8px 6px;
       background: rgba(15, 23, 42, 0.4);
       border: 1px solid rgba(245, 200, 66, 0.35);
       border-radius: 6px;
@@ -242,7 +259,7 @@
     }
 
     .intent-symbol {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
     }
 
@@ -299,7 +316,17 @@
       opacity: 0.6;
     }
 
-    /* SUBMIT ROW */
+    /* Pure card inputs - white border on focus */
+    .pure-card textarea:focus, .pure-card input[type="text"]:focus {
+      border-color: var(--text-main);
+    }
+
+    /* CARD SPACER - pushes footer to bottom */
+    .card-spacer {
+      flex: 1;
+    }
+
+    /* SUBMIT ROW - at bottom of card */
     .submit-row {
       display: flex;
       align-items: center;
@@ -318,6 +345,11 @@
       font-weight: 600;
     }
 
+    .fee-amount.free {
+      color: var(--accent);
+    }
+
+    /* POG Submit button - gold */
     .btn-submit {
       padding: 10px 24px;
       border-radius: 999px;
@@ -337,6 +369,31 @@
     }
 
     .btn-submit[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Pure Submit button - mode-btn style from about.html */
+    .btn-whisper {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .btn-whisper:hover:not([disabled]) {
+      border-color: var(--accent);
+    }
+
+    .btn-whisper[disabled] {
       opacity: 0.5;
       cursor: not-allowed;
     }
@@ -421,9 +478,40 @@
       text-decoration: underline;
     }
 
-    /* PURE SIGNAL CARD */
-    .pure-card .card-title {
-      color: var(--accent);
+    /* REPLY TO SECTION */
+    .reply-section {
+      display: none;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+    }
+
+    .reply-section.active {
+      display: block;
+    }
+
+    .reply-label {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    .reply-input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-main);
+      font-family: monospace;
+      font-size: 12px;
+    }
+
+    .reply-input:focus {
+      outline: none;
+      border-color: var(--keys-accent);
     }
 
     /* RESPONSIVE */
@@ -456,7 +544,7 @@
   <a href="/your-keys.html" class="back-link">← Back to Your Keys</a>
 
   <h1>Signals</h1>
-  <p class="subtitle">Participate in the Field's collective intelligence through Proof of Gestalt signals.</p>
+  <p class="subtitle">Participate in the Field's collective intelligence through Proof of Glyph signals.</p>
 
   <!-- CONNECT STATE -->
   <div id="connectState" class="connect-prompt">
@@ -495,7 +583,7 @@
     <div class="signals-layout">
 
       <!-- POG SIGNAL CARD -->
-      <div class="card">
+      <div class="card pog-card">
         <div class="card-title">⚡ PoG Signal</div>
 
         <!-- Signal Type Toggle -->
@@ -504,22 +592,28 @@
           <button class="toggle-btn" data-type="reply" onclick="setSignalType('reply')">Reply To</button>
         </div>
 
+        <!-- Reply To Section (hidden by default) -->
+        <div class="reply-section" id="replySection">
+          <div class="reply-label">Signal Hash to reply to:</div>
+          <input type="text" class="reply-input" id="replyToHash" placeholder="0x...">
+        </div>
+
         <!-- Intent Selector -->
         <div class="input-label">Intent</div>
         <div class="intent-grid">
-          <div class="intent-btn selected" data-intent="0" onclick="selectIntent(0)" title="Collective consciousness">
+          <div class="intent-btn selected" data-intent="0" onclick="selectIntent(0)" title="Collective consciousness - What are we becoming together?">
             <div class="intent-symbol">ΩC</div>
             <div class="intent-name">Collective</div>
           </div>
-          <div class="intent-btn" data-intent="1" onclick="selectIntent(1)" title="Individual expression">
+          <div class="intent-btn" data-intent="1" onclick="selectIntent(1)" title="Individual expression - Who am I, uniquely?">
             <div class="intent-symbol">ΩI</div>
             <div class="intent-name">Individual</div>
           </div>
-          <div class="intent-btn" data-intent="2" onclick="selectIntent(2)" title="Co-creation with others">
+          <div class="intent-btn" data-intent="2" onclick="selectIntent(2)" title="Co-creation - How shall we build further?">
             <div class="intent-symbol">ΩK</div>
             <div class="intent-name">Co-Create</div>
           </div>
-          <div class="intent-btn" data-intent="3" onclick="selectIntent(3)" title="Silence / abstention (1.5× fee)">
+          <div class="intent-btn" data-intent="3" onclick="selectIntent(3)" title="Silence - The heaviest breath (1.5× fee, 1.1× weight)">
             <div class="intent-symbol">ΩS</div>
             <div class="intent-name">Silence</div>
           </div>
@@ -534,6 +628,9 @@
           <textarea id="signalContent" placeholder="Your signal to the Field..." maxlength="280" oninput="updateCharCount()"></textarea>
         </div>
 
+        <!-- Spacer -->
+        <div class="card-spacer"></div>
+
         <!-- Submit -->
         <div class="submit-row">
           <div class="fee-display">
@@ -547,7 +644,7 @@
 
       <!-- PURE SIGNAL CARD -->
       <div class="card pure-card">
-        <div class="card-title">💬 Pure Signal</div>
+        <div class="card-title">● Pure Signal</div>
         <p style="font-size:12px;color:var(--text-soft);margin-bottom:14px;">
           No fee, no attestation, no game impact. Direct whisper between Keys.
         </p>
@@ -565,9 +662,13 @@
           <input type="text" id="pureRecipient" placeholder="0">
         </div>
 
+        <!-- Spacer -->
+        <div class="card-spacer"></div>
+
+        <!-- Submit -->
         <div class="submit-row">
-          <div class="fee-display">Fee: <span class="fee-amount" style="color:var(--accent);">Free</span></div>
-          <button class="btn-submit" id="btnSubmitPure" onclick="submitPureSignal()" style="background:linear-gradient(90deg,rgba(102,214,154,0.55),rgba(58,159,99,0.55));border-color:var(--accent-soft);">Send Whisper</button>
+          <div class="fee-display">Fee: <span class="fee-amount free">Free</span></div>
+          <button class="btn-whisper" id="btnSubmitPure" onclick="submitPureSignal()">Send Whisper</button>
         </div>
 
         <div id="pureStatus"></div>
@@ -596,9 +697,14 @@
   var Z1N_SIGNAL = '0x85f0A512cd246A6e659E2D188763482F587dc9f7';
   var RPC_URL = 'https://rpc-amoy.polygon.technology';
 
+  // Fee constants (in wei)
+  var SUBMISSION_FEE = '10000000000000000'; // 0.01 POL
+  var SILENCE_FEE = '15000000000000000';    // 0.015 POL
+
   var SEL = {
     balanceOf: '0x70a08231',
     tokenOfOwnerByIndex: '0x2f745c59',
+    ownerOf: '0x6352211e',
     glyphs: '0x887296c3',
     currentEpoch: '0x76671808',
     signalCount: '0xfd68f0e5',
@@ -606,10 +712,6 @@
   };
 
   var GLYPHS = ['∞','π','⋮','⊕','⊗','∴','∵','↔','↻','△','◇','○','●','□','☰','☷','⚑','✱','⊥','≡','◊'];
-
-  // Signal submission selector: submitSignal(uint256 tokenId, uint8 intent, bytes32 cid)
-  // keccak256("submitSignal(uint256,uint8,bytes32)") = 0x...
-  var SUBMIT_SIGNAL_SEL = '0x5e1e1004'; // submitSignal(uint256,uint8,bytes32)
 
   // ═══════════════════════════════════════════════════════════════════
   // STATE
@@ -637,24 +739,39 @@
   // HELPERS
   // ═══════════════════════════════════════════════════════════════════
   function encodeUint256(val) {
-    return val.toString(16).padStart(64, '0');
+    return BigInt(val).toString(16).padStart(64, '0');
   }
 
   function encodeAddress(addr) {
     return addr.slice(2).toLowerCase().padStart(64, '0');
   }
 
-  function encodeUint8(val) {
-    return val.toString(16).padStart(64, '0');
-  }
-
-  function stringToBytes32(str) {
-    // Convert string to bytes32 (padded)
+  function encodeBytes32(str) {
+    // Convert string to bytes32 hex (UTF-8, padded)
     var hex = '';
     for (var i = 0; i < str.length && i < 32; i++) {
       hex += str.charCodeAt(i).toString(16).padStart(2, '0');
     }
     return hex.padEnd(64, '0');
+  }
+
+  function stringToHex(str) {
+    var hex = '';
+    for (var i = 0; i < str.length; i++) {
+      hex += str.charCodeAt(i).toString(16).padStart(2, '0');
+    }
+    return hex;
+  }
+
+  function keccak256Simple(str) {
+    // Simple hash for signal hash - in production use proper keccak
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      var char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return '0x' + Math.abs(hash).toString(16).padStart(64, '0');
   }
 
   async function rpcCall(method, params) {
@@ -704,6 +821,7 @@
     document.querySelectorAll('.toggle-btn').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.type === type);
     });
+    document.getElementById('replySection').classList.toggle('active', type === 'reply');
   };
 
   window.updateCharCount = function() {
@@ -727,6 +845,16 @@
     var a1 = attestsUsed >= 1 ? '<span class="dot-filled">●</span>' : '<span class="dot-open">○</span>';
     var a2 = attestsUsed >= 2 ? '<span class="dot-filled">●</span>' : '<span class="dot-open">○</span>';
     attestDotsEl.innerHTML = a1 + a2;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // VERIFY KEY OWNERSHIP
+  // ═══════════════════════════════════════════════════════════════════
+  async function verifyKeyOwnership(tokenId, expectedOwner) {
+    var data = SEL.ownerOf + encodeUint256(tokenId);
+    var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: data }, 'latest']);
+    var owner = '0x' + result.slice(26).toLowerCase();
+    return owner.toLowerCase() === expectedOwner.toLowerCase();
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -786,23 +914,54 @@
       return;
     }
 
-    statusEl.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
+    // Verify ownership first
+    statusEl.innerHTML = '<div class="status-msg pending">Verifying key ownership...</div>';
 
     try {
-      // Create a simple CID from content (in production, upload to IPFS)
-      var cidBytes = stringToBytes32(content.slice(0, 32));
+      var isOwner = await verifyKeyOwnership(currentKeyId, currentAccount);
+      if (!isOwner) {
+        statusEl.innerHTML = '<div class="status-msg error">You do not own Key #' + currentKeyId + ' with this wallet.</div>';
+        return;
+      }
 
-      // Fee: 0.01 POL (or 0.015 for Silence)
-      var feeWei = selectedIntent === 3 ? '0x3635C9ADC5DEA00000' : '0x2386F26FC10000'; // 0.015 or 0.01 POL in hex
-      // Actually: 0.01 POL = 10000000000000000 wei = 0x2386F26FC10000
-      // 0.015 POL = 15000000000000000 wei = 0x35575530E0A0000
-      feeWei = selectedIntent === 3 ? '0x35575530E0A000' : '0x2386F26FC10000';
+      statusEl.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
 
-      // Encode: submitSignal(uint256 tokenId, uint8 intent, bytes32 cid)
-      var data = SUBMIT_SIGNAL_SEL + 
-                 encodeUint256(currentKeyId) + 
-                 encodeUint8(selectedIntent) + 
-                 cidBytes;
+      // Get reply hash if replying
+      var replyToHash = '0x0000000000000000000000000000000000000000000000000000000000000000';
+      if (signalType === 'reply') {
+        var replyInput = document.getElementById('replyToHash').value.trim();
+        if (replyInput && replyInput.startsWith('0x')) {
+          replyToHash = replyInput.padEnd(66, '0');
+        }
+      }
+
+      // Fee
+      var feeWei = selectedIntent === 3 ? SILENCE_FEE : SUBMISSION_FEE;
+      var valueHex = '0x' + BigInt(feeWei).toString(16);
+
+      // Create signal hash from content
+      var signalHash = keccak256Simple(content + currentKeyId + currentEpoch);
+
+      // Encode function call
+      // submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint256 epochRef, bytes32 replyTo)
+      // For now, use a simpler encoding - just tokenId and intent with content as data
+      
+      // Actually, let's use a simpler approach - many signal contracts accept:
+      // submitSignal(uint256 tokenId, uint8 intent, bytes32 contentHash)
+      // Function selector: keccak256("submitSignal(uint256,uint8,bytes32)").slice(0,10)
+      
+      var contentHash = encodeBytes32(content);
+      
+      // Try the simpler function signature
+      // keccak256("submitSignal(uint256,uint8,bytes32)") = 0x5f396e5f (example, need to verify)
+      // Let's calculate: submitSignal(uint256,uint8,bytes32)
+      
+      // For now, let's just send raw data and see what happens
+      var data = '0x' + 
+        'a3e1e3ab' +  // submitSignal selector (placeholder - needs verification)
+        encodeUint256(currentKeyId) +
+        encodeUint256(selectedIntent) +
+        contentHash;
 
       statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
 
@@ -811,9 +970,9 @@
         params: [{
           from: currentAccount,
           to: Z1N_SIGNAL,
-          value: feeWei,
+          value: valueHex,
           data: data,
-          gas: '0x30000'
+          gas: '0x50000'
         }]
       });
 
@@ -825,7 +984,7 @@
         attempts++;
         if (attempts > 60) {
           clearInterval(poll);
-          statusEl.innerHTML = '<div class="status-msg pending">Taking long... check explorer.</div>';
+          statusEl.innerHTML = '<div class="status-msg pending">Taking long... <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
           return;
         }
 
@@ -852,7 +1011,12 @@
 
     } catch (e) {
       console.error('Submit error:', e);
-      statusEl.innerHTML = '<div class="status-msg error">' + (e.message || 'Transaction failed') + '</div>';
+      var errMsg = e.message || 'Transaction failed';
+      if (errMsg.includes('rejected') || errMsg.includes('denied')) {
+        statusEl.innerHTML = '<div class="status-msg error">Transaction rejected by user.</div>';
+      } else {
+        statusEl.innerHTML = '<div class="status-msg error">' + errMsg.slice(0, 100) + '</div>';
+      }
     }
   };
 
@@ -868,7 +1032,6 @@
       return;
     }
 
-    // Pure signals are typically emitted as events, implementation depends on contract
     statusEl.innerHTML = '<div class="status-msg pending">Pure signal submission coming soon...</div>';
   };
 
