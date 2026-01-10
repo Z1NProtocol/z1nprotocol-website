@@ -1,1 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Z1N Protocol – Signals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #050812;
+      --card-bg: #020617;
+      --text-main: #ffffff;
+      --text-soft: #8f9ab5;
+      --accent: #66d69a;
+      --accent-soft: #3a9f63;
+      --keys-accent: #d4a853;
+      --card-border: rgba(148, 163, 184, 0.25);
+      --danger: #f97373;
+      --warning: #facc15;
+    }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* HEADER */
+    header {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-wrap { display: flex; align-items: center; gap: 8px; }
+    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
+
+    .logo-dot {
+      width: 24px; height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+
+    .logo-text {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .nav-links a.active { color: var(--accent); }
+
+    /* MAIN */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 8px;
+      color: var(--keys-accent);
+      font-style: italic;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-soft);
+      margin-bottom: 24px;
+    }
+
+    /* KEY HEADER */
+    .key-header-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .key-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .key-id {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .genesis-badge {
+      background: linear-gradient(135deg, #d4a853, #b8860b);
+      color: #000;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .key-glyphs {
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: var(--text-main);
+    }
+
+    .key-stats {
+      display: flex;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .key-stats span { display: flex; align-items: center; gap: 6px; }
+    .stat-value { color: var(--accent); font-weight: 600; }
+
+    /* EPOCH BAR */
+    .epoch-bar {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .epoch-label { color: var(--text-soft); }
+    .epoch-value { color: var(--keys-accent); font-weight: 600; font-size: 15px; }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab:hover { border-color: var(--accent); color: var(--text-main); }
+    .tab.active {
+      background: linear-gradient(90deg, rgba(102,214,154,0.2), rgba(58,159,99,0.2));
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-soft);
+      margin-bottom: 16px;
+    }
+
+    /* INTENT SELECTOR */
+    .intent-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .intent-btn {
+      padding: 14px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.4);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .intent-btn:hover { border-color: var(--accent); }
+
+    .intent-btn.selected {
+      border-color: var(--accent);
+      background: rgba(102, 214, 154, 0.1);
+    }
+
+    .intent-symbol {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .intent-name {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .intent-btn[data-intent="0"] .intent-symbol { color: #4ade80; }
+    .intent-btn[data-intent="1"] .intent-symbol { color: #f87171; }
+    .intent-btn[data-intent="2"] .intent-symbol { color: #fbbf24; }
+    .intent-btn[data-intent="3"] .intent-symbol { color: #60a5fa; }
+
+    /* SIGNAL TYPE TOGGLE */
+    .signal-type-toggle {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .type-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .type-btn:hover { border-color: var(--text-main); color: var(--text-main); }
+    .type-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(102, 214, 154, 0.08);
+    }
+
+    /* TEXT INPUT */
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .char-count { color: var(--keys-accent); }
+    .char-count.over { color: var(--danger); }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    textarea::placeholder { color: var(--text-soft); opacity: 0.6; }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* REPLY TO SECTION */
+    .reply-to-section {
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    .reply-to-section.show { display: block; }
+
+    .reply-target {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px dashed var(--card-border);
+      background: rgba(15, 23, 42, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reply-target:hover {
+      border-color: var(--accent);
+      border-style: solid;
+    }
+
+    .reply-target-placeholder {
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .reply-target-selected {
+      display: none;
+    }
+
+    .reply-target-selected.show {
+      display: block;
+    }
+
+    .reply-signal-preview {
+      font-size: 13px;
+    }
+
+    .reply-signal-meta {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
+    /* SUBMIT BUTTON */
+    .submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .fee-display {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .fee-amount {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .btn-submit {
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(58, 159, 99, 0.95);
+      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
+      color: #061018;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-submit:hover:not([disabled]) {
+      transform: translateY(-1px);
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3), 0 0 16px rgba(102,214,154,0.15);
+    }
+
+    .btn-submit[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* PURE SIGNAL CARD */
+    .pure-signal-card {
+      border-color: rgba(212, 168, 83, 0.3);
+    }
+
+    .pure-signal-card .card-title {
+      color: var(--keys-accent);
+    }
+
+    /* SIGNAL BROWSER MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 80vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title { font-size: 18px; font-weight: 600; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-soft);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .modal-close:hover { color: var(--text-main); }
+
+    .modal-filters {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-input {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-main);
+      font-size: 12px;
+      width: 120px;
+    }
+
+    .filter-input::placeholder { color: var(--text-soft); }
+
+    .filter-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(102,214,154,0.1); }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 24px;
+    }
+
+    .signal-list-item {
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .signal-list-item:hover {
+      border-color: var(--accent);
+      background: rgba(102, 214, 154, 0.05);
+    }
+
+    .signal-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .signal-list-intent {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .signal-list-meta {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .signal-list-content {
+      font-size: 13px;
+      color: var(--text-soft);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .signal-list-weight {
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 6px;
+    }
+
+    /* CONNECT STATE */
+    .connect-prompt {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .connect-prompt p {
+      color: var(--text-soft);
+      margin-bottom: 20px;
+    }
+
+    .btn-connect {
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-connect:hover {
+      background: rgba(102, 214, 154, 0.1);
+    }
+
+    /* STATUS */
+    .status-msg {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .status-msg.error {
+      background: rgba(249, 115, 115, 0.1);
+      border: 1px solid rgba(249, 115, 115, 0.3);
+      color: var(--danger);
+    }
+
+    .status-msg.success {
+      background: rgba(102, 214, 154, 0.1);
+      border: 1px solid rgba(102, 214, 154, 0.3);
+      color: var(--accent);
+    }
+
+    /* BACK LINK */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-soft);
+      font-size: 13px;
+      margin-bottom: 20px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .intent-grid { grid-template-columns: repeat(2, 1fr); }
+      .key-header-card { flex-direction: column; align-items: flex-start; }
+      .key-stats { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="logo-wrap">
+      <a href="/index.html" class="logo-link">
+        <div class="logo-dot">Ω</div>
+        <div class="logo-text">Z1N Protocol</div>
+      </a>
+    </div>
+    <nav class="nav-links">
+      <a href="/about.html">About</a>
+      <a href="/live-stats.html">Live Stats</a>
+      <a href="/mint-key.html">Mint Key</a>
+      <a href="/your-keys.html">Your Keys</a>
+      <a href="/signals.html" class="active">Signals</a>
+    </nav>
+  </div>
+</header>
+
+<!-- SIGNAL BROWSER MODAL -->
+<div id="signalBrowserModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Select Signal to Reply To</div>
+      <button class="modal-close" onclick="closeSignalBrowser()">×</button>
+    </div>
+    <div class="modal-filters">
+      <input type="text" class="filter-input" id="filterEpoch" placeholder="Epoch">
+      <input type="text" class="filter-input" id="filterKeyId" placeholder="Key ID">
+      <input type="text" class="filter-input" id="filterWallet" placeholder="Wallet 0x..." style="width:160px;">
+      <button class="filter-btn" id="filterMostAttested">Most Attested</button>
+      <button class="filter-btn" id="filterLatest">Latest</button>
+    </div>
+    <div class="modal-body" id="signalBrowserList">
+      <p style="color:var(--text-soft);text-align:center;padding:40px;">Loading signals...</p>
+    </div>
+  </div>
+</div>
+
+<main class="page">
+  <a href="/your-keys.html" class="back-link">← Back to Your Keys</a>
+
+  <h1>Signals</h1>
+  <p class="subtitle">Participate in the Field's collective intelligence through Proof of Gestalt signals.</p>
+
+  <!-- CONNECT STATE -->
+  <div id="connectState" class="connect-prompt">
+    <p>Connect your wallet to send signals</p>
+    <button class="btn-connect" id="btnConnect">Connect Wallet</button>
+  </div>
+
+  <!-- MAIN CONTENT (hidden until connected) -->
+  <div id="mainContent" style="display:none;">
+
+    <!-- KEY HEADER -->
+    <div class="key-header-card">
+      <div class="key-info">
+        <span class="key-id" id="keyIdDisplay">Key #—</span>
+        <span class="genesis-badge" id="genesisBadge" style="display:none;">✶ Genesis</span>
+        <span class="key-glyphs" id="keyGlyphs">—</span>
+      </div>
+      <div class="key-stats">
+        <span>Signals: <span class="stat-value" id="signalsRemaining">—/2</span></span>
+        <span>Attests: <span class="stat-value" id="attestsRemaining">—/2</span></span>
+      </div>
+    </div>
+
+    <!-- EPOCH BAR -->
+    <div class="epoch-bar">
+      <span class="epoch-label">Current Epoch</span>
+      <span class="epoch-value" id="currentEpochDisplay">—</span>
+    </div>
+
+    <!-- POG SIGNAL CARD -->
+    <div class="card">
+      <div class="card-title">⚡ PoG Signal (Proof of Gestalt)</div>
+
+      <!-- Signal Type: New or Reply -->
+      <div class="signal-type-toggle">
+        <button class="type-btn active" data-type="new" onclick="setSignalType('new')">New Signal</button>
+        <button class="type-btn" data-type="reply" onclick="setSignalType('reply')">Reply To</button>
+      </div>
+
+      <!-- Reply To Section (hidden by default) -->
+      <div class="reply-to-section" id="replyToSection">
+        <div class="input-label">Replying to:</div>
+        <div class="reply-target" onclick="openSignalBrowser()">
+          <div class="reply-target-placeholder" id="replyPlaceholder">Click to select a signal to reply to...</div>
+          <div class="reply-target-selected" id="replySelected">
+            <div class="reply-signal-preview" id="replyPreview"></div>
+            <div class="reply-signal-meta" id="replyMeta"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intent Selector -->
+      <div class="input-label">Intent Layer</div>
+      <div class="intent-grid">
+        <div class="intent-btn selected" data-intent="0" onclick="selectIntent(0)">
+          <div class="intent-symbol">ΩC</div>
+          <div class="intent-name">Collective</div>
+        </div>
+        <div class="intent-btn" data-intent="1" onclick="selectIntent(1)">
+          <div class="intent-symbol">ΩI</div>
+          <div class="intent-name">Individual</div>
+        </div>
+        <div class="intent-btn" data-intent="2" onclick="selectIntent(2)">
+          <div class="intent-symbol">ΩK</div>
+          <div class="intent-name">Co-Creation</div>
+        </div>
+        <div class="intent-btn" data-intent="3" onclick="selectIntent(3)">
+          <div class="intent-symbol">ΩS</div>
+          <div class="intent-name">Silence (1.5× fee)</div>
+        </div>
+      </div>
+
+      <!-- Content Input -->
+      <div class="input-group">
+        <div class="input-label">
+          <span>Signal Content</span>
+          <span class="char-count" id="charCount">0 / 280</span>
+        </div>
+        <textarea id="signalContent" placeholder="Your signal to the Field..." maxlength="280" oninput="updateCharCount()"></textarea>
+      </div>
+
+      <!-- Submit -->
+      <div class="submit-row">
+        <div class="fee-display">
+          Fee: <span class="fee-amount" id="pogFee">0.01 POL</span>
+        </div>
+        <button class="btn-submit" id="btnSubmitPog" onclick="submitPoGSignal()">Submit Signal</button>
+      </div>
+
+      <div id="pogStatus"></div>
+    </div>
+
+    <!-- PURE SIGNAL CARD -->
+    <div class="card pure-signal-card">
+      <div class="card-title">💬 Pure Signal (Whisper)</div>
+      <p style="font-size:13px;color:var(--text-soft);margin-bottom:16px;">
+        No fee, no attestation, no game impact. Direct communication between Keys.
+      </p>
+
+      <div class="input-group">
+        <div class="input-label">
+          <span>Message</span>
+          <span class="char-count" id="pureCharCount">0 / 500</span>
+        </div>
+        <textarea id="pureContent" placeholder="Your whisper to another Key..." maxlength="500" oninput="updatePureCharCount()"></textarea>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">Recipient Key ID (0 = broadcast to all)</div>
+        <input type="text" id="pureRecipient" placeholder="0">
+      </div>
+
+      <div class="submit-row">
+        <div class="fee-display">Fee: <span class="fee-amount">Free</span></div>
+        <button class="btn-submit" id="btnSubmitPure" onclick="submitPureSignal()">Send Whisper</button>
+      </div>
+
+      <div id="pureStatus"></div>
+    </div>
+
+    <!-- LINK TO ATTESTS -->
+    <div style="text-align:center;margin-top:32px;">
+      <a href="/attests.html" style="color:var(--accent);font-size:14px;">
+        View Attestable Signals →
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function() {
+  'use strict';
+
+  // ═══════════════════════════════════════════════════════════════════
+  // CONFIG
+  // ═══════════════════════════════════════════════════════════════════
+  var CHAIN_ID = '0x13882';
+  var Z1N_KEY = '0x71B31cb8FC0e4D538c2865FeBBfC8C56f41a00d6';
+  var Z1N_CORE = '0xade14831356722154A39D40a8EBd4ee1FD4c7D6a';
+  var Z1N_SIGNAL = '0x85f0A512cd246A6e659E2D188763482F587dc9f7';
+  var RPC_URL = 'https://rpc-amoy.polygon.technology';
+
+  var SEL = {
+    balanceOf: '0x70a08231',
+    tokenOfOwnerByIndex: '0x2f745c59',
+    isGenesis: '0xf1e25ea8',
+    glyphs: '0x887296c3',
+    currentEpoch: '0x76671808',
+    signalCount: '0xfd68f0e5',
+    attestCount: '0xfe6569d7'
+  };
+
+  var GLYPHS = ['∞','π','⋮','⊕','⊗','∴','∵','↔','↻','△','◇','○','●','□','☰','☷','⚑','✱','⊥','≡','◊'];
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STATE
+  // ═══════════════════════════════════════════════════════════════════
+  var provider = null;
+  var currentAccount = null;
+  var currentKeyId = null;
+  var currentEpoch = 0;
+  var selectedIntent = 0;
+  var signalType = 'new';
+  var replyToHash = null;
+
+  // ═══════════════════════════════════════════════════════════════════
+  // HELPERS
+  // ═══════════════════════════════════════════════════════════════════
+  function encodeUint256(val) {
+    return val.toString(16).padStart(64, '0');
+  }
+
+  function encodeAddress(addr) {
+    return addr.slice(2).toLowerCase().padStart(64, '0');
+  }
+
+  async function rpcCall(method, params) {
+    var response = await fetch(RPC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: method, params: params })
+    });
+    var data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.result;
+  }
+
+  function decodeGlyphs(len, pack) {
+    if (len === 0 || pack === BigInt(0)) return null;
+    var symbols = [];
+    for (var i = 0; i < len; i++) {
+      var shift = BigInt(5 * (7 - 1 - i));
+      var idx = Number((pack >> shift) & BigInt(0x1F));
+      if (idx < GLYPHS.length) symbols.push(GLYPHS[idx]);
+    }
+    return symbols.join(' ');
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // URL PARAMS
+  // ═══════════════════════════════════════════════════════════════════
+  function getUrlParam(name) {
+    var params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // UI FUNCTIONS
+  // ═══════════════════════════════════════════════════════════════════
+  window.selectIntent = function(intent) {
+    selectedIntent = intent;
+    document.querySelectorAll('.intent-btn').forEach(function(btn) {
+      btn.classList.toggle('selected', parseInt(btn.dataset.intent) === intent);
+    });
+    // Update fee display
+    var fee = intent === 3 ? '0.015 POL' : '0.01 POL';
+    document.getElementById('pogFee').textContent = fee;
+  };
+
+  window.setSignalType = function(type) {
+    signalType = type;
+    document.querySelectorAll('.type-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.type === type);
+    });
+    document.getElementById('replyToSection').classList.toggle('show', type === 'reply');
+  };
+
+  window.updateCharCount = function() {
+    var content = document.getElementById('signalContent').value;
+    var countEl = document.getElementById('charCount');
+    countEl.textContent = content.length + ' / 280';
+    countEl.classList.toggle('over', content.length > 280);
+  };
+
+  window.updatePureCharCount = function() {
+    var content = document.getElementById('pureContent').value;
+    var countEl = document.getElementById('pureCharCount');
+    countEl.textContent = content.length + ' / 500';
+    countEl.classList.toggle('over', content.length > 500);
+  };
+
+  window.openSignalBrowser = function() {
+    document.getElementById('signalBrowserModal').classList.add('show');
+    loadSignalsForBrowser();
+  };
+
+  window.closeSignalBrowser = function() {
+    document.getElementById('signalBrowserModal').classList.remove('show');
+  };
+
+  window.selectSignalForReply = function(signalHash, preview, meta) {
+    replyToHash = signalHash;
+    document.getElementById('replyPlaceholder').style.display = 'none';
+    document.getElementById('replySelected').classList.add('show');
+    document.getElementById('replyPreview').textContent = preview;
+    document.getElementById('replyMeta').textContent = meta;
+    closeSignalBrowser();
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // LOAD KEY DATA
+  // ═══════════════════════════════════════════════════════════════════
+  async function loadKeyData(keyId) {
+    try {
+      // Get glyphs
+      var glyphData = SEL.glyphs + encodeUint256(keyId);
+      var glyphResult = await rpcCall('eth_call', [{ to: Z1N_KEY, data: glyphData }, 'latest']);
+      var len = parseInt(glyphResult.slice(2, 66), 16);
+      var pack = BigInt('0x' + glyphResult.slice(66, 130));
+      var glyphStr = decodeGlyphs(len, pack);
+
+      document.getElementById('keyIdDisplay').textContent = 'Key #' + keyId;
+      document.getElementById('keyGlyphs').textContent = glyphStr || '—';
+
+      // Check genesis
+      var genesisData = SEL.isGenesis + encodeUint256(keyId);
+      var genesisResult = await rpcCall('eth_call', [{ to: Z1N_KEY, data: genesisData }, 'latest']);
+      var isGenesis = parseInt(genesisResult, 16) === 1;
+      document.getElementById('genesisBadge').style.display = isGenesis ? 'inline-block' : 'none';
+
+      // Get current epoch
+      var epochResult = await rpcCall('eth_call', [{ to: Z1N_CORE, data: SEL.currentEpoch }, 'latest']);
+      currentEpoch = parseInt(epochResult, 16);
+      document.getElementById('currentEpochDisplay').textContent = currentEpoch;
+
+      // Get signal/attest counts
+      var signalData = SEL.signalCount + encodeUint256(keyId) + encodeUint256(currentEpoch);
+      var signalResult = await rpcCall('eth_call', [{ to: Z1N_SIGNAL, data: signalData }, 'latest']);
+      var signalsUsed = parseInt(signalResult, 16);
+
+      var attestData = SEL.attestCount + encodeUint256(keyId) + encodeUint256(currentEpoch);
+      var attestResult = await rpcCall('eth_call', [{ to: Z1N_SIGNAL, data: attestData }, 'latest']);
+      var attestsUsed = parseInt(attestResult, 16);
+
+      document.getElementById('signalsRemaining').textContent = (2 - signalsUsed) + '/2';
+      document.getElementById('attestsRemaining').textContent = (2 - attestsUsed) + '/2';
+
+    } catch (e) {
+      console.error('Error loading key data:', e);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // LOAD SIGNALS FOR BROWSER
+  // ═══════════════════════════════════════════════════════════════════
+  async function loadSignalsForBrowser() {
+    var listEl = document.getElementById('signalBrowserList');
+    listEl.innerHTML = '<p style="color:var(--text-soft);text-align:center;padding:40px;">Loading signals from indexer...</p>';
+
+    try {
+      // Try to fetch from API
+      var response = await fetch('https://api.z1nprotocol.xyz/api/attestable');
+      var data = await response.json();
+
+      if (!data.signals || data.signals.length === 0) {
+        listEl.innerHTML = '<p style="color:var(--text-soft);text-align:center;padding:40px;">No signals available for reply.</p>';
+        return;
+      }
+
+      var html = '';
+      data.signals.forEach(function(sig) {
+        var intentSymbol = ['ΩC', 'ΩI', 'ΩK', 'ΩS'][sig.intent] || 'Ω?';
+        var preview = sig.cid ? sig.cid.slice(0, 40) + '...' : '(no CID)';
+        var meta = 'Epoch ' + sig.submittedInEpoch + ' · Key #' + sig.tokenId;
+
+        html += '<div class="signal-list-item" onclick="selectSignalForReply(\'' + sig.signalHash + '\', \'' + preview + '\', \'' + meta + '\')">';
+        html += '<div class="signal-list-header">';
+        html += '<span class="signal-list-intent">' + intentSymbol + '</span>';
+        html += '<span class="signal-list-meta">' + meta + '</span>';
+        html += '</div>';
+        html += '<div class="signal-list-content">' + preview + '</div>';
+        html += '<div class="signal-list-weight">Weight: ' + sig.currentWeight + ' · ' + sig.attesterCount + ' attesters</div>';
+        html += '</div>';
+      });
+
+      listEl.innerHTML = html;
+
+    } catch (e) {
+      console.error('Error loading signals:', e);
+      listEl.innerHTML = '<p style="color:var(--text-soft);text-align:center;padding:40px;">Could not load signals. API may be offline.</p>';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SUBMIT POG SIGNAL
+  // ═══════════════════════════════════════════════════════════════════
+  window.submitPoGSignal = function() {
+    var statusEl = document.getElementById('pogStatus');
+    var content = document.getElementById('signalContent').value;
+
+    if (!content.trim()) {
+      statusEl.innerHTML = '<div class="status-msg error">Please enter signal content.</div>';
+      return;
+    }
+
+    if (signalType === 'reply' && !replyToHash) {
+      statusEl.innerHTML = '<div class="status-msg error">Please select a signal to reply to.</div>';
+      return;
+    }
+
+    statusEl.innerHTML = '<div class="status-msg">Submitting signal... (implementation pending)</div>';
+
+    // TODO: Implement actual contract call
+    // For now, show placeholder message
+    setTimeout(function() {
+      statusEl.innerHTML = '<div class="status-msg success">Signal submission UI ready. Contract integration coming soon.</div>';
+    }, 1000);
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SUBMIT PURE SIGNAL
+  // ═══════════════════════════════════════════════════════════════════
+  window.submitPureSignal = function() {
+    var statusEl = document.getElementById('pureStatus');
+    var content = document.getElementById('pureContent').value;
+    var recipient = document.getElementById('pureRecipient').value || '0';
+
+    if (!content.trim()) {
+      statusEl.innerHTML = '<div class="status-msg error">Please enter a message.</div>';
+      return;
+    }
+
+    statusEl.innerHTML = '<div class="status-msg">Sending pure signal... (implementation pending)</div>';
+
+    // TODO: Implement actual contract call
+    setTimeout(function() {
+      statusEl.innerHTML = '<div class="status-msg success">Pure signal UI ready. Contract integration coming soon.</div>';
+    }, 1000);
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // CONNECT WALLET
+  // ═══════════════════════════════════════════════════════════════════
+  async function connectWallet() {
+    if (!window.ethereum) {
+      alert('Please install MetaMask');
+      return;
+    }
+
+    provider = window.ethereum;
+
+    try {
+      var accounts = await provider.request({ method: 'eth_requestAccounts' });
+      currentAccount = accounts[0];
+
+      // Check chain
+      var chainId = await provider.request({ method: 'eth_chainId' });
+      if (chainId !== CHAIN_ID) {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: CHAIN_ID }]
+        });
+      }
+
+      // Get key ID from URL or find first key
+      var keyIdParam = getUrlParam('key');
+      if (keyIdParam) {
+        currentKeyId = parseInt(keyIdParam);
+      } else {
+        // Find first key owned by this wallet
+        var balanceData = SEL.balanceOf + encodeAddress(currentAccount);
+        var balanceResult = await rpcCall('eth_call', [{ to: Z1N_KEY, data: balanceData }, 'latest']);
+        var balance = parseInt(balanceResult, 16);
+
+        if (balance === 0) {
+          alert('This wallet has no Z1N Keys. Please mint a key first.');
+          window.location.href = '/mint-key.html';
+          return;
+        }
+
+        var tokenData = SEL.tokenOfOwnerByIndex + encodeAddress(currentAccount) + encodeUint256(0);
+        var tokenResult = await rpcCall('eth_call', [{ to: Z1N_KEY, data: tokenData }, 'latest']);
+        currentKeyId = parseInt(tokenResult, 16);
+      }
+
+      // Show main content
+      document.getElementById('connectState').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+
+      // Load key data
+      await loadKeyData(currentKeyId);
+
+    } catch (e) {
+      console.error('Connect error:', e);
+      alert('Connection failed: ' + e.message);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════════════
+  document.getElementById('btnConnect').onclick = connectWallet;
+
+  // Auto-connect if key param present and wallet available
+  var keyParam = getUrlParam('key');
+  if (keyParam && window.ethereum) {
+    // Try silent connect
+    window.ethereum.request({ method: 'eth_accounts' }).then(function(accounts) {
+      if (accounts.length > 0) {
+        connectWallet();
+      }
+    });
+  }
+
+})();
+</script>
+
+</body>
+</html>
