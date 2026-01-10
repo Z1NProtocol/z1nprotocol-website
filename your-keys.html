@@ -93,6 +93,7 @@
 
     .nav-links a{ position:relative; }
     .nav-links a.active{ color:var(--accent); }
+    .nav-links a.active-keys{ color:var(--keys-accent, #f5c842); }
 
     .nav-links a.active::after{
       content:"";
@@ -103,6 +104,17 @@
       height:2px;
       border-radius:999px;
       background:linear-gradient(to right, var(--accent), var(--accent-soft));
+    }
+
+    .nav-links a.active-keys::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-4px;
+      width:100%;
+      height:2px;
+      border-radius:999px;
+      background:linear-gradient(to right, #f5c842, #d4a012);
     }
 
     @media(max-width:900px){
@@ -211,6 +223,30 @@
     :root{
       --card-border: rgba(148,163,184,0.25);
       --genesis-gold:#f5c842;
+      --keys-accent:#f5c842;
+      --keys-accent-soft:#d4a012;
+      --keys-chip-bg: linear-gradient(90deg, rgba(245,200,66,0.55), rgba(212,160,18,0.55));
+    }
+
+    /* Your Keys header in gold */
+    h1.keys-title{
+      color: var(--keys-accent);
+    }
+
+    /* Gold mode buttons for dashboard actions */
+    .mode-btn.keys-btn{
+      border-color: rgba(245,200,66,0.5);
+    }
+
+    .mode-btn.keys-btn:hover{
+      border-color: var(--keys-accent);
+    }
+
+    .mode-btn.keys-btn.active{
+      background: var(--keys-chip-bg);
+      border-color: rgba(212,160,18,0.85);
+      color:#061018;
+      font-weight:600;
     }
 
     /* KEY CARDS */
@@ -377,13 +413,13 @@
       <a href="artefacts.html">Artefacts</a>
       <a href="nbi-artefacts.html">4 NBIs</a>
       <a href="mint-key.html">Mint your Key</a>
-      <a href="/your-keys.html" class="active">Your Keys</a>
+      <a href="/your-keys.html" class="active-keys">Your Keys</a>
     </nav>
   </div>
 </header>
 
 <main class="page">
-  <h1>Your Keys</h1>
+  <h1 class="keys-title">Your Keys</h1>
 
   <p class="lead">
     Your Keys are soulbound proofs of presence in the Field — each one a unique coordinate in the 21M-Key manifold.
@@ -396,7 +432,7 @@
   <!-- STATE: Not connected -->
   <div id="connectState">
     <div class="mode-row">
-      <button id="btnConnect" class="mode-btn" type="button">Connect Wallet</button>
+      <button id="btnConnect" class="mode-btn keys-btn active" type="button">Connect Wallet</button>
     </div>
   </div>
 
@@ -408,15 +444,18 @@
   <!-- STATE: Connected (shows wallet address) -->
   <div id="connectedInfo" style="display:none; margin-bottom:20px;">
     <p class="lead-small" style="margin-bottom:12px;">
-      Connected: <span id="walletAddress" style="color:var(--accent); font-family:monospace;"></span>
+      Connected: <span id="walletAddress" style="color:var(--keys-accent); font-family:monospace;"></span>
     </p>
-    <button id="btnSwitch" class="mode-btn" type="button">Switch Wallet</button>
+    <div class="mode-row" style="margin-top:0;">
+      <button id="btnSwitch" class="mode-btn keys-btn" type="button">Switch Wallet</button>
+      <button id="btnRefresh" class="mode-btn keys-btn" type="button">↻ Refresh Keys</button>
+    </div>
   </div>
 
   <!-- STATE: No keys -->
   <div id="noKeysState" style="display:none;">
     <p class="lead-small" style="margin-bottom:16px;">
-      This wallet has no Z1N Keys. If you own a Key on another wallet, switch wallets above. Otherwise, mint your first Key to join the Field.
+      This wallet has no Z1N Keys. If you own a Key on another wallet, use Switch Wallet above.
     </p>
     <div class="mode-row" style="margin-top:0;">
       <a href="mint-key.html" class="mode-btn">Mint your first Key</a>
@@ -467,6 +506,7 @@
   var connectedInfo = document.getElementById('connectedInfo');
   var walletAddressEl = document.getElementById('walletAddress');
   var btnSwitch = document.getElementById('btnSwitch');
+  var btnRefresh = document.getElementById('btnRefresh');
   var loadingState = document.getElementById('loadingState');
   var noKeysState = document.getElementById('noKeysState');
   var keysContainer = document.getElementById('keysContainer');
@@ -630,6 +670,9 @@
   async function loadKeys() {
     showState('loading');
     console.log('Loading keys for:', currentAccount);
+    
+    // Reset no keys message
+    noKeysState.querySelector('p').textContent = 'This wallet has no Z1N Keys. If you own a Key on another wallet, use Switch Wallet above.';
 
     try {
       var balance = await getKeyBalance(currentAccount);
@@ -671,7 +714,7 @@
     } catch (err) {
       console.error('Error loading keys:', err);
       // Show error in UI for debugging
-      noKeysState.querySelector('p').textContent = 'Error: ' + err.message + '. Connected to: ' + currentAccount;
+      noKeysState.querySelector('p').textContent = 'RPC Error: ' + err.message + '. Try clicking Refresh Keys.';
       showState('nokeys');
     }
   }
@@ -742,6 +785,9 @@
   // ═══════════════════════════════════════════════════════════════════
   btnConnect.onclick = connectWallet;
   btnSwitch.onclick = switchWallet;
+  btnRefresh.onclick = function() {
+    if (currentAccount) loadKeys();
+  };
 
   // Listen for account changes
   if (window.ethereum) {
