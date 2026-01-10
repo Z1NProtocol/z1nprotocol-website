@@ -7,9 +7,6 @@
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
-    /* ══════════════════════════════════════════════════════════════════
-       EXACT COPY FROM about.html - DO NOT MODIFY THIS SECTION
-       ══════════════════════════════════════════════════════════════════ */
     :root{
       --bg:#050812;
       --card-bg:#020617;
@@ -151,6 +148,40 @@
       margin-bottom:18px;
     }
 
+    /* MODE BUTTONS — mint-key style */
+    .mode-row{
+      display:flex;
+      gap:12px;
+      margin-top:55px;
+      margin-bottom:22px;
+    }
+
+    .mode-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.5);
+      background:transparent;
+      color:#e5e7eb;
+      font-size:13px;
+      cursor:pointer;
+      white-space:nowrap;
+      transition:transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .mode-btn:hover{
+      border-color:var(--accent);
+    }
+
+    .mode-btn.active{
+      background: var(--chip-active-bg);
+      border-color: rgba(58,159,99,0.85);
+      color:#061018;
+      font-weight:600;
+    }
+
     /* FOOTER */
     footer{
       border-top:1px solid rgba(255,255,255,0.05);
@@ -177,37 +208,9 @@
        YOUR-KEYS SPECIFIC STYLES
        ══════════════════════════════════════════════════════════════════ */
 
-    /* Extra CSS variables for this page */
     :root{
       --card-border: rgba(148,163,184,0.25);
       --genesis-gold:#f5c842;
-    }
-
-    /* Mode buttons - same as about.html */
-    .mode-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:7px 12px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.5);
-      background:transparent;
-      color:#e5e7eb;
-      font-size:13px;
-      cursor:pointer;
-      white-space:nowrap;
-      transition:transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
-    }
-
-    .mode-btn:hover{
-      border-color:var(--accent);
-    }
-
-    .mode-btn.active{
-      background: var(--chip-active-bg);
-      border-color: rgba(58,159,99,0.85);
-      color:#061018;
-      font-weight:600;
     }
 
     /* KEY CARDS */
@@ -392,8 +395,9 @@
 
   <!-- STATE: Not connected -->
   <div id="connectState">
-    <p class="lead-small" style="margin-bottom:16px;">Connect your wallet to view your Keys.</p>
-    <button id="btnConnect" class="mode-btn active">Connect Wallet</button>
+    <div class="mode-row">
+      <button id="btnConnect" class="mode-btn" type="button">Connect Wallet</button>
+    </div>
   </div>
 
   <!-- STATE: Loading -->
@@ -404,7 +408,9 @@
   <!-- STATE: No keys -->
   <div id="noKeysState" style="display:none;">
     <p class="lead-small" style="margin-bottom:16px;">You don't own any Z1N Keys yet. Mint your first Key to join the Field and unlock signals, attestations, and artefacts.</p>
-    <a href="mint-key.html" class="mode-btn active">Mint your first Key</a>
+    <div class="mode-row" style="margin-top:0;">
+      <a href="mint-key.html" class="mode-btn">Mint your first Key</a>
+    </div>
   </div>
 
   <!-- STATE: Has keys -->
