@@ -314,16 +314,19 @@
     }
 
     .key-glyphs{
-      font-size:18px;
-      letter-spacing:3px;
+      font-size:16px;
+      letter-spacing:1px;
       margin-bottom:10px;
       font-family:"Segoe UI Symbol", "Apple Symbols", sans-serif;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .key-meta{
       display:flex;
-      flex-wrap:wrap;
-      gap:12px;
+      flex-direction:column;
+      gap:6px;
       margin-bottom:14px;
       font-size:11px;
       color:var(--text-soft);
@@ -420,7 +423,8 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:6px 10px;
+      padding:8px 10px;
+      min-height:36px;
       background:rgba(15, 23, 42, 0.4);
       border:1px solid rgba(245, 200, 66, 0.35);
       border-radius:6px;
@@ -430,6 +434,7 @@
       transition:all 0.2s ease;
       text-decoration:none;
       text-align:center;
+      white-space:nowrap;
     }
 
     .mint-btn:hover{
@@ -856,7 +861,7 @@
       }
     }
     
-    return symbols.join(' ');
+    return symbols.join(' · ');
   }
 
   // ═══════════════════════════════════════════════════════════════════
