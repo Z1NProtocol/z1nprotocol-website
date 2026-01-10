@@ -252,7 +252,7 @@
     /* KEY CARDS - Grid layout for multiple */
     .keys-grid{
       display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap:16px;
       margin-top:22px;
     }
@@ -294,7 +294,7 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      margin-bottom:12px;
+      margin-bottom:10px;
     }
 
     .key-id{
@@ -314,9 +314,9 @@
     }
 
     .key-glyphs{
-      font-size:20px;
+      font-size:18px;
       letter-spacing:3px;
-      margin-bottom:14px;
+      margin-bottom:10px;
       font-family:"Segoe UI Symbol", "Apple Symbols", sans-serif;
     }
 
@@ -325,7 +325,7 @@
       flex-wrap:wrap;
       gap:12px;
       margin-bottom:14px;
-      font-size:12px;
+      font-size:11px;
       color:var(--text-soft);
     }
 
@@ -337,58 +337,71 @@
 
     .key-meta a{ color:var(--accent); }
 
-    /* ACTION BUTTONS ROW */
-    .key-actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
+    /* CARD SECTIONS */
+    .card-section{
+      padding-top:12px;
+      margin-top:12px;
+      border-top:1px solid rgba(148,163,184,0.15);
     }
 
-    .action-btn{
+    .section-header{
+      font-size:10px;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:0.1em;
+      color:var(--text-soft);
+      margin-bottom:10px;
+    }
+
+    /* STATUS GRID (Signals/Attestations) */
+    .status-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:6px;
+    }
+
+    .status-item{
       display:flex;
       align-items:center;
-      gap:6px;
-      padding:8px 12px;
-      background:rgba(15, 23, 42, 0.6);
-      border:1px solid var(--card-border);
-      border-radius:10px;
+      justify-content:space-between;
+      padding:6px 10px;
+      background:rgba(15, 23, 42, 0.4);
+      border:1px solid rgba(148,163,184,0.2);
+      border-radius:6px;
       font-size:11px;
       color:var(--text-main);
-      cursor:pointer;
-      transition:all 0.2s;
       text-decoration:none;
+      transition:all 0.2s;
     }
 
-    .action-btn:hover{
+    .status-item:hover{
       border-color:var(--keys-accent);
       background:rgba(245, 200, 66, 0.08);
     }
 
-    .action-btn .label{ font-weight:500; }
-
-    .action-btn .status{
+    .status-label{
       color:var(--text-soft);
-      font-size:10px;
     }
 
-    .action-btn .status.open{ color:var(--accent); }
+    .status-filled{
+      color:#4ade80;
+      font-size:12px;
+    }
 
-    .action-btn .icon{ font-size:14px; }
+    .status-open{
+      color:var(--keys-accent);
+      font-size:12px;
+    }
 
     /* ARTEFACTS SECTION */
-    .artefacts-row{
+    .artefact-stats{
       display:flex;
-      gap:12px;
-      margin-top:12px;
-      padding-top:12px;
-      border-top:1px solid rgba(148,163,184,0.15);
-      font-size:11px;
+      gap:16px;
+      margin-bottom:10px;
+      font-size:12px;
     }
 
     .artefact-stat{
-      display:flex;
-      align-items:center;
-      gap:4px;
       color:var(--text-soft);
     }
 
@@ -397,21 +410,33 @@
       font-weight:600;
     }
 
-    .mint-static-btn{
-      margin-left:auto;
-      padding:4px 10px;
+    .artefact-actions{
+      display:flex;
+      gap:8px;
+    }
+
+    .mint-btn{
+      flex:1;
+      padding:6px 10px;
       background:transparent;
-      border:1px solid rgba(148,163,184,0.4);
+      border:1px solid rgba(148,163,184,0.3);
       border-radius:6px;
       font-size:10px;
       color:var(--text-soft);
       cursor:pointer;
       transition:all 0.2s;
+      text-decoration:none;
+      text-align:center;
     }
 
-    .mint-static-btn:hover{
+    .mint-btn:hover{
       border-color:var(--keys-accent);
       color:var(--keys-accent);
+    }
+
+    .mint-btn.mint-live:hover{
+      border-color:var(--accent);
+      color:var(--accent);
     }
 
     /* MINT MORE LINK */
@@ -713,7 +738,7 @@
     }
   }
 
-  // Get current epoch - fallback to timestamp calculation if Core not available
+  // Get current epoch - need Core contract address
   async function getCurrentEpoch() {
     try {
       if (Z1N_CORE && !Z1N_CORE.startsWith('0xYOUR')) {
@@ -726,12 +751,8 @@
       console.log('currentEpoch call failed:', e.message);
     }
     
-    // Fallback: Calculate from timestamp (21 hours = 75600 seconds per epoch)
-    // Assuming genesis timestamp around deployment
-    var EPOCH_DURATION = 75600;
-    var GENESIS_TIMESTAMP = 1704067200; // Placeholder - adjust to actual genesis
-    var now = Math.floor(Date.now() / 1000);
-    return Math.floor((now - GENESIS_TIMESTAMP) / EPOCH_DURATION) + 1;
+    // Return null if we don't have Core contract
+    return null;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -795,6 +816,12 @@
 
     var genesisHtml = key.genesis ? '<span class="genesis-badge">✶ Genesis</span>' : '';
 
+    // Signal status indicators (filled = green ●, open = yellow ○)
+    var signal1Status = key.signalsUsed >= 1 ? '<span class="status-filled">●</span>' : '<span class="status-open">○</span>';
+    var signal2Status = key.signalsUsed >= 2 ? '<span class="status-filled">●</span>' : '<span class="status-open">○</span>';
+    var attest1Status = key.attestsUsed >= 1 ? '<span class="status-filled">●</span>' : '<span class="status-open">○</span>';
+    var attest2Status = key.attestsUsed >= 2 ? '<span class="status-filled">●</span>' : '<span class="status-open">○</span>';
+
     card.innerHTML = 
       '<div class="key-header">' +
         '<span class="key-id">Key #' + key.tokenId + '</span>' +
@@ -805,22 +832,37 @@
         '<span>Minted Epoch ' + key.epoch + '</span>' +
         '<span><a href="' + EXPLORER + '/token/' + Z1N_KEY + '?a=' + key.tokenId + '" target="_blank">View on chain ↗</a></span>' +
       '</div>' +
-      '<div class="key-actions">' +
-        '<a href="signals.html?key=' + key.tokenId + '" class="action-btn">' +
-          '<span class="icon">📡</span>' +
-          '<span class="label">Signals</span>' +
-          '<span class="status open">' + key.signalsUsed + '/2</span>' +
-        '</a>' +
-        '<a href="signals.html?key=' + key.tokenId + '&tab=attest" class="action-btn">' +
-          '<span class="icon">✓</span>' +
-          '<span class="label">Attestations</span>' +
-          '<span class="status open">' + key.attestsUsed + '/2</span>' +
-        '</a>' +
+      
+      // SIGNALS SECTION
+      '<div class="card-section">' +
+        '<div class="section-header">Signals</div>' +
+        '<div class="status-grid">' +
+          '<a href="signals.html?key=' + key.tokenId + '&slot=1" class="status-item">' +
+            '<span class="status-label">Signal 1</span>' + signal1Status +
+          '</a>' +
+          '<a href="signals.html?key=' + key.tokenId + '&slot=2" class="status-item">' +
+            '<span class="status-label">Signal 2</span>' + signal2Status +
+          '</a>' +
+          '<a href="signals.html?key=' + key.tokenId + '&tab=attest&slot=1" class="status-item">' +
+            '<span class="status-label">Attest 1</span>' + attest1Status +
+          '</a>' +
+          '<a href="signals.html?key=' + key.tokenId + '&tab=attest&slot=2" class="status-item">' +
+            '<span class="status-label">Attest 2</span>' + attest2Status +
+          '</a>' +
+        '</div>' +
       '</div>' +
-      '<div class="artefacts-row">' +
-        '<span class="artefact-stat">◈ Live: <span class="count">' + key.liveArtefacts + '</span></span>' +
-        '<span class="artefact-stat">◇ Static: <span class="count">' + key.staticArtefacts + '</span></span>' +
-        '<a href="artefacts.html?key=' + key.tokenId + '&mint=static" class="mint-static-btn">+ Mint Static</a>' +
+      
+      // ARTEFACTS SECTION
+      '<div class="card-section">' +
+        '<div class="section-header">Artefacts</div>' +
+        '<div class="artefact-stats">' +
+          '<span class="artefact-stat">◈ Live: <span class="count">' + key.liveArtefacts + '</span></span>' +
+          '<span class="artefact-stat">◇ Static: <span class="count">' + key.staticArtefacts + '</span></span>' +
+        '</div>' +
+        '<div class="artefact-actions">' +
+          '<a href="artefacts.html?key=' + key.tokenId + '&mint=live" class="mint-btn mint-live">+ Mint Live</a>' +
+          '<a href="artefacts.html?key=' + key.tokenId + '&mint=static" class="mint-btn mint-static">+ Mint Static</a>' +
+        '</div>' +
       '</div>';
 
     return card;
@@ -840,7 +882,7 @@
     try {
       // Get current epoch from Core contract
       var currentEpochNum = await getCurrentEpoch();
-      document.getElementById('currentEpoch').textContent = currentEpochNum;
+      document.getElementById('currentEpoch').textContent = currentEpochNum !== null ? currentEpochNum : '—';
       
       console.log('Step 1: Getting balance...');
       var balance = await getKeyBalance(currentAccount);
@@ -868,7 +910,7 @@
         console.log('Glyphs:', glyphData);
         
         // Get glyph epoch (when glyphs were assigned)
-        var mintEpoch = glyphData.epoch || '—';
+        var mintEpoch = glyphData.epoch !== null && glyphData.epoch !== undefined ? glyphData.epoch : '—';
 
         keys.push({
           tokenId: tokenId,
