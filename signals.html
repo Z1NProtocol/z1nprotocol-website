@@ -829,6 +829,16 @@
   var replyToHash = null;
 
   // ═══════════════════════════════════════════════════════════════════
+  // GET PROVIDER (prefer MetaMask when multiple wallets)
+  // ═══════════════════════════════════════════════════════════════════
+  function getProvider() {
+    if (window.ethereum && window.ethereum.providers) {
+      return window.ethereum.providers.find(function(p) { return p.isMetaMask; }) || window.ethereum;
+    }
+    return window.ethereum;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // HELPERS
   // ═══════════════════════════════════════════════════════════════════
   function encodeUint256(val) {
@@ -1057,12 +1067,13 @@
   // CONNECT WALLET
   // ═══════════════════════════════════════════════════════════════════
   async function connectWallet() {
-    if (!window.ethereum) {
+    var eth = getProvider();
+    if (!eth) {
       alert('Please install MetaMask');
       return;
     }
 
-    provider = window.ethereum;
+    provider = eth;
 
     try {
       // First try silent check (no popup)
@@ -1140,8 +1151,9 @@
   document.getElementById('btnConnect').onclick = connectWallet;
 
   // Auto-connect if wallet is already connected (silent check)
-  if (window.ethereum) {
-    window.ethereum.request({ method: 'eth_accounts' }).then(function(accounts) {
+  var eth = getProvider();
+  if (eth) {
+    eth.request({ method: 'eth_accounts' }).then(function(accounts) {
       if (accounts.length > 0) {
         // User is already connected, auto-connect
         connectWallet();
