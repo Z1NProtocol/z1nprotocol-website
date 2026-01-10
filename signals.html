@@ -1065,16 +1065,39 @@
     provider = window.ethereum;
 
     try {
-      var accounts = await provider.request({ method: 'eth_requestAccounts' });
+      // First try silent check (no popup)
+      var accounts = await provider.request({ method: 'eth_accounts' });
+      
+      // If no accounts, request connection (will show popup)
+      if (!accounts || accounts.length === 0) {
+        accounts = await provider.request({ method: 'eth_requestAccounts' });
+      }
+      
       currentAccount = accounts[0];
 
       // Check chain
       var chainId = await provider.request({ method: 'eth_chainId' });
       if (chainId !== CHAIN_ID) {
-        await provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: CHAIN_ID }]
-        });
+        try {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: CHAIN_ID }]
+          });
+        } catch (switchError) {
+          // Chain not added, try to add it
+          if (switchError.code === 4902) {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: CHAIN_ID,
+                chainName: 'Polygon Amoy Testnet',
+                nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 },
+                rpcUrls: ['https://rpc-amoy.polygon.technology'],
+                blockExplorerUrls: ['https://amoy.polygonscan.com']
+              }]
+            });
+          }
+        }
       }
 
       // Get key ID from URL or find first key
@@ -1116,14 +1139,15 @@
   // ═══════════════════════════════════════════════════════════════════
   document.getElementById('btnConnect').onclick = connectWallet;
 
-  // Auto-connect if key param present and wallet available
-  var keyParam = getUrlParam('key');
-  if (keyParam && window.ethereum) {
-    // Try silent connect
+  // Auto-connect if wallet is already connected (silent check)
+  if (window.ethereum) {
     window.ethereum.request({ method: 'eth_accounts' }).then(function(accounts) {
       if (accounts.length > 0) {
+        // User is already connected, auto-connect
         connectWallet();
       }
+    }).catch(function(e) {
+      console.log('Auto-connect check failed:', e);
     });
   }
 
