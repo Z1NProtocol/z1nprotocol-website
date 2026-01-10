@@ -411,18 +411,21 @@
     }
 
     .artefact-actions{
-      display:flex;
-      gap:8px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:6px;
     }
 
     .mint-btn{
-      flex:1;
-      padding:7px 12px;
-      background:transparent;
-      border:1px solid rgba(102,214,154,0.5);
-      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      background:rgba(15, 23, 42, 0.4);
+      border:1px solid rgba(245, 200, 66, 0.35);
+      border-radius:6px;
       font-size:11px;
-      color:#e5e7eb;
+      color:var(--text-main);
       cursor:pointer;
       transition:all 0.2s ease;
       text-decoration:none;
@@ -430,11 +433,13 @@
     }
 
     .mint-btn:hover{
-      background:linear-gradient(90deg,rgba(102,214,154,0.55),rgba(58,159,99,0.55));
-      border-color:rgba(58,159,99,0.95);
-      color:#061018;
-      transform:translateY(-1px);
-      box-shadow:0 4px 12px rgba(0,0,0,0.3),0 0 10px rgba(102,214,154,0.12);
+      border-color:var(--keys-accent);
+      background:rgba(245, 200, 66, 0.15);
+    }
+
+    .mint-btn:active{
+      background:rgba(212, 160, 18, 0.35);
+      border-color:var(--keys-accent-soft);
     }
 
     /* MINT MORE LINK */
@@ -943,8 +948,8 @@
           '<span class="artefact-stat">◇ Static: <span class="count">' + key.staticArtefacts + '</span></span>' +
         '</div>' +
         '<div class="artefact-actions">' +
-          '<a href="mint-live-artefact.html?key=' + key.tokenId + '" class="mint-btn mint-live" onclick="event.stopPropagation()">+ Mint Live</a>' +
-          '<a href="mint-static-artefact.html?key=' + key.tokenId + '" class="mint-btn mint-static" onclick="event.stopPropagation()">+ Mint Static</a>' +
+          '<a href="mint-live-artefact.html?key=' + key.tokenId + '" class="mint-btn" onclick="event.stopPropagation()">+ Mint Live</a>' +
+          '<a href="mint-static-artefact.html?key=' + key.tokenId + '" class="mint-btn" onclick="event.stopPropagation()">+ Mint Static</a>' +
         '</div>' +
       '</div>';
 
