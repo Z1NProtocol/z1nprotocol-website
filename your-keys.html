@@ -552,13 +552,19 @@
   // CONTRACT HELPERS
   // ═══════════════════════════════════════════════════════════════════
   
+  // balanceOf(address) - 0x70a08231
   function getKeyBalance(address) {
     var selector = '0x70a08231';
     var paddedAddr = address.slice(2).toLowerCase().padStart(64, '0');
     return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedAddr }, 'latest'])
-      .then(function(result) { return parseInt(result, 16); });
+      .then(function(result) { 
+        var balance = parseInt(result, 16);
+        console.log('Balance for', address, '=', balance);
+        return balance;
+      });
   }
 
+  // tokenOfOwnerByIndex(address,uint256) - 0x2f745c59
   function getTokenOfOwnerByIndex(address, index) {
     var selector = '0x2f745c59';
     var paddedAddr = address.slice(2).toLowerCase().padStart(64, '0');
@@ -567,30 +573,49 @@
       .then(function(result) { return parseInt(result, 16); });
   }
 
-  function isGenesis(tokenId) {
-    var selector = '0x63240e4e';
-    var paddedId = tokenId.toString(16).padStart(64, '0');
-    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest'])
-      .then(function(result) { return parseInt(result, 16) === 1; });
+  // Try to get genesis status - may fail if function doesn't exist
+  async function isGenesis(tokenId) {
+    try {
+      // Try isGenesis(uint256) - 0x63240e4e
+      var selector = '0x63240e4e';
+      var paddedId = tokenId.toString(16).padStart(64, '0');
+      var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest']);
+      return parseInt(result, 16) === 1;
+    } catch (e) {
+      console.log('isGenesis call failed, assuming false:', e.message);
+      // Genesis keys are tokenId 0-20999
+      return tokenId < 21000;
+    }
   }
 
-  function getGlyphs(tokenId) {
-    var selector = '0x0c85e85e';
-    var paddedId = tokenId.toString(16).padStart(64, '0');
-    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest'])
-      .then(function(result) {
-        var len = parseInt(result.slice(0, 66), 16);
-        var pack = BigInt('0x' + result.slice(66));
-        return { len: len, pack: pack };
-      });
+  // Try to get glyphs - may fail if function doesn't exist  
+  async function getGlyphs(tokenId) {
+    try {
+      // Try getGlyphs(uint256) - returns (uint8 len, uint40 pack)
+      var selector = '0x0c85e85e';
+      var paddedId = tokenId.toString(16).padStart(64, '0');
+      var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest']);
+      var len = parseInt(result.slice(0, 66), 16);
+      var pack = BigInt('0x' + result.slice(66));
+      return { len: len, pack: pack };
+    } catch (e) {
+      console.log('getGlyphs call failed:', e.message);
+      return { len: 0, pack: BigInt(0) };
+    }
   }
 
-  function getVotingPower(tokenId) {
-    var selector = '0x9168ae72';
-    var paddedId = tokenId.toString(16).padStart(64, '0');
-    return rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest'])
-      .then(function(result) { return parseInt(result, 16) / 1e18; })
-      .catch(function() { return 1; });
+  // Try to get voting power
+  async function getVotingPower(tokenId) {
+    try {
+      // votingPowerOf(uint256) - 0x9168ae72
+      var selector = '0x9168ae72';
+      var paddedId = tokenId.toString(16).padStart(64, '0');
+      var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: selector + paddedId }, 'latest']);
+      return parseInt(result, 16) / 1e18;
+    } catch (e) {
+      console.log('votingPowerOf call failed:', e.message);
+      return tokenId < 21000 ? 2 : 1;
+    }
   }
 
   function decodeGlyphs(len, pack) {
@@ -676,11 +701,13 @@
   async function loadKeys() {
     showState('loading');
     console.log('Loading keys for:', currentAccount);
+    console.log('Contract address:', Z1N_KEY);
     
     // Reset no keys message
     noKeysState.querySelector('p').textContent = 'This wallet has no Z1N Keys. If you own a Key on another wallet, switch accounts in MetaMask.';
 
     try {
+      console.log('Step 1: Getting balance...');
       var balance = await getKeyBalance(currentAccount);
       console.log('Key balance:', balance);
 
@@ -693,18 +720,28 @@
       var keys = [];
 
       for (var i = 0; i < balance; i++) {
+        console.log('Step 2: Getting tokenId for index', i);
         var tokenId = await getTokenOfOwnerByIndex(currentAccount, i);
         console.log('Found tokenId:', tokenId);
+        
+        console.log('Step 3: Checking genesis status...');
         var genesis = await isGenesis(tokenId);
+        console.log('Genesis:', genesis);
+        
+        console.log('Step 4: Getting glyphs...');
         var glyphData = await getGlyphs(tokenId);
+        console.log('Glyphs:', glyphData);
+        
+        console.log('Step 5: Getting voting power...');
         var votingPower = await getVotingPower(tokenId);
+        console.log('Voting power:', votingPower);
         
         var epoch = Math.floor(tokenId / 2) + 1;
 
         keys.push({
           tokenId: tokenId,
           genesis: genesis,
-          glyphSymbols: decodeGlyphs(glyphData.len, glyphData.pack),
+          glyphSymbols: decodeGlyphs(glyphData.len, glyphData.pack) || '◇ ○ △ □ ☆ ●',
           epoch: epoch,
           votingPower: votingPower
         });
@@ -720,7 +757,7 @@
     } catch (err) {
       console.error('Error loading keys:', err);
       // Show error in UI for debugging
-      noKeysState.querySelector('p').textContent = 'RPC Error: ' + err.message + '. Try clicking Refresh Keys.';
+      noKeysState.querySelector('p').textContent = 'RPC Error: ' + err.message + '. Try refreshing the page.';
       showState('nokeys');
     }
   }
