@@ -405,9 +405,19 @@
     Loading your Keys...
   </div>
 
+  <!-- STATE: Connected (shows wallet address) -->
+  <div id="connectedInfo" style="display:none; margin-bottom:20px;">
+    <p class="lead-small" style="margin-bottom:12px;">
+      Connected: <span id="walletAddress" style="color:var(--accent); font-family:monospace;"></span>
+    </p>
+    <button id="btnSwitch" class="mode-btn" type="button">Switch Wallet</button>
+  </div>
+
   <!-- STATE: No keys -->
   <div id="noKeysState" style="display:none;">
-    <p class="lead-small" style="margin-bottom:16px;">You don't own any Z1N Keys yet. Mint your first Key to join the Field and unlock signals, attestations, and artefacts.</p>
+    <p class="lead-small" style="margin-bottom:16px;">
+      This wallet has no Z1N Keys. If you own a Key on another wallet, switch wallets above. Otherwise, mint your first Key to join the Field.
+    </p>
     <div class="mode-row" style="margin-top:0;">
       <a href="mint-key.html" class="mode-btn">Mint your first Key</a>
     </div>
@@ -449,6 +459,9 @@
   // ELEMENTS
   // ═══════════════════════════════════════════════════════════════════
   var connectState = document.getElementById('connectState');
+  var connectedInfo = document.getElementById('connectedInfo');
+  var walletAddressEl = document.getElementById('walletAddress');
+  var btnSwitch = document.getElementById('btnSwitch');
   var loadingState = document.getElementById('loadingState');
   var noKeysState = document.getElementById('noKeysState');
   var keysContainer = document.getElementById('keysContainer');
@@ -534,14 +547,27 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // HELPERS
+  // ═══════════════════════════════════════════════════════════════════
+  function shortenAddress(addr) {
+    return addr.slice(0, 6) + '...' + addr.slice(-4);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // UI STATES
   // ═══════════════════════════════════════════════════════════════════
   function showState(state) {
     connectState.style.display = state === 'connect' ? 'block' : 'none';
+    connectedInfo.style.display = (state === 'loading' || state === 'nokeys' || state === 'keys') ? 'block' : 'none';
     loadingState.style.display = state === 'loading' ? 'block' : 'none';
     noKeysState.style.display = state === 'nokeys' ? 'block' : 'none';
     keysContainer.style.display = state === 'keys' ? 'flex' : 'none';
     mintMoreSection.style.display = state === 'keys' ? 'block' : 'none';
+    
+    // Update wallet address display
+    if (currentAccount) {
+      walletAddressEl.textContent = shortenAddress(currentAccount);
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -669,9 +695,47 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // SWITCH WALLET
+  // ═══════════════════════════════════════════════════════════════════
+  async function switchWallet() {
+    var eth = getProvider();
+    if (!eth) return;
+
+    try {
+      // Request wallet to show account picker
+      await eth.request({
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }]
+      });
+      // After permission granted, get the new account
+      var accounts = await eth.request({ method: 'eth_requestAccounts' });
+      if (accounts[0]) {
+        currentAccount = accounts[0];
+        provider = eth;
+        loadKeys();
+      }
+    } catch (e) {
+      console.error('Switch error:', e);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // INIT
   // ═══════════════════════════════════════════════════════════════════
   btnConnect.onclick = connectWallet;
+  btnSwitch.onclick = switchWallet;
+
+  // Listen for account changes
+  if (window.ethereum) {
+    window.ethereum.on('accountsChanged', function(accounts) {
+      if (accounts[0]) {
+        currentAccount = accounts[0];
+        loadKeys();
+      } else {
+        showState('connect');
+      }
+    });
+  }
 
   // Auto-connect if already connected
   (async function() {
