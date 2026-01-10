@@ -11,10 +11,16 @@
       --bg:#050812;
       --card-bg:#020617;
       --text-main:#ffffff;
-      --text-soft:#8f9ab5;
+      --text-soft:#9aa3bb;
+
       --accent:#66d69a;
       --accent-soft:#3a9f63;
-      --card-border:rgba(148,163,184,0.25);
+
+      --border-soft: rgba(148,163,184,0.35);
+      --border-strong: rgba(102,214,154,0.75);
+      --card-border: rgba(148,163,184,0.25);
+
+      --chip-active-bg: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
       --genesis-gold:#f5c842;
     }
 
@@ -23,7 +29,7 @@
     html{
       scrollbar-gutter: stable;
       overflow-y: scroll;
-      scroll-behavior: smooth;
+      scroll-behavior:smooth;
     }
 
     body{
@@ -35,7 +41,7 @@
     a{ color:inherit; text-decoration:none; }
     a:hover{ opacity:0.9; }
 
-    /* HEADER (exact copy from live-stats) */
+    /* HEADER — align like about.html */
     header{
       height:72px;
       display:flex;
@@ -55,14 +61,22 @@
       justify-content:space-between;
     }
 
-    .logo-wrap{ display:flex; align-items:center; gap:8px; }
-    .logo-link{ display:inline-flex; align-items:center; gap:8px; }
+    .logo-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
 
     .logo-dot{
-      width:24px; height:24px; border-radius:999px;
+      width:24px;
+      height:24px;
+      border-radius:999px;
       border:1px solid rgba(255,255,255,0.35);
-      display:flex; align-items:center; justify-content:center;
-      font-size:14px; line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      line-height:1;
     }
 
     .logo-text{
@@ -90,7 +104,7 @@
       width:100%;
       height:2px;
       border-radius:999px;
-      background:linear-gradient(to right,var(--accent),var(--accent-soft));
+      background:linear-gradient(to right, var(--accent), var(--accent-soft));
     }
 
     @media(max-width:900px){
@@ -103,37 +117,37 @@
       }
     }
 
-    /* PAGE (exact copy from live-stats) */
+    /* PAGE */
     .page{
       max-width:1200px;
       margin:0 auto;
       padding:40px 24px 72px;
     }
+
     @media(max-width:900px){
       .page{ padding:32px 18px 56px; }
     }
 
     h1{
       font-size:40px;
-      margin:0 0 10px 0;
       letter-spacing:-0.02em;
+      margin:0 0 10px 0;
     }
 
     .lead{
       font-size:17px;
+      line-height:1.6;
       opacity:0.85;
-      line-height:1.65;
-      margin-bottom:8px;
-      max-width:920px;
+      max-width:900px;
+      margin-bottom:6px;
     }
 
     .lead-small{
       font-size:14px;
+      line-height:1.6;
       opacity:0.7;
-      line-height:1.65;
-      margin-top:4px;
-      margin-bottom:22px;
-      max-width:920px;
+      max-width:900px;
+      margin-bottom:18px;
     }
 
     /* BUTTONS */
@@ -141,21 +155,22 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:10px 20px;
+      padding:7px 12px;
       border-radius:999px;
-      border:1px solid var(--card-border);
-      font-size:14px;
-      cursor:pointer;
+      border:1px solid rgba(148,163,184,0.5);
       background:transparent;
-      color:var(--text-main);
-      transition:all 0.2s;
+      color:#e5e7eb;
+      font-size:13px;
+      cursor:pointer;
+      white-space:nowrap;
+      transition:transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
     }
 
     .btn:hover{ border-color:var(--accent); }
 
     .btn-primary{
-      background:linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
-      border-color:var(--accent-soft);
+      background: var(--chip-active-bg);
+      border-color: rgba(58,159,99,0.85);
       color:#061018;
       font-weight:600;
     }
@@ -169,7 +184,7 @@
       display:flex;
       flex-direction:column;
       gap:20px;
-      margin-top:10px;
+      margin-top:22px;
     }
 
     .key-card{
@@ -296,16 +311,17 @@
     .loading{
       color:var(--text-soft);
       font-size:14px;
-      margin-top:10px;
+      margin-top:22px;
     }
 
-    /* FOOTER (exact copy from live-stats) */
+    /* FOOTER — exact copy from about.html */
     footer{
       border-top:1px solid rgba(255,255,255,0.05);
       padding:20px;
       font-size:12px;
       text-align:center;
       opacity:0.85;
+      margin-top:40px;
     }
 
     footer .tagline{
@@ -338,12 +354,10 @@
 <body>
 <header>
   <div class="nav-inner">
-    <div class="logo-wrap">
-      <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
-        <div class="logo-dot">Ω</div>
-        <div class="logo-text">Z1N PROTOCOL</div>
-      </a>
-    </div>
+    <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
+      <div class="logo-dot">Ω</div>
+      <div class="logo-text">Z1N PROTOCOL</div>
+    </a>
 
     <nav class="nav-links">
       <a href="about.html">About</a>
