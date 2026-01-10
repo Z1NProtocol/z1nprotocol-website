@@ -423,8 +423,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:8px 10px;
-      min-height:36px;
+      padding:6px 10px;
       background:rgba(15, 23, 42, 0.4);
       border:1px solid rgba(245, 200, 66, 0.35);
       border-radius:6px;
@@ -434,7 +433,6 @@
       transition:all 0.2s ease;
       text-decoration:none;
       text-align:center;
-      white-space:nowrap;
     }
 
     .mint-btn:hover{
@@ -861,7 +859,7 @@
       }
     }
     
-    return symbols.join(' · ');
+    return '<span style="color:#fff">' + symbols.join('</span><span style="color:#5d6680;margin:0 2px">·</span><span style="color:#fff">') + '</span>';
   }
 
   // ═══════════════════════════════════════════════════════════════════
