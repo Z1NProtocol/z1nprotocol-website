@@ -974,7 +974,7 @@
     card.onclick = function(e) {
       // Don't navigate if clicking on a link/button inside
       if (e.target.tagName === 'A' || e.target.closest('a')) return;
-      window.location.href = 'key.html?id=' + key.tokenId;
+      window.location.href = 'key.html?id=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount);
     };
 
     var genesisHtml = key.genesis ? '<span class="genesis-badge">✶ Genesis</span>' : '';
@@ -1003,16 +1003,16 @@
       '<div class="card-section">' +
         '<div class="section-header">Signals</div>' +
         '<div class="status-grid">' +
-          '<a href="signals.html?key=' + key.tokenId + '&slot=1" class="status-item" onclick="event.stopPropagation()">' +
+          '<a href="signals.html?key=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount) + '&slot=1" class="status-item" onclick="event.stopPropagation()">' +
             '<span class="status-label">Signal 1</span>' + signal1Status +
           '</a>' +
-          '<a href="signals.html?key=' + key.tokenId + '&slot=2" class="status-item" onclick="event.stopPropagation()">' +
+          '<a href="signals.html?key=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount) + '&slot=2" class="status-item" onclick="event.stopPropagation()">' +
             '<span class="status-label">Signal 2</span>' + signal2Status +
           '</a>' +
-          '<a href="signals.html?key=' + key.tokenId + '&tab=attest&slot=1" class="status-item" onclick="event.stopPropagation()">' +
+          '<a href="signals.html?key=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount) + '&tab=attest&slot=1" class="status-item" onclick="event.stopPropagation()">' +
             '<span class="status-label">Attest 1</span>' + attest1Status +
           '</a>' +
-          '<a href="signals.html?key=' + key.tokenId + '&tab=attest&slot=2" class="status-item" onclick="event.stopPropagation()">' +
+          '<a href="signals.html?key=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount) + '&tab=attest&slot=2" class="status-item" onclick="event.stopPropagation()">' +
             '<span class="status-label">Attest 2</span>' + attest2Status +
           '</a>' +
         '</div>' +
@@ -1026,8 +1026,8 @@
           '<span class="artefact-stat">◇ Static: <span class="count">' + key.staticArtefacts + '</span></span>' +
         '</div>' +
         '<div class="artefact-actions">' +
-          '<a href="mint-live-artefact.html?key=' + key.tokenId + '" class="mint-btn" onclick="event.stopPropagation()">+ Mint Live</a>' +
-          '<a href="mint-static-artefact.html?key=' + key.tokenId + '" class="mint-btn" onclick="event.stopPropagation()">+ Mint Static</a>' +
+          '<a href="mint-live-artefact.html?key=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount) + '" class="mint-btn" onclick="event.stopPropagation()">+ Mint Live</a>' +
+          '<a href="mint-static-artefact.html?key=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount) + '" class="mint-btn" onclick="event.stopPropagation()">+ Mint Static</a>' +
         '</div>' +
       '</div>';
 
