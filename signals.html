@@ -2345,13 +2345,19 @@
     loadSignalsForModal(true);
   };
 
-  // CSV Download
+  // CSV Download - ALL signals (including silence)
   window.downloadSignalsCSV = async function() {
+    var btn = event.target;
+    var originalText = btn.textContent;
+    btn.textContent = '⏳ Loading...';
+    btn.disabled = true;
+    
     try {
-      // Fetch ALL signals with current filters (up to 1000)
+      // Fetch ALL signals with current filters (no excludeSilence, up to 10000)
       var params = new URLSearchParams();
-      params.append('limit', '1000');
+      params.append('limit', '10000');
       params.append('offset', '0');
+      // Don't exclude silence for CSV export
       
       var keyIdFilter = document.getElementById('filterKeyId').value.trim();
       if (keyIdFilter) params.append('keyId', keyIdFilter);
@@ -2363,29 +2369,33 @@
       
       params.append('sort', document.getElementById('filterSort').value);
       
+      console.log('CSV fetch:', API_BASE + '/signals?' + params.toString());
       var response = await fetch(API_BASE + '/signals?' + params.toString());
       var data = await response.json();
+      
+      console.log('CSV data:', data.total, 'total,', data.signals?.length, 'returned');
       
       if (!data.signals || data.signals.length === 0) {
         alert('No signals to download');
         return;
       }
       
-      // Build CSV
-      var csv = 'Hash,KeyID,Epoch,Intent,Weight,Attestations,CID,TimeAgo\n';
+      // Build CSV with UTF-8 BOM for proper encoding of Ω symbols
+      var BOM = '\uFEFF';
+      var csv = BOM + 'Hash,KeyID,Epoch,Intent,Weight,Attestations,CID,TimeAgo\n';
       data.signals.forEach(function(s) {
         csv += '"' + s.hash + '",' + 
                s.keyId + ',' + 
                s.epoch + ',' + 
-               s.intentSymbol + ',' + 
+               '"' + s.intentSymbol + '",' + 
                (s.weight || 0) + ',' + 
                (s.attestCount || 0) + ',' + 
                '"' + (s.cid || '') + '",' + 
                '"' + s.timeAgo + '"\n';
       });
       
-      // Download
-      var blob = new Blob([csv], { type: 'text/csv' });
+      // Download with UTF-8 charset
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
       a.href = url;
@@ -2393,9 +2403,14 @@
       a.click();
       URL.revokeObjectURL(url);
       
+      alert('Downloaded ' + data.signals.length + ' signals (total: ' + data.total + ')');
+      
     } catch (err) {
       console.error('CSV download error:', err);
-      alert('Failed to download CSV');
+      alert('Failed to download CSV: ' + err.message);
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
     }
   };
 
