@@ -1116,26 +1116,26 @@
     <div class="modal-filters">
       <div class="filter-group">
         <span class="filter-label">Key ID:</span>
-        <input type="number" class="filter-input" id="filterKeyId" placeholder="All" min="0" oninput="debouncedFilter()">
+        <input type="number" class="filter-input" id="filterKeyId" placeholder="All" min="0" oninput="debouncedFilter()" onchange="immediateFilter()">
       </div>
       
       <div class="filter-group">
         <span class="filter-label">Epoch:</span>
-        <input type="number" class="filter-input" id="filterEpochFrom" placeholder="From" min="0" style="width:55px;" oninput="debouncedFilter()">
+        <input type="number" class="filter-input" id="filterEpochFrom" placeholder="From" min="0" style="width:55px;" oninput="debouncedFilter()" onchange="immediateFilter()">
         <span style="color:var(--text-soft);">–</span>
-        <input type="number" class="filter-input" id="filterEpochTo" placeholder="To" min="0" style="width:55px;" oninput="debouncedFilter()">
+        <input type="number" class="filter-input" id="filterEpochTo" placeholder="To" min="0" style="width:55px;" oninput="debouncedFilter()" onchange="immediateFilter()">
       </div>
       
       <div class="filter-group">
         <span class="filter-label">Sort:</span>
-        <select class="filter-select" id="filterSort" onchange="applyFilters()">
+        <select class="filter-select" id="filterSort" onchange="immediateFilter()">
           <option value="recent">Most Recent</option>
           <option value="attested">Most Attested</option>
           <option value="oldest">Oldest First</option>
         </select>
       </div>
       
-      <button class="filter-btn" onclick="resetFilters()">↺ Reset</button>
+      <button class="filter-btn" onclick="resetFilters()" title="Clear all filters">↺ Clear</button>
       <button class="filter-btn" onclick="downloadSignalsCSV()" title="Download all filtered signals as CSV">📥 CSV</button>
     </div>
     
@@ -2130,12 +2130,24 @@
   var modalHasMore = false;
   var filterDebounceTimer = null;
 
-  // Debounced filter - waits 400ms after typing stops
+  // Debounced filter - waits 300ms after typing stops, then auto-refreshes
   window.debouncedFilter = function() {
     clearTimeout(filterDebounceTimer);
+    // Show loading indicator immediately
+    var countInfo = document.getElementById('signalCountInfo');
+    if (countInfo) countInfo.textContent = 'Filtering...';
+    
     filterDebounceTimer = setTimeout(function() {
+      console.log('Auto-refresh triggered by filter change');
       applyFilters();
-    }, 400);
+    }, 300);
+  };
+  
+  // Immediate filter (no debounce) - for select dropdowns
+  window.immediateFilter = function() {
+    clearTimeout(filterDebounceTimer);
+    console.log('Immediate filter triggered');
+    applyFilters();
   };
 
   window.openReplyModal = function() {
@@ -2160,8 +2172,19 @@
   };
 
   window.applyFilters = function() {
+    console.log('applyFilters called');
     modalOffset = 0;
     selectedSignal = null;
+    
+    // Clear current list and show loading
+    var listEl = document.getElementById('signalsList');
+    var loadingEl = document.getElementById('signalsLoading');
+    var noSignalsEl = document.getElementById('noSignals');
+    
+    listEl.innerHTML = '';
+    loadingEl.style.display = 'block';
+    noSignalsEl.style.display = 'none';
+    
     updateSelectedInfo();
     loadSignalsForModal();
   };
