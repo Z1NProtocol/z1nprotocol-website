@@ -1109,7 +1109,7 @@
 <div class="modal-overlay" id="replyModal">
   <div class="modal" style="max-width:700px;">
     <div class="modal-header">
-      <span class="modal-title">📋 Browse Signals</span>
+      <span class="modal-title">📋 Browse Signals <span id="currentEpochBadge" style="font-size:12px; font-weight:normal; color:var(--text-soft); margin-left:8px;">(Current: Epoch —)</span></span>
       <button class="modal-close" onclick="closeReplyModal()">&times;</button>
     </div>
     
@@ -2205,74 +2205,79 @@
     }
     
     try {
-      // Build query params
+      // Build query params - use set() for clean params
       var params = new URLSearchParams();
-      params.append('limit', modalLimit);
-      params.append('offset', modalOffset);
-      // REMOVED: excludeSilence - now show ALL signals including silence
-      // params.append('excludeSilence', 'true');
+      params.set('limit', String(modalLimit));
+      params.set('offset', String(modalOffset));
       
+      // Key ID filter
       var keyIdFilter = document.getElementById('filterKeyId').value.trim();
-      if (keyIdFilter) {
-        params.append('keyId', keyIdFilter);
+      if (keyIdFilter !== '') {
+        params.set('keyId', keyIdFilter);
       }
       
-      // Epoch range filters
+      // Epoch range filters - FIXED: check each independently
       var epochFrom = document.getElementById('filterEpochFrom').value.trim();
       var epochTo = document.getElementById('filterEpochTo').value.trim();
       
-      if (epochFrom && epochTo) {
-        // Both specified - use minEpoch and maxEpoch
-        params.append('minEpoch', epochFrom);
-        params.append('maxEpoch', epochTo);
-      } else if (epochFrom) {
-        // Only from - signals from this epoch onwards
-        params.append('minEpoch', epochFrom);
-      } else if (epochTo) {
-        // Only to - signals up to this epoch
-        params.append('maxEpoch', epochTo);
+      if (epochFrom !== '') {
+        params.set('minEpoch', epochFrom);
       }
-      // No epoch filter = all epochs
+      if (epochTo !== '') {
+        params.set('maxEpoch', epochTo);
+      }
       
+      // Sort filter
       var sortFilter = document.getElementById('filterSort').value;
-      params.append('sort', sortFilter);
+      params.set('sort', sortFilter);
       
-      console.log('Fetching signals:', API_BASE + '/signals?' + params.toString());
-      var response = await fetch(API_BASE + '/signals?' + params.toString());
+      var fullUrl = API_BASE + '/signals?' + params.toString();
+      console.log('🔍 Fetching:', fullUrl);
+      
+      var response = await fetch(fullUrl, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
       
       if (!response.ok) {
-        throw new Error('Failed to load signals: ' + response.status);
+        throw new Error('Server error: ' + response.status);
       }
       
       var data = await response.json();
-      console.log('Signals response:', data);
+      console.log('📡 Response:', { total: data.total, returned: data.signals?.length, filters: data.filters, currentEpoch: data.currentEpoch });
       
       loadingEl.style.display = 'none';
       
-      // Update count
-      modalTotal = data.total || 0;
-      if (countInfo) {
-        countInfo.textContent = modalTotal + ' signals found';
+      // Update current epoch badge
+      var epochBadge = document.getElementById('currentEpochBadge');
+      if (epochBadge && data.currentEpoch !== undefined) {
+        epochBadge.textContent = '(Current: Epoch ' + data.currentEpoch + ')';
       }
       
-      // Check if key exists (for unminted keys)
+      // Update count with filter info
+      modalTotal = data.total || 0;
+      if (countInfo) {
+        var info = modalTotal + ' signals';
+        if (epochFrom || epochTo) {
+          info += ' (Epoch ' + (epochFrom || '0') + '-' + (epochTo || data.currentEpoch || 'latest') + ')';
+        }
+        countInfo.textContent = info;
+      }
+      
+      // Check if key exists
       if (keyIdFilter && data.keyExists === false) {
-        noSignalsEl.innerHTML = '<span style="color:#f87171;">⚠️ Key #' + keyIdFilter + ' does not exist.</span><br><span style="font-size:12px; color:var(--text-soft);">This key has not been minted yet.</span>';
+        noSignalsEl.innerHTML = '<span style="color:#f87171;">⚠️ Key #' + keyIdFilter + ' does not exist.</span>';
         noSignalsEl.style.display = 'block';
         loadMoreBtn.style.display = 'none';
         return;
       }
       
       if (data.signals.length === 0 && !append) {
-        var msg = '';
-        if (keyIdFilter && data.keyInfo) {
-          msg = 'Key #' + keyIdFilter + ' (' + (data.keyInfo.glyphs || '?') + ') has not sent any signals yet.';
-        } else if (keyIdFilter) {
-          msg = 'No signals found for Key #' + keyIdFilter + '.';
-        } else {
-          msg = 'No signals found matching your filters.';
+        var msg = 'No signals found';
+        if (epochFrom || epochTo) {
+          msg += ' in Epoch ' + (epochFrom || '0') + '-' + (epochTo || 'latest');
         }
-        noSignalsEl.textContent = msg;
+        noSignalsEl.textContent = msg + '.';
         noSignalsEl.style.display = 'block';
         loadMoreBtn.style.display = 'none';
         return;
@@ -2286,9 +2291,9 @@
       loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
       
     } catch (err) {
-      console.error('Load signals error:', err);
+      console.error('❌ Load error:', err);
       loadingEl.style.display = 'none';
-      noSignalsEl.textContent = 'Error loading signals. Make sure the API server is running.';
+      noSignalsEl.textContent = 'Error: ' + err.message;
       noSignalsEl.style.display = 'block';
       if (countInfo) countInfo.textContent = 'Error';
     }
