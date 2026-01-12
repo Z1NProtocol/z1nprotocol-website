@@ -249,6 +249,17 @@
       font-weight:600;
     }
 
+    /* Wallet selector button styling */
+    #walletOptions .mode-btn {
+      width: 100%;
+      padding: 10px 14px;
+    }
+    
+    #walletOptions .mode-btn.active {
+      background: var(--keys-chip-bg);
+      border-color: var(--keys-accent);
+    }
+
     /* KEY CARDS - Grid layout for multiple */
     .keys-grid{
       display:grid;
@@ -537,6 +548,13 @@
     <p class="lead-small" style="margin-bottom:12px;">
       Connected: <span id="walletAddress" style="color:var(--keys-accent); font-family:monospace;"></span>
     </p>
+    
+    <!-- Multi-wallet selector (hidden by default) -->
+    <div id="multiWalletSelector" style="display:none; margin-bottom:16px; padding:14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); border-radius:10px;">
+      <p style="font-size:13px; color:#fbbf24; margin-bottom:10px;">⚠️ Multiple wallets connected. Select which one to use:</p>
+      <div id="walletOptions" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+    
     <div class="mode-row" style="margin-top:0;">
       <button id="btnSwitch" class="mode-btn keys-btn" type="button">Switch Wallet</button>
     </div>
@@ -665,6 +683,47 @@
   // ═══════════════════════════════════════════════════════════════════
   var provider = null;
   var currentAccount = null;
+  var allConnectedAccounts = [];
+
+  // ═══════════════════════════════════════════════════════════════════
+  // WALLET SELECTOR (for multiple connected accounts)
+  // ═══════════════════════════════════════════════════════════════════
+  function showWalletSelector(accounts) {
+    var selector = document.getElementById('multiWalletSelector');
+    var options = document.getElementById('walletOptions');
+    
+    if (accounts.length <= 1) {
+      selector.style.display = 'none';
+      return;
+    }
+    
+    selector.style.display = 'block';
+    options.innerHTML = '';
+    
+    accounts.forEach(function(addr, idx) {
+      var isSelected = addr.toLowerCase() === currentAccount?.toLowerCase();
+      var btn = document.createElement('button');
+      btn.className = 'mode-btn keys-btn' + (isSelected ? ' active' : '');
+      btn.style.cssText = 'justify-content:flex-start; text-align:left; font-family:monospace; font-size:12px;';
+      btn.innerHTML = (isSelected ? '✓ ' : '') + addr.slice(0, 10) + '...' + addr.slice(-6);
+      btn.dataset.address = addr;
+      btn.onclick = function() {
+        selectWallet(addr);
+      };
+      options.appendChild(btn);
+    });
+  }
+  
+  function selectWallet(addr) {
+    currentAccount = addr;
+    walletAddressEl.textContent = shortenAddress(addr);
+    
+    // Re-render the wallet selector to update checkmarks
+    showWalletSelector(allConnectedAccounts);
+    
+    // Reload keys for selected wallet
+    loadKeys();
+  }
 
   // ═══════════════════════════════════════════════════════════════════
   // RPC HELPER (with fallback)
@@ -1088,9 +1147,14 @@
 
     try {
       var accounts = await eth.request({ method: 'eth_requestAccounts' });
-      if (accounts[0]) {
+      if (accounts && accounts.length > 0) {
+        allConnectedAccounts = accounts;
         currentAccount = accounts[0];
         provider = eth;
+        
+        // Show wallet selector if multiple accounts
+        showWalletSelector(accounts);
+        
         loadKeys();
       }
     } catch (e) {
@@ -1112,11 +1176,16 @@
         method: 'wallet_requestPermissions',
         params: [{ eth_accounts: {} }]
       });
-      // After permission granted, get the selected account
+      // After permission granted, get all connected accounts
       var accounts = await eth.request({ method: 'eth_requestAccounts' });
-      if (accounts[0]) {
+      if (accounts && accounts.length > 0) {
+        allConnectedAccounts = accounts;
         currentAccount = accounts[0];
         provider = eth;
+        
+        // Show wallet selector if multiple accounts
+        showWalletSelector(accounts);
+        
         loadKeys();
       }
     } catch (e) {
@@ -1142,9 +1211,14 @@
     if (eth) {
       try {
         var accounts = await eth.request({ method: 'eth_accounts' });
-        if (accounts[0]) {
+        if (accounts && accounts.length > 0) {
           provider = eth;
+          allConnectedAccounts = accounts;
           currentAccount = accounts[0];
+          
+          // Show wallet selector if multiple accounts
+          showWalletSelector(accounts);
+          
           loadKeys();
         }
       } catch (e) {}
