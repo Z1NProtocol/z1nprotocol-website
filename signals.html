@@ -611,12 +611,11 @@
       <div class="key-info">
         <span class="key-id" id="keyIdDisplay">Key #—</span>
         <span class="key-glyphs" id="keyGlyphs">—</span>
-        <span id="stealthBadge" style="display:none; background:rgba(255,255,255,0.15); color:#ffffff; padding:2px 8px; border-radius:4px; font-size:10px; margin-left:8px; cursor:help;" title="Stealth Mode: Signals sent via anonymous relayer. No protocol fee, identity protected on-chain.">🔒 STEALTH</span>
       </div>
       <div class="key-stats">
         <div class="stat-group">
           <span class="stat-label">Wallet:</span>
-          <span id="activeWalletDisplay" style="font-family:monospace; font-size:11px; color:var(--keys-accent); line-height:1;">—</span>
+          <span id="activeWalletDisplay" style="font-family:monospace; font-size:11px; color:var(--keys-accent); position:relative; top:1px;">—</span>
         </div>
         <div class="stat-group clickable" onclick="focusSignalContent()" title="Click to compose signal">
           <span class="stat-label">Signals:</span>
@@ -640,7 +639,10 @@
 
       <!-- POG SIGNAL CARD -->
       <div class="card pog-card">
-        <div class="card-title">⚡ PoG Signal</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div class="card-title" style="margin-bottom:0;">⚡ PoG Signal</div>
+          <span id="stealthBadge" style="display:none; background:rgba(255,255,255,0.15); color:#ffffff; padding:3px 10px; border-radius:4px; font-size:10px; cursor:help;" title="Stealth Mode: Signals sent via anonymous relayer. No protocol fee, identity protected on-chain.">🔒 STEALTH</span>
+        </div>
 
         <!-- Signal Type Toggle -->
         <div class="toggle-grid">
