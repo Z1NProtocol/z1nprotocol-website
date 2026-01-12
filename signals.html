@@ -1201,7 +1201,7 @@
           
           if (result.success) {
             signalsUsed++;
-            updateSignalDots();
+            updateStatusDots();
             statusEl.innerHTML = '<div class="status-msg success">🔒 Stealth signal relayed!<br><a href="' + EXPLORER + '/tx/' + result.txHash + '" target="_blank">View on Polygonscan</a></div>';
             document.getElementById('signalContent').value = '';
             updateCharCount();
@@ -1690,14 +1690,14 @@
       if (stealthMode) {
         var pogFee = document.getElementById('pogFee');
         if (pogFee) {
-          pogFee.textContent = 'Free (via Relayer)';
+          pogFee.textContent = 'paid by Nexus Epoch';
           pogFee.classList.add('free');
         }
         // Update the + gas text
         var feeRow = pogFee?.parentElement;
         if (feeRow) {
           var gasSpan = feeRow.querySelector('span:last-child');
-          if (gasSpan) gasSpan.textContent = '+ relayer gas';
+          if (gasSpan) gasSpan.textContent = '+ gas (~0.001 POL)';
         }
       }
 
