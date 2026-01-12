@@ -668,7 +668,7 @@
       <div class="card pure-card">
         <div class="card-title">● Pure Signal</div>
         <p style="font-size:12px;color:var(--text-soft);margin-bottom:14px;">
-          No fee, no attestation, no game impact. Direct whisper between Keys.
+          No fee, no attestation, no game impact. Unlimited whispers between Keys.
         </p>
 
         <div class="input-group">
@@ -681,7 +681,7 @@
 
         <div class="input-group">
           <div class="input-label">Recipient Key ID (0 = broadcast)</div>
-          <input type="text" id="pureRecipient" placeholder="0">
+          <input type="number" id="pureRecipient" value="0" min="0" style="text-align:center;">
         </div>
 
         <!-- Spacer -->
@@ -718,6 +718,7 @@
   var Z1N_CORE = '0xade14831356722154A39D40a8EBd4ee1FD4c7D6a';
   var Z1N_SIGNAL = '0x85f0A512cd246A6e659E2D188763482F587dc9f7';
   var RPC_URL = 'https://rpc-amoy.polygon.technology';
+  var EXPLORER = 'https://amoy.polygonscan.com';
 
   // Fee constants (in wei)
   var SUBMISSION_FEE = '10000000000000000'; // 0.01 POL
@@ -900,20 +901,30 @@
         document.getElementById('keyIdDisplay').textContent = 'Key #' + keyId;
         document.getElementById('keyGlyphs').innerHTML = '<span style="color:#f87171; font-size:13px;">⚠️ Key owned by ' + keyOwner.slice(0,6) + '...' + keyOwner.slice(-4) + ', not current wallet. <a href="/your-keys.html?wallet=' + encodeURIComponent(keyOwner) + '" style="color:var(--keys-accent);">Go back</a> to select the right wallet.</span>';
         
-        // Disable submit buttons
+        // Disable submit buttons (both PoG and Pure)
         var submitBtn = document.getElementById('btnSubmitPog');
         if (submitBtn) {
           submitBtn.disabled = true;
           submitBtn.style.opacity = '0.5';
         }
+        var pureBtn = document.getElementById('btnSubmitPure');
+        if (pureBtn) {
+          pureBtn.disabled = true;
+          pureBtn.style.opacity = '0.5';
+        }
         return;
       }
       
-      // Enable submit button
+      // Enable submit buttons
       var submitBtn = document.getElementById('btnSubmitPog');
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.style.opacity = '1';
+      }
+      var pureBtn = document.getElementById('btnSubmitPure');
+      if (pureBtn) {
+        pureBtn.disabled = false;
+        pureBtn.style.opacity = '1';
       }
       
       // Get glyphs
@@ -1173,7 +1184,7 @@
       attempts++;
       if (attempts > 60) {
         clearInterval(poll);
-        statusEl.innerHTML = '<div class="status-msg pending">Taking long... <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
+        statusEl.innerHTML = '<div class="status-msg pending">Taking long... <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
         return;
       }
 
@@ -1186,10 +1197,10 @@
         if (receipt) {
           clearInterval(poll);
           if (receipt.status === '0x1') {
-            statusEl.innerHTML = '<div class="status-msg success">✅ Signal submitted to the Field! <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--accent)">View tx</a></div>';
+            statusEl.innerHTML = '<div class="status-msg success">✅ Signal submitted to the Field! <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--accent)">View tx</a></div>';
             if (onSuccess) onSuccess();
           } else {
-            statusEl.innerHTML = '<div class="status-msg error">Transaction failed. <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
+            statusEl.innerHTML = '<div class="status-msg error">Transaction failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
           }
         }
       } catch (e) {}
@@ -1199,17 +1210,137 @@
   // ═══════════════════════════════════════════════════════════════════
   // SUBMIT PURE SIGNAL
   // ═══════════════════════════════════════════════════════════════════
-  window.submitPureSignal = function() {
+  window.submitPureSignal = async function() {
     var statusEl = document.getElementById('pureStatus');
     var content = document.getElementById('pureContent').value.trim();
+    var recipientInput = document.getElementById('pureRecipient').value.trim();
+    
+    // Default recipient to 0 (broadcast)
+    var toKeyId = 0;
+    if (recipientInput && recipientInput !== '') {
+      toKeyId = parseInt(recipientInput, 10);
+      if (isNaN(toKeyId) || toKeyId < 0) {
+        statusEl.innerHTML = '<div class="status-msg error">Invalid recipient Key ID. Use 0 for broadcast.</div>';
+        return;
+      }
+    }
 
     if (!content) {
       statusEl.innerHTML = '<div class="status-msg error">Please enter a message.</div>';
       return;
     }
+    
+    if (content.length > 500) {
+      statusEl.innerHTML = '<div class="status-msg error">Message too long. Maximum 500 characters.</div>';
+      return;
+    }
 
-    statusEl.innerHTML = '<div class="status-msg pending">Pure signal submission coming soon...</div>';
+    if (!currentAccount || !currentKeyId) {
+      statusEl.innerHTML = '<div class="status-msg error">Wallet not connected or no key selected.</div>';
+      return;
+    }
+
+    statusEl.innerHTML = '<div class="status-msg pending">Preparing whisper...</div>';
+
+    try {
+      // Load ethers if not already loaded
+      await loadEthers();
+      
+      // Encode sendPure(uint256 fromKeyId, uint256 toKeyId, string cid)
+      var iface = new ethersLib.Interface([
+        'function sendPure(uint256 fromKeyId, uint256 toKeyId, string cid)'
+      ]);
+      
+      var data = iface.encodeFunctionData('sendPure', [
+        currentKeyId,  // fromKeyId
+        toKeyId,       // toKeyId (0 = broadcast)
+        content        // cid (message content)
+      ]);
+      
+      console.log('Pure Signal params:', {
+        fromKeyId: currentKeyId,
+        toKeyId: toKeyId,
+        cid: content.slice(0, 50) + '...'
+      });
+      
+      statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet... (no fee)</div>';
+      
+      // Send transaction (no value - Pure signals are free!)
+      var txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: currentAccount,
+          to: Z1N_SIGNAL,
+          data: data,
+          gas: '0x30D40' // 200000 gas limit
+        }]
+      });
+      
+      console.log('Pure Signal TX:', txHash);
+      statusEl.innerHTML = '<div class="status-msg pending">Whisper sent! Waiting for confirmation...<br><a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--accent);">View on Polygonscan</a></div>';
+      
+      // Poll for receipt
+      pollForPureReceipt(txHash, statusEl);
+      
+    } catch (err) {
+      console.error('Pure Signal error:', err);
+      var errorMsg = parsePureError(err);
+      statusEl.innerHTML = '<div class="status-msg error">' + errorMsg + '</div>';
+    }
   };
+  
+  function parsePureError(err) {
+    var msg = err.message || err.toString();
+    
+    if (msg.includes('user rejected') || msg.includes('User denied')) {
+      return 'Transaction cancelled.';
+    }
+    if (msg.includes('NotTokenOwner') || msg.includes('not the owner')) {
+      return 'You do not own this Key.';
+    }
+    if (msg.includes('InvalidRecipient')) {
+      return 'Invalid recipient Key ID.';
+    }
+    
+    // Generic error
+    return 'Whisper failed: ' + msg.slice(0, 80);
+  }
+  
+  function pollForPureReceipt(txHash, statusEl) {
+    var attempts = 0;
+    var maxAttempts = 60;
+    
+    var interval = setInterval(async function() {
+      attempts++;
+      
+      try {
+        var receipt = await rpcCall('eth_getTransactionReceipt', [txHash]);
+        
+        if (receipt) {
+          clearInterval(interval);
+          
+          if (receipt.status === '0x1') {
+            statusEl.innerHTML = '<div class="status-msg success">✓ Whisper delivered!<br><a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--accent);">View on Polygonscan</a></div>';
+            
+            // Clear form
+            document.getElementById('pureContent').value = '';
+            document.getElementById('pureRecipient').value = '';
+            document.getElementById('pureCharCount').textContent = '0 / 500';
+            
+          } else {
+            statusEl.innerHTML = '<div class="status-msg error">Transaction failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View details</a></div>';
+          }
+        }
+      } catch (e) {
+        console.log('Poll error:', e);
+      }
+      
+      if (attempts >= maxAttempts) {
+        clearInterval(interval);
+        statusEl.innerHTML = '<div class="status-msg pending">Taking longer than expected...<br><a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--accent);">Check status on Polygonscan</a></div>';
+      }
+    }, 2000);
+  }
 
   // ═══════════════════════════════════════════════════════════════════
   // CONNECT WALLET
