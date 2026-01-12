@@ -893,26 +893,35 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // ABI ENCODING HELPERS
+  // ABI ENCODING WITH ETHERS.JS (loaded from CDN)
   // ═══════════════════════════════════════════════════════════════════
   
-  // Function selector for submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)
-  // keccak256 hash of signature, first 4 bytes
-  var SUBMIT_SIGNAL_SELECTOR = 'f3fef3a3'; // Will calculate properly
+  // We'll load ethers dynamically if needed
+  var ethersLoaded = false;
+  var ethersLib = null;
   
-  function encodeString(str) {
-    // ABI encode a string: offset pointer + length + padded data
-    var hex = stringToHex(str);
-    var len = str.length;
-    var paddedLen = Math.ceil(hex.length / 64) * 64;
-    var lenHex = encodeUint256(len);
-    var dataHex = hex.padEnd(paddedLen || 64, '0');
-    return { lenHex: lenHex, dataHex: dataHex };
+  async function loadEthers() {
+    if (ethersLoaded) return ethersLib;
+    
+    return new Promise(function(resolve, reject) {
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js';
+      script.onload = function() {
+        ethersLib = window.ethers;
+        ethersLoaded = true;
+        console.log('Ethers.js loaded');
+        resolve(ethersLib);
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
   }
+
+  // Load ethers on page load
+  loadEthers().catch(function(e) { console.warn('Could not load ethers.js:', e); });
 
   function createSignalHash(content, tokenId, epoch) {
     // Create a deterministic hash from content + tokenId + epoch + timestamp
-    // Using a simple but unique hash for each signal
     var combined = content + '|' + tokenId + '|' + epoch + '|' + Date.now() + '|' + Math.random();
     
     // Simple hash function (djb2 variant)
@@ -924,33 +933,30 @@
       hash2 = ((hash2 << 5) + hash2) ^ char;
     }
     
-    // Combine into a 64-char hex string (32 bytes)
     var hex1 = (hash1 >>> 0).toString(16).padStart(8, '0');
     var hex2 = (hash2 >>> 0).toString(16).padStart(8, '0');
     var timestamp = Date.now().toString(16).padStart(12, '0');
     var random = Math.floor(Math.random() * 0xFFFFFFFF).toString(16).padStart(8, '0');
     
-    // Build 64-char hex (32 bytes)
     var hashHex = (hex1 + hex2 + timestamp + random).padEnd(64, '0').slice(0, 64);
-    
-    console.log('Generated signalHash:', hashHex);
-    return hashHex;
+    return '0x' + hashHex;
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // SUBMIT POG SIGNAL
+  // SUBMIT POG SIGNAL - Using ethers.js for encoding
   // ═══════════════════════════════════════════════════════════════════
   window.submitPoGSignal = async function() {
     var statusEl = document.getElementById('pogStatus');
     var content = document.getElementById('signalContent').value.trim();
 
-    if (!content) {
+    // Silence intent doesn't need content
+    if (selectedIntent !== 3 && !content) {
       statusEl.innerHTML = '<div class="status-msg error">Please enter signal content.</div>';
       return;
     }
 
     if (signalsUsed >= 2) {
-      statusEl.innerHTML = '<div class="status-msg error">You have used all 2 signals for this epoch.</div>';
+      statusEl.innerHTML = '<div class="status-msg error">Maximum 2 PoG signals already sent this epoch.</div>';
       return;
     }
 
@@ -969,267 +975,172 @@
         return;
       }
 
+      // Load ethers if not already loaded
       statusEl.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
+      await loadEthers();
 
-      // Get reply hash if replying - initialized to zeros
-      var replyToBytes32 = '0000000000000000000000000000000000000000000000000000000000000000';
-
-      // Fee calculation
-      var feeWei = selectedIntent === 3 ? SILENCE_FEE : SUBMISSION_FEE;
-      var valueHex = '0x' + BigInt(feeWei).toString(16);
-
-      // Parameters for submitSignal:
-      // uint256 tokenId
-      // bytes32 signalHash
-      // string cid (dynamic - use content as CID for now)
-      // uint8 symbolIndex (use 0)
-      // uint8 intent (0-3)
-      // uint8 signalType (0=FACTUAL, 1=REFLECTIVE, 2=META, 3=SILENCE)
-      // uint16 epochRef (0 for new signals, epoch number for replies)
-      // bytes32 replyTo (0x0 for new signals, signal hash for replies)
-
+      // Parameters
       var tokenId = currentKeyId;
-      var signalHash = createSignalHash(content, tokenId, currentEpoch);
-      var cid = content.slice(0, 250); // Ensure CID <= 256 chars
-      var symbolIndex = 0; // Valid range: 0-20
-      var intent = selectedIntent; // 0=ΩC, 1=ΩI, 2=ΩK, 3=ΩS
-      
-      // signalType enum: FACTUAL=0, REFLECTIVE=1, META=2, SILENCE=3
-      var signalTypeVal = 2; // Default to META for new signals
-      if (selectedIntent === 3) {
-        signalTypeVal = 3; // SILENCE type for ΩS intent
-      }
-      
-      var epochRef = 0; // 0 for new signals
-      
-      // If replying, set epochRef and replyTo
+      var signalHash = createSignalHash(content || 'silence', tokenId, currentEpoch);
+      var cid = selectedIntent === 3 ? '' : content.slice(0, 250);
+      var symbolIndex = 0;
+      var intent = selectedIntent;
+      var signalTypeVal = selectedIntent === 3 ? 3 : 2; // SILENCE or META
+      var epochRef = 0;
+      var replyToBytes32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
+
+      // If replying
       if (signalType === 'reply') {
         var replyInput = document.getElementById('replyToHash').value.trim();
         if (replyInput && replyInput.startsWith('0x') && replyInput.length >= 66) {
-          replyToBytes32 = replyInput.slice(2, 66);
-          signalTypeVal = 1; // REFLECTIVE type for replies
-          epochRef = currentEpoch > 0 ? currentEpoch - 1 : 0; // Reply to previous epoch's signals
+          replyToBytes32 = replyInput.slice(0, 66);
+          signalTypeVal = 1;
+          epochRef = currentEpoch > 0 ? currentEpoch - 1 : 0;
         }
       }
-      
-      console.log('Signal params:', {
-        tokenId: tokenId,
-        signalHash: signalHash,
-        cid: cid,
-        symbolIndex: symbolIndex,
-        intent: intent,
-        signalTypeVal: signalTypeVal,
-        epochRef: epochRef,
-        replyToBytes32: replyToBytes32
-      });
 
-      // ABI encode with dynamic string
-      // Function: submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)
-      // Selector: keccak256("submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)")
-      
-      // Calculate selector (first 4 bytes of keccak256)
-      // keccak256("submitSignal(uint256,bytes32,string,uint8,uint8,uint8,uint16,bytes32)") = 0x3c113315
-      var selector = '3c113315';
-      
-      // Static params (positions 0-7 in 32-byte slots):
-      // 0: tokenId (uint256)
-      // 1: signalHash (bytes32)
-      // 2: offset to string data (will be 256 = 0x100 = slot 8)
-      // 3: symbolIndex (uint8, padded to 32 bytes)
-      // 4: intent (uint8, padded)
-      // 5: signalType (uint8, padded)
-      // 6: epochRef (uint16, padded)
-      // 7: replyTo (bytes32)
-      // 8+: string data (length + content)
+      // Fee
+      var feeWei = selectedIntent === 3 ? SILENCE_FEE : SUBMISSION_FEE;
 
-      var stringOffset = 256; // 8 * 32 bytes = position where string data starts
-      var stringData = encodeString(cid);
-      
-      var data = '0x' + selector +
-        encodeUint256(tokenId) +                    // slot 0: tokenId
-        signalHash +                                 // slot 1: signalHash (already 64 chars)
-        encodeUint256(stringOffset) +               // slot 2: offset to string
-        encodeUint256(symbolIndex) +                // slot 3: symbolIndex
-        encodeUint256(intent) +                     // slot 4: intent
-        encodeUint256(signalTypeVal) +              // slot 5: signalType
-        encodeUint256(epochRef) +                   // slot 6: epochRef
-        replyToBytes32 +                            // slot 7: replyTo
-        stringData.lenHex +                         // slot 8: string length
-        stringData.dataHex;                         // slot 9+: string data
+      console.log('=== SIGNAL PARAMS ===');
+      console.log('tokenId:', tokenId);
+      console.log('signalHash:', signalHash);
+      console.log('cid:', cid);
+      console.log('symbolIndex:', symbolIndex);
+      console.log('intent:', intent);
+      console.log('signalType:', signalTypeVal);
+      console.log('epochRef:', epochRef);
+      console.log('replyTo:', replyToBytes32);
+      console.log('fee:', feeWei);
 
-      console.log('=== SIGNAL SUBMISSION DEBUG ===');
-      console.log('Contract:', Z1N_SIGNAL);
-      console.log('From:', currentAccount);
-      console.log('TokenId:', tokenId);
-      console.log('SignalHash:', signalHash);
-      console.log('CID:', cid);
-      console.log('SymbolIndex:', symbolIndex);
-      console.log('Intent:', intent);
-      console.log('SignalType:', signalTypeVal);
-      console.log('EpochRef:', epochRef);
-      console.log('ReplyTo:', replyToBytes32);
-      console.log('Value (wei):', feeWei);
-      console.log('Value (hex):', valueHex);
-      console.log('Data:', data);
+      // Use ethers.js to encode the function call
+      var iface = new ethersLib.Interface([
+        'function submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint16 epochRef, bytes32 replyTo) payable'
+      ]);
+
+      var data = iface.encodeFunctionData('submitSignal', [
+        tokenId,
+        signalHash,
+        cid,
+        symbolIndex,
+        intent,
+        signalTypeVal,
+        epochRef,
+        replyToBytes32
+      ]);
+
+      console.log('Encoded data:', data);
       console.log('Data length:', data.length, 'chars =', (data.length - 2) / 2, 'bytes');
-      console.log('===============================');
 
-      // First try eth_call via direct RPC to check if it would revert
+      // Simulate first
       statusEl.innerHTML = '<div class="status-msg pending">Simulating transaction...</div>';
       
-      var simulationPassed = false;
       try {
-        var callResult = await rpcCall('eth_call', [{
+        await rpcCall('eth_call', [{
           from: currentAccount,
           to: Z1N_SIGNAL,
-          value: valueHex,
+          value: '0x' + BigInt(feeWei).toString(16),
           data: data
         }, 'latest']);
-        console.log('Simulation succeeded:', callResult);
-        simulationPassed = true;
-      } catch (callErr) {
-        console.error('Simulation failed:', callErr);
-        
-        // Parse revert reason from error
-        var revertMsg = 'Unknown contract error';
-        var errStr = String(callErr.message || callErr);
-        console.log('Error string:', errStr);
-        
-        // Try to find known error patterns
-        if (errStr.includes('NotTokenOwner') || errStr.includes('NotKeyOwner')) {
-          revertMsg = 'You do not own this Key with the connected wallet.';
-        } else if (errStr.includes('MaxSignalsPerEpochReached')) {
-          revertMsg = 'Maximum 2 PoG signals already sent this epoch.';
-        } else if (errStr.includes('InsufficientFee')) {
-          revertMsg = 'Insufficient fee - need 0.01 POL (0.015 for Silence).';
-        } else if (errStr.includes('InvalidReplyTarget')) {
-          revertMsg = 'Invalid reply target - signal hash not found.';
-        } else if (errStr.includes('epochRef without replyTo')) {
-          revertMsg = 'epochRef must be 0 for new signals.';
-        } else if (errStr.includes('ReplyTo needs epochRef')) {
-          revertMsg = 'Reply signals require epochRef > 0.';
-        } else if (errStr.includes('CID too long')) {
-          revertMsg = 'Signal content too long (max 256 chars).';
-        } else if (errStr.includes('Invalid symbolIndex')) {
-          revertMsg = 'Invalid symbol index (must be 0-20).';
-        } else if (errStr.includes('Invalid intent')) {
-          revertMsg = 'Invalid intent (must be 0-3).';
-        } else if (errStr.includes('Invalid signalType')) {
-          revertMsg = 'Invalid signal type (must be 0-3).';
-        } else if (errStr.includes('execution reverted')) {
-          revertMsg = 'Contract reverted - check console for details.';
-        } else {
-          revertMsg = errStr.slice(0, 200);
-        }
-        
-        statusEl.innerHTML = '<div class="status-msg error">' + revertMsg + '</div>';
-        
-        // Don't return - let user try anyway via MetaMask for more info
-        if (!confirm('Simulation failed: ' + revertMsg + '\n\nTry to send anyway? MetaMask may show more details.')) {
-          return;
-        }
+        console.log('Simulation passed!');
+      } catch (simErr) {
+        console.error('Simulation failed:', simErr);
+        var errMsg = parseContractError(simErr);
+        statusEl.innerHTML = '<div class="status-msg error">' + errMsg + '</div>';
+        return;
       }
 
+      // Send transaction
       statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
 
-      // Try to estimate gas first via direct RPC
-      var gasEstimate;
-      try {
-        var gasResult = await rpcCall('eth_estimateGas', [{
+      var txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{
           from: currentAccount,
           to: Z1N_SIGNAL,
-          value: valueHex,
+          value: '0x' + BigInt(feeWei).toString(16),
           data: data
-        }]);
-        gasEstimate = gasResult;
-        console.log('Gas estimate from RPC:', gasEstimate, '=', parseInt(gasEstimate, 16));
-      } catch (gasErr) {
-        console.warn('Gas estimation via RPC failed:', gasErr.message || gasErr);
-        // Continue without gas estimate - MetaMask will estimate
-      }
+        }]
+      });
 
-      // Build transaction object - minimal params, let MetaMask handle the rest
-      var txParams = {
-        from: currentAccount,
-        to: Z1N_SIGNAL,
-        value: valueHex,
-        data: data
-      };
-      
-      console.log('Sending transaction with params:', JSON.stringify(txParams, null, 2));
-
-      var txHash;
-      try {
-        txHash = await provider.request({
-          method: 'eth_sendTransaction',
-          params: [txParams]
-        });
-      } catch (sendErr) {
-        console.error('Send transaction error:', sendErr);
-        
-        // Check if it's the JSON-RPC error
-        if (sendErr.message && sendErr.message.includes('Internal JSON-RPC')) {
-          // Try with explicit gas
-          console.log('Retrying with explicit gas limit...');
-          txParams.gas = '0x100000'; // 1M gas
-          
-          try {
-            txHash = await provider.request({
-              method: 'eth_sendTransaction',
-              params: [txParams]
-            });
-          } catch (retryErr) {
-            console.error('Retry also failed:', retryErr);
-            throw retryErr;
-          }
-        } else {
-          throw sendErr;
-        }
-      }
-
-      statusEl.innerHTML = '<div class="status-msg pending">Transaction submitted: ' + txHash.slice(0, 14) + '...</div>';
+      statusEl.innerHTML = '<div class="status-msg pending">Transaction sent: ' + txHash.slice(0, 14) + '...</div>';
 
       // Poll for receipt
-      var attempts = 0;
-      var poll = setInterval(async function() {
-        attempts++;
-        if (attempts > 60) {
-          clearInterval(poll);
-          statusEl.innerHTML = '<div class="status-msg pending">Taking long... <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
-          return;
-        }
-
-        try {
-          var receipt = await provider.request({
-            method: 'eth_getTransactionReceipt',
-            params: [txHash]
-          });
-
-          if (receipt) {
-            clearInterval(poll);
-            if (receipt.status === '0x1') {
-              statusEl.innerHTML = '<div class="status-msg success">✅ Signal submitted to the Field!</div>';
-              signalsUsed++;
-              updateStatusDots();
-              document.getElementById('signalContent').value = '';
-              updateCharCount();
-            } else {
-              statusEl.innerHTML = '<div class="status-msg error">Transaction failed. <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
-            }
-          }
-        } catch (e) {}
-      }, 2000);
+      pollForReceipt(txHash, statusEl, function() {
+        signalsUsed++;
+        updateStatusDots();
+        document.getElementById('signalContent').value = '';
+        updateCharCount();
+      });
 
     } catch (e) {
       console.error('Submit error:', e);
       var errMsg = e.message || 'Transaction failed';
       if (errMsg.includes('rejected') || errMsg.includes('denied')) {
         statusEl.innerHTML = '<div class="status-msg error">Transaction rejected by user.</div>';
+      } else if (errMsg.includes('Internal JSON-RPC')) {
+        statusEl.innerHTML = '<div class="status-msg error">MetaMask error - try refreshing the page or reconnecting wallet.</div>';
       } else {
-        statusEl.innerHTML = '<div class="status-msg error">' + errMsg.slice(0, 100) + '</div>';
+        statusEl.innerHTML = '<div class="status-msg error">' + errMsg.slice(0, 150) + '</div>';
       }
     }
   };
+
+  function parseContractError(err) {
+    var errStr = String(err.message || err);
+    
+    if (errStr.includes('NotTokenOwner') || errStr.includes('NotKeyOwner')) {
+      return 'You do not own this Key with the connected wallet.';
+    } else if (errStr.includes('MaxSignalsPerEpochReached')) {
+      return 'Maximum 2 PoG signals already sent this epoch.';
+    } else if (errStr.includes('InsufficientFee')) {
+      return 'Insufficient fee - need 0.01 POL (0.015 for Silence).';
+    } else if (errStr.includes('InvalidReplyTarget')) {
+      return 'Invalid reply target - signal hash not found.';
+    } else if (errStr.includes('epochRef without replyTo')) {
+      return 'epochRef must be 0 for new signals.';
+    } else if (errStr.includes('ReplyTo needs epochRef')) {
+      return 'Reply signals require epochRef > 0.';
+    } else if (errStr.includes('CID too long')) {
+      return 'Signal content too long (max 256 chars).';
+    } else if (errStr.includes('Invalid symbolIndex')) {
+      return 'Invalid symbol index (must be 0-20).';
+    } else if (errStr.includes('Invalid intent')) {
+      return 'Invalid intent (must be 0-3).';
+    } else if (errStr.includes('Invalid signalType')) {
+      return 'Invalid signal type (must be 0-3).';
+    }
+    return errStr.slice(0, 200);
+  }
+
+  function pollForReceipt(txHash, statusEl, onSuccess) {
+    var attempts = 0;
+    var poll = setInterval(async function() {
+      attempts++;
+      if (attempts > 60) {
+        clearInterval(poll);
+        statusEl.innerHTML = '<div class="status-msg pending">Taking long... <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
+        return;
+      }
+
+      try {
+        var receipt = await provider.request({
+          method: 'eth_getTransactionReceipt',
+          params: [txHash]
+        });
+
+        if (receipt) {
+          clearInterval(poll);
+          if (receipt.status === '0x1') {
+            statusEl.innerHTML = '<div class="status-msg success">✅ Signal submitted to the Field! <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--accent)">View tx</a></div>';
+            if (onSuccess) onSuccess();
+          } else {
+            statusEl.innerHTML = '<div class="status-msg error">Transaction failed. <a href="https://amoy.polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent)">View on explorer</a></div>';
+          }
+        }
+      } catch (e) {}
+    }, 2000);
+  }
 
   // ═══════════════════════════════════════════════════════════════════
   // SUBMIT PURE SIGNAL
