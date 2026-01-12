@@ -349,6 +349,27 @@
       -moz-appearance: textfield;
     }
 
+    /* Fee tooltip */
+    .fee-tooltip {
+      cursor: help;
+      border-bottom: 1px dotted var(--text-soft);
+    }
+    .fee-tooltip:hover {
+      color: var(--keys-accent);
+    }
+
+    /* Clickable stat groups */
+    .stat-group.clickable {
+      cursor: pointer;
+      padding: 4px 8px;
+      margin: -4px -8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .stat-group.clickable:hover {
+      background: rgba(245, 200, 66, 0.1);
+    }
+
     /* CARD SPACER - pushes footer to bottom */
     .card-spacer {
       flex: 1;
@@ -588,20 +609,21 @@
       <div class="key-info">
         <span class="key-id" id="keyIdDisplay">Key #—</span>
         <span class="key-glyphs" id="keyGlyphs">—</span>
+        <span id="stealthBadge" style="display:none; background:rgba(139,92,246,0.2); color:#a78bfa; padding:2px 8px; border-radius:4px; font-size:10px; margin-left:8px; cursor:help;" title="Stealth Mode: Signals sent via anonymous relayer. No protocol fee, identity protected on-chain.">🔒 STEALTH</span>
       </div>
       <div class="key-stats">
         <div class="stat-group">
           <span class="stat-label">Wallet:</span>
           <span id="activeWalletDisplay" style="font-family:monospace; font-size:11px; color:var(--keys-accent);">—</span>
         </div>
-        <div class="stat-group">
+        <div class="stat-group clickable" onclick="focusSignalContent()" title="Click to compose signal">
           <span class="stat-label">Signals:</span>
           <div class="stat-dots" id="signalDots">
             <span class="dot-indicator open"></span>
             <span class="dot-indicator open"></span>
           </div>
         </div>
-        <div class="stat-group">
+        <div class="stat-group clickable" onclick="goToAttests()" title="Click to view attestable signals">
           <span class="stat-label">Attests:</span>
           <div class="stat-dots" id="attestDots">
             <span class="dot-indicator open"></span>
@@ -666,7 +688,7 @@
         <!-- Submit -->
         <div class="submit-row">
           <div class="fee-display">
-            Fee: <span class="fee-amount" id="pogFee">0.01 POL</span>
+            <span class="fee-tooltip" title="Protocol fee goes to the Treasury for epoch winner distribution">Protocol Fee: <span class="fee-amount" id="pogFee">0.01 POL</span></span> <span style="font-size:10px; color:var(--text-soft);">+ gas</span>
           </div>
           <button class="btn-submit" id="btnSubmitPog" onclick="submitPoGSignal()">Submit Signal</button>
         </div>
@@ -678,7 +700,7 @@
       <div class="card pure-card">
         <div class="card-title">● Pure Signal</div>
         <p style="font-size:12px;color:var(--text-soft);margin-bottom:14px;">
-          No fee, no attestation, no game impact. Unlimited whispers between Keys.
+          No protocol fee, no attestation, no game impact. Unlimited whispers between Keys. Only gas costs apply.
         </p>
 
         <!-- Recipient Key ID (aligned with Intent row) -->
@@ -702,7 +724,10 @@
 
         <!-- Submit -->
         <div class="submit-row">
-          <div class="fee-display">Fee: <span class="fee-amount free">Free</span></div>
+          <div class="fee-display">
+            <span>Protocol Fee: <span class="fee-amount free">Free</span></span>
+            <span style="font-size:10px; color:var(--text-soft); margin-left:8px;">(gas only)</span>
+          </div>
           <button class="btn-whisper" id="btnSubmitPure" onclick="submitPureSignal()">Send Whisper</button>
         </div>
 
@@ -713,7 +738,7 @@
 
     <!-- LINK TO ATTESTS -->
     <div class="attests-link">
-      <a href="/attests.html">View Attestable Signals →</a>
+      <a href="/attests.html" id="attestsLink" onclick="goToAttests(); return false;">View Attestable Signals →</a>
     </div>
 
   </div>
@@ -760,6 +785,19 @@
   var signalType = 'new';
   var signalsUsed = 0;
   var attestsUsed = 0;
+  var stealthMode = false;
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STEALTH MODE CHECK
+  // ═══════════════════════════════════════════════════════════════════
+  function isStealthEnabled(keyId) {
+    try {
+      var settings = JSON.parse(localStorage.getItem('z1n_stealth_keys') || '{}');
+      return settings[keyId] === true;
+    } catch (e) {
+      return false;
+    }
+  }
 
   // ═══════════════════════════════════════════════════════════════════
   // GET PROVIDER
@@ -1077,8 +1115,8 @@
         }
       }
 
-      // Fee
-      var feeWei = selectedIntent === 3 ? SILENCE_FEE : SUBMISSION_FEE;
+      // Fee (stealth mode = no protocol fee)
+      var feeWei = stealthMode ? '0' : (selectedIntent === 3 ? SILENCE_FEE : SUBMISSION_FEE);
 
       console.log('=== SIGNAL PARAMS ===');
       console.log('tokenId:', tokenId);
@@ -1090,22 +1128,49 @@
       console.log('epochRef:', epochRef);
       console.log('replyTo:', replyToBytes32);
       console.log('fee:', feeWei);
+      console.log('stealthMode:', stealthMode);
 
-      // Use ethers.js to encode the function call
-      var iface = new ethersLib.Interface([
-        'function submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint16 epochRef, bytes32 replyTo) payable'
-      ]);
+      var data;
+      
+      if (stealthMode) {
+        // Stealth mode: use submitSignalRelayed
+        // NOTE: In production, this would go through a relayer service
+        // For testing, we'll try direct call (only works if connected as relayer)
+        var iface = new ethersLib.Interface([
+          'function submitSignalRelayed(uint256 tokenId, bytes32 signalHash, uint8 intent, bool isPrivate, uint8 symbolIndex, uint256 epochRef, bytes32 replyTo)'
+        ]);
+        
+        data = iface.encodeFunctionData('submitSignalRelayed', [
+          tokenId,
+          signalHash,
+          intent,
+          true,  // isPrivate
+          symbolIndex,
+          epochRef,
+          replyToBytes32
+        ]);
+        
+        statusEl.innerHTML = '<div class="status-msg pending">🔒 Stealth: Preparing anonymous submission...</div>';
+        console.log('⚠️ Stealth mode: This will only work if connected wallet is the stealth relayer');
+      } else {
+        // Normal mode: use submitSignal with fee
+        var iface = new ethersLib.Interface([
+          'function submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint16 epochRef, bytes32 replyTo) payable'
+        ]);
 
-      var data = iface.encodeFunctionData('submitSignal', [
-        tokenId,
-        signalHash,
-        cid,
-        symbolIndex,
-        intent,
-        signalTypeVal,
-        epochRef,
-        replyToBytes32
-      ]);
+        data = iface.encodeFunctionData('submitSignal', [
+          tokenId,
+          signalHash,
+          cid,
+          symbolIndex,
+          intent,
+          signalTypeVal,
+          epochRef,
+          replyToBytes32
+        ]);
+        
+        statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet (fee: ' + (selectedIntent === 3 ? '0.015' : '0.01') + ' POL)...</div>';
+      }
 
       console.log('Encoded data:', data);
       console.log('Data length:', data.length, 'chars =', (data.length - 2) / 2, 'bytes');
@@ -1219,6 +1284,26 @@
       } catch (e) {}
     }, 2000);
   }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // CLICKABLE STATS NAVIGATION
+  // ═══════════════════════════════════════════════════════════════════
+  window.focusSignalContent = function() {
+    var textarea = document.getElementById('signalContent');
+    if (textarea) {
+      textarea.focus();
+      textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  window.goToAttests = function() {
+    // Navigate to attests page with current key and wallet
+    var url = '/attests.html?key=' + currentKeyId;
+    if (currentAccount) {
+      url += '&wallet=' + encodeURIComponent(currentAccount);
+    }
+    window.location.href = url;
+  };
 
   // ═══════════════════════════════════════════════════════════════════
   // VALIDATE RECIPIENT KEY
@@ -1521,6 +1606,22 @@
       }
 
       await loadKeyData(currentKeyId);
+      
+      // Check stealth mode for this key
+      stealthMode = isStealthEnabled(currentKeyId);
+      var stealthBadge = document.getElementById('stealthBadge');
+      if (stealthBadge) {
+        stealthBadge.style.display = stealthMode ? 'inline' : 'none';
+      }
+      
+      // Update fee display if stealth mode (no protocol fee)
+      if (stealthMode) {
+        var pogFee = document.getElementById('pogFee');
+        if (pogFee) {
+          pogFee.textContent = 'Free';
+          pogFee.classList.add('free');
+        }
+      }
 
     } catch (e) {
       console.error('Connect error:', e);
