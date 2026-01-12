@@ -559,7 +559,7 @@
 </header>
 
 <main class="page">
-  <a href="/your-keys.html" class="back-link">← Back to Your Keys</a>
+  <a href="/your-keys.html" class="back-link" id="backLink">← Back to Your Keys</a>
 
   <h1>Signals</h1>
   <p class="subtitle">Participate in the Field's collective intelligence through Proof of Glyph signals.</p>
@@ -898,7 +898,7 @@
       if (keyOwner.toLowerCase() !== currentAccount.toLowerCase()) {
         // Key not owned by selected wallet - show warning
         document.getElementById('keyIdDisplay').textContent = 'Key #' + keyId;
-        document.getElementById('keyGlyphs').innerHTML = '<span style="color:#f87171; font-size:13px;">⚠️ Key owned by ' + keyOwner.slice(0,6) + '...' + keyOwner.slice(-4) + ', not current wallet. <a href="/your-keys.html" style="color:var(--keys-accent);">Go back</a> to select the right wallet.</span>';
+        document.getElementById('keyGlyphs').innerHTML = '<span style="color:#f87171; font-size:13px;">⚠️ Key owned by ' + keyOwner.slice(0,6) + '...' + keyOwner.slice(-4) + ', not current wallet. <a href="/your-keys.html?wallet=' + encodeURIComponent(keyOwner) + '" style="color:var(--keys-accent);">Go back</a> to select the right wallet.</span>';
         
         // Disable submit buttons
         var submitBtn = document.getElementById('btnSubmitPog');
@@ -1296,6 +1296,12 @@
       var walletDisplay = document.getElementById('activeWalletDisplay');
       if (walletDisplay) {
         walletDisplay.textContent = currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4);
+      }
+      
+      // Update back link to preserve wallet selection
+      var backLink = document.getElementById('backLink');
+      if (backLink) {
+        backLink.href = '/your-keys.html?wallet=' + encodeURIComponent(currentAccount);
       }
 
       await loadKeyData(currentKeyId);
