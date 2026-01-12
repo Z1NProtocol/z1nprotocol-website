@@ -535,9 +535,8 @@
         </p>
 
         <div class="price-display">
-          <div class="price-main" id="priceMain">– POL</div>
+          <div class="price-main" id="priceMain">– POL <span id="priceUsd" style="color:var(--text-soft); font-size:0.7em; margin-left:8px;"></span></div>
           <div class="price-detail" id="priceDetail">Connect wallet to see price</div>
-          <div class="price-usd" id="priceUsd"></div>
         </div>
 
         <div class="btn-row" style="margin-top: 12px;">
@@ -908,6 +907,8 @@ flow := {
   // ═══════════════════════════════════════════════════════════════════
   // LOAD EPOCH & PRICE (direct RPC, not via MetaMask)
   // ═══════════════════════════════════════════════════════════════════
+  var currentUsdRate = null;
+  
   function loadEpochAndPrice() {
     console.log('loadEpochAndPrice: using direct RPC');
     
@@ -924,7 +925,8 @@ flow := {
       
       console.log('Price from contract:', { priceWei: currentPriceWei, pricePol: priceInPol });
 
-      if (priceMain) priceMain.textContent = priceInPol.toFixed(3) + ' POL';
+      // Update POL price (USD will be added after fetch)
+      updatePriceDisplay(priceInPol);
       if (priceDetail) priceDetail.textContent = '21-Law pricing';
       
       // Get epoch
@@ -942,24 +944,36 @@ flow := {
     .then(function(r) { return r.json(); })
     .then(function(d) {
       var rate = d['matic-network'] && d['matic-network'].usd;
-      if (rate && priceUsd && currentPriceWei) {
+      if (rate && currentPriceWei) {
+        currentUsdRate = rate;
         var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
-        priceUsd.textContent = '≈ $' + (priceInPol * rate).toFixed(2) + ' USD';
+        updatePriceDisplay(priceInPol);
       }
     })
     .catch(function(err) {
       console.error('Could not load price:', err);
       
       // Fallback
-      var fallbackEpoch = 145;
+      var fallbackEpoch = 280;
       var fallbackPrice = 0.021 + (fallbackEpoch * 0.021) + (Math.floor(fallbackEpoch / 21) * 0.21);
       
       currentPriceWei = Math.floor(fallbackPrice * 1e18).toString();
       currentEpoch = fallbackEpoch;
       
-      if (priceMain) priceMain.textContent = '~' + fallbackPrice.toFixed(3) + ' POL';
+      if (priceMain) priceMain.innerHTML = '~' + fallbackPrice.toFixed(3) + ' POL <span id="priceUsd" style="color:var(--text-soft); font-size:0.7em; margin-left:8px;"></span>';
       if (priceDetail) priceDetail.textContent = 'Estimated price';
     });
+  }
+  
+  function updatePriceDisplay(priceInPol) {
+    var usdText = '';
+    if (currentUsdRate) {
+      var usdPrice = priceInPol * currentUsdRate;
+      usdText = '(≈ $' + usdPrice.toFixed(2) + ')';
+    }
+    if (priceMain) {
+      priceMain.innerHTML = priceInPol.toFixed(3) + ' POL <span style="color:var(--text-soft); font-size:0.7em; margin-left:8px;">' + usdText + '</span>';
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1056,8 +1070,8 @@ flow := {
         withBuffer: priceInPol 
       });
       
-      // Update display
-      if (priceMain) priceMain.textContent = priceInPol.toFixed(3) + ' POL';
+      // Update display with USD if available
+      updatePriceDisplay(priceInPol);
       
       if (mintStatus) {
         mintStatus.textContent = "Confirm transaction in wallet...";
@@ -1168,6 +1182,9 @@ flow := {
 
   // Load price immediately on page load
   loadEpochAndPrice();
+  
+  // Auto-refresh price every 30 seconds to keep it current
+  setInterval(loadEpochAndPrice, 30000);
 
 })();
 </script>
