@@ -573,15 +573,6 @@
   <!-- MAIN CONTENT -->
   <div id="mainContent" style="display:none;">
 
-    <!-- WALLET INFO (shows when multiple wallets connected) -->
-    <div id="walletInfo" style="display:none; margin-bottom:16px; padding:14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); border-radius:10px;">
-      <p style="font-size:12px; color:var(--text-soft); margin-bottom:8px;">Using wallet: <span id="activeWallet" style="color:var(--keys-accent); font-family:monospace;"></span></p>
-      <div id="walletSelectorSignals" style="display:none;">
-        <p style="font-size:12px; color:#fbbf24; margin-bottom:8px;">⚠️ Multiple wallets connected. Select one:</p>
-        <div id="walletOptionsSignals" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
-      </div>
-    </div>
-
     <!-- KEY HEADER -->
     <div class="key-header-card">
       <div class="key-info">
@@ -903,7 +894,7 @@
       if (keyOwner.toLowerCase() !== currentAccount.toLowerCase()) {
         // Key not owned by selected wallet - show warning
         document.getElementById('keyIdDisplay').textContent = 'Key #' + keyId;
-        document.getElementById('keyGlyphs').innerHTML = '<span style="color:#f87171;">⚠️ Not owned by selected wallet</span>';
+        document.getElementById('keyGlyphs').innerHTML = '<span style="color:#f87171; font-size:13px;">⚠️ This Key belongs to a different wallet. <a href="/your-keys.html" style="color:var(--keys-accent);">Go back</a> and select the correct wallet.</span>';
         
         // Disable submit buttons
         var submitBtn = document.getElementById('btnSubmitPog');
@@ -1138,7 +1129,7 @@
       if (errMsg.includes('rejected') || errMsg.includes('denied')) {
         statusEl.innerHTML = '<div class="status-msg error">Transaction rejected by user.</div>';
       } else if (errMsg.includes('Internal JSON-RPC')) {
-        statusEl.innerHTML = '<div class="status-msg error">MetaMask error - try refreshing the page or reconnecting wallet.</div>';
+        statusEl.innerHTML = '<div class="status-msg error">Wallet error - try refreshing the page or reconnecting your wallet.</div>';
       } else {
         statusEl.innerHTML = '<div class="status-msg error">' + errMsg.slice(0, 150) + '</div>';
       }
@@ -1217,49 +1208,12 @@
   };
 
   // ═══════════════════════════════════════════════════════════════════
-  // CONNECT WALLET (with wallet selector for multiple accounts)
+  // CONNECT WALLET
   // ═══════════════════════════════════════════════════════════════════
-  var allConnectedAccounts = [];
-  
-  function showWalletSelectorSignals(accounts) {
-    var walletInfo = document.getElementById('walletInfo');
-    var selector = document.getElementById('walletSelectorSignals');
-    var options = document.getElementById('walletOptionsSignals');
-    var activeWallet = document.getElementById('activeWallet');
-    
-    if (!walletInfo) return;
-    
-    walletInfo.style.display = 'block';
-    activeWallet.textContent = currentAccount.slice(0, 10) + '...' + currentAccount.slice(-6);
-    
-    if (accounts.length <= 1) {
-      selector.style.display = 'none';
-      walletInfo.style.display = 'none'; // Hide entirely if only one wallet
-      return;
-    }
-    
-    selector.style.display = 'block';
-    options.innerHTML = '';
-    
-    accounts.forEach(function(addr) {
-      var isSelected = addr.toLowerCase() === currentAccount?.toLowerCase();
-      var btn = document.createElement('button');
-      btn.style.cssText = 'padding:8px 14px;border-radius:6px;font-family:monospace;font-size:11px;cursor:pointer;border:1px solid ' + (isSelected ? 'var(--keys-accent)' : 'rgba(148,163,184,0.4)') + ';background:' + (isSelected ? 'rgba(245,200,66,0.2)' : 'transparent') + ';color:' + (isSelected ? 'var(--keys-accent)' : 'var(--text-soft)') + ';';
-      btn.innerHTML = (isSelected ? '✓ ' : '') + addr.slice(0, 8) + '...' + addr.slice(-4);
-      btn.onclick = function() {
-        currentAccount = addr;
-        showWalletSelectorSignals(accounts);
-        // Reload key data for new wallet
-        loadKeyData(currentKeyId);
-      };
-      options.appendChild(btn);
-    });
-  }
-  
   async function connectWallet() {
     var eth = getProvider();
     if (!eth) {
-      alert('Please install MetaMask');
+      alert('Please install a Web3 wallet (e.g. MetaMask, Rabby, Coinbase Wallet)');
       return;
     }
 
@@ -1271,11 +1225,8 @@
         accounts = await provider.request({ method: 'eth_requestAccounts' });
       }
       
-      allConnectedAccounts = accounts;
+      // Use first account (user should select wallet on Your Keys page)
       currentAccount = accounts[0];
-      
-      // Show wallet selector if multiple accounts
-      showWalletSelectorSignals(accounts);
 
       var chainId = await provider.request({ method: 'eth_chainId' });
       if (chainId !== CHAIN_ID) {
