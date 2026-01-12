@@ -255,12 +255,22 @@
       justify-content: center;
     }
 
-    /* KEY CARDS - Grid layout for multiple */
+    /* KEY CARDS - Grid layout for multiple (max 5 per row) */
     .keys-grid{
       display:grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap:16px;
       margin-top:22px;
+      max-width: 1520px; /* Limits to ~5 cards at 280px each + gaps */
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Force max 5 columns on very wide screens */
+    @media (min-width: 1600px) {
+      .keys-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
     }
 
     .key-card{
