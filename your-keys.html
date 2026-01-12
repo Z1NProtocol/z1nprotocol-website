@@ -249,15 +249,10 @@
       font-weight:600;
     }
 
-    /* Wallet selector button styling */
+    /* Wallet selector grid buttons */
     #walletOptions .mode-btn {
       width: 100%;
-      padding: 10px 14px;
-    }
-    
-    #walletOptions .mode-btn.active {
-      background: var(--keys-chip-bg);
-      border-color: var(--keys-accent);
+      justify-content: center;
     }
 
     /* KEY CARDS - Grid layout for multiple */
@@ -551,8 +546,9 @@
     
     <!-- Multi-wallet selector (hidden by default) -->
     <div id="multiWalletSelector" style="display:none; margin-bottom:16px; padding:14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); border-radius:10px;">
-      <p style="font-size:13px; color:#fbbf24; margin-bottom:10px;">⚠️ Multiple wallets connected. Select which one to use:</p>
-      <div id="walletOptions" style="display:flex; flex-direction:column; gap:8px;"></div>
+      <p style="font-size:13px; color:#fbbf24; margin-bottom:6px;">⚠️ Multiple wallets connected</p>
+      <p style="font-size:12px; color:var(--text-soft); margin-bottom:12px;">Select which wallet to use below, or connect only one wallet directly in MetaMask.</p>
+      <div id="walletOptions" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:8px;"></div>
     </div>
     
     <div class="mode-row" style="margin-top:0;">
@@ -704,8 +700,8 @@
       var isSelected = addr.toLowerCase() === currentAccount?.toLowerCase();
       var btn = document.createElement('button');
       btn.className = 'mode-btn keys-btn' + (isSelected ? ' active' : '');
-      btn.style.cssText = 'justify-content:flex-start; text-align:left; font-family:monospace; font-size:12px;';
-      btn.innerHTML = (isSelected ? '✓ ' : '') + addr.slice(0, 10) + '...' + addr.slice(-6);
+      btn.style.cssText = 'width:100%; padding:10px 12px; font-family:monospace; font-size:12px; text-align:center;';
+      btn.innerHTML = (isSelected ? '✓ ' : '') + addr.slice(0, 6) + '...' + addr.slice(-4);
       btn.dataset.address = addr;
       btn.onclick = function() {
         selectWallet(addr);
