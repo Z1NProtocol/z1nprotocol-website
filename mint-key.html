@@ -938,17 +938,8 @@ flow := {
         priceDetail.textContent = 'Epoch ' + currentEpoch + ' · 21-Law pricing';
       }
       
-      // USD price
-      return fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd');
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      var rate = d['matic-network'] && d['matic-network'].usd;
-      if (rate && currentPriceWei) {
-        currentUsdRate = rate;
-        var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
-        updatePriceDisplay(priceInPol);
-      }
+      // USD price - fetch separately to not block on errors
+      fetchUsdRate();
     })
     .catch(function(err) {
       console.error('Could not load price:', err);
@@ -960,9 +951,40 @@ flow := {
       currentPriceWei = Math.floor(fallbackPrice * 1e18).toString();
       currentEpoch = fallbackEpoch;
       
-      if (priceMain) priceMain.innerHTML = '~' + fallbackPrice.toFixed(3) + ' POL <span id="priceUsd" style="color:var(--text-soft); font-size:0.7em; margin-left:8px;"></span>';
+      if (priceMain) priceMain.innerHTML = '~' + fallbackPrice.toFixed(3) + ' POL <span style="color:var(--text-soft); font-size:0.7em; margin-left:8px;"></span>';
       if (priceDetail) priceDetail.textContent = 'Estimated price';
+      
+      // Still try to get USD rate
+      fetchUsdRate();
     });
+  }
+  
+  function fetchUsdRate() {
+    // Try CoinGecko first
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd')
+      .then(function(r) { 
+        if (!r.ok) throw new Error('CoinGecko API error');
+        return r.json(); 
+      })
+      .then(function(d) {
+        console.log('CoinGecko response:', d);
+        var rate = d['matic-network'] && d['matic-network'].usd;
+        if (rate && currentPriceWei) {
+          currentUsdRate = rate;
+          var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
+          updatePriceDisplay(priceInPol);
+          console.log('USD rate updated:', rate);
+        }
+      })
+      .catch(function(err) {
+        console.warn('CoinGecko failed, using fallback USD rate:', err);
+        // Fallback: approximate POL price ~$0.40-0.50
+        currentUsdRate = 0.45;
+        if (currentPriceWei) {
+          var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
+          updatePriceDisplay(priceInPol);
+        }
+      });
   }
   
   function updatePriceDisplay(priceInPol) {
