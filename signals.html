@@ -609,7 +609,7 @@
       <div class="key-info">
         <span class="key-id" id="keyIdDisplay">Key #—</span>
         <span class="key-glyphs" id="keyGlyphs">—</span>
-        <span id="stealthBadge" style="display:none; background:rgba(139,92,246,0.2); color:#a78bfa; padding:2px 8px; border-radius:4px; font-size:10px; margin-left:8px; cursor:help;" title="Stealth Mode: Signals sent via anonymous relayer. No protocol fee, identity protected on-chain.">🔒 STEALTH</span>
+        <span id="stealthBadge" style="display:none; background:rgba(255,255,255,0.15); color:#ffffff; padding:2px 8px; border-radius:4px; font-size:10px; margin-left:8px; cursor:help;" title="Stealth Mode: Signals sent via anonymous relayer. No protocol fee, identity protected on-chain.">🔒 STEALTH</span>
       </div>
       <div class="key-stats">
         <div class="stat-group">
@@ -757,6 +757,7 @@
   var Z1N_SIGNAL = '0x85f0A512cd246A6e659E2D188763482F587dc9f7';
   var RPC_URL = 'https://rpc-amoy.polygon.technology';
   var EXPLORER = 'https://amoy.polygonscan.com';
+  var API_BASE = 'http://localhost:3001/api';  // Z1N API server for stealth relay
 
   // Fee constants (in wei)
   var SUBMISSION_FEE = '10000000000000000'; // 0.01 POL
@@ -1130,47 +1131,92 @@
       console.log('fee:', feeWei);
       console.log('stealthMode:', stealthMode);
 
-      var data;
-      
+      // ═══════════════════════════════════════════════════════════════════
+      // STEALTH MODE: Use Relayer API
+      // ═══════════════════════════════════════════════════════════════════
       if (stealthMode) {
-        // Stealth mode: use submitSignalRelayed
-        // NOTE: In production, this would go through a relayer service
-        // For testing, we'll try direct call (only works if connected as relayer)
-        var iface = new ethersLib.Interface([
-          'function submitSignalRelayed(uint256 tokenId, bytes32 signalHash, uint8 intent, bool isPrivate, uint8 symbolIndex, uint256 epochRef, bytes32 replyTo)'
-        ]);
+        statusEl.innerHTML = '<div class="status-msg pending">🔒 Stealth: Preparing signature request...</div>';
         
-        data = iface.encodeFunctionData('submitSignalRelayed', [
-          tokenId,
-          signalHash,
-          intent,
-          true,  // isPrivate
-          symbolIndex,
-          epochRef,
-          replyToBytes32
-        ]);
+        try {
+          // Step 1: Get the signing message from relayer
+          var relayerUrl = API_BASE + '/relay';
+          var messageUrl = relayerUrl + '/message/' + tokenId + '/' + currentEpoch + '/' + signalHash;
+          
+          var msgResponse = await fetch(messageUrl);
+          if (!msgResponse.ok) {
+            throw new Error('Failed to get signing message from relayer');
+          }
+          var msgData = await msgResponse.json();
+          
+          // Step 2: Sign the message with user's wallet
+          statusEl.innerHTML = '<div class="status-msg pending">🔒 Sign message to authorize anonymous relay...</div>';
+          
+          var signature = await provider.request({
+            method: 'personal_sign',
+            params: [msgData.message, currentAccount]
+          });
+          
+          // Step 3: Submit to relayer
+          statusEl.innerHTML = '<div class="status-msg pending">🔒 Submitting via anonymous relayer...</div>';
+          
+          var submitResponse = await fetch(relayerUrl + '/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              signature: signature,
+              keyId: tokenId,
+              signalHash: signalHash,
+              intent: intent,
+              symbolIndex: symbolIndex,
+              epochRef: epochRef,
+              replyTo: replyToBytes32
+            })
+          });
+          
+          var result = await submitResponse.json();
+          
+          if (result.success) {
+            signalsUsed++;
+            updateSignalDots();
+            statusEl.innerHTML = '<div class="status-msg success">🔒 Stealth signal relayed!<br><a href="' + EXPLORER + '/tx/' + result.txHash + '" target="_blank">View on Polygonscan</a></div>';
+            document.getElementById('signalContent').value = '';
+            updateCharCount();
+          } else {
+            throw new Error(result.error || 'Relay failed');
+          }
+          
+        } catch (stealthErr) {
+          console.error('Stealth relay error:', stealthErr);
+          var errMsg = stealthErr.message || 'Stealth relay failed';
+          if (errMsg.includes('user rejected') || errMsg.includes('User denied')) {
+            errMsg = 'Signature request cancelled';
+          }
+          statusEl.innerHTML = '<div class="status-msg error">' + errMsg + '</div>';
+        }
         
-        statusEl.innerHTML = '<div class="status-msg pending">🔒 Stealth: Preparing anonymous submission...</div>';
-        console.log('⚠️ Stealth mode: This will only work if connected wallet is the stealth relayer');
-      } else {
-        // Normal mode: use submitSignal with fee
-        var iface = new ethersLib.Interface([
-          'function submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint16 epochRef, bytes32 replyTo) payable'
-        ]);
-
-        data = iface.encodeFunctionData('submitSignal', [
-          tokenId,
-          signalHash,
-          cid,
-          symbolIndex,
-          intent,
-          signalTypeVal,
-          epochRef,
-          replyToBytes32
-        ]);
-        
-        statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet (fee: ' + (selectedIntent === 3 ? '0.015' : '0.01') + ' POL)...</div>';
+        return; // Exit early for stealth mode
       }
+
+      // ═══════════════════════════════════════════════════════════════════
+      // NORMAL MODE: Direct contract call with fee
+      // ═══════════════════════════════════════════════════════════════════
+      var data;
+      var iface = new ethersLib.Interface([
+        'function submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint16 epochRef, bytes32 replyTo) payable'
+      ]);
+
+      data = iface.encodeFunctionData('submitSignal', [
+        tokenId,
+        signalHash,
+        cid,
+        symbolIndex,
+        intent,
+        signalTypeVal,
+        epochRef,
+        replyToBytes32
+      ]);
+      
+      statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet (fee: ' + (selectedIntent === 3 ? '0.015' : '0.01') + ' POL)...</div>';
 
       console.log('Encoded data:', data);
       console.log('Data length:', data.length, 'chars =', (data.length - 2) / 2, 'bytes');
@@ -1618,8 +1664,14 @@
       if (stealthMode) {
         var pogFee = document.getElementById('pogFee');
         if (pogFee) {
-          pogFee.textContent = 'Free';
+          pogFee.textContent = 'Free (via Relayer)';
           pogFee.classList.add('free');
+        }
+        // Update the + gas text
+        var feeRow = pogFee?.parentElement;
+        if (feeRow) {
+          var gasSpan = feeRow.querySelector('span:last-child');
+          if (gasSpan) gasSpan.textContent = '+ relayer gas';
         }
       }
 
