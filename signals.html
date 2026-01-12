@@ -1132,16 +1132,60 @@
 
       statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
 
-      var txHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [{
+      // Try to estimate gas first via direct RPC
+      var gasEstimate;
+      try {
+        var gasResult = await rpcCall('eth_estimateGas', [{
           from: currentAccount,
           to: Z1N_SIGNAL,
           value: valueHex,
-          data: data,
-          gas: '0x60000'
-        }]
-      });
+          data: data
+        }]);
+        gasEstimate = gasResult;
+        console.log('Gas estimate from RPC:', gasEstimate, '=', parseInt(gasEstimate, 16));
+      } catch (gasErr) {
+        console.warn('Gas estimation via RPC failed:', gasErr.message || gasErr);
+        // Continue without gas estimate - MetaMask will estimate
+      }
+
+      // Build transaction object - minimal params, let MetaMask handle the rest
+      var txParams = {
+        from: currentAccount,
+        to: Z1N_SIGNAL,
+        value: valueHex,
+        data: data
+      };
+      
+      console.log('Sending transaction with params:', JSON.stringify(txParams, null, 2));
+
+      var txHash;
+      try {
+        txHash = await provider.request({
+          method: 'eth_sendTransaction',
+          params: [txParams]
+        });
+      } catch (sendErr) {
+        console.error('Send transaction error:', sendErr);
+        
+        // Check if it's the JSON-RPC error
+        if (sendErr.message && sendErr.message.includes('Internal JSON-RPC')) {
+          // Try with explicit gas
+          console.log('Retrying with explicit gas limit...');
+          txParams.gas = '0x100000'; // 1M gas
+          
+          try {
+            txHash = await provider.request({
+              method: 'eth_sendTransaction',
+              params: [txParams]
+            });
+          } catch (retryErr) {
+            console.error('Retry also failed:', retryErr);
+            throw retryErr;
+          }
+        } else {
+          throw sendErr;
+        }
+      }
 
       statusEl.innerHTML = '<div class="status-msg pending">Transaction submitted: ' + txHash.slice(0, 14) + '...</div>';
 
