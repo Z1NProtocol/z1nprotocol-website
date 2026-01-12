@@ -682,6 +682,14 @@
   var allConnectedAccounts = [];
 
   // ═══════════════════════════════════════════════════════════════════
+  // URL HELPERS
+  // ═══════════════════════════════════════════════════════════════════
+  function getUrlParam(name) {
+    var params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   // WALLET SELECTOR (for multiple connected accounts)
   // ═══════════════════════════════════════════════════════════════════
   function showWalletSelector(accounts) {
@@ -1145,7 +1153,21 @@
       var accounts = await eth.request({ method: 'eth_requestAccounts' });
       if (accounts && accounts.length > 0) {
         allConnectedAccounts = accounts;
-        currentAccount = accounts[0];
+        
+        // Check if wallet was specified in URL (from Signals page back link)
+        var walletParam = getUrlParam('wallet');
+        if (walletParam) {
+          var walletLower = walletParam.toLowerCase();
+          var found = accounts.find(function(a) { return a.toLowerCase() === walletLower; });
+          if (found) {
+            currentAccount = found;
+          } else {
+            currentAccount = accounts[0];
+          }
+        } else {
+          currentAccount = accounts[0];
+        }
+        
         provider = eth;
         
         // Show wallet selector if multiple accounts
@@ -1220,7 +1242,20 @@
         if (accounts && accounts.length > 0) {
           provider = eth;
           allConnectedAccounts = accounts;
-          currentAccount = accounts[0];
+          
+          // Check if wallet was specified in URL
+          var walletParam = getUrlParam('wallet');
+          if (walletParam) {
+            var walletLower = walletParam.toLowerCase();
+            var found = accounts.find(function(a) { return a.toLowerCase() === walletLower; });
+            if (found) {
+              currentAccount = found;
+            } else {
+              currentAccount = accounts[0];
+            }
+          } else {
+            currentAccount = accounts[0];
+          }
           
           // Show wallet selector if multiple accounts
           showWalletSelector(accounts);
