@@ -581,6 +581,10 @@
       </div>
       <div class="key-stats">
         <div class="stat-group">
+          <span class="stat-label">Wallet:</span>
+          <span id="activeWalletDisplay" style="font-family:monospace; font-size:11px; color:var(--keys-accent);">—</span>
+        </div>
+        <div class="stat-group">
           <span class="stat-label">Signals:</span>
           <div class="stat-dots" id="signalDots">
             <span class="dot-indicator open"></span>
@@ -894,7 +898,7 @@
       if (keyOwner.toLowerCase() !== currentAccount.toLowerCase()) {
         // Key not owned by selected wallet - show warning
         document.getElementById('keyIdDisplay').textContent = 'Key #' + keyId;
-        document.getElementById('keyGlyphs').innerHTML = '<span style="color:#f87171; font-size:13px;">⚠️ This Key belongs to a different wallet. <a href="/your-keys.html" style="color:var(--keys-accent);">Go back</a> and select the correct wallet.</span>';
+        document.getElementById('keyGlyphs').innerHTML = '<span style="color:#f87171; font-size:13px;">⚠️ Key owned by ' + keyOwner.slice(0,6) + '...' + keyOwner.slice(-4) + ', not current wallet. <a href="/your-keys.html" style="color:var(--keys-accent);">Go back</a> to select the right wallet.</span>';
         
         // Disable submit buttons
         var submitBtn = document.getElementById('btnSubmitPog');
@@ -1225,8 +1229,23 @@
         accounts = await provider.request({ method: 'eth_requestAccounts' });
       }
       
-      // Use first account (user should select wallet on Your Keys page)
-      currentAccount = accounts[0];
+      // Check if wallet was specified in URL (from Your Keys page)
+      var walletParam = getUrlParam('wallet');
+      if (walletParam) {
+        // Verify the specified wallet is in the connected accounts
+        var walletLower = walletParam.toLowerCase();
+        var found = accounts.find(function(a) { return a.toLowerCase() === walletLower; });
+        if (found) {
+          currentAccount = found;
+        } else {
+          // Wallet from URL not connected - show error
+          alert('The wallet ' + walletParam.slice(0,6) + '...' + walletParam.slice(-4) + ' is not connected. Please connect it in your wallet app or go back to Your Keys.');
+          currentAccount = accounts[0];
+        }
+      } else {
+        // No wallet specified, use first account
+        currentAccount = accounts[0];
+      }
 
       var chainId = await provider.request({ method: 'eth_chainId' });
       if (chainId !== CHAIN_ID) {
@@ -1272,6 +1291,12 @@
 
       document.getElementById('connectState').style.display = 'none';
       document.getElementById('mainContent').style.display = 'block';
+      
+      // Show which wallet is active
+      var walletDisplay = document.getElementById('activeWalletDisplay');
+      if (walletDisplay) {
+        walletDisplay.textContent = currentAccount.slice(0, 6) + '...' + currentAccount.slice(-4);
+      }
 
       await loadKeyData(currentKeyId);
 
