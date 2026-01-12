@@ -1006,7 +1006,7 @@ flow := {
   // ═══════════════════════════════════════════════════════════════════
   // MINT KEY
   // ═══════════════════════════════════════════════════════════════════
-  function mintKey() {
+  async function mintKey() {
     console.log('mintKey called', { selectedProvider: !!selectedProvider, currentAccount, ritualSigned, currentPriceWei });
     
     if (!selectedProvider) {
@@ -1033,35 +1033,52 @@ flow := {
       return;
     }
 
-    if (!currentPriceWei) {
-      if (mintStatus) {
-        mintStatus.textContent = "Price not loaded. Please refresh.";
-        mintStatus.className = "status-text status-error";
-      }
-      return;
-    }
-
-    btnMint.textContent = 'Minting...';
+    btnMint.textContent = 'Checking price...';
     btnMint.disabled = true;
 
     if (mintStatus) {
-      mintStatus.textContent = "Confirm transaction in wallet...";
+      mintStatus.textContent = "Fetching latest price...";
       mintStatus.className = "status-text";
     }
 
-    var valueHex = '0x' + BigInt(currentPriceWei).toString(16);
+    // ALWAYS refresh price before minting to avoid "Insufficient payment"
+    try {
+      var priceSelector = '0x9d1b464a'; // currentPrice()
+      var priceResult = await rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: priceSelector }, 'latest']);
+      currentPriceWei = BigInt(priceResult).toString();
+      
+      // Add 1% buffer for safety (in case epoch changes during tx)
+      var priceWithBuffer = (BigInt(currentPriceWei) * BigInt(101)) / BigInt(100);
+      var priceInPol = Number(priceWithBuffer) / 1e18;
+      
+      console.log('Fresh price:', { 
+        exact: Number(BigInt(currentPriceWei)) / 1e18,
+        withBuffer: priceInPol 
+      });
+      
+      // Update display
+      if (priceMain) priceMain.textContent = priceInPol.toFixed(3) + ' POL';
+      
+      if (mintStatus) {
+        mintStatus.textContent = "Confirm transaction in wallet...";
+        mintStatus.className = "status-text";
+      }
+      
+      btnMint.textContent = 'Minting...';
 
-    selectedProvider.request({
-      method: 'eth_sendTransaction',
-      params: [{
-        from: currentAccount,
-        to: ISSUANCE_CONTROLLER,
-        value: valueHex,
-        data: '0x8c874ebd', // mintPublic() - V2 selector
-        gas: '0x100000' // 1,048,576 - enough for glyph generation
-      }]
-    })
-    .then(function(txHash) {
+      var valueHex = '0x' + priceWithBuffer.toString(16);
+
+      var txHash = await selectedProvider.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: currentAccount,
+          to: ISSUANCE_CONTROLLER,
+          value: valueHex,
+          data: '0x8c874ebd', // mintPublic() - V2 selector
+          gas: '0x100000' // 1,048,576 - enough for glyph generation
+        }]
+      });
+      
       if (mintStatus) {
         mintStatus.textContent = "Transaction submitted: " + txHash.slice(0, 10) + "...";
         mintStatus.className = "status-text";
@@ -1097,8 +1114,8 @@ flow := {
           }
         }).catch(function() {});
       }, 2000);
-    })
-    .catch(function(err) {
+      
+    } catch (err) {
       console.log('Mint error:', err);
       btnMint.textContent = 'Mint your Key';
       btnMint.disabled = false;
@@ -1108,12 +1125,15 @@ flow := {
           mintStatus.textContent = "Transaction rejected by user.";
         } else if (errMsg.includes('insufficient funds')) {
           mintStatus.textContent = "Insufficient POL balance.";
+        } else if (errMsg.includes('Insufficient payment')) {
+          mintStatus.textContent = "Price increased. Please try again.";
+          loadEpochAndPrice(); // Refresh price
         } else {
           mintStatus.textContent = "Mint failed: " + errMsg.slice(0, 100);
         }
         mintStatus.className = "status-text status-error";
       }
-    });
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
