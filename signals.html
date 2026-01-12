@@ -745,6 +745,13 @@
       font-weight: 600;
       color: var(--keys-accent);
     }
+    
+    /* NEW: Key glyphs in signal card */
+    .signal-key-glyphs {
+      font-size: 10px;
+      color: var(--text-soft);
+      font-family: "Segoe UI Symbol", "Apple Symbols", sans-serif;
+    }
 
     .signal-intent {
       padding: 2px 6px;
@@ -2165,7 +2172,8 @@
       var params = new URLSearchParams();
       params.append('limit', modalLimit);
       params.append('offset', modalOffset);
-      params.append('excludeSilence', 'true');
+      // REMOVED: excludeSilence - now show ALL signals including silence
+      // params.append('excludeSilence', 'true');
       
       var keyIdFilter = document.getElementById('filterKeyId').value.trim();
       if (keyIdFilter) {
@@ -2262,13 +2270,18 @@
       var contentText = sig.content || sig.cid || '[No content]';
       var isLong = contentText.length > 80;
       
+      // FIX 1: Show attestCount instead of weight (remove ×100 multiplier effect)
+      // FIX 2: Add glyphs next to Key ID
+      var glyphsDisplay = sig.keyGlyphs ? '<span class="signal-key-glyphs">' + sig.keyGlyphs + '</span>' : '';
+      
       card.innerHTML = 
         '<div class="signal-header">' +
           '<div class="signal-meta">' +
             '<span class="signal-key">K#' + sig.keyId + '</span>' +
+            glyphsDisplay +
             '<span class="signal-intent ' + intentClass + '">' + sig.intentSymbol + '</span>' +
             '<span class="signal-epoch">E' + sig.epoch + '</span>' +
-            '<span class="signal-weight" style="color:#fbbf24;">🔥' + (sig.weight || sig.attestCount || 0) + '</span>' +
+            '<span class="signal-attests" style="color:#fbbf24;">✓' + (sig.attestCount || 0) + '</span>' +
           '</div>' +
           '<span class="signal-time">' + sig.timeAgo + '</span>' +
         '</div>' +
@@ -2345,7 +2358,7 @@
     loadSignalsForModal(true);
   };
 
-  // CSV Download - ALL signals (including silence)
+  // CSV Download - ALL signals with Glyphs column
   window.downloadSignalsCSV = async function() {
     var btn = event.target;
     var originalText = btn.textContent;
@@ -2353,11 +2366,11 @@
     btn.disabled = true;
     
     try {
-      // Fetch ALL signals with current filters (no excludeSilence, up to 10000)
+      // Fetch ALL signals with current filters (up to 10000)
       var params = new URLSearchParams();
       params.append('limit', '10000');
       params.append('offset', '0');
-      // Don't exclude silence for CSV export
+      // Include all signals (no excludeSilence)
       
       var keyIdFilter = document.getElementById('filterKeyId').value.trim();
       if (keyIdFilter) params.append('keyId', keyIdFilter);
@@ -2381,16 +2394,17 @@
       }
       
       // Build CSV with UTF-8 BOM for proper encoding of Ω symbols
+      // FIX: Added Glyphs column, removed Weight column
       var BOM = '\uFEFF';
-      var csv = BOM + 'Hash,KeyID,Epoch,Intent,Weight,Attestations,CID,TimeAgo\n';
+      var csv = BOM + 'Hash,KeyID,Glyphs,Epoch,Intent,Attestations,CID,TimeAgo\n';
       data.signals.forEach(function(s) {
         csv += '"' + s.hash + '",' + 
                s.keyId + ',' + 
+               '"' + (s.keyGlyphs || '') + '",' + 
                s.epoch + ',' + 
                '"' + s.intentSymbol + '",' + 
-               (s.weight || 0) + ',' + 
                (s.attestCount || 0) + ',' + 
-               '"' + (s.cid || '') + '",' + 
+               '"' + (s.cid || '').replace(/"/g, '""') + '",' + 
                '"' + s.timeAgo + '"\n';
       });
       
