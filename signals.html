@@ -565,6 +565,310 @@
       border-color: var(--keys-accent);
     }
 
+    /* REPLY MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--keys-accent);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-soft);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text-main);
+    }
+
+    .modal-filters {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .filter-input {
+      width: 70px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-main);
+      font-size: 12px;
+    }
+
+    .filter-input:focus {
+      outline: none;
+      border-color: var(--keys-accent);
+    }
+
+    .filter-select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-main);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--keys-accent);
+    }
+
+    .filter-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--keys-accent);
+      color: var(--keys-accent);
+    }
+
+    .filter-btn.active {
+      border-color: var(--keys-accent);
+      background: rgba(245, 200, 66, 0.15);
+      color: var(--keys-accent);
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 20px;
+    }
+
+    .signals-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .signal-card {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .signal-card:hover {
+      border-color: var(--keys-accent);
+      background: rgba(245, 200, 66, 0.05);
+    }
+
+    .signal-card.selected {
+      border-color: var(--keys-accent);
+      background: rgba(245, 200, 66, 0.1);
+    }
+
+    .signal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .signal-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .signal-key {
+      font-weight: 600;
+      color: var(--keys-accent);
+    }
+
+    .signal-intent {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .signal-intent.oc { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+    .signal-intent.oi { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+    .signal-intent.ok { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+    .signal-intent.os { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+
+    .signal-epoch {
+      color: var(--text-soft);
+      font-size: 11px;
+    }
+
+    .signal-time {
+      color: var(--text-soft);
+      font-size: 11px;
+    }
+
+    .signal-content {
+      font-size: 13px;
+      color: var(--text-main);
+      line-height: 1.4;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+
+    .signal-content.silence {
+      font-style: italic;
+      color: var(--text-soft);
+    }
+
+    .signal-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .signal-stats .attests {
+      color: var(--accent);
+    }
+
+    .signal-hash {
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--text-soft);
+      opacity: 0.7;
+    }
+
+    .load-more-btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px dashed var(--card-border);
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .load-more-btn:hover {
+      border-color: var(--keys-accent);
+      color: var(--keys-accent);
+    }
+
+    .no-signals {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-soft);
+    }
+
+    .loading-signals {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-soft);
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .selected-signal-info {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .selected-signal-info .hash {
+      font-family: monospace;
+      color: var(--keys-accent);
+    }
+
+    .btn-select-signal {
+      padding: 8px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--keys-accent);
+      background: rgba(245, 200, 66, 0.2);
+      color: var(--keys-accent);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-select-signal:hover:not([disabled]) {
+      background: rgba(245, 200, 66, 0.3);
+    }
+
+    .btn-select-signal[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 600px) {
       .intent-grid { grid-template-columns: repeat(2, 1fr); }
@@ -652,8 +956,18 @@
 
         <!-- Reply To Section (hidden by default) -->
         <div class="reply-section" id="replySection">
-          <div class="reply-label">Signal Hash to reply to:</div>
-          <input type="text" class="reply-input" id="replyToHash" placeholder="0x...">
+          <div class="reply-label">Signal to reply to:</div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input type="text" class="reply-input" id="replyToHash" placeholder="0x... or click Browse" style="flex:1;">
+            <button type="button" onclick="openReplyModal()" style="padding:8px 14px; border-radius:6px; border:1px solid var(--keys-accent); background:transparent; color:var(--keys-accent); font-size:12px; cursor:pointer; white-space:nowrap;">📋 Browse</button>
+          </div>
+          <div id="selectedSignalPreview" style="display:none; margin-top:10px; padding:10px; background:rgba(245,200,66,0.1); border-radius:8px; font-size:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span id="previewMeta"></span>
+              <button type="button" onclick="clearReplySelection()" style="background:none; border:none; color:var(--text-soft); cursor:pointer; font-size:14px;">✕</button>
+            </div>
+            <div id="previewContent" style="margin-top:6px; color:var(--text-main);"></div>
+          </div>
         </div>
 
         <!-- Intent Selector -->
@@ -747,6 +1061,58 @@
 
   </div>
 </main>
+
+<!-- REPLY TO MODAL -->
+<div class="modal-overlay" id="replyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">📋 Select Signal to Reply To</span>
+      <button class="modal-close" onclick="closeReplyModal()">&times;</button>
+    </div>
+    
+    <div class="modal-filters">
+      <div class="filter-group">
+        <span class="filter-label">Key ID:</span>
+        <input type="number" class="filter-input" id="filterKeyId" placeholder="Any" min="0">
+      </div>
+      
+      <div class="filter-group">
+        <span class="filter-label">Epoch:</span>
+        <select class="filter-select" id="filterEpoch">
+          <option value="">Recent (3 epochs)</option>
+          <option value="current">Current only</option>
+          <option value="all">All epochs</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <span class="filter-label">Sort:</span>
+        <select class="filter-select" id="filterSort">
+          <option value="recent">Most Recent</option>
+          <option value="attested">Most Attested</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+      </div>
+      
+      <button class="filter-btn" onclick="applyFilters()">🔍 Filter</button>
+      <button class="filter-btn" onclick="resetFilters()">↺ Reset</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="loading-signals" id="signalsLoading">Loading signals...</div>
+      <div class="no-signals" id="noSignals" style="display:none;">No signals found matching your filters.</div>
+      <div class="signals-list" id="signalsList"></div>
+      <button class="load-more-btn" id="loadMoreBtn" onclick="loadMoreSignals()" style="display:none;">Load More Signals...</button>
+    </div>
+    
+    <div class="modal-footer">
+      <div class="selected-signal-info" id="selectedInfo">
+        No signal selected
+      </div>
+      <button class="btn-select-signal" id="btnConfirmSelect" onclick="confirmSignalSelection()" disabled>Select Signal</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function() {
@@ -1703,6 +2069,231 @@
       alert('Connection failed: ' + e.message);
     }
   }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // REPLY MODAL FUNCTIONS
+  // ═══════════════════════════════════════════════════════════════════
+  var modalSignals = [];
+  var modalOffset = 0;
+  var modalLimit = 15;
+  var selectedSignal = null;
+  var modalHasMore = false;
+
+  window.openReplyModal = function() {
+    document.getElementById('replyModal').classList.add('active');
+    resetFilters();
+    loadSignalsForModal();
+  };
+
+  window.closeReplyModal = function() {
+    document.getElementById('replyModal').classList.remove('active');
+  };
+
+  window.resetFilters = function() {
+    document.getElementById('filterKeyId').value = '';
+    document.getElementById('filterEpoch').value = '';
+    document.getElementById('filterSort').value = 'recent';
+    modalOffset = 0;
+    selectedSignal = null;
+    updateSelectedInfo();
+  };
+
+  window.applyFilters = function() {
+    modalOffset = 0;
+    selectedSignal = null;
+    updateSelectedInfo();
+    loadSignalsForModal();
+  };
+
+  async function loadSignalsForModal(append) {
+    var listEl = document.getElementById('signalsList');
+    var loadingEl = document.getElementById('signalsLoading');
+    var noSignalsEl = document.getElementById('noSignals');
+    var loadMoreBtn = document.getElementById('loadMoreBtn');
+    
+    if (!append) {
+      listEl.innerHTML = '';
+      loadingEl.style.display = 'block';
+      noSignalsEl.style.display = 'none';
+      loadMoreBtn.style.display = 'none';
+    }
+    
+    try {
+      // Build query params
+      var params = new URLSearchParams();
+      params.append('limit', modalLimit);
+      params.append('offset', modalOffset);
+      params.append('excludeSilence', 'true'); // Can't reply to silence signals
+      
+      var keyIdFilter = document.getElementById('filterKeyId').value;
+      if (keyIdFilter) {
+        params.append('keyId', keyIdFilter);
+      }
+      
+      var epochFilter = document.getElementById('filterEpoch').value;
+      if (epochFilter === 'current') {
+        params.append('epoch', currentEpoch);
+      } else if (epochFilter === '') {
+        // Recent: last 3 epochs
+        params.append('minEpoch', Math.max(0, currentEpoch - 2));
+      }
+      // 'all' = no epoch filter
+      
+      var sortFilter = document.getElementById('filterSort').value;
+      params.append('sort', sortFilter);
+      
+      var response = await fetch(API_BASE + '/signals?' + params.toString());
+      
+      if (!response.ok) {
+        throw new Error('Failed to load signals');
+      }
+      
+      var data = await response.json();
+      
+      loadingEl.style.display = 'none';
+      
+      if (data.signals.length === 0 && !append) {
+        noSignalsEl.style.display = 'block';
+        loadMoreBtn.style.display = 'none';
+        return;
+      }
+      
+      modalSignals = append ? modalSignals.concat(data.signals) : data.signals;
+      modalHasMore = data.hasMore;
+      
+      renderSignalsList(data.signals, append);
+      
+      loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
+      
+    } catch (err) {
+      console.error('Load signals error:', err);
+      loadingEl.style.display = 'none';
+      noSignalsEl.textContent = 'Error loading signals. Make sure the API server is running.';
+      noSignalsEl.style.display = 'block';
+    }
+  }
+
+  function renderSignalsList(signals, append) {
+    var listEl = document.getElementById('signalsList');
+    
+    signals.forEach(function(sig) {
+      var card = document.createElement('div');
+      card.className = 'signal-card';
+      card.dataset.hash = sig.hash;
+      card.onclick = function() { selectSignalCard(sig); };
+      
+      var intentClass = sig.intentSymbol.toLowerCase().replace('ω', 'o');
+      var contentClass = sig.intent === 3 ? 'silence' : '';
+      var contentText = sig.content || '[No content]';
+      if (contentText.length > 120) {
+        contentText = contentText.slice(0, 120) + '...';
+      }
+      
+      card.innerHTML = 
+        '<div class="signal-header">' +
+          '<div class="signal-meta">' +
+            '<span class="signal-key">K#' + sig.keyId + '</span>' +
+            '<span class="signal-intent ' + intentClass + '">' + sig.intentSymbol + '</span>' +
+            '<span class="signal-epoch">Epoch ' + sig.epoch + '</span>' +
+          '</div>' +
+          '<span class="signal-time">' + sig.timeAgo + '</span>' +
+        '</div>' +
+        '<div class="signal-content ' + contentClass + '">' + escapeHtml(contentText) + '</div>' +
+        '<div class="signal-stats">' +
+          '<span class="attests">🔥 ' + (sig.attestCount || 0) + ' attests</span>' +
+          '<span class="signal-hash">' + sig.hash.slice(0, 14) + '...</span>' +
+        '</div>';
+      
+      listEl.appendChild(card);
+    });
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function selectSignalCard(sig) {
+    // Deselect previous
+    document.querySelectorAll('.signal-card.selected').forEach(function(el) {
+      el.classList.remove('selected');
+    });
+    
+    // Select new
+    var card = document.querySelector('.signal-card[data-hash="' + sig.hash + '"]');
+    if (card) {
+      card.classList.add('selected');
+    }
+    
+    selectedSignal = sig;
+    updateSelectedInfo();
+  }
+
+  function updateSelectedInfo() {
+    var infoEl = document.getElementById('selectedInfo');
+    var btnEl = document.getElementById('btnConfirmSelect');
+    
+    if (selectedSignal) {
+      infoEl.innerHTML = 'Selected: <span class="hash">' + selectedSignal.hash.slice(0, 18) + '...</span> (K#' + selectedSignal.keyId + ' · ' + selectedSignal.intentSymbol + ')';
+      btnEl.disabled = false;
+    } else {
+      infoEl.textContent = 'No signal selected';
+      btnEl.disabled = true;
+    }
+  }
+
+  window.loadMoreSignals = function() {
+    modalOffset += modalLimit;
+    loadSignalsForModal(true);
+  };
+
+  window.confirmSignalSelection = function() {
+    if (!selectedSignal) return;
+    
+    // Set the hash in the input
+    document.getElementById('replyToHash').value = selectedSignal.hash;
+    
+    // Show preview
+    var previewEl = document.getElementById('selectedSignalPreview');
+    var metaEl = document.getElementById('previewMeta');
+    var contentEl = document.getElementById('previewContent');
+    
+    metaEl.innerHTML = '<span style="color:var(--keys-accent);">K#' + selectedSignal.keyId + '</span> · ' + 
+                       '<span style="color:' + (selectedSignal.intentColor || '#888') + ';">' + selectedSignal.intentSymbol + '</span> · ' +
+                       'Epoch ' + selectedSignal.epoch;
+    
+    var previewText = selectedSignal.content || '[Silence]';
+    if (previewText.length > 100) {
+      previewText = previewText.slice(0, 100) + '...';
+    }
+    contentEl.textContent = previewText;
+    
+    previewEl.style.display = 'block';
+    
+    // Close modal
+    closeReplyModal();
+  };
+
+  window.clearReplySelection = function() {
+    document.getElementById('replyToHash').value = '';
+    document.getElementById('selectedSignalPreview').style.display = 'none';
+    selectedSignal = null;
+  };
+
+  // Close modal on overlay click
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal-overlay')) {
+      closeReplyModal();
+    }
+  });
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeReplyModal();
+    }
+  });
 
   // ═══════════════════════════════════════════════════════════════════
   // INIT
