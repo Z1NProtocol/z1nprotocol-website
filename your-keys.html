@@ -493,6 +493,86 @@
       *{ scroll-behavior:auto !important; }
       .key-card{ transition:none; }
     }
+
+    /* STEALTH TOGGLE */
+    .settings-section {
+      border-top: 1px solid rgba(148, 163, 184, 0.15);
+      padding-top: 12px;
+      margin-top: 8px;
+    }
+
+    .stealth-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-container {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+
+    .toggle-container input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(148, 163, 184, 0.3);
+      border-radius: 22px;
+      transition: 0.3s;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: var(--text-soft);
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    .toggle-container input:checked + .toggle-slider {
+      background-color: rgba(139, 92, 246, 0.5);
+    }
+
+    .toggle-container input:checked + .toggle-slider:before {
+      transform: translateX(18px);
+      background-color: #a78bfa;
+    }
+
+    .toggle-label {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .toggle-container input:checked ~ .toggle-label {
+      color: #a78bfa;
+    }
+
+    .stealth-info {
+      font-size: 12px;
+      color: var(--text-soft);
+      cursor: help;
+      opacity: 0.7;
+    }
+
+    .stealth-info:hover {
+      opacity: 1;
+      color: var(--keys-accent);
+    }
   </style>
 </head>
 
@@ -971,6 +1051,43 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // STEALTH MODE
+  // ═══════════════════════════════════════════════════════════════════
+  function isStealthEnabled(keyId) {
+    try {
+      var settings = JSON.parse(localStorage.getItem('z1n_stealth_keys') || '{}');
+      return settings[keyId] === true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function toggleStealth(keyId, enabled) {
+    try {
+      var settings = JSON.parse(localStorage.getItem('z1n_stealth_keys') || '{}');
+      settings[keyId] = enabled;
+      localStorage.setItem('z1n_stealth_keys', JSON.stringify(settings));
+      
+      // Update label color
+      var checkbox = document.getElementById('stealth-' + keyId);
+      if (checkbox) {
+        var label = checkbox.closest('.stealth-toggle').querySelector('.toggle-label');
+        if (label) {
+          label.style.color = enabled ? '#a78bfa' : '';
+        }
+      }
+      
+      console.log('Stealth mode for Key #' + keyId + ':', enabled ? 'ON' : 'OFF');
+    } catch (e) {
+      console.error('Failed to save stealth setting:', e);
+    }
+  }
+
+  // Make toggleStealth globally accessible
+  window.toggleStealth = toggleStealth;
+  window.isStealthEnabled = isStealthEnabled;
+
+  // ═══════════════════════════════════════════════════════════════════
   // RENDER KEY CARD
   // ═══════════════════════════════════════════════════════════════════
   function renderKeyCard(key) {
@@ -1036,6 +1153,19 @@
         '<div class="artefact-actions">' +
           '<a href="mint-live-artefact.html?key=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount) + '" class="mint-btn" onclick="event.stopPropagation()">+ Mint Live</a>' +
           '<a href="mint-static-artefact.html?key=' + key.tokenId + '&wallet=' + encodeURIComponent(currentAccount) + '" class="mint-btn" onclick="event.stopPropagation()">+ Mint Static</a>' +
+        '</div>' +
+      '</div>' +
+      
+      // SETTINGS SECTION
+      '<div class="card-section settings-section">' +
+        '<div class="section-header">Settings</div>' +
+        '<div class="stealth-toggle" onclick="event.stopPropagation()">' +
+          '<label class="toggle-container">' +
+            '<input type="checkbox" id="stealth-' + key.tokenId + '" onchange="toggleStealth(' + key.tokenId + ', this.checked)"' + (isStealthEnabled(key.tokenId) ? ' checked' : '') + '>' +
+            '<span class="toggle-slider"></span>' +
+          '</label>' +
+          '<span class="toggle-label">Stealth Mode</span>' +
+          '<span class="stealth-info" title="When enabled, PoG signals are sent via the Stealth Relayer for enhanced privacy. No protocol fee, your wallet identity is protected on-chain. Requires relayer service.">ⓘ</span>' +
         '</div>' +
       '</div>';
 
