@@ -307,7 +307,7 @@
 
     .char-count { color: var(--keys-accent); }
 
-    textarea, input[type="text"] {
+    textarea, input[type="text"], input[type="number"] {
       width: 100%;
       padding: 10px 12px;
       border-radius: 8px;
@@ -324,7 +324,7 @@
       resize: vertical;
     }
 
-    textarea:focus, input[type="text"]:focus {
+    textarea:focus, input[type="text"]:focus, input[type="number"]:focus {
       outline: none;
       border-color: var(--keys-accent);
     }
@@ -335,8 +335,18 @@
     }
 
     /* Pure card inputs - white border on focus */
-    .pure-card textarea:focus, .pure-card input[type="text"]:focus {
+    .pure-card textarea:focus, .pure-card input[type="text"]:focus, .pure-card input[type="number"]:focus {
       border-color: var(--text-main);
+    }
+    
+    /* Number input - hide spinners */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
     }
 
     /* CARD SPACER - pushes footer to bottom */
@@ -671,17 +681,20 @@
           No fee, no attestation, no game impact. Unlimited whispers between Keys.
         </p>
 
+        <!-- Recipient Key ID (aligned with Intent row) -->
+        <div class="input-group">
+          <div class="input-label">Recipient Key ID (0 = broadcast)</div>
+          <input type="number" id="pureRecipient" value="0" min="0" placeholder="0" oninput="debounceValidateRecipient()">
+          <div id="recipientError" style="display:none; color:#f87171; font-size:11px; margin-top:4px;">⚠️ Key ID does not exist</div>
+        </div>
+
+        <!-- Message (aligned with Signal Content) -->
         <div class="input-group">
           <div class="input-label">
             <span>Message</span>
             <span class="char-count" id="pureCharCount">0 / 500</span>
           </div>
           <textarea id="pureContent" placeholder="Your whisper..." maxlength="500" oninput="updatePureCharCount()"></textarea>
-        </div>
-
-        <div class="input-group">
-          <div class="input-label">Recipient Key ID (0 = broadcast)</div>
-          <input type="number" id="pureRecipient" value="0" min="0" style="text-align:center;">
         </div>
 
         <!-- Spacer -->
@@ -1208,6 +1221,52 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  // VALIDATE RECIPIENT KEY
+  // ═══════════════════════════════════════════════════════════════════
+  var recipientKeyValid = true;
+  var validateTimeout = null;
+  
+  window.debounceValidateRecipient = function() {
+    clearTimeout(validateTimeout);
+    validateTimeout = setTimeout(validateRecipientKey, 500);
+  };
+  
+  window.validateRecipientKey = async function() {
+    var input = document.getElementById('pureRecipient');
+    var errorEl = document.getElementById('recipientError');
+    var submitBtn = document.getElementById('btnSubmitPure');
+    var keyId = parseInt(input.value, 10);
+    
+    // 0 is always valid (broadcast)
+    if (isNaN(keyId) || keyId === 0) {
+      errorEl.style.display = 'none';
+      input.style.borderColor = '';
+      recipientKeyValid = true;
+      return;
+    }
+    
+    try {
+      // Check if key exists by calling ownerOf
+      var data = SEL.ownerOf + encodeUint256(keyId);
+      var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: data }, 'latest']);
+      
+      // If we get a result with an address (not all zeros), key exists
+      if (result && result !== '0x' && result !== '0x0000000000000000000000000000000000000000000000000000000000000000') {
+        errorEl.style.display = 'none';
+        input.style.borderColor = 'rgba(74, 222, 128, 0.5)';
+        recipientKeyValid = true;
+      } else {
+        throw new Error('Key does not exist');
+      }
+    } catch (e) {
+      // Key doesn't exist
+      errorEl.style.display = 'block';
+      input.style.borderColor = '#f87171';
+      recipientKeyValid = false;
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
   // SUBMIT PURE SIGNAL
   // ═══════════════════════════════════════════════════════════════════
   window.submitPureSignal = async function() {
@@ -1221,6 +1280,15 @@
       toKeyId = parseInt(recipientInput, 10);
       if (isNaN(toKeyId) || toKeyId < 0) {
         statusEl.innerHTML = '<div class="status-msg error">Invalid recipient Key ID. Use 0 for broadcast.</div>';
+        return;
+      }
+    }
+    
+    // Validate recipient key exists (if not 0)
+    if (toKeyId !== 0) {
+      await validateRecipientKey();
+      if (!recipientKeyValid) {
+        statusEl.innerHTML = '<div class="status-msg error">Recipient Key ID does not exist.</div>';
         return;
       }
     }
@@ -1243,6 +1311,13 @@
     statusEl.innerHTML = '<div class="status-msg pending">Preparing whisper...</div>';
 
     try {
+      // Verify we're on the right chain
+      var chainId = await provider.request({ method: 'eth_chainId' });
+      if (chainId !== CHAIN_ID) {
+        statusEl.innerHTML = '<div class="status-msg error">Wrong network. Please switch to Polygon Amoy.</div>';
+        return;
+      }
+      
       // Load ethers if not already loaded
       await loadEthers();
       
@@ -1284,6 +1359,7 @@
       
     } catch (err) {
       console.error('Pure Signal error:', err);
+      console.error('Error details:', JSON.stringify(err, null, 2));
       var errorMsg = parsePureError(err);
       statusEl.innerHTML = '<div class="status-msg error">' + errorMsg + '</div>';
     }
@@ -1298,12 +1374,21 @@
     if (msg.includes('NotTokenOwner') || msg.includes('not the owner')) {
       return 'You do not own this Key.';
     }
-    if (msg.includes('InvalidRecipient')) {
-      return 'Invalid recipient Key ID.';
+    if (msg.includes('InvalidRecipient') || msg.includes('ERC721NonexistentToken')) {
+      return 'Recipient Key ID does not exist.';
+    }
+    if (msg.includes('execution reverted')) {
+      // Try to extract the reason
+      var reason = msg.match(/reason="([^"]+)"/);
+      if (reason) return 'Contract error: ' + reason[1];
+      return 'Transaction reverted - check Key ownership and recipient.';
+    }
+    if (msg.includes('Internal JSON-RPC error')) {
+      return 'Transaction failed - the recipient Key may not exist or you may not own the sending Key.';
     }
     
     // Generic error
-    return 'Whisper failed: ' + msg.slice(0, 80);
+    return 'Whisper failed: ' + msg.slice(0, 100);
   }
   
   function pollForPureReceipt(txHash, statusEl) {
