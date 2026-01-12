@@ -768,6 +768,12 @@
     .signal-epoch {
       color: var(--text-soft);
       font-size: 11px;
+      cursor: help;
+    }
+
+    .signal-attests {
+      font-size: 11px;
+      cursor: help;
     }
 
     .signal-time {
@@ -1131,6 +1137,14 @@
       
       <button class="filter-btn" onclick="resetFilters()">↺ Reset</button>
       <button class="filter-btn" onclick="downloadSignalsCSV()" title="Download all filtered signals as CSV">📥 CSV</button>
+    </div>
+    
+    <!-- LEGEND -->
+    <div style="padding:8px 20px; border-bottom:1px solid var(--card-border); font-size:10px; color:var(--text-soft); display:flex; gap:16px; flex-wrap:wrap;">
+      <span title="Key ID and Glyphs"><strong style="color:var(--keys-accent);">K#</strong> = Key ID</span>
+      <span title="Intent Layer: ΩC=Collective, ΩI=Individual, ΩK=Co-Create, ΩS=Silence"><strong style="color:#4ade80;">ΩC</strong>/<strong style="color:#f87171;">ΩI</strong>/<strong style="color:#fbbf24;">ΩK</strong>/<strong style="color:#60a5fa;">ΩS</strong> = Intent</span>
+      <span title="Epoch number"><strong>Epoch</strong> = Time period</span>
+      <span title="Number of attestations received"><strong style="color:#fbbf24;">✓</strong> = Attestations</span>
     </div>
     
     <div class="modal-body">
@@ -2267,11 +2281,13 @@
       
       var intentClass = sig.intentSymbol.toLowerCase().replace('ω', 'o');
       var contentClass = sig.intent === 3 ? 'silence' : '';
-      var contentText = sig.content || sig.cid || '[No content]';
-      var isLong = contentText.length > 80;
       
-      // FIX 1: Show attestCount instead of weight (remove ×100 multiplier effect)
-      // FIX 2: Add glyphs next to Key ID
+      // Show full CID content, not truncated "Signal ipfs://..."
+      var contentText = sig.cid || sig.content || '[No content]';
+      if (sig.intent === 3) contentText = '[Silence - no content]';
+      var isLong = contentText.length > 100;
+      
+      // Glyphs display
       var glyphsDisplay = sig.keyGlyphs ? '<span class="signal-key-glyphs">' + sig.keyGlyphs + '</span>' : '';
       
       card.innerHTML = 
@@ -2280,8 +2296,8 @@
             '<span class="signal-key">K#' + sig.keyId + '</span>' +
             glyphsDisplay +
             '<span class="signal-intent ' + intentClass + '">' + sig.intentSymbol + '</span>' +
-            '<span class="signal-epoch">E' + sig.epoch + '</span>' +
-            '<span class="signal-attests" style="color:#fbbf24;">✓' + (sig.attestCount || 0) + '</span>' +
+            '<span class="signal-epoch" title="Epoch ' + sig.epoch + '">Epoch ' + sig.epoch + '</span>' +
+            '<span class="signal-attests" style="color:#fbbf24;" title="' + (sig.attestCount || 0) + ' attestations">✓' + (sig.attestCount || 0) + '</span>' +
           '</div>' +
           '<span class="signal-time">' + sig.timeAgo + '</span>' +
         '</div>' +
@@ -2368,7 +2384,7 @@
     try {
       // Fetch ALL signals with current filters (up to 10000)
       var params = new URLSearchParams();
-      params.append('limit', '10000');
+      params.append('limit', '10000');  // Request max
       params.append('offset', '0');
       // Include all signals (no excludeSilence)
       
@@ -2382,42 +2398,67 @@
       
       params.append('sort', document.getElementById('filterSort').value);
       
-      console.log('CSV fetch:', API_BASE + '/signals?' + params.toString());
-      var response = await fetch(API_BASE + '/signals?' + params.toString());
+      var url = API_BASE + '/signals?' + params.toString();
+      console.log('CSV fetch URL:', url);
+      
+      btn.textContent = '⏳ Fetching...';
+      var response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error('Server error: ' + response.status);
+      }
+      
       var data = await response.json();
       
-      console.log('CSV data:', data.total, 'total,', data.signals?.length, 'returned');
+      console.log('CSV response:', {
+        total: data.total,
+        returned: data.signals?.length,
+        hasMore: data.hasMore
+      });
       
       if (!data.signals || data.signals.length === 0) {
         alert('No signals to download');
         return;
       }
       
+      btn.textContent = '⏳ Building CSV...';
+      
       // Build CSV with UTF-8 BOM for proper encoding of Ω symbols
-      // FIX: Added Glyphs column, removed Weight column
       var BOM = '\uFEFF';
       var csv = BOM + 'Hash,KeyID,Glyphs,Epoch,Intent,Attestations,CID,TimeAgo\n';
+      
       data.signals.forEach(function(s) {
+        // Escape quotes in CID
+        var cidEscaped = (s.cid || '').replace(/"/g, '""');
+        var glyphsEscaped = (s.keyGlyphs || '').replace(/"/g, '""');
+        
         csv += '"' + s.hash + '",' + 
                s.keyId + ',' + 
-               '"' + (s.keyGlyphs || '') + '",' + 
+               '"' + glyphsEscaped + '",' + 
                s.epoch + ',' + 
                '"' + s.intentSymbol + '",' + 
                (s.attestCount || 0) + ',' + 
-               '"' + (s.cid || '').replace(/"/g, '""') + '",' + 
+               '"' + cidEscaped + '",' + 
                '"' + s.timeAgo + '"\n';
       });
       
       // Download with UTF-8 charset
       var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-      var url = URL.createObjectURL(blob);
+      var downloadUrl = URL.createObjectURL(blob);
       var a = document.createElement('a');
-      a.href = url;
+      a.href = downloadUrl;
       a.download = 'z1n_signals_' + new Date().toISOString().slice(0,10) + '.csv';
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      URL.revokeObjectURL(downloadUrl);
       
-      alert('Downloaded ' + data.signals.length + ' signals (total: ' + data.total + ')');
+      // Show result
+      var msg = '✅ Downloaded ' + data.signals.length + ' signals';
+      if (data.total > data.signals.length) {
+        msg += ' (out of ' + data.total + ' total - run indexer to sync all)';
+      }
+      alert(msg);
       
     } catch (err) {
       console.error('CSV download error:', err);
