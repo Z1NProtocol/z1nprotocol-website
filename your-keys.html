@@ -545,12 +545,12 @@
     }
 
     .toggle-container input:checked + .toggle-slider {
-      background-color: rgba(139, 92, 246, 0.5);
+      background-color: rgba(255, 255, 255, 0.3);
     }
 
     .toggle-container input:checked + .toggle-slider:before {
       transform: translateX(18px);
-      background-color: #a78bfa;
+      background-color: #ffffff;
     }
 
     .toggle-label {
@@ -558,20 +558,41 @@
       color: var(--text-soft);
     }
 
-    .toggle-container input:checked ~ .toggle-label {
-      color: #a78bfa;
+    .stealth-toggle:has(input:checked) .toggle-label {
+      color: #ffffff;
     }
 
     .stealth-info {
-      font-size: 12px;
+      font-size: 14px;
       color: var(--text-soft);
       cursor: help;
       opacity: 0.7;
+      position: relative;
     }
 
     .stealth-info:hover {
       opacity: 1;
       color: var(--keys-accent);
+    }
+
+    /* Tooltip for stealth info */
+    .stealth-info[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      max-width: 280px;
+      white-space: normal;
+      z-index: 100;
+      border: 1px solid var(--card-border);
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -1073,7 +1094,7 @@
       if (checkbox) {
         var label = checkbox.closest('.stealth-toggle').querySelector('.toggle-label');
         if (label) {
-          label.style.color = enabled ? '#a78bfa' : '';
+          label.style.color = enabled ? '#ffffff' : '';
         }
       }
       
