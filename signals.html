@@ -146,6 +146,24 @@
       gap: 4px;
     }
 
+    /* Unified dot indicators */
+    .dot-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid;
+      vertical-align: middle;
+    }
+    .dot-indicator.filled {
+      background: #4ade80;
+      border-color: #4ade80;
+    }
+    .dot-indicator.open {
+      background: transparent;
+      border-color: var(--keys-accent);
+    }
+    /* Legacy text-based dots (fallback) */
     .dot-filled { color: #4ade80; font-size: 14px; }
     .dot-open { color: var(--keys-accent); font-size: 14px; }
 
@@ -565,15 +583,15 @@
         <div class="stat-group">
           <span class="stat-label">Signals:</span>
           <div class="stat-dots" id="signalDots">
-            <span class="dot-open">○</span>
-            <span class="dot-open">○</span>
+            <span class="dot-indicator open"></span>
+            <span class="dot-indicator open"></span>
           </div>
         </div>
         <div class="stat-group">
           <span class="stat-label">Attests:</span>
           <div class="stat-dots" id="attestDots">
-            <span class="dot-open">○</span>
-            <span class="dot-open">○</span>
+            <span class="dot-indicator open"></span>
+            <span class="dot-indicator open"></span>
           </div>
         </div>
       </div>
@@ -619,8 +637,8 @@
           </div>
         </div>
 
-        <!-- Content Input -->
-        <div class="input-group">
+        <!-- Content Input (hidden for Silence) -->
+        <div class="input-group" id="signalContentCard">
           <div class="input-label">
             <span>Signal Content</span>
             <span class="char-count" id="charCount">0 / 280</span>
@@ -814,6 +832,12 @@
     });
     var fee = intent === 3 ? '0.015 POL' : '0.01 POL';
     document.getElementById('pogFee').textContent = fee;
+    
+    // Show/hide content card based on Silence selection
+    var contentCard = document.getElementById('signalContentCard');
+    if (contentCard) {
+      contentCard.style.display = intent === 3 ? 'none' : 'block';
+    }
   };
 
   window.setSignalType = function(type) {
@@ -838,13 +862,13 @@
     var signalDotsEl = document.getElementById('signalDots');
     var attestDotsEl = document.getElementById('attestDots');
 
-    var s1 = signalsUsed >= 1 ? '<span class="dot-filled">●</span>' : '<span class="dot-open">○</span>';
-    var s2 = signalsUsed >= 2 ? '<span class="dot-filled">●</span>' : '<span class="dot-open">○</span>';
-    signalDotsEl.innerHTML = s1 + s2;
+    var s1 = signalsUsed >= 1 ? '<span class="dot-indicator filled"></span>' : '<span class="dot-indicator open"></span>';
+    var s2 = signalsUsed >= 2 ? '<span class="dot-indicator filled"></span>' : '<span class="dot-indicator open"></span>';
+    signalDotsEl.innerHTML = s1 + ' ' + s2;
 
-    var a1 = attestsUsed >= 1 ? '<span class="dot-filled">●</span>' : '<span class="dot-open">○</span>';
-    var a2 = attestsUsed >= 2 ? '<span class="dot-filled">●</span>' : '<span class="dot-open">○</span>';
-    attestDotsEl.innerHTML = a1 + a2;
+    var a1 = attestsUsed >= 1 ? '<span class="dot-indicator filled"></span>' : '<span class="dot-indicator open"></span>';
+    var a2 = attestsUsed >= 2 ? '<span class="dot-indicator filled"></span>' : '<span class="dot-indicator open"></span>';
+    attestDotsEl.innerHTML = a1 + ' ' + a2;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1158,7 +1182,7 @@
   };
 
   // ═══════════════════════════════════════════════════════════════════
-  // CONNECT WALLET
+  // CONNECT WALLET (Single wallet enforcement)
   // ═══════════════════════════════════════════════════════════════════
   async function connectWallet() {
     var eth = getProvider();
@@ -1174,7 +1198,23 @@
       if (!accounts || accounts.length === 0) {
         accounts = await provider.request({ method: 'eth_requestAccounts' });
       }
+      
+      // Single wallet enforcement - use only the first account
       currentAccount = accounts[0];
+      
+      // Warn if multiple accounts are connected
+      if (accounts.length > 1) {
+        console.warn('Multiple accounts connected. Using first account:', currentAccount);
+        // Show warning in UI
+        var warningEl = document.createElement('div');
+        warningEl.style.cssText = 'background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.5);color:#fbbf24;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:16px;';
+        warningEl.innerHTML = '⚠️ Multiple wallets detected. Using: <strong>' + currentAccount.slice(0,6) + '...' + currentAccount.slice(-4) + '</strong>. For best results, connect only one wallet in MetaMask settings.';
+        var keyHeader = document.getElementById('keyHeader');
+        if (keyHeader && !document.getElementById('multiWalletWarning')) {
+          warningEl.id = 'multiWalletWarning';
+          keyHeader.parentNode.insertBefore(warningEl, keyHeader);
+        }
+      }
 
       var chainId = await provider.request({ method: 'eth_chainId' });
       if (chainId !== CHAIN_ID) {
