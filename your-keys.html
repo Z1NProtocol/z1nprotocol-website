@@ -547,7 +547,7 @@
     <!-- Multi-wallet selector (hidden by default) -->
     <div id="multiWalletSelector" style="display:none; margin-bottom:16px; padding:14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); border-radius:10px;">
       <p style="font-size:13px; color:#fbbf24; margin-bottom:6px;">⚠️ Multiple wallets connected</p>
-      <p style="font-size:12px; color:var(--text-soft); margin-bottom:12px;">Select which wallet to use below, or connect only one wallet directly in MetaMask.</p>
+      <p style="font-size:12px; color:var(--text-soft); margin-bottom:12px;">Select which wallet to use below, or connect only one wallet in your wallet app.</p>
       <div id="walletOptions" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:8px;"></div>
     </div>
     
@@ -1119,7 +1119,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // GET ETHEREUM PROVIDER (prefer MetaMask when multiple wallets)
+  // GET ETHEREUM PROVIDER (prefer MetaMask when multiple wallet extensions installed)
   // ═══════════════════════════════════════════════════════════════════
   function getProvider() {
     if (window.ethereum?.providers) {
@@ -1164,15 +1164,25 @@
   // ═══════════════════════════════════════════════════════════════════
   async function switchWallet() {
     var eth = getProvider();
-    if (!eth) return;
+    if (!eth) {
+      alert('No wallet detected');
+      return;
+    }
 
     try {
       // Request wallet to show account picker
+      // This opens the wallet's native account selection UI
       await eth.request({
         method: 'wallet_requestPermissions',
         params: [{ eth_accounts: {} }]
       });
-      // After permission granted, get all connected accounts
+    } catch (e) {
+      // User cancelled or wallet doesn't support this method
+      console.log('Permission request cancelled or not supported:', e.message);
+    }
+    
+    // Always refresh accounts after permission request (even if cancelled)
+    try {
       var accounts = await eth.request({ method: 'eth_requestAccounts' });
       if (accounts && accounts.length > 0) {
         allConnectedAccounts = accounts;
@@ -1185,7 +1195,7 @@
         loadKeys();
       }
     } catch (e) {
-      console.error('Switch wallet error:', e);
+      console.error('Failed to get accounts:', e);
     }
   }
 
