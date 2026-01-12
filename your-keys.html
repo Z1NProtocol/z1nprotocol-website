@@ -388,12 +388,32 @@
 
     .status-filled{
       color:#4ade80;
-      font-size:12px;
+      font-size:14px;
+      text-shadow: 0 0 2px rgba(74, 222, 128, 0.5);
     }
 
     .status-open{
       color:var(--keys-accent);
-      font-size:12px;
+      font-size:14px;
+    }
+
+    /* Unified dot indicators */
+    .dot-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid;
+    }
+    
+    .dot-indicator.filled {
+      background: #4ade80;
+      border-color: #4ade80;
+    }
+    
+    .dot-indicator.open {
+      background: transparent;
+      border-color: var(--keys-accent);
     }
 
     /* ARTEFACTS SECTION */
@@ -907,11 +927,11 @@
     // Epoch display
     var epochDisplay = key.epoch !== null ? key.epoch : '—';
 
-    // Signal status indicators (filled = green ●, open = yellow ○)
-    var signal1Status = key.signalsUsed >= 1 ? '<span class="status-filled">●</span>' : '<span class="status-open">○</span>';
-    var signal2Status = key.signalsUsed >= 2 ? '<span class="status-filled">●</span>' : '<span class="status-open">○</span>';
-    var attest1Status = key.attestsUsed >= 1 ? '<span class="status-filled">●</span>' : '<span class="status-open">○</span>';
-    var attest2Status = key.attestsUsed >= 2 ? '<span class="status-filled">●</span>' : '<span class="status-open">○</span>';
+    // Signal status indicators (filled = green, open = yellow border)
+    var signal1Status = key.signalsUsed >= 1 ? '<span class="dot-indicator filled"></span>' : '<span class="dot-indicator open"></span>';
+    var signal2Status = key.signalsUsed >= 2 ? '<span class="dot-indicator filled"></span>' : '<span class="dot-indicator open"></span>';
+    var attest1Status = key.attestsUsed >= 1 ? '<span class="dot-indicator filled"></span>' : '<span class="dot-indicator open"></span>';
+    var attest2Status = key.attestsUsed >= 2 ? '<span class="dot-indicator filled"></span>' : '<span class="dot-indicator open"></span>';
 
     card.innerHTML = 
       '<div class="key-header">' +
