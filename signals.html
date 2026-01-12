@@ -1132,34 +1132,57 @@
       console.log('stealthMode:', stealthMode);
 
       // ═══════════════════════════════════════════════════════════════════
-      // STEALTH MODE: Use Relayer API
+      // STEALTH MODE: Use Relayer API with EIP-712 Typed Signing
       // ═══════════════════════════════════════════════════════════════════
       if (stealthMode) {
         statusEl.innerHTML = '<div class="status-msg pending">🔒 Stealth: Preparing signature request...</div>';
         
         try {
-          // Step 1: Get the signing message from relayer
+          // Step 1: Get the EIP-712 typed data from relayer
           var relayerUrl = API_BASE + '/relay';
-          var messageUrl = relayerUrl + '/message/' + tokenId + '/' + currentEpoch + '/' + signalHash;
+          var prepareUrl = relayerUrl + '/signal/prepare/' + tokenId + 
+            '?signalHash=' + encodeURIComponent(signalHash) + 
+            '&intent=' + intent + 
+            '&symbolIndex=' + symbolIndex + 
+            '&epochRef=' + epochRef +
+            '&replyTo=' + encodeURIComponent(replyToBytes32);
           
-          var msgResponse = await fetch(messageUrl);
-          if (!msgResponse.ok) {
-            throw new Error('Failed to get signing message from relayer');
+          var prepareResponse = await fetch(prepareUrl);
+          if (!prepareResponse.ok) {
+            var errData = await prepareResponse.json();
+            throw new Error(errData.error || 'Failed to prepare stealth signing data');
           }
-          var msgData = await msgResponse.json();
+          var typedData = await prepareResponse.json();
           
-          // Step 2: Sign the message with user's wallet
-          statusEl.innerHTML = '<div class="status-msg pending">🔒 Sign message to authorize anonymous relay...</div>';
+          // Step 2: Sign the EIP-712 typed data with user's wallet
+          statusEl.innerHTML = '<div class="status-msg pending">🔒 Sign typed data to authorize anonymous relay...</div>';
           
+          // eth_signTypedData_v4 is the standard for EIP-712
           var signature = await provider.request({
-            method: 'personal_sign',
-            params: [msgData.message, currentAccount]
+            method: 'eth_signTypedData_v4',
+            params: [
+              currentAccount,
+              JSON.stringify({
+                types: {
+                  EIP712Domain: [
+                    { name: 'name', type: 'string' },
+                    { name: 'version', type: 'string' },
+                    { name: 'chainId', type: 'uint256' },
+                    { name: 'verifyingContract', type: 'address' }
+                  ],
+                  ...typedData.types
+                },
+                primaryType: typedData.primaryType,
+                domain: typedData.domain,
+                message: typedData.message
+              })
+            ]
           });
           
           // Step 3: Submit to relayer
           statusEl.innerHTML = '<div class="status-msg pending">🔒 Submitting via anonymous relayer...</div>';
           
-          var submitResponse = await fetch(relayerUrl + '/submit', {
+          var submitResponse = await fetch(relayerUrl + '/signal/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1169,7 +1192,8 @@
               intent: intent,
               symbolIndex: symbolIndex,
               epochRef: epochRef,
-              replyTo: replyToBytes32
+              replyTo: replyToBytes32,
+              deadline: typedData.deadline
             })
           });
           
@@ -1190,6 +1214,8 @@
           var errMsg = stealthErr.message || 'Stealth relay failed';
           if (errMsg.includes('user rejected') || errMsg.includes('User denied')) {
             errMsg = 'Signature request cancelled';
+          } else if (errMsg.includes('not available')) {
+            errMsg = 'Stealth relayer service not available. Try normal mode.';
           }
           statusEl.innerHTML = '<div class="status-msg error">' + errMsg + '</div>';
         }
