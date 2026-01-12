@@ -535,8 +535,8 @@
         </p>
 
         <div class="price-display">
-          <div class="price-main" id="priceMain">– POL <span id="priceUsd" style="color:var(--text-soft); font-size:0.7em; margin-left:8px;"></span></div>
-          <div class="price-detail" id="priceDetail">Connect wallet to see price</div>
+          <div class="price-main" id="priceMain">– POL</div>
+          <div class="price-detail" id="priceDetail"></div>
         </div>
 
         <div class="btn-row" style="margin-top: 12px;">
@@ -915,8 +915,6 @@ flow := {
     var priceSelector = '0x9d1b464a'; // currentPrice()
     var epochSelector = '0x76671808'; // currentEpoch() - correct selector
 
-    // Fetch price and epoch separately so one failure doesn't affect the other
-    
     // 1. Get price from IssuanceController
     rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: priceSelector }, 'latest'])
     .then(function(priceResult) {
@@ -927,9 +925,8 @@ flow := {
       
       console.log('Price from contract:', { priceWei: currentPriceWei, pricePol: priceInPol });
 
-      // Update POL price immediately
+      // Update POL price immediately (USD will be added after)
       updatePriceDisplay(priceInPol);
-      if (priceDetail) priceDetail.textContent = '21-Law pricing';
       
       // Fetch USD rate
       fetchUsdRate();
@@ -939,60 +936,65 @@ flow := {
       
       // Only use fallback if we don't have a valid price
       if (!currentPriceWei) {
-        var fallbackEpoch = 282;
-        var fallbackPrice = 0.021 + (fallbackEpoch * 0.021) + (Math.floor(fallbackEpoch / 21) * 0.21);
-        
+        var fallbackPrice = 8.8; // Approximate current price
         currentPriceWei = Math.floor(fallbackPrice * 1e18).toString();
-        
-        if (priceMain) priceMain.innerHTML = '~' + fallbackPrice.toFixed(3) + ' POL <span style="color:var(--text-soft); font-size:0.7em; margin-left:8px;"></span>';
-        if (priceDetail) priceDetail.textContent = 'Estimated price';
+        updatePriceDisplay(fallbackPrice);
       }
       
-      // Still try to get USD rate
       fetchUsdRate();
     });
     
-    // 2. Get epoch separately (doesn't affect price display)
+    // 2. Get epoch separately
     rpcCall('eth_call', [{ to: Z1N_CORE, data: epochSelector }, 'latest'])
     .then(function(epochResult) {
       currentEpoch = parseInt(epochResult, 16);
       console.log('Current epoch:', currentEpoch);
       if (priceDetail && currentEpoch) {
-        var currentText = priceDetail.textContent || '';
-        if (!currentText.includes('Epoch')) {
-          priceDetail.textContent = 'Epoch ' + currentEpoch + ' · 21-Law pricing';
-        } else {
-          priceDetail.textContent = 'Epoch ' + currentEpoch + ' · 21-Law pricing';
-        }
+        priceDetail.textContent = 'Epoch ' + currentEpoch;
       }
     })
     .catch(function(err) {
       console.warn('Could not load epoch:', err);
-      // Epoch display failure is non-critical
+      if (priceDetail) priceDetail.textContent = '';
     });
   }
   
   function fetchUsdRate() {
-    // Try CoinGecko
     fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd')
       .then(function(r) { 
-        if (!r.ok) throw new Error('CoinGecko API error');
+        if (!r.ok) throw new Error('CoinGecko API error: ' + r.status);
         return r.json(); 
       })
       .then(function(d) {
-        console.log('CoinGecko response:', d);
-        var rate = d['matic-network'] && d['matic-network'].usd;
+        console.log('CoinGecko raw response:', JSON.stringify(d));
+        
+        // Extract rate - try multiple paths
+        var rate = null;
+        if (d && d['matic-network'] && typeof d['matic-network'].usd === 'number') {
+          rate = d['matic-network'].usd;
+        } else if (d && d.pol && typeof d.pol.usd === 'number') {
+          rate = d.pol.usd;
+        }
+        
+        console.log('Extracted USD rate:', rate);
+        
         if (rate && currentPriceWei) {
           currentUsdRate = rate;
           var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
           updatePriceDisplay(priceInPol);
-          console.log('USD rate updated:', rate);
+          console.log('USD display updated with rate:', rate);
+        } else {
+          console.warn('Could not extract rate, using fallback');
+          currentUsdRate = 0.50; // Fallback
+          if (currentPriceWei) {
+            var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
+            updatePriceDisplay(priceInPol);
+          }
         }
       })
       .catch(function(err) {
-        console.warn('CoinGecko failed, using fallback USD rate:', err);
-        // Fallback: approximate POL price ~$0.40-0.50
-        currentUsdRate = 0.45;
+        console.warn('CoinGecko failed:', err);
+        currentUsdRate = 0.50; // Fallback ~$0.50
         if (currentPriceWei) {
           var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
           updatePriceDisplay(priceInPol);
@@ -1001,14 +1003,16 @@ flow := {
   }
   
   function updatePriceDisplay(priceInPol) {
+    if (!priceMain) return;
+    
     var usdText = '';
-    if (currentUsdRate) {
+    if (currentUsdRate && currentUsdRate > 0) {
       var usdPrice = priceInPol * currentUsdRate;
-      usdText = '(≈ $' + usdPrice.toFixed(2) + ')';
+      usdText = ' <span style="color:var(--text-soft); font-size:0.65em;">(≈ $' + usdPrice.toFixed(2) + ')</span>';
     }
-    if (priceMain) {
-      priceMain.innerHTML = priceInPol.toFixed(3) + ' POL <span style="color:var(--text-soft); font-size:0.7em; margin-left:8px;">' + usdText + '</span>';
-    }
+    
+    priceMain.innerHTML = priceInPol.toFixed(3) + ' POL' + usdText;
+    console.log('Price display updated:', priceInPol.toFixed(3) + ' POL', usdText ? 'with USD' : 'no USD yet');
   }
 
   // ═══════════════════════════════════════════════════════════════════
