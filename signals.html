@@ -2123,9 +2123,12 @@
       }
       
       console.log('Fetching signals with params:', params.toString());
+      console.log('Current epoch:', currentEpoch, 'Attestable epoch:', lastClosedEpoch);
       
       var response = await fetch(API_BASE + '/signals?' + params.toString());
       var data = await response.json();
+      
+      console.log('Server response:', data.signals?.length, 'signals returned');
       
       if (loadingEl) loadingEl.style.display = 'none';
       
@@ -2165,8 +2168,11 @@
     listEl.innerHTML = '';
     
     if (signals.length === 0) {
-      listEl.innerHTML = '<div style="padding:30px 20px; text-align:center; color:var(--text-soft); font-size:11px;">No attestable signals in Epoch ' + lastClosedEpoch + '</div>';
-      if (selectedInfo) selectedInfo.textContent = 'No signals to attest';
+      listEl.innerHTML = '<div style="padding:30px 20px; text-align:center; color:var(--text-soft); font-size:11px;">' +
+        'No signals found for Epoch ' + lastClosedEpoch + '<br>' +
+        '<span style="font-size:10px; color:var(--text-soft);">The indexer may not have processed this epoch yet.<br>Try clicking the ↻ refresh button.</span>' +
+        '</div>';
+      if (selectedInfo) selectedInfo.textContent = 'No signals to attest (Epoch ' + lastClosedEpoch + ')';
       return;
     }
     
@@ -2628,17 +2634,38 @@
     
     // Validate recipient key exists (if not 0)
     if (toKeyId !== 0) {
+      statusEl.innerHTML = '<div class="status-msg pending">Checking if Key #' + toKeyId + ' exists...</div>';
+      
+      var keyExists = false;
       try {
-        // Double-check key exists right before submitting
-        var data = SEL.ownerOf + encodeUint256(toKeyId);
-        var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: data }, 'latest']);
+        // Check if key exists by calling ownerOf
+        // Note: ERC721 reverts for non-existent tokens, so we use eth_call via RPC
+        var checkData = SEL.ownerOf + encodeUint256(toKeyId);
         
-        if (!result || result === '0x' || result === '0x0000000000000000000000000000000000000000000000000000000000000000') {
-          statusEl.innerHTML = '<div class="status-msg error">Recipient Key #' + toKeyId + ' does not exist.</div>';
-          return;
+        // Use direct RPC call instead of provider.request for better error handling
+        var result = await rpcCall('eth_call', [{
+          to: Z1N_KEY,
+          data: checkData
+        }, 'latest']);
+        
+        console.log('ownerOf result for Key #' + toKeyId + ':', result);
+        
+        // If we get a valid result (66+ hex chars with non-zero address), key exists
+        if (result && result.length >= 66) {
+          var address = '0x' + result.slice(26);
+          if (address !== '0x0000000000000000000000000000000000000000') {
+            keyExists = true;
+            console.log('Key #' + toKeyId + ' exists, owned by:', address);
+          }
         }
       } catch (e) {
-        statusEl.innerHTML = '<div class="status-msg error">Recipient Key #' + toKeyId + ' does not exist.</div>';
+        console.error('Key validation error:', e);
+        // ERC721 reverts for non-existent tokens - this is expected
+        keyExists = false;
+      }
+      
+      if (!keyExists) {
+        statusEl.innerHTML = '<div class="status-msg error">❌ Key #' + toKeyId + ' does not exist.<br><span style="font-size:10px;">There are only ~36 Keys minted on testnet. Use Key ID 1-36 or 0 for broadcast.</span></div>';
         return;
       }
     }
