@@ -674,6 +674,36 @@
       border-color: var(--keys-accent);
     }
 
+    /* Intent checkbox filters */
+    .intent-filters {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .intent-checkbox {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.15s;
+    }
+    .intent-checkbox:has(input:checked) {
+      opacity: 1;
+    }
+    .intent-checkbox input {
+      display: none;
+    }
+    .intent-checkbox .intent-tag {
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .intent-checkbox:hover .intent-tag {
+      border-color: var(--text-soft);
+    }
+
     .filter-btn {
       padding: 6px 12px;
       border-radius: 6px;
@@ -911,6 +941,28 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+    
+    /* Stealth button style */
+    .btn-stealth {
+      padding: 8px 20px;
+      border-radius: 999px;
+      border: 1px solid #60a5fa;
+      background: rgba(96, 165, 250, 0.15);
+      color: #60a5fa;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-stealth:hover:not([disabled]) {
+      background: rgba(96, 165, 250, 0.25);
+    }
+    
+    .btn-stealth[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
     /* RESPONSIVE */
     @media (max-width: 600px) {
@@ -1135,6 +1187,14 @@
         </select>
       </div>
       
+      <div class="filter-group intent-filters">
+        <span class="filter-label">Intent:</span>
+        <label class="intent-checkbox" title="Collective"><input type="checkbox" id="filterIntentC" checked onchange="immediateFilter()"><span class="intent-tag oc">ΩC</span></label>
+        <label class="intent-checkbox" title="Individual"><input type="checkbox" id="filterIntentI" checked onchange="immediateFilter()"><span class="intent-tag oi">ΩI</span></label>
+        <label class="intent-checkbox" title="Co-Creation"><input type="checkbox" id="filterIntentK" checked onchange="immediateFilter()"><span class="intent-tag ok">ΩK</span></label>
+        <label class="intent-checkbox" title="Silence"><input type="checkbox" id="filterIntentS" checked onchange="immediateFilter()"><span class="intent-tag os">ΩS</span></label>
+      </div>
+      
       <button class="filter-btn" onclick="resetFilters()" title="Clear all filters">↺ Clear</button>
       <button class="filter-btn" onclick="downloadSignalsCSV()" title="Download all filtered signals as CSV">📥 CSV</button>
     </div>
@@ -1159,6 +1219,70 @@
         <span id="signalCountInfo" style="font-size:11px; color:var(--text-soft);">– signals</span>
       </div>
       <button class="btn-select-signal" id="btnConfirmSelect" onclick="confirmSignalSelection()" disabled>Select Signal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ATTEST MODAL                                                                 -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="attestModal">
+  <div class="modal-content" style="max-width:800px;">
+    <div class="modal-header">
+      <span class="modal-title">✓ Attest Signal <span id="attestCurrentEpochBadge" style="font-size:12px; font-weight:normal; color:var(--text-soft); margin-left:8px;">(Current: Epoch —)</span></span>
+      <button class="modal-close" onclick="closeAttestModal()">&times;</button>
+    </div>
+    
+    <div class="modal-filters" style="padding:12px 20px; border-bottom:1px solid var(--card-border); display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+      <div class="filter-group">
+        <span class="filter-label">Sort:</span>
+        <select class="filter-select" id="attestFilterSort" onchange="loadAttestableSignals()">
+          <option value="recent">Most Recent</option>
+          <option value="attested">Most Attested</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+      </div>
+      
+      <div class="filter-group intent-filters">
+        <span class="filter-label">Intent:</span>
+        <label class="intent-checkbox" title="Collective"><input type="checkbox" id="attestFilterIntentC" checked onchange="loadAttestableSignals()"><span class="intent-tag oc">ΩC</span></label>
+        <label class="intent-checkbox" title="Individual"><input type="checkbox" id="attestFilterIntentI" checked onchange="loadAttestableSignals()"><span class="intent-tag oi">ΩI</span></label>
+        <label class="intent-checkbox" title="Co-Creation"><input type="checkbox" id="attestFilterIntentK" checked onchange="loadAttestableSignals()"><span class="intent-tag ok">ΩK</span></label>
+        <label class="intent-checkbox" title="Silence"><input type="checkbox" id="attestFilterIntentS" checked onchange="loadAttestableSignals()"><span class="intent-tag os">ΩS</span></label>
+      </div>
+      
+      <label class="intent-checkbox" title="Hide signals you already attested" style="margin-left:auto;">
+        <input type="checkbox" id="attestFilterHideOwn" checked onchange="loadAttestableSignals()">
+        <span style="font-size:11px; color:var(--text-soft);">Hide own Key's signals</span>
+      </label>
+    </div>
+    
+    <!-- LEGEND -->
+    <div style="padding:8px 20px; border-bottom:1px solid var(--card-border); font-size:10px; color:var(--text-soft); display:flex; gap:16px; flex-wrap:wrap;">
+      <span title="Key ID and Glyphs"><strong style="color:var(--keys-accent);">K#</strong> = Key ID</span>
+      <span title="Intent Layer"><strong style="color:#4ade80;">ΩC</strong>/<strong style="color:#f87171;">ΩI</strong>/<strong style="color:#fbbf24;">ΩK</strong>/<strong style="color:#60a5fa;">ΩS</strong> = Intent</span>
+      <span title="Number of attestations received"><strong style="color:#fbbf24;">✓</strong> = Attestations</span>
+      <span style="margin-left:auto; color:#f87171;">⚠️ You can attest 2 signals per epoch</span>
+    </div>
+    
+    <div class="modal-body">
+      <div class="loading-signals" id="attestLoading">Loading attestable signals...</div>
+      <div class="no-signals" id="noAttestSignals" style="display:none;">No attestable signals found. Only signals from the current epoch can be attested.</div>
+      <div class="signals-list" id="attestSignalsList"></div>
+    </div>
+    
+    <div class="modal-footer" style="flex-direction:column; gap:12px;">
+      <div id="attestSelectedInfo" style="width:100%; font-size:12px; color:var(--text-soft);">
+        Select a signal to attest
+      </div>
+      <div style="display:flex; gap:12px; width:100%;">
+        <button class="btn-stealth" id="btnAttestStealth" onclick="submitAttest(true)" disabled style="flex:1;">
+          🔒 Stealth Attest (Free)
+        </button>
+        <button class="btn-select-signal" id="btnAttestNormal" onclick="submitAttest(false)" disabled style="flex:1;">
+          ✓ Attest Signal
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -1788,13 +1912,293 @@
   };
 
   window.goToAttests = function() {
-    // Navigate to attests page with current key and wallet
-    var url = '/attests.html?key=' + currentKeyId;
-    if (currentAccount) {
-      url += '&wallet=' + encodeURIComponent(currentAccount);
-    }
-    window.location.href = url;
+    // Open attest modal instead of navigating
+    openAttestModal();
   };
+  
+  // ═══════════════════════════════════════════════════════════════════
+  // ATTEST MODAL
+  // ═══════════════════════════════════════════════════════════════════
+  
+  var selectedAttestSignal = null;
+  
+  window.openAttestModal = function() {
+    if (!currentKeyId) {
+      alert('Please select a Key first');
+      return;
+    }
+    document.getElementById('attestModal').classList.add('active');
+    selectedAttestSignal = null;
+    updateAttestButtons();
+    loadAttestableSignals();
+  };
+  
+  window.closeAttestModal = function() {
+    document.getElementById('attestModal').classList.remove('active');
+    selectedAttestSignal = null;
+  };
+  
+  async function loadAttestableSignals() {
+    var listEl = document.getElementById('attestSignalsList');
+    var loadingEl = document.getElementById('attestLoading');
+    var noSignalsEl = document.getElementById('noAttestSignals');
+    var selectedInfo = document.getElementById('attestSelectedInfo');
+    
+    listEl.innerHTML = '';
+    loadingEl.style.display = 'block';
+    noSignalsEl.style.display = 'none';
+    
+    try {
+      // Build query - only current epoch signals are attestable
+      var params = new URLSearchParams();
+      params.set('limit', '100');
+      params.set('minEpoch', String(currentEpoch));
+      params.set('maxEpoch', String(currentEpoch));
+      
+      // Sort
+      params.set('sort', document.getElementById('attestFilterSort').value);
+      
+      // Intent filter
+      var intentsEnabled = [];
+      if (document.getElementById('attestFilterIntentC').checked) intentsEnabled.push('0');
+      if (document.getElementById('attestFilterIntentI').checked) intentsEnabled.push('1');
+      if (document.getElementById('attestFilterIntentK').checked) intentsEnabled.push('2');
+      if (document.getElementById('attestFilterIntentS').checked) intentsEnabled.push('3');
+      
+      if (intentsEnabled.length < 4 && intentsEnabled.length > 0) {
+        params.set('intents', intentsEnabled.join(','));
+      }
+      
+      var response = await fetch(API_BASE + '/signals?' + params.toString());
+      var data = await response.json();
+      
+      loadingEl.style.display = 'none';
+      
+      // Update epoch badge
+      var epochBadge = document.getElementById('attestCurrentEpochBadge');
+      if (epochBadge) {
+        epochBadge.textContent = '(Current: Epoch ' + currentEpoch + ')';
+      }
+      
+      // Filter out own key's signals if checkbox is checked
+      var hideOwn = document.getElementById('attestFilterHideOwn').checked;
+      var signals = data.signals || [];
+      if (hideOwn && currentKeyId) {
+        signals = signals.filter(function(s) { return s.keyId !== currentKeyId; });
+      }
+      
+      if (signals.length === 0) {
+        noSignalsEl.style.display = 'block';
+        selectedInfo.textContent = 'No attestable signals in current epoch';
+        return;
+      }
+      
+      selectedInfo.textContent = signals.length + ' signals available to attest (Epoch ' + currentEpoch + ')';
+      
+      // Render signals
+      signals.forEach(function(sig) {
+        var item = document.createElement('div');
+        item.className = 'signal-item';
+        item.dataset.hash = sig.hash;
+        item.dataset.keyId = sig.keyId;
+        item.onclick = function() { selectAttestSignal(sig, item); };
+        
+        var intentClass = ['oc', 'oi', 'ok', 'os'][sig.intent] || 'oc';
+        
+        item.innerHTML = 
+          '<div class="signal-header">' +
+            '<span class="signal-key" title="Key #' + sig.keyId + '">' +
+              '<strong style="color:var(--keys-accent);">K#' + sig.keyId + '</strong> ' +
+              '<span style="font-size:11px; color:var(--text-soft);">' + (sig.keyGlyphs || '') + '</span>' +
+            '</span>' +
+            '<span class="intent-tag ' + intentClass + '">' + sig.intentSymbol + '</span>' +
+            '<span class="signal-epoch">Epoch ' + sig.epoch + '</span>' +
+            '<span class="signal-attests" style="color:#fbbf24;" title="' + sig.attestCount + ' attestations">✓' + sig.attestCount + '</span>' +
+            '<span class="signal-time">' + sig.timeAgo + '</span>' +
+          '</div>' +
+          '<div class="signal-content">' + (sig.cid || '[Silence - no content]') + '</div>' +
+          '<div class="signal-hash">' + sig.hash.slice(0, 20) + '...</div>';
+        
+        listEl.appendChild(item);
+      });
+      
+    } catch (err) {
+      console.error('Failed to load attestable signals:', err);
+      loadingEl.style.display = 'none';
+      noSignalsEl.style.display = 'block';
+      noSignalsEl.textContent = 'Failed to load signals: ' + err.message;
+    }
+  }
+  
+  function selectAttestSignal(sig, itemEl) {
+    // Deselect previous
+    var prev = document.querySelector('#attestSignalsList .signal-item.selected');
+    if (prev) prev.classList.remove('selected');
+    
+    // Select new
+    itemEl.classList.add('selected');
+    selectedAttestSignal = sig;
+    
+    // Update info
+    var info = document.getElementById('attestSelectedInfo');
+    info.innerHTML = 'Selected: <strong style="color:var(--keys-accent);">K#' + sig.keyId + '</strong> ' + 
+                     '<span class="intent-tag ' + ['oc','oi','ok','os'][sig.intent] + '" style="font-size:10px;">' + sig.intentSymbol + '</span> ' +
+                     '(' + sig.attestCount + ' attestations)';
+    
+    updateAttestButtons();
+  }
+  
+  function updateAttestButtons() {
+    var btnStealth = document.getElementById('btnAttestStealth');
+    var btnNormal = document.getElementById('btnAttestNormal');
+    var canAttest = selectedAttestSignal && attestsUsed < 2;
+    
+    btnStealth.disabled = !canAttest;
+    btnNormal.disabled = !canAttest;
+    
+    if (attestsUsed >= 2) {
+      btnNormal.textContent = '✓ Max Attests Used (2/2)';
+      btnStealth.textContent = '🔒 Max Attests Used';
+    } else {
+      btnNormal.textContent = '✓ Attest Signal (' + attestsUsed + '/2 used)';
+      btnStealth.textContent = '🔒 Stealth Attest (Free)';
+    }
+  }
+  
+  window.submitAttest = async function(stealth) {
+    if (!selectedAttestSignal || !currentKeyId) {
+      alert('Please select a signal to attest');
+      return;
+    }
+    
+    if (attestsUsed >= 2) {
+      alert('You have already used your 2 attestations for this epoch');
+      return;
+    }
+    
+    var signalHash = selectedAttestSignal.hash;
+    
+    if (stealth) {
+      await submitStealthAttest(signalHash);
+    } else {
+      await submitNormalAttest(signalHash);
+    }
+  };
+  
+  async function submitNormalAttest(signalHash) {
+    var btn = document.getElementById('btnAttestNormal');
+    var originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ Sending...';
+    
+    try {
+      // attestSignal(uint256 tokenId, bytes32 signalHash)
+      var data = '0x' + 'ca71a963' + // attestSignal selector
+                 encodeUint256(currentKeyId) +
+                 signalHash.slice(2);
+      
+      var txHash = await sendTransaction(Z1N_SIGNAL, data, '0');
+      
+      btn.textContent = '✅ Attested!';
+      alert('Attestation submitted!\n\nTx: ' + txHash);
+      
+      // Refresh
+      attestsUsed++;
+      updateAttestButtons();
+      updateKeyStatsDisplay();
+      loadAttestableSignals();
+      
+    } catch (err) {
+      console.error('Attest error:', err);
+      alert('Attestation failed: ' + (err.message || err));
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  }
+  
+  async function submitStealthAttest(signalHash) {
+    var btn = document.getElementById('btnAttestStealth');
+    var originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ Signing...';
+    
+    try {
+      // Get nonce from relayer
+      var nonceResp = await fetch(API_BASE + '/relay/nonce/' + currentKeyId);
+      var nonceData = await nonceResp.json();
+      var nonce = nonceData.nonce;
+      
+      // Set deadline (1 hour from now)
+      var deadline = Math.floor(Date.now() / 1000) + 3600;
+      
+      // Build EIP-712 typed data for attestation
+      var domain = {
+        name: 'Z1NStealthRelayer',
+        version: '1.1.2',
+        chainId: parseInt(CHAIN_ID, 16),
+        verifyingContract: '0x6202a5Bd1e74d170264F08FB5290663b44488125'
+      };
+      
+      var types = {
+        StealthAttestation: [
+          { name: 'tokenId', type: 'uint256' },
+          { name: 'signalHash', type: 'bytes32' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint256' }
+        ]
+      };
+      
+      var message = {
+        tokenId: currentKeyId,
+        signalHash: signalHash,
+        nonce: nonce,
+        deadline: deadline
+      };
+      
+      btn.textContent = '⏳ Sign in wallet...';
+      
+      // Request signature
+      var signature = await window.ethereum.request({
+        method: 'eth_signTypedData_v4',
+        params: [currentAccount, JSON.stringify({ domain: domain, types: types, primaryType: 'StealthAttestation', message: message })]
+      });
+      
+      btn.textContent = '⏳ Relaying...';
+      
+      // Send to relay server
+      var relayResp = await fetch(API_BASE + '/relay/attest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tokenId: currentKeyId,
+          signalHash: signalHash,
+          deadline: deadline,
+          signature: signature
+        })
+      });
+      
+      var result = await relayResp.json();
+      
+      if (!relayResp.ok) {
+        throw new Error(result.error || 'Relay failed');
+      }
+      
+      btn.textContent = '✅ Attested (Stealth)!';
+      alert('Stealth attestation submitted!\n\nTx: ' + result.txHash);
+      
+      // Refresh
+      attestsUsed++;
+      updateAttestButtons();
+      updateKeyStatsDisplay();
+      loadAttestableSignals();
+      
+    } catch (err) {
+      console.error('Stealth attest error:', err);
+      alert('Stealth attestation failed: ' + (err.message || err));
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  }
 
   // ═══════════════════════════════════════════════════════════════════
   // VALIDATE RECIPIENT KEY
@@ -2165,6 +2569,11 @@
     document.getElementById('filterEpochFrom').value = '';
     document.getElementById('filterEpochTo').value = '';
     document.getElementById('filterSort').value = 'recent';
+    // Reset intent checkboxes to all checked
+    document.getElementById('filterIntentC').checked = true;
+    document.getElementById('filterIntentI').checked = true;
+    document.getElementById('filterIntentK').checked = true;
+    document.getElementById('filterIntentS').checked = true;
     modalOffset = 0;
     selectedSignal = null;
     updateSelectedInfo();
@@ -2230,6 +2639,18 @@
       // Sort filter
       var sortFilter = document.getElementById('filterSort').value;
       params.set('sort', sortFilter);
+      
+      // Intent filter - collect enabled intents
+      var intentsEnabled = [];
+      if (document.getElementById('filterIntentC').checked) intentsEnabled.push('0');
+      if (document.getElementById('filterIntentI').checked) intentsEnabled.push('1');
+      if (document.getElementById('filterIntentK').checked) intentsEnabled.push('2');
+      if (document.getElementById('filterIntentS').checked) intentsEnabled.push('3');
+      
+      // Only send if not all are checked (default)
+      if (intentsEnabled.length < 4 && intentsEnabled.length > 0) {
+        params.set('intents', intentsEnabled.join(','));
+      }
       
       var fullUrl = API_BASE + '/signals?' + params.toString();
       console.log('🔍 Fetching:', fullUrl);
