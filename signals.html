@@ -282,8 +282,10 @@
       border: 1px solid var(--card-border);
       border-radius: 12px;
       color: var(--text-main);
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -1169,7 +1171,7 @@
       <div class="card pog-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
           <div style="display:flex; align-items:center; gap:10px;">
-            <div class="card-title" style="margin-bottom:0;">⚡ PoG Signal</div>
+            <div class="card-title" style="margin-bottom:0;">PoG Signal</div>
             <span id="stealthBadgePog" style="display:none; background:rgba(96,165,250,0.2); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:9px;">🔒 STEALTH</span>
           </div>
           <div style="display:flex; align-items:center; gap:12px;">
@@ -1248,7 +1250,7 @@
       <div class="card pog-card" id="attestCard">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <div style="display:flex; align-items:center; gap:10px;">
-            <div class="card-title" style="margin-bottom:0;">✓ Attest Signals</div>
+            <div class="card-title" style="margin-bottom:0;">Attest Signals</div>
             <span id="stealthBadgeAttest" style="display:none; background:rgba(96,165,250,0.2); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:9px;">🔒 STEALTH</span>
           </div>
           <div style="display:flex; align-items:center; gap:12px;">
@@ -1312,7 +1314,7 @@
     <!-- PURE SIGNAL SECTION -->
     <div class="pure-signal-section">
       <button class="pure-toggle-btn" onclick="togglePureSection()">
-        <span>● Pure Signal (Whisper)</span>
+        <span>Pure Signal (Whisper)</span>
         <span id="pureToggleIcon">▼</span>
       </button>
       <div id="pureSignalContent" class="pure-signal-collapsed">
