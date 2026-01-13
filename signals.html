@@ -214,15 +214,6 @@
       color: var(--text-main);
     }
     
-    /* Attest Card */
-    .attest-card {
-      border-color: rgba(251, 191, 36, 0.3);
-    }
-    
-    .attest-card .card-title {
-      color: #fbbf24;
-    }
-    
     /* Inline attestable signal items */
     .attest-signal-item {
       padding: 10px 12px;
@@ -317,6 +308,24 @@
       border: 1px solid rgba(96, 165, 250, 0.2);
       border-top: none;
       border-radius: 0 0 12px 12px;
+    }
+    
+    /* Epoch Info Bar */
+    .epoch-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      margin-top: 16px;
+      background: rgba(245, 200, 66, 0.1);
+      border: 1px solid rgba(245, 200, 66, 0.3);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+    
+    .epoch-info-bar strong {
+      color: var(--keys-accent);
     }
 
     /* SIGNAL TYPE TOGGLE */
@@ -1215,10 +1224,23 @@
       </div>
 
       <!-- ATTESTABLE SIGNALS CARD -->
-      <div class="card attest-card">
+      <div class="card pog-card" id="attestCard">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <div class="card-title" style="margin-bottom:0;">✓ Attest Signals</div>
-          <span id="attestEpochBadge" style="font-size:11px; color:var(--text-soft);">Epoch —</span>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span id="epochCountdown" style="font-size:11px; color:var(--keys-accent); font-family:monospace;">⏱ --:--</span>
+            <span id="attestEpochBadge" style="font-size:11px; color:var(--text-soft);">Epoch —</span>
+          </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div style="margin-bottom:12px;">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input type="text" id="attestSearchHash" placeholder="Search by signal hash (0x...) or Key ID" 
+                   style="flex:1; padding:8px 10px; border-radius:6px; border:1px solid var(--card-border); background:rgba(15,23,42,0.6); color:var(--text-main); font-size:11px;"
+                   oninput="filterAttestSignals()">
+            <button onclick="loadAttestableSignals()" style="padding:8px 12px; border-radius:6px; border:1px solid var(--keys-accent); background:transparent; color:var(--keys-accent); font-size:11px; cursor:pointer;">↻</button>
+          </div>
         </div>
         
         <!-- Filters -->
@@ -1239,10 +1261,12 @@
             <input type="checkbox" id="attestHideOwn" checked onchange="loadAttestableSignals()" style="width:12px; height:12px;">
             Hide mine
           </label>
+          
+          <button onclick="downloadAttestCSV()" style="padding:4px 8px; border-radius:4px; border:1px solid var(--card-border); background:transparent; color:var(--text-soft); font-size:10px; cursor:pointer;" title="Download CSV">📥</button>
         </div>
         
         <!-- Signals List -->
-        <div id="attestSignalsContainer" style="max-height:320px; overflow-y:auto; border-radius:8px; background:rgba(0,0,0,0.2);">
+        <div id="attestSignalsContainer" style="max-height:280px; overflow-y:auto; border-radius:8px; background:rgba(0,0,0,0.2);">
           <div id="attestLoadingInline" style="padding:40px 20px; text-align:center; color:var(--text-soft); font-size:12px;">
             Loading attestable signals...
           </div>
@@ -1252,7 +1276,7 @@
         <!-- Selected Info & Buttons -->
         <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--card-border);">
           <div id="attestSelectedInfoInline" style="font-size:11px; color:var(--text-soft); margin-bottom:10px;">
-            Select a signal to attest (you can attest 2 per epoch)
+            Select a signal to attest (2 per epoch)
           </div>
           <div style="display:flex; gap:8px;">
             <button class="btn-stealth" id="btnAttestStealthInline" onclick="submitAttestInline(true)" disabled style="flex:1; font-size:11px; padding:8px 12px;">
@@ -1264,6 +1288,13 @@
           </div>
         </div>
       </div>
+    </div>
+    
+    <!-- EPOCH INFO BAR -->
+    <div class="epoch-info-bar">
+      <span>Current: <strong>Epoch <span id="currentEpochDisplay">—</span></strong></span>
+      <span>Next epoch in: <strong id="epochTimerDisplay">--:--:--</strong></span>
+      <span>Attestable: <strong>Epoch <span id="attestableEpochDisplay">—</span></strong></span>
     </div>
     
     <!-- PURE SIGNAL SECTION (collapsed by default) -->
@@ -2030,6 +2061,8 @@
   var selectedAttestSignal = null;
   var lastClosedEpoch = 0;
   
+  var allAttestableSignals = []; // Store for filtering/export
+  
   async function loadAttestableSignals() {
     var listEl = document.getElementById('attestSignalsListInline');
     var loadingEl = document.getElementById('attestLoadingInline');
@@ -2047,14 +2080,16 @@
       var liveData = await liveResp.json();
       lastClosedEpoch = liveData.lastClosedEpoch || (currentEpoch > 0 ? currentEpoch - 1 : 0);
       
-      // Update epoch badge
-      if (epochBadge) {
-        epochBadge.textContent = 'Epoch ' + lastClosedEpoch;
-      }
+      // Update all epoch displays
+      if (epochBadge) epochBadge.textContent = 'Epoch ' + lastClosedEpoch;
+      var currentEpochDisplay = document.getElementById('currentEpochDisplay');
+      var attestableEpochDisplay = document.getElementById('attestableEpochDisplay');
+      if (currentEpochDisplay) currentEpochDisplay.textContent = currentEpoch;
+      if (attestableEpochDisplay) attestableEpochDisplay.textContent = lastClosedEpoch;
       
       // Build query - attestable signals are from the LAST CLOSED epoch
       var params = new URLSearchParams();
-      params.set('limit', '50');
+      params.set('limit', '100');
       params.set('minEpoch', String(lastClosedEpoch));
       params.set('maxEpoch', String(lastClosedEpoch));
       
@@ -2085,37 +2120,20 @@
         signals = signals.filter(function(s) { return s.keyId !== currentKeyId; });
       }
       
-      if (signals.length === 0) {
-        listEl.innerHTML = '<div style="padding:30px 20px; text-align:center; color:var(--text-soft); font-size:11px;">No attestable signals in Epoch ' + lastClosedEpoch + '</div>';
-        if (selectedInfo) selectedInfo.textContent = 'No signals to attest';
-        return;
+      // Store for filtering/export
+      allAttestableSignals = signals;
+      
+      // Apply search filter if any
+      var searchTerm = (document.getElementById('attestSearchHash')?.value || '').trim().toLowerCase();
+      if (searchTerm) {
+        signals = signals.filter(function(s) {
+          return s.hash.toLowerCase().includes(searchTerm) || 
+                 String(s.keyId) === searchTerm ||
+                 (s.cid && s.cid.toLowerCase().includes(searchTerm));
+        });
       }
       
-      if (selectedInfo) {
-        selectedInfo.textContent = signals.length + ' signals available (Epoch ' + lastClosedEpoch + ')';
-      }
-      
-      // Render signals
-      signals.forEach(function(sig) {
-        var item = document.createElement('div');
-        item.className = 'attest-signal-item';
-        item.dataset.hash = sig.hash;
-        item.dataset.keyId = sig.keyId;
-        item.onclick = function() { selectAttestSignalInline(sig, item); };
-        
-        var intentClass = ['oc', 'oi', 'ok', 'os'][sig.intent] || 'oc';
-        
-        item.innerHTML = 
-          '<div class="signal-top">' +
-            '<span class="signal-key">K#' + sig.keyId + '</span>' +
-            '<span class="signal-glyphs">' + (sig.keyGlyphs || '') + '</span>' +
-            '<span class="intent-tag ' + intentClass + '" style="font-size:9px; padding:1px 4px;">' + sig.intentSymbol + '</span>' +
-            '<span style="color:#fbbf24; font-size:10px;">✓' + (sig.attestCount || 0) + '</span>' +
-          '</div>' +
-          '<div class="signal-content">' + (sig.cid || '[Silence]') + '</div>';
-        
-        listEl.appendChild(item);
-      });
+      renderAttestSignals(signals, listEl, selectedInfo);
       
     } catch (err) {
       console.error('Failed to load attestable signals:', err);
@@ -2123,6 +2141,135 @@
       listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#f87171; font-size:11px;">Failed to load: ' + err.message + '</div>';
     }
   }
+  
+  function renderAttestSignals(signals, listEl, selectedInfo) {
+    listEl.innerHTML = '';
+    
+    if (signals.length === 0) {
+      listEl.innerHTML = '<div style="padding:30px 20px; text-align:center; color:var(--text-soft); font-size:11px;">No attestable signals in Epoch ' + lastClosedEpoch + '</div>';
+      if (selectedInfo) selectedInfo.textContent = 'No signals to attest';
+      return;
+    }
+    
+    if (selectedInfo) {
+      selectedInfo.textContent = signals.length + ' signals (Epoch ' + lastClosedEpoch + ')';
+    }
+    
+    // Render signals
+    signals.forEach(function(sig) {
+      var item = document.createElement('div');
+      item.className = 'attest-signal-item';
+      item.dataset.hash = sig.hash;
+      item.dataset.keyId = sig.keyId;
+      item.onclick = function() { selectAttestSignalInline(sig, item); };
+      
+      var intentClass = ['oc', 'oi', 'ok', 'os'][sig.intent] || 'oc';
+      var intentSymbol = sig.intentSymbol || ['ΩC', 'ΩI', 'ΩK', 'ΩS'][sig.intent] || '?';
+      
+      item.innerHTML = 
+        '<div class="signal-top">' +
+          '<span class="signal-key">K#' + sig.keyId + '</span>' +
+          '<span class="signal-glyphs">' + (sig.keyGlyphs || '') + '</span>' +
+          '<span class="intent-tag ' + intentClass + '" style="font-size:9px; padding:1px 4px;">' + intentSymbol + '</span>' +
+          '<span style="color:#fbbf24; font-size:10px;" title="' + (sig.attestCount || 0) + ' attestations">✓' + (sig.attestCount || 0) + '</span>' +
+          '<span style="font-size:9px; color:var(--text-soft);">' + (sig.timeAgo || '') + '</span>' +
+        '</div>' +
+        '<div class="signal-content">' + (sig.cid || '[Silence - no content]') + '</div>';
+      
+      listEl.appendChild(item);
+    });
+  }
+  
+  window.filterAttestSignals = function() {
+    var searchTerm = (document.getElementById('attestSearchHash')?.value || '').trim().toLowerCase();
+    var listEl = document.getElementById('attestSignalsListInline');
+    var selectedInfo = document.getElementById('attestSelectedInfoInline');
+    
+    if (!searchTerm) {
+      renderAttestSignals(allAttestableSignals, listEl, selectedInfo);
+      return;
+    }
+    
+    var filtered = allAttestableSignals.filter(function(s) {
+      return s.hash.toLowerCase().includes(searchTerm) || 
+             String(s.keyId) === searchTerm ||
+             (s.cid && s.cid.toLowerCase().includes(searchTerm));
+    });
+    
+    renderAttestSignals(filtered, listEl, selectedInfo);
+  };
+  
+  window.downloadAttestCSV = function() {
+    if (!allAttestableSignals.length) {
+      alert('No signals to download');
+      return;
+    }
+    
+    var BOM = '\uFEFF';
+    var csv = BOM + 'Hash,KeyID,Glyphs,Epoch,Intent,Attestations,CID,TimeAgo\n';
+    
+    allAttestableSignals.forEach(function(sig) {
+      var intentNames = ['ΩC', 'ΩI', 'ΩK', 'ΩS'];
+      var cidClean = (sig.cid || '').replace(/"/g, '""');
+      csv += '"' + sig.hash + '",' +
+             sig.keyId + ',' +
+             '"' + (sig.keyGlyphs || '') + '",' +
+             sig.epoch + ',' +
+             '"' + (intentNames[sig.intent] || '?') + '",' +
+             (sig.attestCount || 0) + ',' +
+             '"' + cidClean + '",' +
+             '"' + (sig.timeAgo || '') + '"\n';
+    });
+    
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'attestable_signals_epoch_' + lastClosedEpoch + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  
+  // ═══════════════════════════════════════════════════════════════════
+  // EPOCH COUNTDOWN TIMER
+  // ═══════════════════════════════════════════════════════════════════
+  
+  var epochTimerInterval = null;
+  var epochDurationSeconds = 300; // 5 minutes on testnet (adjust for mainnet)
+  
+  function startEpochTimer() {
+    if (epochTimerInterval) clearInterval(epochTimerInterval);
+    
+    function updateTimer() {
+      // Calculate time until next epoch
+      // This is approximate - real logic would need epoch start time from contract
+      var now = Math.floor(Date.now() / 1000);
+      var secondsIntoEpoch = now % epochDurationSeconds;
+      var secondsRemaining = epochDurationSeconds - secondsIntoEpoch;
+      
+      var hours = Math.floor(secondsRemaining / 3600);
+      var minutes = Math.floor((secondsRemaining % 3600) / 60);
+      var seconds = secondsRemaining % 60;
+      
+      var display = '';
+      if (hours > 0) {
+        display = hours + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+      } else {
+        display = minutes + ':' + String(seconds).padStart(2, '0');
+      }
+      
+      var timerEl = document.getElementById('epochTimerDisplay');
+      var countdownEl = document.getElementById('epochCountdown');
+      if (timerEl) timerEl.textContent = display;
+      if (countdownEl) countdownEl.textContent = '⏱ ' + display;
+    }
+    
+    updateTimer();
+    epochTimerInterval = setInterval(updateTimer, 1000);
+  }
+  
+  // Start timer when page loads
+  startEpochTimer();
   
   function selectAttestSignalInline(sig, itemEl) {
     // Deselect previous
@@ -2192,20 +2339,50 @@
                  encodeUint256(currentKeyId) +
                  signalHash.slice(2);
       
-      var txHash = await sendTransaction(Z1N_SIGNAL, data, '0');
+      // Send transaction using provider.request
+      var txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: currentAccount,
+          to: Z1N_SIGNAL,
+          value: '0x0',
+          data: data
+        }]
+      });
       
-      btn.textContent = '✅';
-      alert('Attestation submitted!\n\nTx: ' + txHash);
+      btn.textContent = '⏳ Confirming...';
       
-      // Refresh
-      attestsUsed++;
-      updateAttestButtonsInline();
-      updateKeyStatsDisplay();
-      loadAttestableSignals();
+      // Wait for confirmation
+      var confirmed = false;
+      for (var i = 0; i < 30; i++) {
+        await new Promise(function(r) { setTimeout(r, 2000); });
+        var receipt = await rpcCall('eth_getTransactionReceipt', [txHash]);
+        if (receipt && receipt.status) {
+          confirmed = true;
+          break;
+        }
+      }
+      
+      if (confirmed) {
+        btn.textContent = '✅';
+        alert('Attestation submitted!\n\nTx: ' + txHash);
+        
+        // Refresh
+        attestsUsed++;
+        updateAttestButtonsInline();
+        updateStatusDots();
+        loadAttestableSignals();
+      } else {
+        btn.textContent = '⏳ Pending...';
+      }
       
     } catch (err) {
       console.error('Attest error:', err);
-      alert('Attestation failed: ' + (err.message || err));
+      var msg = err.message || String(err);
+      if (msg.includes('rejected') || msg.includes('denied')) {
+        msg = 'Transaction rejected';
+      }
+      alert('Attestation failed: ' + msg);
       btn.textContent = originalText;
       btn.disabled = false;
     }
@@ -2270,7 +2447,7 @@
       // Refresh
       attestsUsed++;
       updateAttestButtonsInline();
-      updateKeyStatsDisplay();
+      updateStatusDots();
       loadAttestableSignals();
       
     } catch (err) {
