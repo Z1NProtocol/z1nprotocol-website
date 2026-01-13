@@ -2120,66 +2120,52 @@
     var btn = document.getElementById('btnAttestStealth');
     var originalText = btn.textContent;
     btn.disabled = true;
-    btn.textContent = '⏳ Signing...';
+    btn.textContent = '⏳ Preparing...';
     
     try {
-      // Get nonce from relayer
-      var nonceResp = await fetch(API_BASE + '/relay/nonce/' + currentKeyId);
-      var nonceData = await nonceResp.json();
-      var nonce = nonceData.nonce;
+      // Get signing data from relay server
+      var prepareResp = await fetch(API_BASE + '/relay/attest/prepare/' + currentKeyId + '?signalHash=' + encodeURIComponent(signalHash));
       
-      // Set deadline (1 hour from now)
-      var deadline = Math.floor(Date.now() / 1000) + 3600;
+      if (!prepareResp.ok) {
+        var errData = await prepareResp.json();
+        throw new Error(errData.error || 'Failed to prepare attestation');
+      }
       
-      // Build EIP-712 typed data for attestation
-      var domain = {
-        name: 'Z1NStealthRelayer',
-        version: '1.1.2',
-        chainId: parseInt(CHAIN_ID, 16),
-        verifyingContract: '0x6202a5Bd1e74d170264F08FB5290663b44488125'
-      };
-      
-      var types = {
-        StealthAttestation: [
-          { name: 'tokenId', type: 'uint256' },
-          { name: 'signalHash', type: 'bytes32' },
-          { name: 'nonce', type: 'uint256' },
-          { name: 'deadline', type: 'uint256' }
-        ]
-      };
-      
-      var message = {
-        tokenId: currentKeyId,
-        signalHash: signalHash,
-        nonce: nonce,
-        deadline: deadline
-      };
+      var prepareData = await prepareResp.json();
       
       btn.textContent = '⏳ Sign in wallet...';
       
-      // Request signature
+      // Build EIP-712 typed data
+      var typedData = {
+        domain: prepareData.domain,
+        types: prepareData.types,
+        primaryType: prepareData.primaryType,
+        message: prepareData.message
+      };
+      
+      // Request signature from MetaMask
       var signature = await window.ethereum.request({
         method: 'eth_signTypedData_v4',
-        params: [currentAccount, JSON.stringify({ domain: domain, types: types, primaryType: 'StealthAttestation', message: message })]
+        params: [currentAccount, JSON.stringify(typedData)]
       });
       
       btn.textContent = '⏳ Relaying...';
       
-      // Send to relay server
-      var relayResp = await fetch(API_BASE + '/relay/attest', {
+      // Submit to relay server
+      var submitResp = await fetch(API_BASE + '/relay/attest/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tokenId: currentKeyId,
+          signature: signature,
+          keyId: currentKeyId,
           signalHash: signalHash,
-          deadline: deadline,
-          signature: signature
+          deadline: prepareData.deadline
         })
       });
       
-      var result = await relayResp.json();
+      var result = await submitResp.json();
       
-      if (!relayResp.ok) {
+      if (!submitResp.ok || !result.success) {
         throw new Error(result.error || 'Relay failed');
       }
       
@@ -2194,7 +2180,14 @@
       
     } catch (err) {
       console.error('Stealth attest error:', err);
-      alert('Stealth attestation failed: ' + (err.message || err));
+      
+      // User-friendly error messages
+      var msg = err.message || String(err);
+      if (msg.includes('User rejected') || msg.includes('user rejected')) {
+        msg = 'Signature rejected by user';
+      }
+      
+      alert('Stealth attestation failed: ' + msg);
       btn.textContent = originalText;
       btn.disabled = false;
     }
