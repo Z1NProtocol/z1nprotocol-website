@@ -277,19 +277,19 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
-      background: rgba(96, 165, 250, 0.1);
-      border: 1px solid rgba(96, 165, 250, 0.3);
+      padding: 14px 18px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
-      color: #60a5fa;
-      font-size: 13px;
+      color: var(--text-main);
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
     }
     
     .pure-toggle-btn:hover {
-      background: rgba(96, 165, 250, 0.15);
+      border-color: var(--keys-accent);
     }
     
     .pure-signal-collapsed {
@@ -299,33 +299,47 @@
     }
     
     .pure-signal-collapsed.expanded {
-      max-height: 300px;
+      max-height: 400px;
     }
     
     .pure-inner {
-      padding: 16px;
+      padding: 18px;
       background: var(--card-bg);
-      border: 1px solid rgba(96, 165, 250, 0.2);
+      border: 1px solid var(--card-border);
       border-top: none;
       border-radius: 0 0 12px 12px;
     }
     
-    /* Epoch Info Bar */
-    .epoch-info-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      margin-top: 16px;
-      background: rgba(245, 200, 66, 0.1);
-      border: 1px solid rgba(245, 200, 66, 0.3);
-      border-radius: 8px;
-      font-size: 12px;
-      color: var(--text-soft);
+    .pure-inner .input-group {
+      margin-bottom: 0;
     }
     
-    .epoch-info-bar strong {
-      color: var(--keys-accent);
+    .pure-inner .input-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+    
+    .pure-inner input,
+    .pure-inner textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.4);
+      color: var(--text-main);
+      font-size: 13px;
+    }
+    
+    .pure-inner textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .pure-inner input:focus,
+    .pure-inner textarea:focus {
+      outline: none;
+      border-color: var(--keys-accent);
     }
 
     /* SIGNAL TYPE TOGGLE */
@@ -1144,6 +1158,7 @@
             <span class="dot-indicator open"></span>
           </div>
         </div>
+        <button onclick="refreshPageData()" style="padding:6px 10px; border-radius:6px; border:1px solid var(--card-border); background:transparent; color:var(--text-soft); font-size:11px; cursor:pointer;" title="Refresh data">↻</button>
       </div>
     </div>
 
@@ -1153,8 +1168,14 @@
       <!-- POG SIGNAL CARD -->
       <div class="card pog-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-          <div class="card-title" style="margin-bottom:0;">⚡ PoG Signal</div>
-          <span id="stealthBadge" style="display:none; background:rgba(255,255,255,0.15); color:#ffffff; padding:3px 10px; border-radius:4px; font-size:10px; cursor:help;" title="Stealth Mode: Signals sent via anonymous relayer. No protocol fee, identity protected on-chain.">🔒 STEALTH</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="card-title" style="margin-bottom:0;">⚡ PoG Signal</div>
+            <span id="stealthBadgePog" style="display:none; background:rgba(96,165,250,0.2); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:9px;">🔒 STEALTH</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span id="pogEpochTimer" style="font-size:11px; color:var(--keys-accent); font-family:monospace;">⏱ --:--</span>
+            <span id="pogEpochDisplay" style="font-size:11px; color:var(--text-soft);">Epoch —</span>
+          </div>
         </div>
 
         <!-- Signal Type Toggle -->
@@ -1226,7 +1247,10 @@
       <!-- ATTESTABLE SIGNALS CARD -->
       <div class="card pog-card" id="attestCard">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <div class="card-title" style="margin-bottom:0;">✓ Attest Signals</div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="card-title" style="margin-bottom:0;">✓ Attest Signals</div>
+            <span id="stealthBadgeAttest" style="display:none; background:rgba(96,165,250,0.2); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:9px;">🔒 STEALTH</span>
+          </div>
           <div style="display:flex; align-items:center; gap:12px;">
             <span id="epochCountdown" style="font-size:11px; color:var(--keys-accent); font-family:monospace;">⏱ --:--</span>
             <span id="attestEpochBadge" style="font-size:11px; color:var(--text-soft);">Epoch —</span>
@@ -1278,26 +1302,14 @@
           <div id="attestSelectedInfoInline" style="font-size:11px; color:var(--text-soft); margin-bottom:10px;">
             Select a signal to attest (2 per epoch)
           </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn-stealth" id="btnAttestStealthInline" onclick="submitAttestInline(true)" disabled style="flex:1; font-size:11px; padding:8px 12px;">
-              🔒 Stealth (Free)
-            </button>
-            <button class="btn-submit" id="btnAttestNormalInline" onclick="submitAttestInline(false)" disabled style="flex:1; font-size:11px; padding:8px 12px;">
-              ✓ Attest
-            </button>
-          </div>
+          <button class="btn-submit" id="btnAttestNormalInline" onclick="submitAttestInline(false)" disabled style="width:100%; font-size:12px; padding:10px 16px;">
+            ✓ Attest Signal
+          </button>
         </div>
       </div>
     </div>
     
-    <!-- EPOCH INFO BAR -->
-    <div class="epoch-info-bar">
-      <span>Current: <strong>Epoch <span id="currentEpochDisplay">—</span></strong></span>
-      <span>Next epoch in: <strong id="epochTimerDisplay">--:--:--</strong></span>
-      <span>Attestable: <strong>Epoch <span id="attestableEpochDisplay">—</span></strong></span>
-    </div>
-    
-    <!-- PURE SIGNAL SECTION (collapsed by default) -->
+    <!-- PURE SIGNAL SECTION -->
     <div class="pure-signal-section">
       <button class="pure-toggle-btn" onclick="togglePureSection()">
         <span>● Pure Signal (Whisper)</span>
@@ -1305,28 +1317,28 @@
       </button>
       <div id="pureSignalContent" class="pure-signal-collapsed">
         <div class="pure-inner">
-          <p style="font-size:11px; color:var(--text-soft); margin-bottom:12px;">
+          <p style="font-size:12px; color:var(--text-soft); margin-bottom:14px;">
             No protocol fee, no attestation, no game impact. Unlimited whispers between Keys. Only gas costs.
           </p>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
             <div class="input-group" style="margin-bottom:0;">
-              <div class="input-label" style="font-size:10px;">Recipient Key ID (0 = broadcast)</div>
-              <input type="number" id="pureRecipient" value="0" min="0" placeholder="0" oninput="debounceValidateRecipient()" style="padding:8px 10px; font-size:12px;">
-              <div id="recipientError" style="display:none; color:#f87171; font-size:10px; margin-top:2px;">⚠️ Key ID does not exist</div>
+              <div class="input-label">Recipient Key ID (0 = broadcast)</div>
+              <input type="number" id="pureRecipient" value="0" min="0" placeholder="0" oninput="debounceValidateRecipient()">
+              <div id="recipientError" style="display:none; color:#f87171; font-size:11px; margin-top:4px;">⚠️ Key ID does not exist</div>
             </div>
             <div class="input-group" style="margin-bottom:0;">
-              <div class="input-label" style="font-size:10px;">
+              <div class="input-label">
                 <span>Message</span>
                 <span class="char-count" id="pureCharCount" style="font-size:9px;">0 / 500</span>
               </div>
-              <textarea id="pureContent" placeholder="Your whisper..." maxlength="500" oninput="updatePureCharCount()" style="min-height:60px; font-size:12px;"></textarea>
+              <textarea id="pureContent" placeholder="Your whisper..." maxlength="500" oninput="updatePureCharCount()"></textarea>
             </div>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
-            <div class="fee-display" style="font-size:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+            <div class="fee-display">
               Protocol Fee: <span style="color:#4ade80;">Free</span> <span style="color:var(--text-soft);">(gas only)</span>
             </div>
-            <button class="btn-submit" id="btnSubmitPure" onclick="submitPureSignal()" style="padding:8px 16px; font-size:11px;">Send Whisper</button>
+            <button class="btn-submit" id="btnSubmitPure" onclick="submitPureSignal()">Send Whisper</button>
           </div>
           <div id="pureStatus"></div>
         </div>
@@ -2071,21 +2083,21 @@
     
     if (!listEl) return;
     
+    // Reset selection when reloading
+    selectedAttestSignal = null;
+    
     listEl.innerHTML = '';
     if (loadingEl) loadingEl.style.display = 'block';
     
     try {
-      // First get the last closed epoch from live data
-      var liveResp = await fetch(API_BASE + '/live');
-      var liveData = await liveResp.json();
-      lastClosedEpoch = liveData.lastClosedEpoch || (currentEpoch > 0 ? currentEpoch - 1 : 0);
+      // Attestable signals are from the PREVIOUS epoch (currentEpoch - 1)
+      // We always use currentEpoch - 1, not lastClosedEpoch from API which may be stale
+      lastClosedEpoch = currentEpoch > 0 ? currentEpoch - 1 : 0;
       
       // Update all epoch displays
       if (epochBadge) epochBadge.textContent = 'Epoch ' + lastClosedEpoch;
-      var currentEpochDisplay = document.getElementById('currentEpochDisplay');
-      var attestableEpochDisplay = document.getElementById('attestableEpochDisplay');
-      if (currentEpochDisplay) currentEpochDisplay.textContent = currentEpoch;
-      if (attestableEpochDisplay) attestableEpochDisplay.textContent = lastClosedEpoch;
+      var pogEpochEl = document.getElementById('pogEpochDisplay');
+      if (pogEpochEl) pogEpochEl.textContent = 'Epoch ' + currentEpoch;
       
       // Build query - attestable signals are from the LAST CLOSED epoch
       var params = new URLSearchParams();
@@ -2104,9 +2116,13 @@
       if (document.getElementById('attestIntentK')?.checked) intentsEnabled.push('2');
       if (document.getElementById('attestIntentS')?.checked) intentsEnabled.push('3');
       
+      console.log('Intent filter enabled:', intentsEnabled);
+      
       if (intentsEnabled.length < 4 && intentsEnabled.length > 0) {
         params.set('intents', intentsEnabled.join(','));
       }
+      
+      console.log('Fetching signals with params:', params.toString());
       
       var response = await fetch(API_BASE + '/signals?' + params.toString());
       var data = await response.json();
@@ -2134,6 +2150,9 @@
       }
       
       renderAttestSignals(signals, listEl, selectedInfo);
+      
+      // Update button state (no signal selected after reload)
+      updateAttestButtonsInline();
       
     } catch (err) {
       console.error('Failed to load attestable signals:', err);
@@ -2235,33 +2254,77 @@
   // ═══════════════════════════════════════════════════════════════════
   
   var epochTimerInterval = null;
-  var epochDurationSeconds = 300; // 5 minutes on testnet (adjust for mainnet)
+  var epochDurationSeconds = 1800; // 30 minutes on testnet
+  var epochStartTimestamp = 0; // Will be fetched from API
+  var lastKnownEpoch = 0;
+  
+  async function fetchEpochTiming() {
+    try {
+      var resp = await fetch(API_BASE + '/live');
+      var data = await resp.json();
+      
+      // Calculate epoch start time based on current epoch
+      // Epoch 0 started at some genesis time, each epoch is 30 minutes
+      // We can estimate from current time and current epoch
+      var now = Math.floor(Date.now() / 1000);
+      var epochNumber = data.currentEpoch || currentEpoch || 0;
+      
+      // Calculate seconds into current epoch
+      // Use a fixed genesis timestamp or calculate backwards
+      epochStartTimestamp = now - (now % epochDurationSeconds);
+      lastKnownEpoch = epochNumber;
+      
+      return data;
+    } catch (err) {
+      console.error('Failed to fetch epoch timing:', err);
+      return null;
+    }
+  }
   
   function startEpochTimer() {
     if (epochTimerInterval) clearInterval(epochTimerInterval);
     
-    function updateTimer() {
-      // Calculate time until next epoch
-      // This is approximate - real logic would need epoch start time from contract
+    async function updateTimer() {
       var now = Math.floor(Date.now() / 1000);
       var secondsIntoEpoch = now % epochDurationSeconds;
       var secondsRemaining = epochDurationSeconds - secondsIntoEpoch;
       
-      var hours = Math.floor(secondsRemaining / 3600);
-      var minutes = Math.floor((secondsRemaining % 3600) / 60);
+      var minutes = Math.floor(secondsRemaining / 60);
       var seconds = secondsRemaining % 60;
+      var display = minutes + ':' + String(seconds).padStart(2, '0');
       
-      var display = '';
-      if (hours > 0) {
-        display = hours + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
-      } else {
-        display = minutes + ':' + String(seconds).padStart(2, '0');
+      // Update all timer displays
+      var pogTimer = document.getElementById('pogEpochTimer');
+      var attestTimer = document.getElementById('epochCountdown');
+      if (pogTimer) pogTimer.textContent = '⏱ ' + display;
+      if (attestTimer) attestTimer.textContent = '⏱ ' + display;
+      
+      // Auto-refresh when epoch changes (timer hits 0)
+      if (secondsRemaining <= 1) {
+        console.log('⏰ Epoch ending - refreshing data...');
+        setTimeout(async function() {
+          // Refresh epoch data
+          var epochResult = await rpcCall('eth_call', [{ to: Z1N_CORE, data: SEL.currentEpoch }, 'latest']);
+          var newEpoch = parseInt(epochResult, 16);
+          
+          if (newEpoch !== currentEpoch) {
+            currentEpoch = newEpoch;
+            console.log('🆕 New epoch:', currentEpoch);
+            
+            // Update displays
+            var pogEpochEl = document.getElementById('pogEpochDisplay');
+            if (pogEpochEl) pogEpochEl.textContent = 'Epoch ' + currentEpoch;
+            
+            // Reset signal/attest counts for new epoch
+            signalsUsed = 0;
+            attestsUsed = 0;
+            updateStatusDots();
+            
+            // Reload attestable signals (now for previous epoch)
+            loadAttestableSignals();
+          }
+        }, 2000); // Wait 2 seconds for chain to update
       }
-      
-      var timerEl = document.getElementById('epochTimerDisplay');
-      var countdownEl = document.getElementById('epochCountdown');
-      if (timerEl) timerEl.textContent = display;
-      if (countdownEl) countdownEl.textContent = '⏱ ' + display;
     }
     
     updateTimer();
@@ -2269,7 +2332,44 @@
   }
   
   // Start timer when page loads
-  startEpochTimer();
+  fetchEpochTiming().then(function() {
+    startEpochTimer();
+  });
+  
+  // Page-wide refresh function
+  window.refreshPageData = async function() {
+    console.log('🔄 Refreshing page data...');
+    
+    try {
+      // Refresh current epoch from chain
+      var epochResult = await rpcCall('eth_call', [{ to: Z1N_CORE, data: SEL.currentEpoch }, 'latest']);
+      currentEpoch = parseInt(epochResult, 16);
+      
+      // Update epoch displays
+      var pogEpochEl = document.getElementById('pogEpochDisplay');
+      if (pogEpochEl) pogEpochEl.textContent = 'Epoch ' + currentEpoch;
+      
+      // Refresh signal/attest counts
+      if (currentKeyId) {
+        var signalData = SEL.signalCount + encodeUint256(currentKeyId) + encodeUint256(currentEpoch);
+        var signalResult = await rpcCall('eth_call', [{ to: Z1N_SIGNAL, data: signalData }, 'latest']);
+        signalsUsed = parseInt(signalResult, 16);
+        
+        var attestData = SEL.attestCount + encodeUint256(currentKeyId) + encodeUint256(currentEpoch);
+        var attestResult = await rpcCall('eth_call', [{ to: Z1N_SIGNAL, data: attestData }, 'latest']);
+        attestsUsed = parseInt(attestResult, 16);
+        
+        updateStatusDots();
+      }
+      
+      // Reload attestable signals
+      await loadAttestableSignals();
+      
+      console.log('✅ Page data refreshed');
+    } catch (err) {
+      console.error('Refresh failed:', err);
+    }
+  };
   
   function selectAttestSignalInline(sig, itemEl) {
     // Deselect previous
@@ -2291,19 +2391,19 @@
   }
   
   function updateAttestButtonsInline() {
-    var btnStealth = document.getElementById('btnAttestStealthInline');
     var btnNormal = document.getElementById('btnAttestNormalInline');
     var canAttest = selectedAttestSignal && attestsUsed < 2;
     
-    if (btnStealth) btnStealth.disabled = !canAttest;
-    if (btnNormal) btnNormal.disabled = !canAttest;
-    
-    if (attestsUsed >= 2) {
-      if (btnNormal) btnNormal.textContent = '✓ Max (2/2)';
-      if (btnStealth) btnStealth.textContent = '🔒 Max (2/2)';
-    } else {
-      if (btnNormal) btnNormal.textContent = '✓ Attest (' + attestsUsed + '/2)';
-      if (btnStealth) btnStealth.textContent = '🔒 Stealth (' + attestsUsed + '/2)';
+    if (btnNormal) {
+      btnNormal.disabled = !canAttest;
+      
+      if (attestsUsed >= 2) {
+        btnNormal.textContent = '✓ Max Attests Used (2/2)';
+      } else if (selectedAttestSignal) {
+        btnNormal.textContent = '✓ Attest Signal (' + attestsUsed + '/2)';
+      } else {
+        btnNormal.textContent = '✓ Attest Signal';
+      }
     }
   }
   
@@ -2518,7 +2618,7 @@
     
     // Default recipient to 0 (broadcast)
     var toKeyId = 0;
-    if (recipientInput && recipientInput !== '') {
+    if (recipientInput && recipientInput !== '' && recipientInput !== '0') {
       toKeyId = parseInt(recipientInput, 10);
       if (isNaN(toKeyId) || toKeyId < 0) {
         statusEl.innerHTML = '<div class="status-msg error">Invalid recipient Key ID. Use 0 for broadcast.</div>';
@@ -2528,9 +2628,17 @@
     
     // Validate recipient key exists (if not 0)
     if (toKeyId !== 0) {
-      await validateRecipientKey();
-      if (!recipientKeyValid) {
-        statusEl.innerHTML = '<div class="status-msg error">Recipient Key ID does not exist.</div>';
+      try {
+        // Double-check key exists right before submitting
+        var data = SEL.ownerOf + encodeUint256(toKeyId);
+        var result = await rpcCall('eth_call', [{ to: Z1N_KEY, data: data }, 'latest']);
+        
+        if (!result || result === '0x' || result === '0x0000000000000000000000000000000000000000000000000000000000000000') {
+          statusEl.innerHTML = '<div class="status-msg error">Recipient Key #' + toKeyId + ' does not exist.</div>';
+          return;
+        }
+      } catch (e) {
+        statusEl.innerHTML = '<div class="status-msg error">Recipient Key #' + toKeyId + ' does not exist.</div>';
         return;
       }
     }
@@ -2766,9 +2874,13 @@
       
       // Check stealth mode for this key
       stealthMode = isStealthEnabled(currentKeyId);
-      var stealthBadge = document.getElementById('stealthBadge');
-      if (stealthBadge) {
-        stealthBadge.style.display = stealthMode ? 'inline' : 'none';
+      var stealthBadgePog = document.getElementById('stealthBadgePog');
+      var stealthBadgeAttest = document.getElementById('stealthBadgeAttest');
+      if (stealthBadgePog) {
+        stealthBadgePog.style.display = stealthMode ? 'inline' : 'none';
+      }
+      if (stealthBadgeAttest) {
+        stealthBadgeAttest.style.display = stealthMode ? 'inline' : 'none';
       }
       
       // Update fee display if stealth mode (like Pure Signal style)
