@@ -2111,23 +2111,35 @@
       var sortEl = document.getElementById('attestSortSelect');
       if (sortEl) params.set('sort', sortEl.value);
       
-      // Intent filter
+      // Intent filter - always send which intents are enabled
       var intentsEnabled = [];
       if (document.getElementById('attestIntentC')?.checked) intentsEnabled.push('0');
       if (document.getElementById('attestIntentI')?.checked) intentsEnabled.push('1');
       if (document.getElementById('attestIntentK')?.checked) intentsEnabled.push('2');
       if (document.getElementById('attestIntentS')?.checked) intentsEnabled.push('3');
       
-      console.log('Intent filter enabled:', intentsEnabled);
+      console.log('Intent filter:', intentsEnabled.length + '/4 intents enabled:', intentsEnabled);
       
-      if (intentsEnabled.length < 4 && intentsEnabled.length > 0) {
+      // Always send intents param if not all 4 are checked
+      if (intentsEnabled.length === 0) {
+        // No intents selected - show empty state
+        if (loadingEl) loadingEl.style.display = 'none';
+        listEl.innerHTML = '<div style="padding:30px 20px; text-align:center; color:var(--text-soft); font-size:11px;">No intents selected. Check at least one intent filter.</div>';
+        if (selectedInfo) selectedInfo.textContent = 'Select intent filters above';
+        return;
+      }
+      
+      if (intentsEnabled.length < 4) {
         params.set('intents', intentsEnabled.join(','));
       }
       
       console.log('Fetching signals with params:', params.toString());
       console.log('Current epoch:', currentEpoch, 'Attestable epoch:', lastClosedEpoch);
       
-      var response = await fetch(API_BASE + '/signals?' + params.toString());
+      var response = await fetch(API_BASE + '/signals?' + params.toString(), {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
       var data = await response.json();
       
       console.log('Server response:', data.signals?.length, 'signals returned');
@@ -3050,8 +3062,18 @@
       if (document.getElementById('filterIntentK').checked) intentsEnabled.push('2');
       if (document.getElementById('filterIntentS').checked) intentsEnabled.push('3');
       
-      // Only send if not all are checked (default)
-      if (intentsEnabled.length < 4 && intentsEnabled.length > 0) {
+      console.log('Intent filter:', intentsEnabled.length + '/4 intents enabled:', intentsEnabled);
+      
+      // Handle no intents selected
+      if (intentsEnabled.length === 0) {
+        signalsList.innerHTML = '<div style="padding:40px 20px; text-align:center; color:var(--text-soft);">No intents selected. Check at least one intent filter.</div>';
+        document.getElementById('filterStatus').textContent = 'Select intent filters';
+        isLoading = false;
+        return;
+      }
+      
+      // Send filter if not all 4 are checked
+      if (intentsEnabled.length < 4) {
         params.set('intents', intentsEnabled.join(','));
       }
       
