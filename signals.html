@@ -2646,6 +2646,46 @@
       }
     }
     
+    // Check wallet is connected and has a key
+    if (!currentAccount) {
+      statusEl.innerHTML = '<div class="status-msg error">Wallet not connected. Please connect your wallet first.</div>';
+      return;
+    }
+    
+    if (!currentKeyId) {
+      statusEl.innerHTML = '<div class="status-msg error">No Key selected. You need to own a Z1N Key to send whispers.</div>';
+      return;
+    }
+    
+    // Verify the connected wallet owns the currentKeyId
+    statusEl.innerHTML = '<div class="status-msg pending">Verifying Key ownership...</div>';
+    
+    try {
+      var ownerData = SEL.ownerOf + encodeUint256(currentKeyId);
+      var ownerResult = await rpcCall('eth_call', [{
+        to: Z1N_KEY,
+        data: ownerData
+      }, 'latest']);
+      
+      if (ownerResult && ownerResult.length >= 66) {
+        var keyOwner = '0x' + ownerResult.slice(26).toLowerCase();
+        var connectedAddr = currentAccount.toLowerCase();
+        
+        console.log('Key #' + currentKeyId + ' owner:', keyOwner);
+        console.log('Connected wallet:', connectedAddr);
+        
+        if (keyOwner !== connectedAddr) {
+          statusEl.innerHTML = '<div class="status-msg error">❌ Your connected wallet does not own Key #' + currentKeyId + '.<br>' +
+            '<span style="font-size:10px;">Key owner: ' + keyOwner.slice(0, 10) + '...<br>Your wallet: ' + connectedAddr.slice(0, 10) + '...</span></div>';
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('Ownership check failed:', e);
+      statusEl.innerHTML = '<div class="status-msg error">Could not verify Key ownership. Please try again.</div>';
+      return;
+    }
+    
     // Validate recipient key exists (if not 0)
     if (toKeyId !== 0) {
       statusEl.innerHTML = '<div class="status-msg pending">Checking if Key #' + toKeyId + ' exists...</div>';
@@ -2679,7 +2719,7 @@
       }
       
       if (!keyExists) {
-        statusEl.innerHTML = '<div class="status-msg error">❌ Key #' + toKeyId + ' does not exist.<br><span style="font-size:10px;">There are only ~36 Keys minted on testnet. Use Key ID 1-36 or 0 for broadcast.</span></div>';
+        statusEl.innerHTML = '<div class="status-msg error">❌ Key #' + toKeyId + ' does not exist.<br><span style="font-size:10px;">There are only ~42 Keys minted on testnet. Use Key ID 1-42 or 0 for broadcast.</span></div>';
         return;
       }
     }
@@ -2694,12 +2734,7 @@
       return;
     }
 
-    if (!currentAccount || !currentKeyId) {
-      statusEl.innerHTML = '<div class="status-msg error">Wallet not connected or no key selected.</div>';
-      return;
-    }
-
-    statusEl.innerHTML = '<div class="status-msg pending">Preparing whisper...</div>';
+    statusEl.innerHTML = '<div class="status-msg pending">Preparing whisper from Key #' + currentKeyId + '...</div>';
 
     try {
       // Verify we're on the right chain
@@ -2726,10 +2761,11 @@
       console.log('Pure Signal params:', {
         fromKeyId: currentKeyId,
         toKeyId: toKeyId,
-        cid: content.slice(0, 50) + '...'
+        cid: content.slice(0, 50) + '...',
+        sender: currentAccount
       });
       
-      statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet... (no fee)</div>';
+      statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet... (no fee)<br><span style="font-size:10px;">From: Key #' + currentKeyId + ' → To: ' + (toKeyId === 0 ? 'Broadcast' : 'Key #' + toKeyId) + '</span></div>';
       
       // Send transaction (no value - Pure signals are free!)
       var txHash = await provider.request({
