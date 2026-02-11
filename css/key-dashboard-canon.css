@@ -1,0 +1,105 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Z1N CANON STYLES - Key Dashboard
+   Version: 2.3.0-Ω
+   Original design: Green clickable tx links, no badges
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Filter Bar */
+.canon-filter-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.canon-filter-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(245, 200, 66, 0.3);
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.canon-filter-pill:hover {
+  border-color: var(--keys-accent);
+  color: var(--keys-accent);
+}
+
+.canon-filter-pill.active {
+  background: rgba(245, 200, 66, 0.2);
+  border-color: var(--keys-accent);
+  color: var(--keys-accent);
+}
+
+/* Canon Grid */
+.canon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .canon-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Canon Card - Original Design */
+.canon-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(245, 200, 66, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.canon-card:hover {
+  border-color: var(--keys-accent);
+  transform: translateY(-2px);
+}
+
+/* Epoch Number */
+.canon-card-epoch {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--keys-accent);
+  margin-bottom: 4px;
+}
+
+/* Time Ago */
+.canon-card-time {
+  font-size: 11px;
+  color: var(--text-soft);
+  margin-bottom: 8px;
+}
+
+/* Transaction Hash Link - GREEN (original design) */
+.canon-card-tx {
+  display: block;
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--accent);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.canon-card-tx:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* Empty State */
+.canon-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-soft);
+}
+
+.canon-empty p {
+  margin: 0;
+}
