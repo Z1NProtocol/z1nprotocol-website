@@ -813,7 +813,7 @@
     var color = Z1NWallets.getColor(key.wallet);
     var walletIdx = Z1NWallets.getIndex(key.wallet);
     var walletParam = encodeURIComponent(key.wallet);
-    var baseUrl = './key-dashboard?key=' + key.tokenId + '&wallet=' + walletParam;
+    var baseUrl = './key-dashboard.html?key=' + key.tokenId + '&wallet=' + walletParam;
     var isPrimary = isPrimaryWallet(key.wallet);
     
     if (allConnectedAccounts.length > 1) {
