@@ -412,9 +412,9 @@
     } catch (e) {}
 
     return Promise.all([
-      fetch(apiBase + '/attestations?toKeyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; }),
-      fetch(apiBase + '/pure?keyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; }),
-      fetch(apiBase + '/pure?toKeyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; })
+      fetch(API_BASE + '/attestations?toKeyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; }),
+      fetch(API_BASE + '/pure?keyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; }),
+      fetch(API_BASE + '/pure?toKeyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; })
     ]).then(function(results) {
       var totalReceived = 0;
 
