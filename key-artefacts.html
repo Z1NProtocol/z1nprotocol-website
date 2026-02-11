@@ -1,0 +1,1655 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Z1N Protocol – Key Artefacts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+    :root {
+      --bg: #050812;
+      --card-bg: #020617;
+      --text-main: #ffffff;
+      --text-soft: #9aa3bb;
+      --text-muted: #4a5568;
+      --accent: #66d69a;
+      --accent-soft: #3a9f63;
+      --card-border: rgba(148,163,184,0.25);
+      --keys-accent: #f5c842;
+      --keys-accent-soft: #d4a012;
+      --danger: #e05555;
+      --danger-soft: rgba(224,85,85,0.15);
+      --sent-color: #c97777;
+      --warning: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scrollbar-gutter: stable; overflow-y: scroll; scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text-main); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    a:hover { opacity: 0.9; }
+
+    header { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+    .nav-inner { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
+    .logo-dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .logo-text { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+    .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
+    .nav-links a.active-keys { color: var(--keys-accent); }
+
+    .page { max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px; }
+    @media(max-width: 900px) { .page { padding: 32px 18px 56px; } }
+
+    .back-link { color: var(--text-soft); font-size: 13px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 16px; }
+    .back-link:hover { color: var(--keys-accent); }
+
+    .key-header-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+    .key-title-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+    .key-title { font-size: 32px; font-weight: 700; color: var(--keys-accent); }
+    .genesis-badge { background: linear-gradient(90deg, var(--keys-accent), var(--keys-accent-soft)); color: #000; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 999px; text-transform: uppercase; }
+    .key-glyphs { font-size: 20px; letter-spacing: 3px; margin-bottom: 12px; font-family: "Segoe UI Symbol", sans-serif; }
+    .key-meta { font-size: 13px; color: var(--text-soft); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .key-meta a { color: var(--accent); }
+
+    .wallet-info-banner { margin-top: 16px; padding: 12px 18px; border: 1px solid; border-radius: 10px; }
+    .wallet-info-content { display: flex; align-items: center; gap: 10px; }
+    .wallet-info-banner .wallet-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .wallet-info-banner .wallet-label { font-weight: 700; font-size: 13px; }
+    .wallet-info-text { font-size: 13px; color: var(--text-soft); }
+    .wallet-info-text strong { font-family: monospace; }
+
+    .section-divider { display: flex; align-items: center; gap: 16px; margin: 32px 0 20px; }
+    .section-divider::before, .section-divider::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(148,163,184,0.3), transparent); }
+    .section-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; white-space: nowrap; }
+    .section-title.live { color: var(--accent); }
+    .section-title.static { color: var(--keys-accent); }
+
+    .section-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; }
+    .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .section-icon { font-size: 24px; }
+    .section-header-title { font-size: 18px; font-weight: 600; }
+    .section-header-title.live { color: var(--accent); }
+    .section-header-title.static { color: var(--keys-accent); }
+
+    .stats-row { display: flex; gap: 24px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .stat-item { display: flex; flex-direction: column; gap: 2px; }
+    .stat-value { font-size: 24px; font-weight: 700; }
+    .stat-value.muted { color: var(--text-muted) !important; }
+    .stat-label { font-size: 10px; color: var(--text-soft); text-transform: uppercase; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; border: 1px solid; text-transform: uppercase; letter-spacing: 0.03em; }
+    .btn.live { background: rgba(102, 214, 154, 0.12); border-color: rgba(102, 214, 154, 0.35); color: var(--accent); }
+    .btn.live:hover { background: rgba(102, 214, 154, 0.22); border-color: var(--accent); }
+    .btn.static { background: rgba(245, 200, 66, 0.12); border-color: rgba(245, 200, 66, 0.35); color: var(--keys-accent); }
+    .btn.static:hover { background: rgba(245, 200, 66, 0.22); border-color: var(--keys-accent); }
+    .btn.danger { background: transparent; border-color: rgba(224,85,85,0.35); color: var(--danger); }
+    .btn.danger:hover { background: var(--danger-soft); border-color: var(--danger); }
+    .btn.secondary { background: rgba(148,163,184,0.1); border-color: rgba(148,163,184,0.3); color: var(--text-soft); }
+    .btn.secondary:hover { background: rgba(148,163,184,0.2); border-color: rgba(148,163,184,0.5); color: var(--text-main); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .filter-toolbar { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .filter-group { display: flex; align-items: center; gap: 6px; }
+    .filter-label { font-size: 10px; color: var(--text-soft); text-transform: uppercase; }
+    .filter-select { background: rgba(5, 8, 18, 0.8); border: 1px solid rgba(148,163,184,0.3); border-radius: 6px; padding: 7px 26px 7px 10px; font-size: 11px; color: var(--text-main); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239aa3bb' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; min-width: 100px; }
+    .filter-select:focus { outline: none; border-color: var(--keys-accent); }
+    .filter-btn { background: transparent; border: 1px solid rgba(148,163,184,0.3); border-radius: 6px; padding: 7px 10px; font-size: 10px; color: var(--text-soft); cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+    .filter-btn:hover { border-color: rgba(148,163,184,0.5); color: var(--text-main); }
+    .filter-btn.active { background: rgba(245, 200, 66, 0.15); border-color: var(--keys-accent); color: var(--keys-accent); }
+    .filter-btn.active.live { background: rgba(102, 214, 154, 0.15); border-color: var(--accent); color: var(--accent); }
+
+    @media(max-width: 700px) { .filter-toolbar { padding: 10px; } .filter-group { flex: 1 1 100%; } .filter-select { width: 100%; min-width: unset; flex: 1; } }
+
+    .live-layout { display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+    @media(max-width: 850px) { .live-layout { grid-template-columns: 1fr; } .live-preview { order: -1; max-width: 300px; margin: 0 auto 16px; } }
+
+    .live-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; margin-bottom: 16px; padding-right: 4px; }
+    .live-list::-webkit-scrollbar { width: 4px; }
+    .live-list::-webkit-scrollbar-thumb { background: rgba(102,214,154,0.3); border-radius: 2px; }
+
+    .live-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(102,214,154,0.15); border-radius: 10px; transition: all 0.2s; cursor: pointer; }
+    .live-item:hover { border-color: rgba(102,214,154,0.4); }
+    .live-item.sent { border-color: rgba(148,163,184,0.15); }
+    .live-item-left { display: flex; align-items: center; gap: 12px; }
+    .live-item-id { font-size: 14px; font-weight: 600; color: var(--accent); }
+    .live-item.sent .live-item-id { color: var(--text-soft); }
+    .live-item-status { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+    /* Subtle labels, keep “action” feel via border/background only */
+.live-item-status.yours { background: rgba(102,214,154,0.12); color: var(--text-soft); border: 1px solid rgba(102,214,154,0.18); }
+.live-item-status.sent  { background: rgba(148,163,184,0.10); color: var(--text-soft); border: 1px solid rgba(148,163,184,0.18); }
+
+    .live-item-right { display: flex; align-items: center; gap: 10px; }
+    .live-item-holder { font-size: 10px; font-family: monospace; color: var(--text-soft); }
+    .live-item-lock { font-size: 12px; }
+
+    .live-item-visibility { font-size: 14px; margin-left: 8px; }
+    .live-item-visibility.viewable { color: #66d69a; }
+    .live-item-visibility.blocked { color: #e05555; }
+    .live-toggle-btn { background: transparent; border: 1px solid rgba(148,163,184,0.3); border-radius: 6px; width: 28px; height: 28px; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin-left: 8px; }
+    .live-toggle-btn:hover { transform: scale(1.1); }
+    .live-toggle-btn.revoke { color: var(--danger); border-color: rgba(224,85,85,0.3); }
+    .live-toggle-btn.revoke:hover { background: rgba(224,85,85,0.15); border-color: var(--danger); }
+    .live-toggle-btn.restore { color: var(--accent); border-color: rgba(102,214,154,0.3); }
+    .live-toggle-btn.restore:hover { background: rgba(102,214,154,0.15); border-color: var(--accent); }
+    .live-item-status-text { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-left: 6px; }
+    .live-item-status-text.viewable { color: var(--accent); }
+    .live-item-status-text.blocked { color: var(--danger); }
+    .live-item-status.blocked { background: rgba(224,85,85,0.12); color: #e05555; border: 1px solid rgba(224,85,85,0.25); }
+    .live-item.revoked { border-color: rgba(224,85,85,0.25); }
+    .live-item.revoked:hover { border-color: rgba(224,85,85,0.5); }
+    .stat-subgroup { display: flex; gap: 16px; padding-left: 16px; border-left: 1px solid rgba(148,163,184,0.2); margin-left: 8px; }
+    .stat-item.small .stat-value { font-size: 18px; }
+    .stat-item.small .stat-label { font-size: 9px; }
+    .stat-value.viewable { color: #66d69a !important; }
+    .stat-value.blocked { color: #e05555 !important; }
+
+    .live-preview { text-align: center; }
+    .live-preview-img { width: 100%; max-width: 300px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    .live-preview-img.loading { opacity: 0.3; }
+    .live-preview-label { display: block; margin-top: 12px; font-size: 11px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    .static-gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    @media(max-width: 1000px) { .static-gallery { grid-template-columns: repeat(4, 1fr); } }
+    @media(max-width: 800px) { .static-gallery { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
+    @media(max-width: 550px) { .static-gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+
+    .static-card { position: relative; border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; border: 2px solid transparent; background: var(--card-bg); }
+    .static-card:hover { transform: scale(1.04); z-index: 10; }
+    .static-card.yours { border-color: rgba(245,200,66,0.4); }
+    .static-card.yours:hover { border-color: var(--keys-accent); box-shadow: 0 8px 28px rgba(245, 200, 66, 0.3); }
+    .static-card.sent { border-color: rgba(80,80,80,0.3); }
+    .static-card.sent:hover { border-color: rgba(120,120,120,0.5); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+    .static-card.sent .static-img { filter: saturate(0.5) brightness(0.7); }
+
+    .static-card.sent .sent-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 28px; font-weight: 800; color: rgba(200, 100, 100, 0.9); text-transform: uppercase; letter-spacing: 6px; text-shadow: 0 2px 8px rgba(0,0,0,0.8); pointer-events: none; z-index: 3; }
+
+    .static-img { width: 100%; display: block; transition: all 0.3s ease; }
+    .static-img.loading { opacity: 0.3; }
+
+    .static-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 12px; background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.5) 70%, transparent); display: flex; justify-content: space-between; align-items: flex-end; z-index: 4; }
+    .static-id { font-size: 12px; font-weight: 600; }
+    .static-card.yours .static-id { color: var(--keys-accent); }
+    .static-card.sent .static-id { color: #888; }
+    .static-epoch { font-size: 10px; padding: 3px 6px; border-radius: 4px; font-weight: 500; margin-left: 6px; }
+    .static-card.yours .static-epoch { background: rgba(245,200,66,0.25); color: var(--keys-accent); }
+    .static-card.sent .static-epoch { background: rgba(100,100,100,0.4); color: #888; }
+    .static-owner { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+
+/* Make labels subtle light-grey (keep background tint, remove “loud” colors) */
+.static-owner.yours { background: rgba(245,200,66,0.14); color: var(--text-soft); border: 1px solid rgba(245,200,66,0.22); }
+.static-owner.sent  { background: rgba(148,163,184,0.10); color: var(--text-soft); border: 1px solid rgba(148,163,184,0.18); }
+
+    .static-top-overlay { position: absolute; top: 0; left: 0; right: 0; padding: 8px 10px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 4; }
+    .static-index { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.6); color: var(--text-soft); font-weight: 500; }
+    .static-lock { font-size: 12px; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(5, 8, 18, 0.92); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; visibility: hidden; transition: all 0.25s ease; backdrop-filter: blur(8px); }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: scale(0.95); transition: transform 0.25s ease; }
+    .modal-overlay.active .modal-content { transform: scale(1); }
+    .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.6); border: none; color: var(--text-soft); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
+    .modal-close:hover { background: rgba(0,0,0,0.8); color: var(--text-main); }
+    .modal-details { padding: 20px; }
+    .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .modal-meta { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .modal-meta-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(15, 23, 42, 0.5); border-radius: 6px; }
+    .modal-meta-label { font-size: 11px; color: var(--text-soft); text-transform: uppercase; }
+    .modal-meta-value { font-size: 13px; font-weight: 500; }
+    .modal-meta-value.yours { color: var(--keys-accent); }
+    .modal-meta-value.sent { color: var(--sent-color); }
+    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .modal-actions .btn { flex: 1; min-width: 100px; padding: 12px 16px; }
+
+    .send-form { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .send-form-title { font-size: 12px; color: var(--text-soft); text-transform: uppercase; margin-bottom: 10px; }
+    
+    .send-input { width: 100%; background: rgba(5, 8, 18, 0.8); border: 1px solid rgba(148,163,184,0.3); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text-main); transition: all 0.2s; }
+    .send-input::placeholder { color: var(--text-soft); }
+    .send-input:focus { outline: none; border-color: var(--accent); }
+    .send-input.invalid { border-color: var(--danger) !important; background: rgba(224, 85, 85, 0.1) !important; }
+    .send-input.valid { border-color: #4ade80 !important; }
+    .send-input.validating { border-color: var(--keys-accent) !important; }
+    
+    .send-textarea { width: 100%; background: rgba(5, 8, 18, 0.8); border: 1px solid rgba(148,163,184,0.3); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text-main); resize: vertical; min-height: 60px; font-family: inherit; }
+    .send-textarea::placeholder { color: var(--text-soft); }
+    .send-textarea:focus { outline: none; border-color: var(--accent); }
+    
+    .validation-msg { font-size: 11px; margin-top: 6px; min-height: 16px; }
+    .validation-msg.error { color: var(--danger); }
+    .validation-msg.success { color: #4ade80; }
+    .validation-msg.pending { color: var(--keys-accent); }
+    
+    .send-error { color: var(--danger); font-size: 12px; margin-top: 8px; padding: 10px; background: rgba(224,85,85,0.1); border-radius: 6px; }
+    .send-success { color: var(--accent); font-size: 12px; margin-top: 8px; }
+
+    /* Side by side preview */
+    .preview-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .preview-box { text-align: center; }
+    .preview-box img { width: 100%; border-radius: 12px; border: 2px solid transparent; transition: all 0.3s; }
+    .preview-box img.loading { opacity: 0.3; }
+    .preview-box-label { font-size: 10px; color: var(--text-soft); text-transform: uppercase; margin-top: 8px; letter-spacing: 0.05em; }
+    .preview-box.normal img { border-color: rgba(102, 214, 154, 0.4); }
+    .preview-box.revoked img { border-color: rgba(224, 85, 85, 0.4); }
+    @media(max-width: 500px) { .preview-comparison { grid-template-columns: 1fr; } }
+
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-soft); }
+    .empty-state .icon { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+    .no-results { text-align: center; padding: 30px 20px; color: var(--text-soft); border: 1px dashed rgba(148,163,184,0.2); border-radius: 10px; }
+    .loading-state { display: flex; align-items: center; justify-content: center; padding: 60px 20px; color: var(--text-soft); gap: 12px; }
+    .spinner { width: 24px; height: 24px; border: 2px solid rgba(245,200,66,0.2); border-top-color: var(--keys-accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-state { text-align: center; padding: 40px 20px; color: var(--danger); }
+
+    .toast { position: fixed; top: 20px; right: 20px; padding: 14px 20px; background: rgba(102, 214, 154, 0.95); color: #000; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 10000; opacity: 0; transform: translateY(-20px); transition: all 0.3s; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: rgba(224, 85, 85, 0.95); color: #fff; }
+    .toast.pending { background: rgba(245, 200, 66, 0.95); color: #000; }
+
+    .debug-panel { position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.9); border: 1px solid #333; border-radius: 8px; padding: 10px; font-size: 10px; font-family: monospace; color: #0f0; max-width: 400px; max-height: 200px; overflow: auto; z-index: 9999; display: none; }
+    .debug-panel.show { display: block; }
+
+    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px; font-size: 12px; text-align: center; opacity: 0.85; margin-top: 40px; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="debug-panel" id="debugPanel"></div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="imgZoom" style="z-index:10001;">
+  <div class="modal-content" style="max-width:960px;">
+    <button class="modal-close" id="imgZoomClose">×</button>
+    <div style="padding:12px;">
+      <img id="imgZoomTarget" src="" style="width:100%;border-radius:14px;display:block;" alt="Zoom preview">
+      <div style="margin-top:10px;font-size:11px;color:var(--text-soft);text-align:center;">
+        Click × or press ESC to close
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<header>
+  <div class="nav-inner">
+    <a href="index.html" class="logo-link">
+      <div class="logo-dot">Ω</div>
+      <div class="logo-text">Z1N PROTOCOL</div>
+    </a>
+    <nav class="nav-links">
+      <a href="about.html">About</a>
+      <a href="live-stats.html">Live Stats</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="mint-key.html">Mint Key</a>
+      <a href="your-keys.html" class="active-keys">Your Keys</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <a href="your-keys.html" class="back-link" id="backLink">← Back to Your Keys</a>
+
+  <div class="key-header-card">
+    <div class="key-title-row">
+      <h1 class="key-title" id="keyTitle">Artefacts for Key #—</h1>
+      <span class="genesis-badge" id="genesisBadge" style="display:none;">✶ Genesis</span>
+    </div>
+    <div class="key-glyphs" id="keyGlyphs">Loading...</div>
+    <div class="key-meta">
+      <span>Key Owner: <span id="ownerAddress">—</span></span>
+      <span>·</span>
+      <a id="explorerLink" href="#" target="_blank">View Key on chain ↗</a>
+    </div>
+    
+    <div id="walletInfoBanner" class="wallet-info-banner" style="display:none;">
+      <div class="wallet-info-content">
+        <span class="wallet-dot" id="walletDot"></span>
+        <span class="wallet-label" id="walletLabel">W?</span>
+        <span class="wallet-info-text">To send artefacts, ensure <strong id="requiredWalletDisplay">—</strong> is active in your wallet</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="mainContent">
+    <div class="loading-state"><div class="spinner"></div><span>Loading artefacts...</span></div>
+  </div>
+</main>
+
+<footer>Your presence is real · The Field remembers · <span style="cursor:pointer;text-decoration:underline;" onclick="toggleDebug()">Debug</span></footer>
+
+<script>
+// Wallet colors helper
+(function(global) {
+  var STORAGE_KEY = 'z1n_wallet_registry';
+  var WALLET_COLORS = [
+    { name: 'gold',   hex: '#f5c842', bg: 'rgba(245, 200, 66, 0.15)',  border: 'rgba(245, 200, 66, 0.4)' },
+    { name: 'green',  hex: '#66d69a', bg: 'rgba(102, 214, 154, 0.15)', border: 'rgba(102, 214, 154, 0.4)' },
+    { name: 'blue',   hex: '#60a5fa', bg: 'rgba(96, 165, 250, 0.15)',  border: 'rgba(96, 165, 250, 0.4)' },
+    { name: 'purple', hex: '#a78bfa', bg: 'rgba(167, 139, 250, 0.15)', border: 'rgba(167, 139, 250, 0.4)' },
+    { name: 'pink',   hex: '#f472b6', bg: 'rgba(244, 114, 182, 0.15)', border: 'rgba(244, 114, 182, 0.4)' },
+    { name: 'orange', hex: '#fb923c', bg: 'rgba(251, 146, 60, 0.15)',  border: 'rgba(251, 146, 60, 0.4)' },
+    { name: 'cyan',   hex: '#22d3ee', bg: 'rgba(34, 211, 238, 0.15)',  border: 'rgba(34, 211, 238, 0.4)' },
+    { name: 'lime',   hex: '#a3e635', bg: 'rgba(163, 230, 53, 0.15)',  border: 'rgba(163, 230, 53, 0.4)' },
+    { name: 'indigo', hex: '#818cf8', bg: 'rgba(129, 140, 248, 0.15)', border: 'rgba(129, 140, 248, 0.4)' },
+    { name: 'teal',   hex: '#2dd4bf', bg: 'rgba(45, 212, 191, 0.15)',  border: 'rgba(45, 212, 191, 0.4)' }
+  ];
+  var DISCONNECTED = { name: 'red', hex: '#e05555', bg: 'rgba(224, 85, 85, 0.15)', border: 'rgba(224, 85, 85, 0.4)' };
+
+  function loadRegistry() { try { var d = localStorage.getItem(STORAGE_KEY); return d ? JSON.parse(d).slice(0, 10) : []; } catch(e) { return []; } }
+  function getIndex(addr) {
+    if (!addr) return -1;
+    var lower = addr.toLowerCase(), reg = loadRegistry();
+    return reg.findIndex(function(w) { return w.toLowerCase() === lower; });
+  }
+  function getColor(addr) {
+    var idx = getIndex(addr);
+    return (idx >= 0 && idx < WALLET_COLORS.length) ? WALLET_COLORS[idx] : DISCONNECTED;
+  }
+
+  global.Z1NWallets = { COLORS: WALLET_COLORS, DISCONNECTED: DISCONNECTED, getIndex: getIndex, getColor: getColor };
+})(window);
+
+// Debug toggle
+function toggleDebug() {
+  document.getElementById('debugPanel').classList.toggle('show');
+}
+function debug(msg) {
+  var panel = document.getElementById('debugPanel');
+  panel.innerHTML += new Date().toLocaleTimeString() + ': ' + msg + '<br>';
+  panel.scrollTop = panel.scrollHeight;
+  console.log('[DEBUG]', msg);
+}
+</script>
+
+<script>
+(function() {
+  'use strict';
+
+  var FILTER_THRESHOLD = 5;
+  var API = 'https://z1n-backend-production.up.railway.app/api';
+  var CHAIN_ID = '0x89';
+  var EXPLORER = 'https://polygonscan.com';
+  var Z1N_KEY = '0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469';
+  var Z1N_ARTEFACT = '0xf1887e8D53bbb61F64bfD16Ec41598618053bd2c';
+  var Z1N_STATIC_ARTEFACT = '0x37bF24f72D96ed12D4F13c6790caF7Dfe344F3f2';
+  var RPC_URLS = ['https://polygon-bor-rpc.publicnode.com','https://polygon.blockpi.network/v1/rpc/public','https://rpc-mainnet.maticvigil.com'];
+  var GLYPHS = ['∞','π','⋮','⊕','⊗','∴','∵','↔','↻','△','◇','○','●','□','☰','☷','⚑','✱','⊥','≡','◊'];
+
+  var keyId, keyOwner = '', currentEpoch = 0, liveArtefacts = [], staticArtefacts = [], currentRpcIndex = 0;
+  var liveFilters = { sort: 'minted-desc', ownership: 'all', visibility: 'all', search: '' };
+  var staticFilters = { sort: 'minted-desc', ownership: 'all', search: '' };
+  
+  // Recipient validation state
+  var recipientValidated = false;
+  var recipientAddress = null;
+  var validationTimer = null;
+
+  function updateWalletBanner() {
+    var infoBanner = document.getElementById('walletInfoBanner');
+    var requiredDisplay = document.getElementById('requiredWalletDisplay');
+    var walletDot = document.getElementById('walletDot');
+    var walletLabel = document.getElementById('walletLabel');
+    
+    if (!keyOwner) { infoBanner.style.display = 'none'; return; }
+    
+    var color = Z1NWallets.getColor(keyOwner);
+    var walletIdx = Z1NWallets.getIndex(keyOwner);
+    var label = walletIdx >= 0 ? 'W' + (walletIdx + 1) : '?';
+    
+    infoBanner.style.display = 'block';
+    infoBanner.style.background = color.bg;
+    infoBanner.style.borderColor = color.border;
+    walletDot.style.background = color.hex;
+    walletLabel.style.color = color.hex;
+    walletLabel.textContent = label;
+    requiredDisplay.style.color = color.hex;
+    requiredDisplay.textContent = shortAddr(keyOwner);
+  }
+
+  function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '—'; }
+  function getParam(n) { var u = new URL(location.href); return u.searchParams.get(n) || (location.hash ? new URLSearchParams(location.hash.slice(1)).get(n) : null); }
+  
+  var keyParam = getParam('key');
+  keyId = keyParam !== null ? parseInt(keyParam) : NaN;
+  
+  function showToast(m, t) { var el = document.getElementById('toast'); el.textContent = m; el.className = 'toast' + (t ? ' ' + t : ''); el.classList.add('show'); setTimeout(function() { el.classList.remove('show'); }, 4000); }
+  function getProvider() { var e = window.ethereum; return e ? (e.providers ? e.providers.find(function(p){return p.isMetaMask;}) || e.providers[0] : e) : null; }
+  
+  // Normal preview URL
+  function getArtefactImageUrl(epoch, wallet) { 
+    var url = API + '/artefact/' + keyId + '/static-preview?epoch=' + epoch + '&t=' + Date.now();
+    if (wallet) url += '&wallet=' + encodeURIComponent(wallet);
+    return url;
+  }
+  
+// Revoked preview URL
+  function getRevokedPreviewUrl(epoch) {
+    return API + '/artefact/' + keyId + '/revoked-preview?epoch=' + epoch + '&t=' + Date.now();
+  }
+
+  async function rpc(method, params, retry) {
+    retry = retry || 0;
+    try {
+      var r = await fetch(RPC_URLS[currentRpcIndex], { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({jsonrpc:'2.0',id:Date.now(),method:method,params:params}) });
+      var d = await r.json();
+      if (d.error) throw new Error(d.error.message);
+      return d.result;
+    } catch (e) {
+      currentRpcIndex = (currentRpcIndex + 1) % RPC_URLS.length;
+      if (retry < RPC_URLS.length * 2) { await new Promise(function(r){setTimeout(r,300);}); return rpc(method, params, retry + 1); }
+      throw e;
+    }
+  }
+
+  async function fetchGlyphs(id) {
+    try {
+      var data = '0x887296c3' + BigInt(id).toString(16).padStart(64, '0');
+      var r = await rpc('eth_call', [{to: Z1N_KEY, data: data}, 'latest']);
+      var len = parseInt(r.slice(2,66),16), pack = BigInt('0x'+r.slice(66,130)), syms = [];
+      for (var i=0; i<len; i++) { var idx = Number((pack >> BigInt(5*(7-1-i))) & BigInt(0x1F)); if(idx<GLYPHS.length) syms.push(GLYPHS[idx]); }
+      return syms.join(' · ') || null;
+    } catch (e) { return null; }
+  }
+
+  // Check if viewing is revoked for a sent live artefact
+  async function isViewingRevokedOnChain(artefactId, holder) {
+    try {
+      if (!holder || !/^0x[a-fA-F0-9]{40}$/.test(holder)) return false;
+
+      var iface = new ethers.Interface([
+        'function isViewingRevoked(uint256 artefactId, address viewer) view returns (bool)'
+      ]);
+      var data = iface.encodeFunctionData('isViewingRevoked', [artefactId, holder]);
+
+      var result = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: data }, 'latest']);
+      return BigInt(result) === 1n;
+
+    } catch (e) {
+      debug('isViewingRevoked check failed: ' + e.message);
+      return false;
+    }
+  }
+
+  // Validate Key ID exists and get owner address
+  async function validateKeyId(keyIdToCheck) {
+    try {
+      var data = '0x6352211e' + BigInt(keyIdToCheck).toString(16).padStart(64, '0');
+      var result = await rpc('eth_call', [{ to: Z1N_KEY, data: data }, 'latest']);
+      
+      if (!result || result === '0x' || result.length < 66) {
+        return { valid: false, address: null };
+      }
+      
+      var addrHex = result.slice(-40);
+      if (addrHex === '0'.repeat(40)) {
+        return { valid: false, address: null };
+      }
+      
+      return { valid: true, address: '0x' + addrHex.toLowerCase() };
+    } catch (e) {
+      console.error('validateKeyId error:', e);
+      return { valid: false, address: null };
+    }
+  }
+
+  // Ensure wallet is connected and on correct chain
+  async function ensureWalletConnected() {
+    debug('ensureWalletConnected called');
+    var eth = getProvider();
+    if (!eth) throw new Error('No wallet detected. Please install MetaMask.');
+    
+    var accounts = await eth.request({ method: 'eth_requestAccounts' });
+    debug('Accounts: ' + JSON.stringify(accounts));
+    if (!accounts || accounts.length === 0) throw new Error('No accounts available');
+    
+    var chainId = await eth.request({ method: 'eth_chainId' });
+    debug('Chain ID: ' + chainId + ' (expected: ' + CHAIN_ID + ')');
+    if (chainId !== CHAIN_ID) {
+      debug('Switching chain...');
+      await eth.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID }] });
+    }
+    
+    return accounts[0].toLowerCase();
+  }
+
+  // Modal
+  var modal = document.getElementById('modal'), modalBody = document.getElementById('modalBody');
+  document.getElementById('modalClose').onclick = closeModal;
+  document.getElementById('imgZoomClose').onclick = closeImgZoom;
+
+  document.addEventListener('keydown', function(e) { 
+    if (e.key === 'Escape') { 
+      closeModal(); 
+      closeImgZoom();
+    } 
+  });
+
+  function closeModal() { modal.classList.remove('active'); document.body.style.overflow = ''; }
+
+  function openImgZoom(src) {
+    var z = document.getElementById('imgZoom');
+    var img = document.getElementById('imgZoomTarget');
+    if (!z || !img) return;
+    img.src = src;
+    z.classList.add('active');
+  }
+
+  function closeImgZoom() {
+    var z = document.getElementById('imgZoom');
+    if (!z) return;
+    z.classList.remove('active');
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════════
+  // RECIPIENT VALIDATION
+  // ═══════════════════════════════════════════════════════════════════
+  function setupRecipientValidation(inputId, validationMsgId, sendBtnId) {
+    var input = document.getElementById(inputId);
+    var msg = document.getElementById(validationMsgId);
+    var btn = document.getElementById(sendBtnId);
+    if (!input) return;
+    
+    input.oninput = function() {
+      clearTimeout(validationTimer);
+      var value = input.value.trim();
+      
+      // Reset state
+      input.classList.remove('invalid', 'valid', 'validating');
+      msg.textContent = '';
+      msg.className = 'validation-msg';
+      recipientValidated = false;
+      recipientAddress = null;
+      if (btn) btn.disabled = true;
+      
+      if (!value) return;
+      
+      // Check if it's a wallet address
+      if (/^0x[a-fA-F0-9]{40}$/i.test(value)) {
+        var addr = value.toLowerCase();
+        
+        // Can't send to self
+        if (addr === keyOwner.toLowerCase()) {
+          input.classList.add('invalid');
+          msg.textContent = '✗ Cannot send to yourself';
+          msg.className = 'validation-msg error';
+          return;
+        }
+        
+        input.classList.add('valid');
+        msg.textContent = '✓ Valid wallet address';
+        msg.className = 'validation-msg success';
+        recipientValidated = true;
+        recipientAddress = addr;
+        if (btn) btn.disabled = false;
+        return;
+      }
+      
+      // Check if it's a Key ID
+      if (/^\d+$/.test(value)) {
+        var keyIdToCheck = parseInt(value);
+        
+        // Can't send to own key
+        if (keyIdToCheck === keyId) {
+          input.classList.add('invalid');
+          msg.textContent = '✗ Cannot send to your own Key';
+          msg.className = 'validation-msg error';
+          return;
+        }
+        
+        input.classList.add('validating');
+        msg.textContent = 'Checking Key #' + keyIdToCheck + '...';
+        msg.className = 'validation-msg pending';
+        
+        validationTimer = setTimeout(async function() {
+          var result = await validateKeyId(keyIdToCheck);
+          
+          if (result.valid) {
+            // Check if trying to send to self (by wallet)
+            if (result.address === keyOwner.toLowerCase()) {
+              input.classList.remove('validating');
+              input.classList.add('invalid');
+              msg.textContent = '✗ Key #' + keyIdToCheck + ' is owned by you';
+              msg.className = 'validation-msg error';
+              return;
+            }
+            
+            input.classList.remove('validating');
+            input.classList.add('valid');
+            msg.textContent = '✓ Key #' + keyIdToCheck + ' exists (' + shortAddr(result.address) + ')';
+            msg.className = 'validation-msg success';
+            recipientValidated = true;
+            recipientAddress = result.address;
+            if (btn) btn.disabled = false;
+          } else {
+            input.classList.remove('validating');
+            input.classList.add('invalid');
+            msg.textContent = '✗ Key #' + keyIdToCheck + ' does not exist';
+            msg.className = 'validation-msg error';
+          }
+        }, 300);
+        return;
+      }
+      
+      // Invalid format
+      input.classList.add('invalid');
+      msg.textContent = '✗ Enter a Key ID (e.g. 42) or wallet address (0x...)';
+      msg.className = 'validation-msg error';
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // LIVE ARTEFACT MODAL
+  // ═══════════════════════════════════════════════════════════════════
+  function openLiveModal(art) {
+    debug('openLiveModal: tokenId=' + art.tokenId + ', owner=' + art.owner + ', isSent=' + art.isSent + ', hasBeenTransferred=' + art.hasBeenTransferred);
+
+    var isYours = !art.isSent;
+    var isSent = art.isSent;
+    var canTransfer = isYours && !art.hasBeenTransferred;
+    var canRevokeOrRestore = isSent;
+    var artefactOwner = art.owner || keyOwner;
+    
+    debug('isYours=' + isYours + ', canTransfer=' + canTransfer + ', canRevokeOrRestore=' + canRevokeOrRestore + ', artefactOwner=' + artefactOwner);
+    
+    var normalImgUrl = getArtefactImageUrl(currentEpoch, keyOwner);
+    var revokedImgUrl = getRevokedPreviewUrl(currentEpoch);
+    
+    var html = '<div class="modal-details">' +
+      '<div class="modal-title" style="color:var(--accent);">◈ Live Artefact #' + art.keyIndex + ' <span style="font-size:12px;color:var(--text-soft);font-weight:400;">of Key #' + keyId + '</span></div>' +
+      '<div class="modal-meta">' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Token ID</span><span class="modal-meta-value">' + art.tokenId + '</span></div>' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Artefact Owner</span><span class="modal-meta-value" style="font-family:monospace;font-size:11px;">' + shortAddr(artefactOwner) + '</span></div>' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Status</span><span class="modal-meta-value ' + (isYours ? 'yours' : 'sent') + '">' + (isYours ? 'You own this' : 'Sent to ' + shortAddr(art.owner)) + '</span></div>' +
+       '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? '🔒 Locked' : '↔ Available') + '</span></div>' +
+        (art.isSent ? '<div class="modal-meta-row"><span class="modal-meta-label">Revoke History</span><span class="modal-meta-value" style="font-size:11px;">' + (art.revokeCount || 0) + ' revokes · ' + (art.restoreCount || 0) + ' restores</span></div>' : '') +
+      '</div>';
+    
+    if (canTransfer) {
+     
+        // SEND FLOW
+      var walletColor = Z1NWallets.getColor(artefactOwner);
+      html += '<div class="send-form">' +
+        '<div class="send-form-title" style="color:var(--accent);">◈ Send Live Artefact</div>' +
+        
+        '<div style="background:' + walletColor.bg + ';border:1px solid ' + walletColor.border + ';border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">' +
+          '<span style="width:10px;height:10px;border-radius:50%;background:' + walletColor.hex + ';"></span>' +
+          '<span style="font-size:12px;color:var(--text-soft);">Required wallet: <strong style="font-family:monospace;color:' + walletColor.hex + ';">' + shortAddr(artefactOwner) + '</strong></span>' +
+        '</div>' +
+        
+        '<div class="preview-comparison">' +
+          '<div class="preview-box normal">' +
+            '<img id="liveNormalPreview" class="loading" src="" alt="Live view">' +
+            '<div class="preview-box-label">What they\'ll see</div>' +
+          '</div>' +
+          '<div class="preview-box revoked">' +
+            '<img id="liveRevokedPreview" class="loading" src="" alt="Revoked view">' +
+            '<div class="preview-box-label">After revoke</div>' +
+          '</div>' +
+        '</div>' +
+        
+        '<div style="background:rgba(102,214,154,0.08);border:1px solid rgba(102,214,154,0.25);border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;color:var(--text-soft);line-height:1.5;">' +
+          'A Live Artefact is a <em>dynamic mirror</em> of your Key. The receiver sees your Key\'s current state. You can <strong>Revoke</strong> viewing rights later — they keep the NFT but see a frozen/grayed version.' +
+        '</div>' +
+        
+        '<input type="text" class="send-input" id="liveSendRecipient" placeholder="Key ID (e.g. 42) or Wallet (0x...)">' +
+        '<div id="liveSendValidation" class="validation-msg"></div>' +
+        '<textarea class="send-textarea" id="liveSendMessage" placeholder="Add a message (optional)" maxlength="140" style="margin-top:8px;"></textarea>' +
+        '<button class="btn live" id="liveSendBtn" style="width:100%;margin-top:8px;" disabled>Send Live Artefact</button>' +
+        '<div id="liveSendStatus"></div>' +
+      '</div>';
+      
+    } else if (canRevokeOrRestore) {
+
+      // REVOKE/RESTORE FLOW - dynamic based on current state
+      var isCurrentlyRevoked = art.isRevoked;
+      
+      html += '<div class="send-form">' +
+        '<div class="send-form-title" style="color:' + (isCurrentlyRevoked ? 'var(--accent)' : 'var(--warning)') + ';">◈ ' + (isCurrentlyRevoked ? 'Restore Viewing Rights' : 'Revoke Viewing Rights') + '</div>' +
+        
+        '<div class="preview-comparison">';
+      
+      // Order based on current state: show current state first
+      if (isCurrentlyRevoked) {
+        // Currently revoked: show revoked first, then what it would look like after restore
+        html += '<div class="preview-box revoked">' +
+            '<img id="revokeRevokedPreview" class="loading" src="" alt="Current (revoked)">' +
+            '<div class="preview-box-label">Current (Blocked)</div>' +
+          '</div>' +
+          '<div class="preview-box normal">' +
+            '<img id="revokeNormalPreview" class="loading" src="" alt="After restore">' +
+            '<div class="preview-box-label">After Restore</div>' +
+          '</div>';
+      } else {
+        // Currently viewable: show normal first, then revoked
+        html += '<div class="preview-box normal">' +
+            '<img id="revokeNormalPreview" class="loading" src="" alt="Current view">' +
+            '<div class="preview-box-label">Current (Viewable)</div>' +
+          '</div>' +
+          '<div class="preview-box revoked">' +
+            '<img id="revokeRevokedPreview" class="loading" src="" alt="After revoke">' +
+            '<div class="preview-box-label">After Revoke</div>' +
+          '</div>';
+      }
+      
+      html += '</div>';
+      
+      // Info box with appropriate text
+      if (isCurrentlyRevoked) {
+        html += '<div style="background:rgba(102,214,154,0.08);border:1px solid rgba(102,214,154,0.25);border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;color:var(--text-soft);line-height:1.5;">' +
+          'Currently held by: <strong style="font-family:monospace;">' + shortAddr(art.owner) + '</strong><br><br>' +
+          'After restoring: They will be able to see your Key\'s live state again. You can revoke viewing rights later.' +
+        '</div>';
+      } else {
+        html += '<div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;color:var(--text-soft);line-height:1.5;">' +
+          'Currently held by: <strong style="font-family:monospace;">' + shortAddr(art.owner) + '</strong><br><br>' +
+          'After revoking: They keep the NFT, but can no longer see your Key\'s live state. You can restore viewing rights later.' +
+        '</div>';
+      }
+      
+      // Message textbox
+      html += '<textarea class="send-textarea" id="revokeRestoreMessage" placeholder="Add a message (optional)" maxlength="140" style="margin-bottom:12px;"></textarea>';
+      
+      // Buttons
+      html += '<button class="btn danger" id="revokeBtn" style="width:100%;' + (isCurrentlyRevoked ? 'display:none;' : '') + '">⚠ Revoke Viewing</button>' +
+        '<button class="btn live" id="restoreBtn" style="width:100%;' + (isCurrentlyRevoked ? '' : 'display:none;') + '">↺ Restore Viewing</button>' +
+        '<div id="revokeStatus"></div>' +
+      '</div>';
+      
+    } else if (art.hasBeenTransferred) {
+      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">🔒 Permanently locked — receiver has transferred</div>';
+    }
+    
+    html += '<div class="modal-actions" style="margin-top:12px;">' +
+      '<a class="btn secondary" href="' + EXPLORER + '/token/' + Z1N_ARTEFACT + '?a=' + art.tokenId + '" target="_blank">View on Chain ↗</a>' +
+    '</div></div>';
+    
+    modalBody.innerHTML = html;
+    modal.classList.add('active'); 
+    document.body.style.overflow = 'hidden';
+    
+    // If sent: check on-chain revoke status and toggle buttons
+(async function() {
+  try {
+    if (canRevokeOrRestore && art.owner) {
+      var revoked = await isViewingRevokedOnChain(art.tokenId, art.owner);
+      debug('Revoked status for ' + art.tokenId + ': ' + revoked);
+
+      var revokeBtn = document.getElementById('revokeBtn');
+      var restoreBtn = document.getElementById('restoreBtn');
+
+      if (revoked) {
+        if (revokeBtn) revokeBtn.style.display = 'none';
+        if (restoreBtn) restoreBtn.style.display = 'inline-flex';
+      } else {
+        if (revokeBtn) revokeBtn.style.display = 'inline-flex';
+        if (restoreBtn) restoreBtn.style.display = 'none';
+      }
+    }
+  } catch(e) {
+    debug('toggle revoke/restore failed: ' + (e.message || e));
+  }
+})();
+
+    // Load preview images
+    if (canTransfer) {
+      loadPreviewImage('liveNormalPreview', normalImgUrl);
+      loadPreviewImage('liveRevokedPreview', revokedImgUrl);
+      setupRecipientValidation('liveSendRecipient', 'liveSendValidation', 'liveSendBtn');
+    } else if (canRevokeOrRestore) {
+      loadPreviewImage('revokeNormalPreview', normalImgUrl);
+      loadPreviewImage('revokeRevokedPreview', revokedImgUrl);
+    }
+
+    setTimeout(function() {
+  var a = document.getElementById('liveNormalPreview');
+  var b = document.getElementById('liveRevokedPreview');
+  if (a) a.onclick = function(){ openImgZoom(normalImgUrl); };
+  if (b) b.onclick = function(){ openImgZoom(revokedImgUrl); };
+
+  var c = document.getElementById('revokeNormalPreview');
+  var d = document.getElementById('revokeRevokedPreview');
+  if (c) c.onclick = function(){ openImgZoom(normalImgUrl); };
+  if (d) d.onclick = function(){ openImgZoom(revokedImgUrl); };
+}, 50);
+
+    
+    // Bind handlers
+    var liveSendBtn = document.getElementById('liveSendBtn');
+    if (liveSendBtn) {
+      liveSendBtn.onclick = function() { handleLiveSend(art.tokenId, art.owner); };
+    }
+    
+    var revokeBtn = document.getElementById('revokeBtn');
+    if (revokeBtn) {
+      revokeBtn.onclick = function() { handleRevoke(art.tokenId, art.owner); };
+    }
+    
+    var restoreBtn = document.getElementById('restoreBtn');
+    if (restoreBtn) {
+      restoreBtn.onclick = function() { handleRestoreViewing(art.tokenId, art.owner); };
+    }
+  }
+
+
+
+
+  function loadPreviewImage(imgId, url) {
+    var img = document.getElementById(imgId);
+    if (!img) return;
+    debug('Loading preview: ' + imgId + ' from ' + url);
+    var loader = new Image();
+    loader.onload = function() { img.src = url; img.classList.remove('loading'); debug('Preview loaded: ' + imgId); };
+    loader.onerror = function() { img.classList.remove('loading'); debug('Preview error: ' + imgId); };
+    loader.src = url;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // LIVE SEND - USING ethers.js properly
+  // ═══════════════════════════════════════════════════════════════════
+  async function handleLiveSend(tokenId, artefactOwner) {
+    var status = document.getElementById('liveSendStatus');
+    
+    debug('handleLiveSend: tokenId=' + tokenId + ', artefactOwner=' + artefactOwner);
+    debug('recipientValidated=' + recipientValidated + ', recipientAddress=' + recipientAddress);
+    
+    if (!recipientValidated || !recipientAddress) {
+      status.innerHTML = '<div class="send-error">Enter a valid recipient (Key ID or wallet address)</div>';
+      return;
+    }
+    
+    // Use artefact owner, not key owner!
+    var requiredWallet = (artefactOwner || keyOwner).toLowerCase();
+    
+    try {
+      status.innerHTML = '<div class="send-success">Connecting wallet...</div>';
+      
+      var connectedWallet = await ensureWalletConnected();
+      debug('Connected wallet: ' + connectedWallet);
+      debug('Required wallet (artefact owner): ' + requiredWallet);
+      
+      if (connectedWallet !== requiredWallet) {
+        status.innerHTML = '<div class="send-error"><strong>Wrong wallet connected!</strong><br><br>' +
+          'Connected: <span style="font-family:monospace;">' + shortAddr(connectedWallet) + '</span><br>' +
+          'Required: <span style="font-family:monospace;color:var(--accent);">' + shortAddr(requiredWallet) + '</span><br><br>' +
+          'Please switch to the correct account in your wallet.</div>';
+        return;
+      }
+      
+      if (connectedWallet === recipientAddress) {
+        status.innerHTML = '<div class="send-error">Cannot send to yourself</div>';
+        return;
+      }
+      
+      status.innerHTML = '<div class="send-success">Preparing transaction...</div>';
+      
+      // CRITICAL: Validate addresses are properly formatted
+      if (!recipientAddress || !/^0x[a-fA-F0-9]{40}$/i.test(recipientAddress)) {
+        status.innerHTML = '<div class="send-error">Invalid recipient address format: ' + recipientAddress + '</div>';
+        debug('INVALID recipient address: ' + recipientAddress);
+        return;
+      }
+      
+      if (!connectedWallet || !/^0x[a-fA-F0-9]{40}$/i.test(connectedWallet)) {
+        status.innerHTML = '<div class="send-error">Invalid sender address format</div>';
+        debug('INVALID sender address: ' + connectedWallet);
+        return;
+      }
+      
+      // Ensure addresses are checksummed properly using ethers
+      var fromAddr = ethers.getAddress(connectedWallet);
+      var toAddr = ethers.getAddress(recipientAddress);
+      
+      // Debug log
+      debug('Transfer details: from=' + fromAddr + ', to=' + toAddr + ', tokenId=' + tokenId + ', contract=' + Z1N_ARTEFACT);
+      
+      // First check if artefact exists
+      try {
+        var existsIface = new ethers.Interface(['function artefactExists(uint256) view returns (bool)']);
+        var existsData = existsIface.encodeFunctionData('artefactExists', [tokenId]);
+        var existsResult = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: existsData }, 'latest']);
+        var artefactExists = parseInt(existsResult, 16) === 1;
+        debug('artefactExists(' + tokenId + ') = ' + artefactExists);
+        
+        if (!artefactExists) {
+          status.innerHTML = '<div class="send-error"><strong>Artefact does not exist!</strong><br><br>Token ID ' + tokenId + ' is not a valid artefact on the contract.<br><br>This might be a data sync issue. Try refreshing the page.</div>';
+          return;
+        }
+      } catch (existsErr) {
+        debug('artefactExists check failed: ' + existsErr.message);
+      }
+      
+      // Then check if we can transfer (call isTransferable)
+      try {
+        var checkIface = new ethers.Interface(['function isTransferable(uint256) view returns (bool)']);
+        var checkData = checkIface.encodeFunctionData('isTransferable', [tokenId]);
+        var checkResult = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: checkData }, 'latest']);
+        var canTransfer = parseInt(checkResult, 16) === 1;
+        debug('isTransferable check: ' + canTransfer);
+        
+        if (!canTransfer) {
+          // Also check hasBeenTransferred directly
+          try {
+            var hbtIface = new ethers.Interface(['function hasBeenTransferred(uint256) view returns (bool)']);
+            var hbtData = hbtIface.encodeFunctionData('hasBeenTransferred', [tokenId]);
+            var hbtResult = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: hbtData }, 'latest']);
+            var hasBeenTransferred = parseInt(hbtResult, 16) === 1;
+            debug('hasBeenTransferred(' + tokenId + ') = ' + hasBeenTransferred);
+          } catch (e) {}
+          
+          status.innerHTML = '<div class="send-error">This artefact cannot be transferred.<br><br>Token ID: ' + tokenId + '<br>isTransferable: false<br><br>It may have already been transferred once (1-hop limit).</div>';
+          return;
+        }
+      } catch (checkErr) {
+        debug('isTransferable check failed: ' + checkErr.message);
+        // Continue anyway, the actual transfer will fail if not allowed
+      }
+      
+      // Check current owner matches
+      try {
+        var ownerIface = new ethers.Interface(['function ownerOf(uint256) view returns (address)']);
+        var ownerData = ownerIface.encodeFunctionData('ownerOf', [tokenId]);
+        var ownerResult = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: ownerData }, 'latest']);
+        var currentOwner = '0x' + ownerResult.slice(-40).toLowerCase();
+        debug('Current owner on-chain: ' + currentOwner);
+        debug('From address: ' + fromAddr.toLowerCase());
+        
+        if (currentOwner !== fromAddr.toLowerCase()) {
+          status.innerHTML = '<div class="send-error">You are not the owner of this artefact.<br><br>On-chain owner: ' + shortAddr(currentOwner) + '<br>Your wallet: ' + shortAddr(fromAddr) + '</div>';
+          return;
+        }
+      } catch (ownerErr) {
+        debug('Owner check failed: ' + ownerErr.message);
+      }
+      
+      // Use ethers.js for proper encoding - try transferFrom first (simpler)
+      var iface = new ethers.Interface([
+        'function transferFrom(address from, address to, uint256 tokenId)',
+        'function safeTransferFrom(address from, address to, uint256 tokenId)'
+      ]);
+      
+      // Try regular transferFrom (no receiver check)
+      var txData = iface.encodeFunctionData('transferFrom', [
+        fromAddr,
+        toAddr,
+        tokenId
+      ]);
+      
+      debug('Encoded tx data (transferFrom): ' + txData);
+      
+      var eth = getProvider();
+      status.innerHTML = '<div class="send-success">Confirm in wallet...</div>';
+      
+      // Estimate gas first
+      var gasEstimate;
+      try {
+        gasEstimate = await eth.request({
+          method: 'eth_estimateGas',
+          params: [{
+            from: fromAddr,
+            to: Z1N_ARTEFACT,
+            data: txData
+          }]
+        });
+        debug('Gas estimate: ' + gasEstimate);
+      } catch (gasErr) {
+        debug('Gas estimation failed: ' + JSON.stringify(gasErr));
+        
+        // Try to decode the error
+        var errMsg = gasErr.message || gasErr.data?.message || String(gasErr);
+        
+        // Common revert reasons
+        if (errMsg.includes('not owner') || errMsg.includes('caller is not')) {
+          errMsg = 'You are not the owner of this artefact';
+        } else if (errMsg.includes('transfer not allowed') || errMsg.includes('not transferable')) {
+          errMsg = 'This artefact has already been transferred (1-hop limit reached)';
+        } else if (errMsg.includes('ERC721')) {
+          errMsg = 'ERC721 transfer error - check ownership and approval';
+        }
+        
+        status.innerHTML = '<div class="send-error">⚠️ Transaction will fail:<br><br><strong>' + errMsg + '</strong><br><br><small style="opacity:0.7;">Token ID: ' + tokenId + '<br>From: ' + shortAddr(fromAddr) + '<br>To: ' + shortAddr(toAddr) + '</small></div>';
+        return;
+      }
+      
+      var txHash = await eth.request({
+        method: 'eth_sendTransaction', 
+        params: [{
+          from: fromAddr,
+          to: Z1N_ARTEFACT,
+          data: txData,
+          gas: gasEstimate
+        }]
+      });
+      
+      debug('TX Hash: ' + txHash);
+      status.innerHTML = '<div class="send-success">Transaction sent! Waiting for confirmation...<br><small style="opacity:0.7;">' + txHash.slice(0,18) + '...</small></div>';
+      
+      // Wait for confirmation
+      for (var i = 0; i < 60; i++) {
+        await new Promise(function(r) { setTimeout(r, 2000); });
+        try {
+          var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
+          if (receipt) {
+            debug('Receipt: status=' + receipt.status);
+            if (receipt.status === '0x1') {
+              showToast('✓ Live Artefact sent!', 'success');
+              closeModal();
+              setTimeout(function() { window.location.reload(); }, 1500);
+              return;
+            } else {
+              status.innerHTML = '<div class="send-error">Transaction failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent);">View tx ↗</a></div>';
+              return;
+            }
+          }
+        } catch (e) {
+          debug('Receipt check error: ' + e.message);
+        }
+      }
+      status.innerHTML = '<div class="send-error">Timeout - <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent);">check explorer ↗</a></div>';
+      
+    } catch (e) {
+      console.error('Send error:', e);
+      debug('Send error: ' + e.message + ' | code: ' + e.code);
+      var msg = e.message || String(e);
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) {
+        msg = 'Transaction rejected by user';
+      } else if (msg.includes('insufficient')) {
+        msg = 'Insufficient funds for gas';
+      } else if (msg.includes('execution reverted')) {
+        msg = 'Contract reverted - you may not own this artefact or it cannot be transferred';
+      }
+      status.innerHTML = '<div class="send-error">' + msg.slice(0, 200) + '</div>';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // REVOKE
+  // ═══════════════════════════════════════════════════════════════════
+  async function handleRevoke(tokenId, holderAddress) {
+    var status = document.getElementById('revokeStatus');
+    
+    if (!confirm('Revoke viewing rights?\n\nThe holder keeps the NFT but can no longer see your Key\'s live state.')) {
+      return;
+    }
+
+    try {
+      status.innerHTML = '<div class="send-success">Connecting wallet...</div>';
+      
+      var connectedWallet = await ensureWalletConnected();
+      
+      if (connectedWallet !== keyOwner.toLowerCase()) {
+        status.innerHTML = '<div class="send-error"><strong>Wrong wallet!</strong><br>Required: ' + shortAddr(keyOwner) + '</div>';
+        return;
+      }
+      
+      status.innerHTML = '<div class="send-success">Preparing revoke...</div>';
+      
+      var iface = new ethers.Interface([
+        'function revokeViewing(uint256 artefactId, address holder)'
+      ]);
+      
+      var txData = iface.encodeFunctionData('revokeViewing', [tokenId, holderAddress]);
+      
+      var eth = getProvider();
+      status.innerHTML = '<div class="send-success">Confirm in wallet...</div>';
+      
+      var txHash = await eth.request({
+        method: 'eth_sendTransaction', 
+        params: [{
+          from: connectedWallet,
+          to: Z1N_ARTEFACT,
+          data: txData,
+          gas: '0x30D40'
+        }]
+      });
+      
+      status.innerHTML = '<div class="send-success">Revoking... waiting for confirmation</div>';
+      
+      for (var i = 0; i < 60; i++) {
+        await new Promise(function(r) { setTimeout(r, 2000); });
+        try {
+          var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
+          if (receipt) {
+            if (receipt.status === '0x1') {
+              showToast('✓ Viewing rights revoked', 'success');
+              closeModal();
+              setTimeout(function() { window.location.reload(); }, 1500);
+              return;
+            } else {
+              status.innerHTML = '<div class="send-error">Revoke failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View tx ↗</a></div>';
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+      status.innerHTML = '<div class="send-error">Timeout - check explorer</div>';
+      
+    } catch (e) {
+      console.error('Revoke error:', e);
+      var msg = e.message || String(e);
+      if (msg.includes('reject') || msg.includes('denied')) msg = 'Transaction rejected';
+      status.innerHTML = '<div class="send-error">' + msg.slice(0, 100) + '</div>';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // RESTORE VIEWING
+  // ═══════════════════════════════════════════════════════════════════
+  async function handleRestoreViewing(tokenId, holderAddress) {
+    var status = document.getElementById('revokeStatus');
+
+    try {
+      status.innerHTML = '<div class="send-success">Connecting wallet...</div>';
+
+      var connectedWallet = await ensureWalletConnected();
+
+      if (connectedWallet !== keyOwner.toLowerCase()) {
+        status.innerHTML = '<div class="send-error"><strong>Wrong wallet!</strong><br>Required: ' + shortAddr(keyOwner) + '</div>';
+        return;
+      }
+
+      status.innerHTML = '<div class="send-success">Preparing restore...</div>';
+
+      var iface = new ethers.Interface([
+        'function restoreViewing(uint256 artefactId, address holder)'
+      ]);
+
+      var txData = iface.encodeFunctionData('restoreViewing', [tokenId, holderAddress]);
+
+      var eth = getProvider();
+      status.innerHTML = '<div class="send-success">Confirm in wallet...</div>';
+
+      var txHash = await eth.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: connectedWallet,
+          to: Z1N_ARTEFACT,
+          data: txData
+        }]
+      });
+
+      status.innerHTML = '<div class="send-success">Restoring... waiting for confirmation</div>';
+
+      for (var i = 0; i < 60; i++) {
+        await new Promise(function(r) { setTimeout(r, 2000); });
+        var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
+        if (receipt) {
+          if (receipt.status === '0x1') {
+            showToast('✓ Viewing restored', 'success');
+            closeModal();
+            setTimeout(function() { window.location.reload(); }, 1500);
+            return;
+          } else {
+            status.innerHTML = '<div class="send-error">Restore failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View tx ↗</a></div>';
+            return;
+          }
+        }
+      }
+
+      status.innerHTML = '<div class="send-error">Timeout - check explorer</div>';
+    } catch (e) {
+      var msg = e.message || String(e);
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      status.innerHTML = '<div class="send-error">' + msg.slice(0, 160) + '</div>';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STATIC ARTEFACT MODAL
+  // ═══════════════════════════════════════════════════════════════════
+  function openStaticModal(art) {
+    var isYours = !art.isSent;
+    var canTransfer = isYours && !art.hasBeenTransferred;
+    var artefactOwner = art.owner || keyOwner;
+    
+    var imgUrl = getArtefactImageUrl(art.epochId || currentEpoch, isYours ? keyOwner : '');
+    
+    var html = '<div style="position:relative;">' +
+      '<img src="' + imgUrl + '" style="width:100%;display:block;border-radius:20px 20px 0 0;' + (art.isSent ? 'filter:saturate(0.5) brightness(0.7);' : '') + '">' +
+      (art.isSent ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:48px;font-weight:800;color:rgba(200,100,100,0.9);letter-spacing:8px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">SENT</div>' : '') +
+    '</div>' +
+    '<div class="modal-details">' +
+      '<div class="modal-title" style="color:var(--keys-accent);">◇ Static Artefact #' + art.keyIndex + (art.epochId ? ' <span style="font-size:12px;background:rgba(245,200,66,0.2);padding:2px 8px;border-radius:4px;">Epoch ' + art.epochId + '</span>' : '') + '</div>' +
+      '<div class="modal-meta">' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Token ID</span><span class="modal-meta-value">' + art.tokenId + '</span></div>' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Artefact Owner</span><span class="modal-meta-value" style="font-family:monospace;font-size:11px;">' + shortAddr(artefactOwner) + '</span></div>' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Status</span><span class="modal-meta-value ' + (isYours ? 'yours' : 'sent') + '">' + (isYours ? 'Yours' : 'Sent to ' + shortAddr(art.owner)) + '</span></div>' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? '🔒 Locked' : '↔ Available (1 transfer)') + '</span></div>' +
+      '</div>';
+    
+    if (canTransfer) {
+      var walletColor = Z1NWallets.getColor(artefactOwner);
+      html += '<div class="send-form">' +
+        '<div class="send-form-title">Send Static Artefact</div>' +
+        '<div style="background:' + walletColor.bg + ';border:1px solid ' + walletColor.border + ';border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">' +
+          '<span style="width:10px;height:10px;border-radius:50%;background:' + walletColor.hex + ';"></span>' +
+          '<span style="font-size:12px;color:var(--text-soft);">Required wallet: <strong style="font-family:monospace;color:' + walletColor.hex + ';">' + shortAddr(artefactOwner) + '</strong></span>' +
+        '</div>' +
+        '<input type="text" class="send-input" id="staticSendRecipient" placeholder="Key ID (e.g. 42) or Wallet (0x...)">' +
+        '<div id="staticSendValidation" class="validation-msg"></div>' +
+        '<button class="btn static" id="staticSendBtn" style="width:100%;margin-top:8px;" disabled>Send Artefact</button>' +
+        '<div id="staticSendStatus"></div>' +
+        '<p style="font-size:11px;color:var(--text-soft);margin-top:10px;">⚠ Can only be transferred once — then permanently locked</p>' +
+      '</div>';
+    } else if (art.hasBeenTransferred) {
+      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">🔒 Already transferred — permanently locked</div>';
+    }
+    
+    html += '<div class="modal-actions">' +
+      '<a class="btn secondary" href="' + EXPLORER + '/token/' + Z1N_STATIC_ARTEFACT + '?a=' + art.tokenId + '" target="_blank">View on Chain ↗</a>' +
+    '</div></div>';
+    
+    modalBody.innerHTML = html;
+    modal.classList.add('active'); 
+    document.body.style.overflow = 'hidden';
+    
+    if (canTransfer) {
+      setupRecipientValidation('staticSendRecipient', 'staticSendValidation', 'staticSendBtn');
+    }
+    
+    var staticSendBtn = document.getElementById('staticSendBtn');
+    if (staticSendBtn) {
+      staticSendBtn.onclick = function() { handleStaticSend(art.tokenId, art.owner); };
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STATIC SEND
+  // ═══════════════════════════════════════════════════════════════════
+  async function handleStaticSend(tokenId, artefactOwner) {
+    var status = document.getElementById('staticSendStatus');
+    
+    if (!recipientValidated || !recipientAddress) {
+      status.innerHTML = '<div class="send-error">Enter a valid recipient</div>';
+      return;
+    }
+    
+    // Use artefact owner, not key owner!
+    var requiredWallet = (artefactOwner || keyOwner).toLowerCase();
+    
+    try {
+      status.innerHTML = '<div class="send-success">Connecting wallet...</div>';
+      var connectedWallet = await ensureWalletConnected();
+      
+      if (connectedWallet !== requiredWallet) {
+        status.innerHTML = '<div class="send-error"><strong>Wrong wallet!</strong><br>Required: ' + shortAddr(requiredWallet) + '</div>';
+        return;
+      }
+      
+      if (connectedWallet === recipientAddress) {
+        status.innerHTML = '<div class="send-error">Cannot send to yourself</div>';
+        return;
+      }
+      
+      // CRITICAL: Validate addresses are properly formatted
+      if (!recipientAddress || !/^0x[a-fA-F0-9]{40}$/i.test(recipientAddress)) {
+        status.innerHTML = '<div class="send-error">Invalid recipient address format: ' + recipientAddress + '</div>';
+        return;
+      }
+      
+      // Ensure addresses are checksummed properly using ethers
+      var fromAddr = ethers.getAddress(connectedWallet);
+      var toAddr = ethers.getAddress(recipientAddress);
+      
+      var iface = new ethers.Interface([
+        'function safeTransferFrom(address from, address to, uint256 tokenId)'
+      ]);
+      
+      var txData = iface.encodeFunctionData('safeTransferFrom', [
+        fromAddr,
+        toAddr,
+        tokenId
+      ]);
+      
+      var eth = getProvider();
+      
+      // Estimate gas first
+      var gasEstimate;
+      try {
+        gasEstimate = await eth.request({
+          method: 'eth_estimateGas',
+          params: [{ from: fromAddr, to: Z1N_STATIC_ARTEFACT, data: txData }]
+        });
+      } catch (gasErr) {
+        status.innerHTML = '<div class="send-error">⚠️ Gas estimation failed: ' + gasErr.message + '<br><br>The artefact may have already been transferred.</div>';
+        return;
+      }
+      
+      status.innerHTML = '<div class="send-success">Confirm in wallet...</div>';
+      
+      var txHash = await eth.request({
+        method: 'eth_sendTransaction', 
+        params: [{
+          from: fromAddr,
+          to: Z1N_STATIC_ARTEFACT,
+          data: txData,
+          gas: gasEstimate
+        }]
+      });
+      
+      status.innerHTML = '<div class="send-success">Sent! Waiting...</div>';
+      
+      for (var i = 0; i < 60; i++) {
+        await new Promise(function(r) { setTimeout(r, 2000); });
+        try {
+          var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
+          if (receipt) {
+            if (receipt.status === '0x1') {
+              showToast('✓ Artefact sent!', 'success');
+              closeModal();
+              setTimeout(function() { window.location.reload(); }, 1500);
+              return;
+            } else {
+              status.innerHTML = '<div class="send-error">Failed - may already be transferred</div>';
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+      status.innerHTML = '<div class="send-error">Timeout</div>';
+      
+    } catch (e) {
+      console.error('Send error:', e);
+      var msg = e.message || String(e);
+      if (msg.includes('reject') || msg.includes('denied')) msg = 'Rejected';
+      status.innerHTML = '<div class="send-error">' + msg.slice(0, 100) + '</div>';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // DATA LOADING
+  // ═══════════════════════════════════════════════════════════════════
+  
+  if (isNaN(keyId)) { 
+    try { var ctx = JSON.parse(localStorage.getItem('z1n_signal_context')||'{}'); keyId = typeof ctx.keyId === 'number' ? ctx.keyId : NaN; } catch(e){} 
+  }
+  
+  document.getElementById('backLink').href = 'your-keys.html';
+  document.getElementById('explorerLink').href = EXPLORER + '/token/' + Z1N_KEY + '?a=' + keyId;
+  document.getElementById('keyTitle').textContent = 'Artefacts for Key #' + keyId;
+  if (keyId < 21000) document.getElementById('genesisBadge').style.display = 'inline-block';
+
+  var mintedType = getParam('minted');
+  var transferred = getParam('transferred');
+ if (mintedType) { 
+  setTimeout(function() { 
+    showToast('✅ ' + (mintedType === 'live' ? 'Live' : 'Static') + ' Artefact minted!', 'success'); 
+  }, 500);
+
+  // extra refetch after mint (backend/chain can be a few seconds behind)
+  setTimeout(function() { 
+    try { loadArtefacts(); } catch(e) {} 
+  }, 2500);
+
+  history.replaceState({}, '', location.pathname + '?key=' + keyId); 
+}
+  if (transferred) {
+    setTimeout(function() { showToast('✅ Artefact sent!', 'success'); }, 500);
+    history.replaceState({}, '', location.pathname + '?key=' + keyId);
+  }
+
+  function applyFilters(arr, f) {
+    var r = arr.slice();
+    if (f.ownership === 'yours') r = r.filter(function(a){ return !a.isSent; });
+    else if (f.ownership === 'sent') r = r.filter(function(a){ return a.isSent; });
+    if (f.visibility === 'viewable') r = r.filter(function(a){ return a.isSent && !a.isRevoked; });
+    else if (f.visibility === 'blocked') r = r.filter(function(a){ return a.isSent && a.isRevoked; });
+    if (f.search) { 
+      var s = f.search.toLowerCase(); 
+      r = r.filter(function(a){ 
+        return a.keyIndex.toString().includes(s) || 
+               (a.owner && a.owner.toLowerCase().includes(s)) || 
+               (a.epochId && a.epochId.toString().includes(s)); 
+      }); 
+    }
+    r.sort(function(a,b) {
+      switch(f.sort) {
+        case 'minted-asc': return a.keyIndex - b.keyIndex;
+        case 'epoch-asc': return (a.epochId||0) - (b.epochId||0);
+        case 'epoch-desc': return (b.epochId||0) - (a.epochId||0);
+        case 'sent-first': return (b.isSent?1:0) - (a.isSent?1:0);
+        case 'wallet': return (a.owner||'').localeCompare(b.owner||'');
+        default: return b.keyIndex - a.keyIndex;
+      }
+    });
+    return r;}
+
+  async function loadArtefacts() {
+    var mc = document.getElementById('mainContent');
+    debug('loadArtefacts: keyId=' + keyId);
+    try {
+      var liveResp = await fetch(API + '/live'); 
+      currentEpoch = (await liveResp.json()).currentEpoch || 1;
+      debug('currentEpoch=' + currentEpoch);
+      
+      // Try to include connected wallet (for correct isYours / sent logic)
+var connected = '';
+try {
+  var eth = getProvider();
+  if (eth) {
+    var accs = await eth.request({ method: 'eth_accounts' });
+    if (accs && accs[0]) connected = accs[0].toLowerCase();
+  }
+} catch(e) {}
+
+var url = API + '/key/' + keyId + '/artefacts?t=' + Date.now();
+if (connected) url += '&wallet=' + encodeURIComponent(connected);
+
+debug('Fetching: ' + url);
+var resp = await fetch(url, { cache: 'no-store' });
+
+      if (!resp.ok) throw new Error((await resp.json().catch(function(){return{};})).error || 'Failed');
+      var data = await resp.json();
+      debug('API response: liveArtefacts=' + (data.liveArtefacts||[]).length + ', staticArtefacts=' + (data.staticArtefacts||[]).length);
+      
+      keyOwner = data.keyOwner || '';
+      document.getElementById('ownerAddress').textContent = data.keyOwnerShort || shortAddr(keyOwner);
+      document.getElementById('keyGlyphs').textContent = await fetchGlyphs(keyId) || '◇ · ∞ · ☰';
+      
+      liveArtefacts = (data.liveArtefacts||[]).map(function(a,i){ 
+     a.keyIndex = i + 1; 
+     a.revokeCount = a.revokeCount || 0;
+     a.restoreCount = a.restoreCount || 0;
+     return a; 
+     });
+      staticArtefacts = (data.staticArtefacts||[]).map(function(a,i){ a.keyIndex = i + 1; return a; });
+      
+      debug('keyOwner=' + keyOwner);
+      debug('liveArtefacts: ' + JSON.stringify(liveArtefacts.map(function(a) { return {id: a.tokenId, owner: a.owner, isSent: a.isSent}; })));
+      
+      updateWalletBanner();
+      renderContent();
+    } catch (e) { 
+      debug('loadArtefacts error: ' + e.message);
+      mc.innerHTML = '<div class="error-state">⚠ ' + e.message + '<br><br>Backend may be syncing. Try again in a few minutes.</div>'; 
+    }
+  }
+
+  function renderContent() {
+    var mc = document.getElementById('mainContent'), html = '';
+    
+    var liveYours = liveArtefacts.filter(function(a){ return !a.isSent; }).length;
+    var liveSent = liveArtefacts.filter(function(a){ return a.isSent; }).length;
+    var staticYours = staticArtefacts.filter(function(a){ return !a.isSent; }).length;
+    var staticSent = staticArtefacts.filter(function(a){ return a.isSent; }).length;
+
+    // LIVE SECTION
+    html += '<div class="section-divider"><span class="section-title live">Live Artefacts (' + liveArtefacts.length + ')</span></div>';
+    if (!liveArtefacts.length) {
+      html += '<div class="empty-state"><div class="icon">◈</div><p>No live artefacts yet.</p><a href="mint-live-artefact.html?key=' + keyId + '" class="btn live" style="margin-top:16px;">+ Mint Live Artefact</a></div>';
+    } else {
+      html += '<div class="section-card"><div class="live-layout"><div class="live-info">';
+      html += '<div class="section-header"><span class="section-icon">◈</span><span class="section-header-title live">Live Artefacts</span></div>';
+      html += '<div class="stats-row">' +
+  '<div class="stat-item"><span class="stat-value">' + liveArtefacts.length + '</span><span class="stat-label">Total</span></div>' +
+  '<div class="stat-item"><span class="stat-value muted">' + liveYours + '</span><span class="stat-label">Yours</span></div>' +
+  '<div class="stat-item"><span class="stat-value muted">' + liveSent + '</span><span class="stat-label">Sent</span></div>' +
+'</div>';
+      
+      if (liveArtefacts.length > FILTER_THRESHOLD) {
+  html += '<div class="filter-toolbar"><div class="filter-group"><span class="filter-label">Sort</span><select class="filter-select" data-type="live" data-filter="sort"><option value="minted-desc"' + (liveFilters.sort==='minted-desc'?' selected':'') + '>Newest</option><option value="minted-asc"' + (liveFilters.sort==='minted-asc'?' selected':'') + '>Oldest</option><option value="sent-first"' + (liveFilters.sort==='sent-first'?' selected':'') + '>Sent First</option><option value="wallet"' + (liveFilters.sort==='wallet'?' selected':'') + '>By Wallet</option></select></div><div class="filter-group"><button class="filter-btn live' + (liveFilters.ownership==='all'?' active':'') + '" data-type="live" data-ownership="all">All</button><button class="filter-btn live' + (liveFilters.ownership==='yours'?' active':'') + '" data-type="live" data-ownership="yours">Yours</button><button class="filter-btn live' + (liveFilters.ownership==='sent'?' active':'') + '" data-type="live" data-ownership="sent">Sent</button></div><div class="filter-group"><button class="filter-btn live' + (liveFilters.visibility==='all'?' active':'') + '" data-type="live" data-visibility="all">All</button><button class="filter-btn live' + (liveFilters.visibility==='viewable'?' active':'') + '" data-type="live" data-visibility="viewable">Viewable</button><button class="filter-btn live' + (liveFilters.visibility==='blocked'?' active':'') + '" data-type="live" data-visibility="blocked">Blocked</button></div></div>';
+}
+      
+      var filteredLive = applyFilters(liveArtefacts, liveFilters);
+      html += '<div class="live-list">';
+      if (!filteredLive.length) {
+        html += '<div class="no-results">No matches</div>';
+      } else {
+        filteredLive.forEach(function(a) {
+          html += '<div class="live-item' + (a.isSent ? ' sent' : '') + (a.isRevoked ? ' revoked' : '') + '" data-token="' + a.tokenId + '">' +
+            '<div class="live-item-left">' +
+              '<span class="live-item-id">#' + a.keyIndex + '</span>';
+          if (a.isSent) {
+            html += '<span class="live-item-visibility ' + (a.isRevoked ? 'blocked' : 'viewable') + '">' + (a.isRevoked ? '⊘' : '◈') + '</span>' +
+              '<span class="live-item-status-text ' + (a.isRevoked ? 'blocked' : 'viewable') + '">' + (a.isRevoked ? 'BLOCKED' : 'VIEWABLE') + '</span>';
+          }
+          html += '</div>' +
+            '<div class="live-item-right">';
+          if (a.isSent) {
+            html += '<span class="live-item-holder">' + shortAddr(a.owner) + '</span>' +
+              '<button class="live-toggle-btn ' + (a.isRevoked ? 'restore' : 'revoke') + '" data-token="' + a.tokenId + '">' + (a.isRevoked ? '↺' : '⊘') + '</button>';
+          } else {
+            html += '<span class="live-item-status yours">→ SEND</span>';
+          }
+          html += '</div></div>';
+        });
+      }
+      html += '</div><a href="mint-live-artefact.html?key=' + keyId + '" class="btn live">+ Mint Live</a></div>';
+      html += '<div class="live-preview"><img class="live-preview-img loading" id="livePreviewImg" src="" alt="Live Preview"><span class="live-preview-label">Current State</span></div></div></div>';
+    }
+
+    // STATIC SECTION
+    html += '<div class="section-divider"><span class="section-title static">Static Artefacts (' + staticArtefacts.length + ')</span></div>';
+    if (!staticArtefacts.length) {
+      html += '<div class="empty-state"><div class="icon">◇</div><p>No static artefacts yet.</p><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static" style="margin-top:16px;">+ Mint Static Artefact</a></div>';
+    } else {
+      html += '<div class="section-card" style="margin-bottom:16px;"><div class="section-header"><span class="section-icon">◇</span><span class="section-header-title static">Static Artefacts</span></div>';
+      html += '<div class="stats-row" style="border-bottom:none;padding-bottom:0;margin-bottom:0;"><div class="stat-item"><span class="stat-value">' + staticArtefacts.length + '</span><span class="stat-label">Total</span></div><div class="stat-item"><span class="stat-value muted">' + staticYours + '</span><span class="stat-label">Yours</span></div><div class="stat-item"><span class="stat-value muted">' + staticSent + '</span><span class="stat-label">Sent</span></div><div style="margin-left:auto;"><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static">+ Mint Static</a></div></div></div>';
+      
+      if (staticArtefacts.length > FILTER_THRESHOLD) {
+        html += '<div class="filter-toolbar"><div class="filter-group"><span class="filter-label">Sort</span><select class="filter-select" data-type="static" data-filter="sort"><option value="minted-desc"' + (staticFilters.sort==='minted-desc'?' selected':'') + '>Newest</option><option value="minted-asc"' + (staticFilters.sort==='minted-asc'?' selected':'') + '>Oldest</option><option value="epoch-desc"' + (staticFilters.sort==='epoch-desc'?' selected':'') + '>Epoch ↓</option><option value="epoch-asc"' + (staticFilters.sort==='epoch-asc'?' selected':'') + '>Epoch ↑</option></select></div><div class="filter-group"><button class="filter-btn' + (staticFilters.ownership==='all'?' active':'') + '" data-type="static" data-ownership="all">All</button><button class="filter-btn' + (staticFilters.ownership==='yours'?' active':'') + '" data-type="static" data-ownership="yours">Yours</button><button class="filter-btn' + (staticFilters.ownership==='sent'?' active':'') + '" data-type="static" data-ownership="sent">Sent</button></div></div>';
+      }
+      
+      var filtered = applyFilters(staticArtefacts, staticFilters);
+      if (!filtered.length) {
+        html += '<div class="no-results">No matches</div>';
+      } else {
+        html += '<div class="static-gallery">';
+        filtered.forEach(function(a) {
+          var isYours = !a.isSent;
+          var cls = isYours ? 'yours' : 'sent';
+          html += '<div class="static-card ' + cls + '" data-token="' + a.tokenId + '">' +
+            '<img class="static-img loading" data-epoch="' + (a.epochId||currentEpoch) + '" data-owner="' + (isYours ? '1' : '0') + '" src="">' +
+            (a.isSent ? '<div class="sent-label">SENT</div>' : '') +
+            '<div class="static-top-overlay"><span class="static-index">#' + a.keyIndex + '</span>' + (a.hasBeenTransferred ? '<span class="static-lock">🔒</span>' : '') + '</div>' +
+            '<div class="static-overlay"><div>' + (a.epochId ? '<span class="static-epoch ' + cls + '">Ep.' + a.epochId + '</span>' : '') + '</div><span class="static-owner ' + cls + '">' + (isYours ? 'Yours' : 'Sent') + '</span></div>' +
+          '</div>';
+        });
+        html += '</div>';
+      }
+    }
+    
+    mc.innerHTML = html;
+    bindEvents();
+    loadImages();
+  }
+
+  function bindEvents() {
+    var mc = document.getElementById('mainContent');
+    
+    mc.querySelectorAll('.live-item').forEach(function(item) {
+      item.onclick = function() {
+        var a = liveArtefacts.find(function(x) { return x.tokenId === parseInt(item.dataset.token); });
+        if (a) openLiveModal(a);
+      };
+    });
+    
+    mc.querySelectorAll('.static-card').forEach(function(c) { 
+      c.onclick = function() { 
+        var a = staticArtefacts.find(function(x){ return x.tokenId === parseInt(c.dataset.token); }); 
+        if (a) openStaticModal(a); 
+      }; 
+    });
+    
+    mc.querySelectorAll('.filter-select').forEach(function(sel) {
+      sel.onchange = function() { 
+        if (this.dataset.type === 'live') liveFilters.sort = this.value;
+        else staticFilters.sort = this.value;
+        renderContent(); 
+      };
+    });
+    
+    mc.querySelectorAll('.filter-btn[data-ownership]').forEach(function(b) { 
+      b.onclick = function() { 
+        if (this.dataset.type === 'live') liveFilters.ownership = this.dataset.ownership;
+        else staticFilters.ownership = this.dataset.ownership;
+        renderContent(); 
+      }; 
+    });
+
+    mc.querySelectorAll('.filter-btn[data-visibility]').forEach(function(b) { 
+    b.onclick = function() { 
+    if (this.dataset.type === 'live') liveFilters.visibility = this.dataset.visibility;
+    renderContent(); 
+     }; 
+    });
+
+    mc.querySelectorAll('.live-toggle-btn').forEach(function(btn) {
+  btn.onclick = function(e) {
+    e.stopPropagation();
+    var tokenId = parseInt(btn.dataset.token);
+    var a = liveArtefacts.find(function(x) { return x.tokenId === tokenId; });
+    if (a) openLiveModal(a);
+  };
+});
+
+  }
+
+  function loadImages() {
+    var live = document.getElementById('livePreviewImg');
+    if (live) { 
+      var src = getArtefactImageUrl(currentEpoch, keyOwner); 
+      var i = new Image(); 
+      i.onload = function(){ live.src = src; live.classList.remove('loading'); }; 
+      i.onerror = function(){ live.classList.remove('loading'); }; 
+      i.src = src; 
+    }
+    document.querySelectorAll('.static-img[data-epoch]').forEach(function(el) { 
+      var ep = el.dataset.epoch;
+      var isOwned = el.dataset.owner === '1';
+      var src = getArtefactImageUrl(ep, isOwned ? keyOwner : '');
+      var i = new Image(); 
+      i.onload = function(){ el.src = src; el.classList.remove('loading'); }; 
+      i.onerror = function(){ el.classList.remove('loading'); }; 
+      i.src = src; 
+    });
+  }
+
+  // Wallet change listener
+  (function() {
+    var eth = getProvider();
+    if (eth && eth.on) {
+      eth.on('chainChanged', function() { window.location.reload(); });
+    }
+  })();
+
+  // INIT
+  if (!isNaN(keyId) && keyId >= 0) {
+    loadArtefacts();
+  } else {
+    document.getElementById('mainContent').innerHTML = '<div class="error-state">⚠ No Key ID specified.</div>';
+  }
+})();
+</script>
+</body>
+</html>
+
+

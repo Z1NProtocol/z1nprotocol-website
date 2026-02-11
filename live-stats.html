@@ -605,12 +605,12 @@
       <div class="latest-row">
         <div class="latest-left">
           <div class="latest-label">Latest minted Key</div>
-          <div class="latest-key" id="latestKey">Z1N #721</div>
-          <div class="latest-sub" id="latestSub">Freshly awakened — placeholder until wired on-chain.</div>
+          <div class="latest-key" id="latestKey">Z1N #—</div>
+          <div class="latest-sub" id="latestSub">Loading...</div>
         </div>
 
         <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">
-          ↔ <span class="dot">·</span> ⟡ <span class="dot">·</span> ∴ <span class="dot">·</span> ◇ <span class="dot">·</span> ○ <span class="dot">·</span> ●
+          —
         </div>
       </div>
     </div>
@@ -633,25 +633,25 @@
       data-key="last"
       data-window="Last epoch"
       data-sub="last completed breath"
-      data-c="23" data-i="18" data-k="39" data-s="20"></article>
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
     <article class="donut-card"
       data-key="21"
-      data-window="21 epochs"
+      data-window="Last 21 epochs"
       data-sub="short lens"
-      data-c="15" data-i="22" data-k="44" data-s="19"></article>
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
     <article class="donut-card"
       data-key="210"
-      data-window="210 epochs"
+      data-window="Last 210 epochs"
       data-sub="pattern lens"
-      data-c="12" data-i="19" data-k="47" data-s="22"></article>
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
     <article class="donut-card"
       data-key="total"
       data-window="Total epochs"
       data-sub="field memory"
-      data-c="7" data-i="14" data-k="51" data-s="28"></article>
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
   </section>
 
   <!-- Mobile swipe donuts -->
@@ -661,25 +661,25 @@
         data-key="last"
         data-window="Last epoch"
         data-sub="last completed breath"
-        data-c="23" data-i="18" data-k="39" data-s="20"></article>
+        data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
       <article class="donut-card swipe"
         data-key="21"
         data-window="21 epochs"
         data-sub="short lens"
-        data-c="15" data-i="22" data-k="44" data-s="19"></article>
+        data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
       <article class="donut-card swipe"
         data-key="210"
         data-window="210 epochs"
         data-sub="pattern lens"
-        data-c="12" data-i="19" data-k="47" data-s="22"></article>
+        data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
       <article class="donut-card swipe"
         data-key="total"
         data-window="Total epochs"
         data-sub="field memory"
-        data-c="7" data-i="14" data-k="51" data-s="28"></article>
+        data-c="25" data-i="25" data-k="25" data-s="25"></article>
     </div>
     <div class="swipe-hint">Swipe → the lens updates automatically</div>
   </section>
@@ -734,9 +734,9 @@
 <script>
   (function () {
     // ═══════════════════════════════════════════════════════════════════════════
-    // CONFIGURATION - Change for different environments
+    // CONFIGURATION - FIXED: Port 3001 matches config.js
     // ═══════════════════════════════════════════════════════════════════════════
-    const API_BASE = "http://localhost:3002/api";  // Local dev
+    const API_BASE = "https://z1n-backend-production.up.railway.app/api";  // Local dev (matches backend config.js)
     // const API_BASE = "https://api.z1nprotocol.xyz/api";  // Production
 
     const COLORS = { C: "#4CAF50", I: "#F44336", K: "#FFEB3B", S: "#2196F3" };
@@ -748,32 +748,32 @@
     const HAS_HOVER = window.matchMedia && window.matchMedia("(hover: hover)").matches;
 
     // ═══════════════════════════════════════════════════════════════════════════
-    // LENS DATA - Will be populated from API, fallback to these defaults
+    // LENS DATA - Will be populated from API, fallback to loading state
     // ═══════════════════════════════════════════════════════════════════════════
     let LENS_DATA = {
       last: {
-        cards: { keys: "7 842", signals: "1 284", attested: "37%", artefacts: "19" },
-        signal: { epoch: 41, quote: "De ruimte waar ΩS ademt" }
+        cards: { keys: "—", signals: "—", attested: "—", artefacts: "—" },
+        signal: { epoch: "—", quote: "Loading..." }
       },
       "21": {
-        cards: { keys: "7 842", signals: "8 420", attested: "41%", artefacts: "112" },
-        signal: { epoch: 40, quote: "Waar ΩK bouwt, blijft ΩC nabij" }
+        cards: { keys: "—", signals: "—", attested: "—", artefacts: "—" },
+        signal: { epoch: "—", quote: "Loading..." }
       },
       "210": {
-        cards: { keys: "7 842", signals: "14 220", attested: "46%", artefacts: "880" },
-        signal: { epoch: 35, quote: "ΩI kijkt terug — en kiest opnieuw" }
+        cards: { keys: "—", signals: "—", attested: "—", artefacts: "—" },
+        signal: { epoch: "—", quote: "Loading..." }
       },
       total: {
-        cards: { keys: "7 842", signals: "14 220", attested: "44%", artefacts: "1 842" },
-        signal: { epoch: 175, quote: "De stilte tussen attesten is ook een stem" }
+        cards: { keys: "—", signals: "—", attested: "—", artefacts: "—" },
+        signal: { epoch: "—", quote: "Loading..." }
       }
     };
 
     // Latest minted - will be populated from API
     let LATEST = {
-      key: "Z1N #721",
-      glyphs: ["↔","⟡","∴","◇","○","●"],
-      sub: "Freshly awakened — placeholder until wired on-chain."
+      key: "Z1N #—",
+      glyphs: [],
+      sub: "Loading..."
     };
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -879,7 +879,7 @@
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
-    // RENDER FUNCTIONS (unchanged from original)
+    // RENDER FUNCTIONS
     // ═══════════════════════════════════════════════════════════════════════════
 
     function renderLatest(){
@@ -890,13 +890,17 @@
       if (latestSub) latestSub.textContent = LATEST.sub;
 
       if (latestGlyphs){
-        latestGlyphs.innerHTML = LATEST.glyphs
-          .map((g, i) => i === 0 ? g : `<span class="dot">·</span>${g}`)
-          .join("");
+        if (LATEST.glyphs.length > 0) {
+          latestGlyphs.innerHTML = LATEST.glyphs
+            .map((g, i) => i === 0 ? g : `<span class="dot">·</span>${g}`)
+            .join("");
+        } else {
+          latestGlyphs.textContent = "—";
+        }
       }
     }
 
-    // Spotlight cursor on latest frame (same vibe as index)
+    // Spotlight cursor on latest frame
     (function latestSpotlight(){
       const frame = document.getElementById("latestFrame");
       if (!frame) return;
@@ -927,7 +931,6 @@
         S: (intents.S / sum) * 100,
       };
 
-      // Rounded for display, but keep donut continuous
       const win = dominantKey({
         C: Math.round(safe.C),
         I: Math.round(safe.I),
@@ -970,7 +973,6 @@
                     transform="rotate(${s.rotate} 70 70)"></circle>
           `).join("")}
 
-          <!-- Only winner intent + % (both in winner color) -->
           <text x="70" y="78" text-anchor="middle" class="donut-center-win" fill="${winColor}">
             Ω${win.key} ${win.pct}%
           </text>
@@ -1000,8 +1002,8 @@
     }
 
     // ====== State: hover-preview vs locked ======
-    let lockedKey = "total";     // default lock
-    let activeKey = lockedKey;  // current view
+    let lockedKey = "total";
+    let activeKey = lockedKey;
 
     function getWinnerFromCardKey(lensKey){
       const card = document.querySelector(`.donut-card[data-key="${lensKey}"]`);
@@ -1027,7 +1029,6 @@
       if (lock) lockedKey = lensKey;
       activeKey = lensKey;
 
-      // active class on ALL donuts with same data-key
       document.querySelectorAll(".donut-card").forEach(el => {
         el.classList.toggle("active", el.getAttribute("data-key") === lensKey);
       });
@@ -1038,7 +1039,6 @@
       document.getElementById("vAttested").textContent = data.cards.attested;
       document.getElementById("vArtefacts").textContent = data.cards.artefacts;
 
-      // Field signal
       document.getElementById("fsEpoch").textContent = "Epoch " + data.signal.epoch;
       document.getElementById("fsQuote").textContent = `"${data.signal.quote}"`;
 
@@ -1107,13 +1107,8 @@
     // ═══════════════════════════════════════════════════════════════════════════
 
     async function init() {
-      // Render all donut card HTML first with default data
       document.querySelectorAll(".donut-card").forEach(card => renderDonutCard(card));
-
-      // Latest minted (with default)
       renderLatest();
-
-      // Default landing: LAST epoch locked
       setActiveLens("total", { lock:true });
 
       if (HAS_HOVER){
@@ -1126,7 +1121,7 @@
       if (apiData) {
         updateDataFromAPI(apiData);
         renderLatest();
-        setActiveLens(lockedKey, { lock: true }); // Re-render with new data
+        setActiveLens(lockedKey, { lock: true });
       }
 
       // Auto-refresh every 30 seconds
@@ -1135,7 +1130,7 @@
         if (newData) {
           updateDataFromAPI(newData);
           renderLatest();
-          setActiveLens(activeKey, { lock: false }); // Update current view
+          setActiveLens(activeKey, { lock: false });
         }
       }, 30000);
     }
@@ -1146,3 +1141,4 @@
 
 </body>
 </html>
+

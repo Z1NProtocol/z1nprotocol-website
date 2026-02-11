@@ -610,10 +610,10 @@ flow := {
   // ═══════════════════════════════════════════════════════════════════
   // CONFIG
   // ═══════════════════════════════════════════════════════════════════
-  var EXPECTED_CHAIN_ID = '0x13882'; // Polygon Amoy (80002)
-  var CHAIN_NAME = 'Polygon Amoy';
-  var ISSUANCE_CONTROLLER = '0xDa920a5DfdF11798BEF9cEe7B000b8737AF45650';
-  var Z1N_CORE = '0xade14831356722154A39D40a8EBd4ee1FD4c7D6a';
+  var EXPECTED_CHAIN_ID = '0x89'; // Polygon Mainnet (137)
+  var CHAIN_NAME = 'Polygon';
+  var ISSUANCE_CONTROLLER = '0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF';
+var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
 
   // ═══════════════════════════════════════════════════════════════════
   // ELEMENTS
@@ -818,20 +818,20 @@ flow := {
                 method: 'wallet_addEthereumChain',
                 params: [{
                   chainId: EXPECTED_CHAIN_ID,
-                  chainName: 'Polygon Amoy Testnet',
+                  chainName: 'Polygon',
                   nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 },
-                  rpcUrls: ['https://rpc-amoy.polygon.technology'],
-                  blockExplorerUrls: ['https://amoy.polygonscan.com']
+                  rpcUrls: ['https://polygon-rpc.com'],
+                  blockExplorerUrls: ['https://polygonscan.com']
                 }]
               }).then(function() {
                 networkName = CHAIN_NAME;
                 finishConnect(walletName, networkName);
               }).catch(function() {
-                networkName = chainId + ' (add Amoy)';
+                networkName = chainId + ' (add Polygon)';
                 finishConnect(walletName, networkName);
               });
             } else {
-              networkName = chainId + ' (switch to Amoy)';
+              networkName = chainId + ' (switch to Polygon)';
               finishConnect(walletName, networkName);
             }
           });
@@ -887,7 +887,7 @@ flow := {
   // DIRECT RPC CALL (bypass MetaMask for reading)
   // ═══════════════════════════════════════════════════════════════════
   function rpcCall(method, params) {
-    return fetch('https://rpc-amoy.polygon.technology', {
+    return fetch('https://polygon-rpc.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -960,7 +960,7 @@ flow := {
   }
   
   function fetchUsdRate() {
-    fetch('https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd')
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=polygon-ecosystem-token&vs_currencies=usd')
       .then(function(r) { 
         if (!r.ok) throw new Error('CoinGecko API error: ' + r.status);
         return r.json(); 
@@ -968,13 +968,14 @@ flow := {
       .then(function(d) {
         console.log('CoinGecko raw response:', JSON.stringify(d));
         
-        // Extract rate - try multiple paths
+       // Extract rate from any key in response
         var rate = null;
-        if (d && d['matic-network'] && typeof d['matic-network'].usd === 'number') {
-          rate = d['matic-network'].usd;
-        } else if (d && d.pol && typeof d.pol.usd === 'number') {
-          rate = d.pol.usd;
-        }
+        try {
+          var keys = Object.keys(d || {});
+          if (keys.length > 0 && d[keys[0]] && typeof d[keys[0]].usd === 'number') {
+            rate = d[keys[0]].usd;
+          }
+        } catch(e) { }
         
         console.log('Extracted USD rate:', rate);
         
@@ -1011,7 +1012,7 @@ flow := {
       usdText = ' <span style="color:var(--text-soft); font-size:0.65em;">(≈ $' + usdPrice.toFixed(2) + ')</span>';
     }
     
-    priceMain.innerHTML = priceInPol.toFixed(3) + ' POL' + usdText;
+    priceMain.innerHTML = priceInPol.toFixed(2) + ' POL' + usdText;
     console.log('Price display updated:', priceInPol.toFixed(3) + ' POL', usdText ? 'with USD' : 'no USD yet');
   }
 
@@ -1109,8 +1110,9 @@ flow := {
         withBuffer: priceInPol 
       });
       
-      // Update display with USD if available
-      updatePriceDisplay(priceInPol);
+     // Update display with EXACT price (not buffered)
+var exactPriceInPol = Number(BigInt(currentPriceWei)) / 1e18;
+updatePriceDisplay(exactPriceInPol);
       
       if (mintStatus) {
         mintStatus.textContent = "Confirm transaction in wallet...";
@@ -1122,15 +1124,14 @@ flow := {
       var valueHex = '0x' + priceWithBuffer.toString(16);
 
       var txHash = await selectedProvider.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          from: currentAccount,
-          to: ISSUANCE_CONTROLLER,
-          value: valueHex,
-          data: '0x8c874ebd', // mintPublic() - V2 selector
-          gas: '0x100000' // 1,048,576 - enough for glyph generation
-        }]
-      });
+  method: 'eth_sendTransaction',
+  params: [{
+    from: currentAccount,
+    to: ISSUANCE_CONTROLLER,
+    value: valueHex,
+    data: '0x8c874ebd',
+  }]
+});
       
       if (mintStatus) {
         mintStatus.textContent = "Transaction submitted: " + txHash.slice(0, 10) + "...";
@@ -1158,7 +1159,7 @@ flow := {
               mintStatus.textContent = "✅ Key minted! Welcome to the Field.";
               mintStatus.className = "status-text status-success";
             } else {
-              mintStatus.innerHTML = "❌ Transaction failed. <a href='https://amoy.polygonscan.com/tx/" + txHash + "' target='_blank' style='color:#66d69a;'>View on explorer</a>";
+              mintStatus.innerHTML = "❌ Transaction failed. <a href='https://polygonscan.com/tx/" + txHash + "' target='_blank' style='color:#66d69a;'>View on explorer</a>";
               mintStatus.className = "status-text status-error";
             }
             btnMint.textContent = 'Mint your Key';

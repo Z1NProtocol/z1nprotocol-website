@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z1N Protocol – Mint Static Artefact</title>
+  <style>
+    :root {
+      --bg: #050812;
+      --card-bg: #020617;
+      --text-main: #ffffff;
+      --text-soft: #8f9ab5;
+      --accent: #66d69a;
+      --accent-soft: #3a9f63;
+      --card-border: rgba(148,163,184,0.25);
+      --keys-accent: #f5c842;
+      --keys-accent-soft: #d4a012;
+      --danger: #f44336;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scrollbar-gutter: stable; overflow-y: scroll; scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text-main); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    a:hover { opacity: 0.9; }
+
+    header { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+    .nav-inner { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
+    .logo-dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; }
+    .logo-text { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+    .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
+    .nav-links a.active-keys { color: var(--keys-accent); }
+
+    .page { max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px; }
+    .back-link { color: var(--text-soft); font-size: 13px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 16px; }
+    .back-link:hover { color: var(--keys-accent); }
+
+    h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px 0; color: var(--keys-accent); }
+    .subtitle { font-size: 17px; line-height: 1.6; opacity: 0.85; max-width: 720px; margin-bottom: 32px; }
+
+    .mint-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: stretch; }
+
+    .key-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; }
+    .key-header { margin-bottom: 20px; }
+    .key-id { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+    .key-glyphs { font-size: 18px; color: #aaa; letter-spacing: 2px; }
+    .key-info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
+    .key-info-row:last-child { border-bottom: none; }
+    .key-info-label { color: var(--text-soft); }
+    .key-info-value { color: var(--text-main); font-weight: 500; }
+
+    .epoch-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .epoch-label { display: flex; justify-content: space-between; align-items: center; color: var(--text-soft); font-size: 13px; margin-bottom: 12px; }
+    .epoch-range { color: var(--keys-accent); font-weight: 600; }
+    .epoch-slider { width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); -webkit-appearance: none; margin-bottom: 16px; }
+    .epoch-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--keys-accent); cursor: pointer; border: 2px solid var(--bg); }
+    .epoch-nav { display: flex; align-items: center; justify-content: center; gap: 20px; }
+    .epoch-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(245,200,66,0.4); background: transparent; color: var(--text-soft); font-size: 18px; cursor: pointer; transition: all 0.2s; }
+    .epoch-btn:hover { border-color: var(--keys-accent); color: var(--keys-accent); }
+    .epoch-display { font-size: 48px; font-weight: 600; color: var(--text-main); min-width: 120px; text-align: center; }
+
+    .owned-section { margin-top: 20px; }
+    .owned-label { font-size: 12px; color: var(--text-soft); margin-bottom: 4px; }
+    /* Epoch status - Available = yellow, Captured = red */
+    .owned-status { font-size: 13px; font-weight: 600; }
+    .owned-status.available { color: var(--keys-accent); }
+    .owned-status.captured { color: var(--danger); }
+
+    .info-notice { display: flex; align-items: flex-start; gap: 10px; background: rgba(245, 200, 66, 0.08); border: 1px solid rgba(245, 200, 66, 0.25); border-radius: 12px; padding: 14px; margin-top: auto; font-size: 13px; color: var(--text-soft); line-height: 1.5; }
+    .info-notice::before { content: "◇"; color: var(--keys-accent); font-size: 14px; }
+
+    .preview-section { position: relative; display: flex; flex-direction: column; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; }
+    .preview-title { text-align: center; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 12px; }
+    .preview-container { position: relative; width: 100%; flex: 1; display: flex; align-items: center; justify-content: center; }
+    .preview-container img { width: 100%; max-width: 420px; height: auto; border-radius: 32px; display: block; transition: opacity 0.2s ease; }
+    .preview-container img.loading { opacity: 0.5; }
+
+    .preview-loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+    .preview-loading.active { opacity: 1; }
+    .preview-loading-spinner { width: 56px; height: 56px; border: 3px solid rgba(245, 200, 66, 0.2); border-top-color: var(--keys-accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .preview-loading-text { font-size: 15px; color: var(--text-soft); }
+
+    .mint-overlay-btn {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(245, 200, 66, 0.25);
+      border: 2px solid rgba(245, 200, 66, 0.6);
+      color: var(--keys-accent);
+      padding: 18px 40px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      z-index: 10;
+      white-space: nowrap;
+      backdrop-filter: blur(4px);
+    }
+    .mint-overlay-btn:hover:not(:disabled) {
+      background: linear-gradient(90deg, var(--keys-accent), var(--keys-accent-soft));
+      border-color: var(--keys-accent);
+      color: #000;
+      transform: translate(-50%, -50%) scale(1.02);
+      box-shadow: 0 8px 32px rgba(245, 200, 66, 0.4);
+    }
+    .mint-overlay-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .mint-overlay-btn.minting { background: rgba(143, 154, 181, 0.3); border-color: rgba(143, 154, 181, 0.5); color: var(--text-soft); }
+    .mint-overlay-btn.success { background: linear-gradient(90deg, var(--keys-accent), var(--keys-accent-soft)); border-color: var(--keys-accent); color: #000; }
+    .mint-overlay-btn.captured { background: rgba(244, 67, 54, 0.2); border-color: rgba(244, 67, 54, 0.5); color: #f44336; cursor: not-allowed; }
+
+    .artefact-tooltip {
+      position: absolute;
+      background: rgba(5, 8, 18, 0.97);
+      border: 1px solid var(--keys-accent);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--text-main);
+      max-width: 300px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 100;
+      line-height: 1.55;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      top: 18%;
+      left: 50%;
+      margin-left: -150px;
+    }
+    .artefact-tooltip.visible { opacity: 1; transform: translateY(0); }
+    .artefact-tooltip .tt-title { font-weight: 600; color: var(--keys-accent); margin-bottom: 8px; font-size: 14px; }
+    .artefact-tooltip .tt-body { color: var(--text-soft); font-size: 12px; }
+    .artefact-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 8px solid transparent; border-top-color: var(--keys-accent); }
+
+    .status-area { margin-top: 16px; text-align: center; min-height: 40px; }
+    .status-msg { padding: 10px 16px; border-radius: 8px; font-size: 13px; display: inline-block; max-width: 100%; text-align: left; }
+    .status-msg.success { background: rgba(245, 200, 66, 0.15); color: var(--keys-accent); }
+    .status-msg.error { background: rgba(244, 67, 54, 0.15); color: #f44336; }
+    .status-msg.pending { background: rgba(245, 200, 66, 0.15); color: var(--keys-accent); }
+
+    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px; font-size: 12px; text-align: center; opacity: 0.85; margin-top: 40px; }
+    footer .tagline { margin-bottom: 6px; font-size: 13px; }
+    footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
+
+    .toast { position: fixed; top: 20px; right: 20px; padding: 14px 20px; background: rgba(245, 200, 66, 0.95); color: #000; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 10000; opacity: 0; transform: translateY(-20px); transition: all 0.3s ease; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .mint-layout { grid-template-columns: 1fr; }
+      .preview-section { order: -1; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<header>
+  <div class="nav-inner">
+    <a href="index.html" class="logo-link">
+      <div class="logo-dot">Ω</div>
+      <div class="logo-text">Z1N PROTOCOL</div>
+    </a>
+    <nav class="nav-links">
+      <a href="about.html">About</a>
+      <a href="live-stats.html">Live Stats</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="mint-key.html">Mint Key</a>
+      <a href="your-keys.html" class="active-keys">Your Keys</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <a href="#" class="back-link" id="backLink">← Back to Artefacts</a>
+
+  <h1>Mint Static Artefact</h1>
+  <p class="subtitle">A frozen snapshot of your Key's presence in the Field. Each epoch can only be captured once — a commitment, not an export.</p>
+
+  <div class="mint-layout">
+    <div class="key-card">
+      <div class="key-header">
+        <div class="key-id" id="keyTitle">Key #—</div>
+        <div class="key-glyphs" id="keyGlyphs">Loading...</div>
+      </div>
+
+      <div class="key-info-row">
+        <span class="key-info-label">Wallet</span>
+        <span class="key-info-value" id="walletDisplay">—</span>
+      </div>
+      <div class="key-info-row">
+        <span class="key-info-label">Key Minted at Epoch</span>
+        <span class="key-info-value" id="mintEpochDisplay">—</span>
+      </div>
+      <div class="key-info-row">
+        <span class="key-info-label">Current Epoch</span>
+        <span class="key-info-value" id="currentEpochDisplay">—</span>
+      </div>
+      <div class="key-info-row">
+        <span class="key-info-label">Price</span>
+        <span class="key-info-value">0.021 POL</span>
+      </div>
+
+      <div class="epoch-section">
+        <div class="epoch-label">
+          <span>Select Snapshot Epoch</span>
+          <span class="epoch-range" id="epochRangeLabel">—</span>
+        </div>
+        <input type="range" class="epoch-slider" id="epochSlider" min="0" max="100" value="50">
+        <div class="epoch-nav">
+          <button class="epoch-btn" id="epochPrev">‹</button>
+          <div class="epoch-display" id="epochDisplay">—</div>
+          <button class="epoch-btn" id="epochNext">›</button>
+        </div>
+      </div>
+
+      <div class="owned-section">
+        <div class="owned-label">Epoch status:</div>
+        <div class="owned-status" id="ownedStatus">Checking...</div>
+      </div>
+
+      <div class="info-notice">
+        Each epoch can only be captured once per Key. Choose wisely — this is a commitment.
+      </div>
+    </div>
+
+    <div class="preview-section">
+      <div class="preview-title">Artefact Preview</div>
+      <div class="preview-container">
+        <img id="previewImg" src="" alt="Artefact Preview">
+        
+        <div class="preview-loading" id="previewLoading">
+          <div class="preview-loading-spinner"></div>
+          <div class="preview-loading-text">Loading snapshot...</div>
+        </div>
+        
+        <div class="artefact-tooltip" id="mintTooltip">
+          <div class="tt-title">Static Artefact Preview</div>
+          <div class="tt-body">A permanent snapshot of your Key's presence in the Field at this moment. Once minted, this visual record is frozen forever.</div>
+        </div>
+        
+        <button class="mint-overlay-btn" id="mintBtn">Mint Artefact — 0.021 POL</button>
+      </div>
+      <div class="status-area" id="statusArea"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="tagline">Your presence is real · The Field remembers</div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank">X</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var API = 'https://z1n-backend-production.up.railway.app/api';
+  var CHAIN_ID = '0x89';
+  var Z1N_KEY = '0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469';
+  var Z1N_STATIC_ARTEFACT = '0x37bF24f72D96ed12D4F13c6790caF7Dfe344F3f2';
+  
+  var MINT_PRICE = '0x4a9b6384488000';
+  var MINT_PRICE_DISPLAY = '0.021 POL';
+
+  var RPC_URLS = [
+    'https://polygon-bor-rpc.publicnode.com',
+    'https://polygon.blockpi.network/v1/rpc/public',
+    'https://rpc-mainnet.maticvigil.com'
+  ];
+  var currentRpcIndex = 0;
+
+  var provider = null;
+  var account = null;
+  var keyId = null;
+  var walletParam = '';
+  var selectedEpoch = 0;
+  var minEpoch = 0;
+  var maxEpoch = 0;
+  var debounceTimer = null;
+  var hasFirstArtefact = false;
+  var epochCaptured = false;
+  var keyOwner = '';
+
+  var keyTitle = document.getElementById('keyTitle');
+  var keyGlyphs = document.getElementById('keyGlyphs');
+  var walletDisplay = document.getElementById('walletDisplay');
+  var mintEpochDisplay = document.getElementById('mintEpochDisplay');
+  var currentEpochDisplay = document.getElementById('currentEpochDisplay');
+  var epochRangeLabel = document.getElementById('epochRangeLabel');
+  var epochSlider = document.getElementById('epochSlider');
+  var epochDisplay = document.getElementById('epochDisplay');
+  var epochPrev = document.getElementById('epochPrev');
+  var epochNext = document.getElementById('epochNext');
+  var previewImg = document.getElementById('previewImg');
+  var previewLoading = document.getElementById('previewLoading');
+  var mintBtn = document.getElementById('mintBtn');
+  var statusArea = document.getElementById('statusArea');
+  var mintTooltip = document.getElementById('mintTooltip');
+  var toast = document.getElementById('toast');
+  var ownedStatus = document.getElementById('ownedStatus');
+  var backLink = document.getElementById('backLink');
+
+  function getParam(name) {
+    var url = new URL(window.location.href);
+    var val = url.searchParams.get(name);
+    if (val) return val;
+    var hash = window.location.hash.substring(1);
+    if (hash) {
+      var hashParams = new URLSearchParams(hash);
+      val = hashParams.get(name);
+      if (val) return val;
+    }
+    return null;
+  }
+  
+  function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '—'; }
+  function enc256(v) { return BigInt(v).toString(16).padStart(64, '0'); }
+
+  function showToast(message, duration) {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, duration || 3000);
+  }
+
+  function getProvider() {
+    var eth = window.ethereum;
+    if (!eth) {
+      if (window.phantom && window.phantom.ethereum) return window.phantom.ethereum;
+      return null;
+    }
+    if (eth.providers && eth.providers.length) {
+      var mm = eth.providers.find(function(p) { return p.isMetaMask && !p.isBraveWallet; });
+      if (mm) return mm;
+      return eth.providers[0];
+    }
+    return eth;
+  }
+
+  // RPC with automatic retry and fallback
+  async function rpc(method, params, retryCount) {
+    retryCount = retryCount || 0;
+    var maxRetries = RPC_URLS.length * 2;
+    
+    try {
+      var rpcUrl = RPC_URLS[currentRpcIndex];
+      var response = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: Date.now(), method: method, params: params })
+      });
+      var data = await response.json();
+      
+      if (data.error) {
+        // Rate limit or server error - try next RPC
+        if (data.error.message && (data.error.message.includes('rate') || data.error.message.includes('Too Many') || data.error.code === -32005)) {
+          currentRpcIndex = (currentRpcIndex + 1) % RPC_URLS.length;
+          if (retryCount < maxRetries) {
+            await new Promise(function(r) { setTimeout(r, 300); });
+            return rpc(method, params, retryCount + 1);
+          }
+        }
+        throw new Error(data.error.message);
+      }
+      return data.result;
+    } catch (err) {
+      currentRpcIndex = (currentRpcIndex + 1) % RPC_URLS.length;
+      if (retryCount < maxRetries) {
+        await new Promise(function(r) { setTimeout(r, 300); });
+        return rpc(method, params, retryCount + 1);
+      }
+      throw err;
+    }
+  }
+
+  function showLoading() { previewLoading.classList.add('active'); previewImg.classList.add('loading'); }
+  function hideLoading() { previewLoading.classList.remove('active'); previewImg.classList.remove('loading'); }
+
+  mintBtn.addEventListener('mouseenter', function() {
+    if (!mintBtn.classList.contains('minting') && !mintBtn.classList.contains('success') && !mintBtn.classList.contains('captured')) {
+      mintTooltip.classList.add('visible');
+    }
+  });
+  mintBtn.addEventListener('mouseleave', function() { mintTooltip.classList.remove('visible'); });
+
+  // Init
+  var keyParam = getParam('key');
+  keyId = keyParam !== null ? parseInt(keyParam) : NaN;
+  
+  if (isNaN(keyId)) {
+    try {
+      var ctx = JSON.parse(localStorage.getItem('z1n_signal_context') || '{}');
+      keyId = typeof ctx.keyId === 'number' ? ctx.keyId : 0;
+    } catch (e) { keyId = 0; }
+  }
+
+  walletParam = getParam('wallet') || '';
+  if (!walletParam) {
+    try {
+      var ctx = JSON.parse(localStorage.getItem('z1n_signal_context') || '{}');
+      walletParam = ctx.wallet || '';
+    } catch (e) {}
+  }
+
+  var walletQuery = walletParam ? '&wallet=' + encodeURIComponent(walletParam) : '';
+  backLink.href = 'key-artefacts.html?key=' + keyId + walletQuery;
+  
+  keyTitle.textContent = 'Key #' + keyId;
+  walletDisplay.textContent = shortAddr(walletParam);
+  keyOwner = walletParam.toLowerCase();
+  showLoading();
+
+  fetch(API + '/keys/' + keyId)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      keyGlyphs.textContent = data.glyphLine || '◇ · ∞ · ☰';
+      minEpoch = data.epochMinted || 0;
+      mintEpochDisplay.textContent = minEpoch;
+      return fetch(API + '/live');
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(live) {
+      maxEpoch = (live.currentEpoch || 1) - 1;
+      currentEpochDisplay.textContent = live.currentEpoch || '—';
+      epochSlider.min = minEpoch;
+      epochSlider.max = maxEpoch;
+      selectedEpoch = maxEpoch;
+      epochSlider.value = selectedEpoch;
+      epochRangeLabel.textContent = minEpoch + ' – ' + maxEpoch;
+      updateEpochDisplay();
+      updatePreview();
+      checkEpochCaptured();
+    })
+    .catch(function(e) {
+      console.error('Load error:', e);
+      keyGlyphs.textContent = 'Error loading data';
+      hideLoading();
+    });
+
+  function updateEpochDisplay() { epochDisplay.textContent = selectedEpoch; }
+
+  function updatePreview() {
+    showLoading();
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function() {
+      var img = new Image();
+      var src = API + '/artefact/' + keyId + '/static-preview?epoch=' + selectedEpoch + '&t=' + Date.now();
+      img.onload = function() { previewImg.src = src; hideLoading(); };
+      img.onerror = function() { hideLoading(); };
+      img.src = src;
+    }, 100);
+  }
+
+  async function checkEpochCaptured() {
+    try {
+      // hasCapturedEpoch(uint256 keyId, uint256 epochId)
+      var sig = ethers.keccak256(ethers.toUtf8Bytes('hasCapturedEpoch(uint256,uint256)')).slice(0, 10);
+      var data = sig + enc256(keyId) + enc256(selectedEpoch);
+      
+      var result = await rpc('eth_call', [{ to: Z1N_STATIC_ARTEFACT, data: data }, 'latest']);
+      epochCaptured = parseInt(result, 16) === 1;
+      
+      updateEpochStatus();
+    } catch (e) {
+      console.warn('Could not check epoch capture status:', e);
+      epochCaptured = false;
+      updateEpochStatus();
+    }
+  }
+
+  function updateEpochStatus() {
+    if (epochCaptured) {
+      ownedStatus.textContent = '✗ Captured — epoch ' + selectedEpoch + ' already minted';
+      ownedStatus.className = 'owned-status captured';
+      mintBtn.textContent = 'Epoch Already Captured';
+      mintBtn.classList.add('captured');
+      mintBtn.disabled = true;
+    } else {
+      ownedStatus.textContent = '✓ Available — epoch ' + selectedEpoch + ' ready to mint';
+      ownedStatus.className = 'owned-status available';
+      mintBtn.textContent = 'Mint Artefact — ' + MINT_PRICE_DISPLAY;
+      mintBtn.classList.remove('captured');
+      mintBtn.disabled = false;
+    }
+  }
+
+  var epochCheckTimer = null;
+  
+  function debouncedCheckEpoch() {
+    if (epochCheckTimer) clearTimeout(epochCheckTimer);
+    ownedStatus.textContent = 'Checking...';
+    ownedStatus.className = 'owned-status';
+    epochCheckTimer = setTimeout(function() {
+      checkEpochCaptured();
+    }, 300);
+  }
+
+  epochSlider.addEventListener('input', function() {
+    selectedEpoch = parseInt(this.value);
+    updateEpochDisplay();
+    updatePreview();
+    debouncedCheckEpoch();
+  });
+
+  epochPrev.addEventListener('click', function() {
+    if (selectedEpoch > minEpoch) { 
+      selectedEpoch--; 
+      epochSlider.value = selectedEpoch; 
+      updateEpochDisplay(); 
+      updatePreview(); 
+      debouncedCheckEpoch();
+    }
+  });
+
+  epochNext.addEventListener('click', function() {
+    if (selectedEpoch < maxEpoch) { 
+      selectedEpoch++; 
+      epochSlider.value = selectedEpoch; 
+      updateEpochDisplay(); 
+      updatePreview(); 
+      debouncedCheckEpoch();
+    }
+  });
+
+  async function checkHasFirstArtefact() {
+    try {
+      var data = '0x8d6786a8' + enc256(keyId);
+      var result = await rpc('eth_call', [{ to: Z1N_STATIC_ARTEFACT, data: data }, 'latest']);
+      hasFirstArtefact = parseInt(result, 16) > 0;
+    } catch (e) {
+      console.warn('Could not check artefact status:', e);
+      hasFirstArtefact = false;
+    }
+  }
+
+  async function connectWallet() {
+    var eth = getProvider();
+    if (!eth) {
+      statusArea.innerHTML = '<div class="status-msg error">No wallet found. Install MetaMask or another Web3 wallet.</div>';
+      return false;
+    }
+
+    provider = eth;
+
+    try {
+      var accs = await provider.request({ method: 'eth_accounts' });
+      if (!accs || accs.length === 0) {
+        accs = await provider.request({ method: 'eth_requestAccounts' });
+      }
+
+      if (!accs || accs.length === 0) {
+        statusArea.innerHTML = '<div class="status-msg error">No accounts found. Please unlock your wallet.</div>';
+        return false;
+      }
+
+      var urlWallet = walletParam.toLowerCase();
+      if (urlWallet) {
+        account = accs.find(function(a) { return a.toLowerCase() === urlWallet; }) || accs[0];
+      } else {
+        account = accs[0];
+      }
+      account = account.toLowerCase();
+
+      walletDisplay.textContent = shortAddr(account);
+
+      var chainId = await provider.request({ method: 'eth_chainId' });
+      if (chainId !== CHAIN_ID) {
+        try {
+          await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID }] });
+        } catch (switchError) {
+          if (switchError.code === 4902) {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: CHAIN_ID,
+                chainName: 'Polygon',
+                nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 },
+                rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
+                blockExplorerUrls: ['https://polygonscan.com']
+              }]
+            });
+          } else {
+            throw switchError;
+          }
+        }
+      }
+
+      // Verify key ownership
+      var ownerData = '0x6352211e' + enc256(keyId);
+      var ownerResult = await rpc('eth_call', [{ to: Z1N_KEY, data: ownerData }, 'latest']);
+      keyOwner = '0x' + ownerResult.slice(26).toLowerCase();
+
+      if (keyOwner !== account) {
+        statusArea.innerHTML = '<div class="status-msg error">⚠️ This Key is owned by <strong>' + shortAddr(keyOwner) + '</strong><br><br>Switch to this wallet in your wallet app to mint.</div>';
+        mintBtn.disabled = true;
+        return false;
+      }
+
+      await checkHasFirstArtefact();
+      await checkEpochCaptured();
+      return true;
+
+    } catch (e) {
+      console.error('Connection error:', e);
+      statusArea.innerHTML = '<div class="status-msg error">' + (e.message || 'Connection failed') + '</div>';
+      return false;
+    }
+  }
+
+  mintBtn.addEventListener('click', async function() {
+    if (epochCaptured) {
+      statusArea.innerHTML = '<div class="status-msg error">This epoch has already been captured for this Key.</div>';
+      return;
+    }
+
+    if (!account || !provider) {
+      statusArea.innerHTML = '<div class="status-msg pending">Connecting wallet...</div>';
+      var connected = await connectWallet();
+      if (!connected) return;
+    }
+
+    mintBtn.disabled = true;
+    mintBtn.textContent = 'Preparing...';
+    mintBtn.classList.add('minting');
+    mintTooltip.classList.remove('visible');
+
+    statusArea.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
+
+    try {
+      var snapshotCid = 'z1n://static/' + keyId + '/' + selectedEpoch + '/' + Date.now();
+      
+      var functionName = hasFirstArtefact ? 'mintExtraStaticArtefact' : 'mintFirstStaticArtefact';
+      var iface = new ethers.Interface([
+        'function ' + functionName + '(uint256 keyId, uint256 epochId, string snapshotCid) payable'
+      ]);
+      
+      var encodedData = iface.encodeFunctionData(functionName, [
+        BigInt(keyId),
+        BigInt(selectedEpoch),
+        snapshotCid
+      ]);
+
+      statusArea.innerHTML = '<div class="status-msg pending">Confirm in your wallet...</div>';
+      mintBtn.textContent = 'Confirm in wallet...';
+
+      var txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: account,
+          to: Z1N_STATIC_ARTEFACT,
+          value: MINT_PRICE,
+          data: encodedData
+        }]
+      });
+
+      statusArea.innerHTML = '<div class="status-msg pending">Transaction sent... waiting for confirmation</div>';
+      mintBtn.textContent = 'Confirming...';
+
+      var success = await waitForReceipt(txHash);
+
+      if (success) {
+        statusArea.innerHTML = '<div class="status-msg success">✓ Static Artefact minted successfully!</div>';
+        mintBtn.textContent = '✓ Minted!';
+        mintBtn.classList.remove('minting');
+        mintBtn.classList.add('success');
+        showToast('✅ Static Artefact minted!', 4000);
+
+        // Wait a bit longer before redirect to let blockchain state settle
+        // This helps prevent issues with consecutive mints
+        setTimeout(function() {
+          window.location.href = 'key-artefacts.html?key=' + keyId + '&wallet=' + encodeURIComponent(account) + '&minted=static';
+        }, 3000);
+      } else {
+        throw new Error('Transaction failed on-chain');
+      }
+
+    } catch (e) {
+      console.error('Mint error:', e);
+      var msg = e.message || 'Unknown error';
+      var code = e.code || 0;
+      
+      if (msg.includes('reject') || msg.includes('denied') || msg.includes('User denied') || code === 4001) {
+        msg = 'Transaction rejected by user';
+      } else if (msg.includes('EpochAlreadyCaptured')) {
+        msg = 'This epoch has already been captured for this Key';
+        epochCaptured = true;
+        updateEpochStatus();
+      } else if (msg.includes('Internal JSON-RPC') || code === -32603 || msg.includes('execution reverted')) {
+        msg = '<strong>Transaction failed</strong><br><br>' +
+          'The connected wallet may not own this Key.<br><br>' +
+          '<strong>Fix:</strong> Switch to the Key owner wallet and try again.';
+      } else if (msg.includes('insufficient')) {
+        msg = 'Insufficient funds for gas + 0.021 POL';
+      } else {
+        msg = 'Error: ' + msg.slice(0, 150);
+      }
+      
+      statusArea.innerHTML = '<div class="status-msg error">' + msg + '</div>';
+      mintBtn.disabled = false;
+      mintBtn.classList.remove('minting');
+      if (!epochCaptured) {
+        mintBtn.textContent = 'Mint Artefact — ' + MINT_PRICE_DISPLAY;
+      }
+    }
+  });
+
+  async function waitForReceipt(txHash) {
+    for (var i = 0; i < 60; i++) {
+      await new Promise(function(r) { setTimeout(r, 2000); });
+      try {
+        var rc = await rpc('eth_getTransactionReceipt', [txHash]);
+        if (rc && rc.status === '0x1') return true;
+        if (rc && rc.status === '0x0') return false;
+      } catch (e) { console.warn('Receipt check failed:', e); }
+    }
+    return false;
+  }
+
+  (async function() {
+    var eth = getProvider();
+    if (eth) {
+      try {
+        var accs = await eth.request({ method: 'eth_accounts' });
+        if (accs && accs.length > 0) {
+          await connectWallet();
+        }
+      } catch (e) {}
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
+

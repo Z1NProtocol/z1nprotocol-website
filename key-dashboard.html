@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <title>Z1N Protocol – Key Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- bestaande CSS links -->
+  <link rel="stylesheet" href="css/key-dashboard.css">
+  <link rel="stylesheet" href="css/key-dashboard-artefacts.css">  <!-- ← NIEUW -->
+  <link rel="stylesheet" href="css/key-dashboard-canon.css">
+  <link rel="stylesheet" href="css/key-dashboard-signals.css">
+
+<style>
+    :root{--bg:#050812;--card-bg:#020617;--text-main:#ffffff;--text-soft:#9aa3bb;--accent:#66d69a;--keys-accent:#f5c842;--keys-accent-soft:#d4a012;--card-border:rgba(148,163,184,0.25);--danger:#e05555;--stealth-color:#60a5fa;--tab-active-bg:rgba(245,200,66,0.15);--canon-color:#c084fc;--treasury-color:#60a5fa}
+    *{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text-main);font-family:system-ui,-apple-system,sans-serif;min-height:100vh}a{color:inherit;text-decoration:none}
+    header{height:72px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,0.05)}.nav-inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}.logo-link{display:inline-flex;align-items:center;gap:8px}.logo-dot{width:24px;height:24px;border-radius:999px;border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-size:14px}.logo-text{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7}.nav-links{display:flex;gap:22px;font-size:13px;opacity:0.85}.nav-links a.active{color:var(--keys-accent)}
+    .page{max-width:1200px;margin:0 auto;padding:24px 24px 80px}.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-soft);font-size:13px;margin-bottom:20px;transition:color 0.2s}.back-link:hover{color:var(--keys-accent)}
+    .connect-prompt{text-align:center;padding:80px 20px}.connect-prompt p{color:var(--text-soft);margin-bottom:20px;font-size:15px}.btn-connect{padding:14px 32px;border-radius:999px;border:1px solid var(--keys-accent);background:transparent;color:var(--keys-accent);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s}.btn-connect:hover{background:rgba(245,200,66,0.1)}
+    .key-header-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}.key-identity{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.key-id{font-size:28px;font-weight:700;color:var(--keys-accent)}.genesis-badge{background:linear-gradient(90deg,var(--keys-accent),#d4a012);color:#000;font-size:9px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;display:none}.key-glyphs{font-size:15px;letter-spacing:2px;color:var(--text-soft);font-family:"Segoe UI Symbol",sans-serif}.key-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-soft)}.key-meta a{color:var(--accent)}.wallet-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:11px;background:rgba(245,200,66,0.15);border:1px solid rgba(245,200,66,0.3)}.wallet-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--keys-accent)}
+    
+    /* TAB NAV - Gekleurde tabs per categorie */
+    .tab-nav{display:flex;gap:4px;background:rgba(15,23,42,0.5);border:1px solid var(--card-border);border-radius:12px;padding:6px;margin-bottom:20px;overflow-x:auto}
+    .tab-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;border:1px solid transparent;background:transparent;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+    .tab-btn:hover{background:rgba(255,255,255,0.05)}
+    .tab-btn[onclick*="overview"]{color:var(--text-main);font-weight:600}
+    .tab-btn[onclick*="signals"],.tab-btn[onclick*="attests"],.tab-btn[onclick*="whispers"]{color:#f5c842}
+    .tab-btn[onclick*="artefacts"]{color:#66d69a}
+    .tab-btn[onclick*="canon"]{color:#c084fc}
+    .tab-btn[onclick*="treasury"]{color:#60a5fa}
+    .tab-btn.active[onclick*="overview"]{background:var(--tab-active-bg);border-color:rgba(245,200,66,0.3)}
+    .tab-btn.active[onclick*="signals"],.tab-btn.active[onclick*="attests"],.tab-btn.active[onclick*="whispers"]{background:rgba(245,200,66,0.15);border-color:rgba(245,200,66,0.3)}
+    .tab-btn.active[onclick*="artefacts"]{background:rgba(102,214,154,0.15);border-color:rgba(102,214,154,0.3)}
+    .tab-btn.active[onclick*="canon"]{background:rgba(192,132,252,0.15);border-color:rgba(192,132,252,0.3)}
+    .tab-btn.active[onclick*="treasury"]{background:rgba(96,165,250,0.15);border-color:rgba(96,165,250,0.3)}
+    
+    /* TAB DOTS (signals/attests usage) */
+    .tab-dots{display:flex;gap:3px}.tab-dot{width:8px;height:8px;border-radius:50%;border:1.5px solid}.tab-dot.filled{background:#4ade80;border-color:#4ade80}.tab-dot.open{background:transparent;border-color:var(--keys-accent)}
+    
+    /* TAB BADGES - Allemaal geel voor unread */
+    .tab-badge{background:rgba(245,200,66,0.3);color:var(--keys-accent);font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center}
+    .tab-btn.active .tab-badge{background:var(--keys-accent);color:#000}
+    .tab-badge:empty,.tab-badge[data-count="0"],.tab-badge.hidden{display:none!important}
+    
+    /* Artefacts badge - groen */
+    .tab-badge.badge-artefacts{background:rgba(102,214,154,0.3);color:var(--accent)}
+    .tab-btn.active .tab-badge.badge-artefacts{background:var(--accent);color:#000}
+    
+    /* Canon badge - paars */
+    .tab-badge.badge-canon{background:rgba(192,132,252,0.3);color:#c084fc}
+    .tab-btn.active .tab-badge.badge-canon{background:#c084fc;color:#000}
+    
+    /* Treasury badge - blauw */
+    .tab-badge.badge-treasury{background:rgba(96,165,250,0.3);color:#60a5fa}
+    .tab-btn.active .tab-badge.badge-treasury{background:#60a5fa;color:#000}
+    
+    .tab-content{display:none !important}.tab-content.active{display:block !important}
+    .section-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:20px;margin-bottom:20px}.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px}.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--keys-accent)}.section-title.title-white{color:var(--text-main)}.section-title.title-green{color:var(--accent)}.section-title.title-purple{color:#c084fc}.section-title.title-blue{color:#60a5fa}.section-actions{display:flex;gap:8px;align-items:center}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid}.btn-secondary{background:transparent;border-color:rgba(148,163,184,0.3);color:var(--text-soft)}.btn-secondary:hover{border-color:var(--text-main);color:var(--text-main)}.btn-primary{background:rgba(245,200,66,0.2);border-color:rgba(245,200,66,0.4);color:var(--keys-accent)}.btn-primary:hover{background:rgba(245,200,66,0.3);border-color:var(--keys-accent)}.btn-submit{padding:10px 24px;border-radius:999px;border:1px solid rgba(212,160,18,0.8);background:linear-gradient(90deg,rgba(245,200,66,0.55),rgba(212,160,18,0.55));color:#061018;font-size:13px;font-weight:700;cursor:pointer}.btn-submit:hover:not([disabled]){background:linear-gradient(90deg,var(--keys-accent),#d4a012)}.btn-submit[disabled]{opacity:0.5;cursor:not-allowed}.btn-green{background:rgba(102,214,154,0.15);border-color:rgba(102,214,154,0.4);color:var(--accent)}.btn-green:hover{background:rgba(102,214,154,0.25);border-color:var(--accent)}.btn-canon{background:rgba(192,132,252,0.15);border-color:rgba(192,132,252,0.4);color:var(--canon-color)}.btn-canon:hover{background:rgba(192,132,252,0.25);border-color:var(--canon-color)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+    .stealth-toggle{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(102,214,154,0.1);border:1px solid rgba(102,214,154,0.4);border-radius:20px;cursor:pointer;transition:all 0.2s;user-select:none}.stealth-toggle:hover{border-color:var(--accent);background:rgba(102,214,154,0.2)}.stealth-toggle.active{background:rgba(96,165,250,0.2);border-color:var(--stealth-color)}.stealth-toggle.active .stealth-label{color:var(--stealth-color)}.stealth-toggle .stealth-icon{font-size:14px;transition:opacity 0.2s}.stealth-toggle.active .stealth-icon{opacity:0.5}.stealth-toggle .stealth-label{font-size:11px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.05em}.stealth-toggle.disabled{opacity:0.4;cursor:not-allowed}
+    .intent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px}.intent-btn{display:flex;flex-direction:column;align-items:center;padding:10px 6px;background:rgba(15,23,42,0.4);border:1px solid rgba(245,200,66,0.35);border-radius:8px;cursor:pointer;transition:all 0.2s}.intent-btn:hover{border-color:var(--keys-accent)}.intent-btn.selected{border-color:var(--keys-accent);background:rgba(245,200,66,0.2)}.intent-symbol{font-size:14px;font-weight:700}.intent-name{font-size:9px;color:var(--text-soft);margin-top:2px}.intent-btn[data-intent="0"] .intent-symbol{color:#4ade80}.intent-btn[data-intent="1"] .intent-symbol{color:#f87171}.intent-btn[data-intent="2"] .intent-symbol{color:#fbbf24}.intent-btn[data-intent="3"] .intent-symbol{color:#60a5fa}
+    .intent-tag{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}.intent-tag.oc{background:rgba(74,222,128,0.2);color:#4ade80}.intent-tag.oi{background:rgba(248,113,113,0.2);color:#f87171}.intent-tag.ok{background:rgba(251,191,36,0.2);color:#fbbf24}.intent-tag.os{background:rgba(96,165,250,0.2);color:#60a5fa}
+    .input-group{margin-bottom:12px}.input-label{font-size:11px;color:var(--text-soft);margin-bottom:4px;display:flex;justify-content:space-between}.char-count{color:var(--keys-accent)}textarea,input[type="text"],input[type="number"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-family:inherit;font-size:13px}textarea{min-height:80px;resize:vertical}textarea:focus,input:focus{outline:none;border-color:var(--keys-accent)}input.invalid{border-color:#f87171!important;background:rgba(248,113,113,0.1)!important}input.valid{border-color:#4ade80!important}.validation-msg{font-size:10px;margin-top:4px}.validation-msg.error{color:#f87171}.validation-msg.success{color:#4ade80}
+    .filter-select{background:rgba(5,8,18,0.8);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:6px 24px 6px 10px;font-size:11px;color:var(--text-main);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239aa3bb' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+    .card-header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap}.card-header-left{display:flex;align-items:center;gap:12px}.card-header-right{display:flex;align-items:center;gap:12px;font-size:11px;color:var(--text-soft)}.epoch-timer{color:var(--keys-accent);font-family:monospace}
+    .submit-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}.fee-display{font-size:12px;color:var(--text-soft)}.fee-amount{color:var(--keys-accent);font-weight:600}
+    .status-msg{padding:10px 14px;border-radius:8px;font-size:12px;margin-top:10px}.status-msg.error{background:rgba(249,115,115,0.1);border:1px solid rgba(249,115,115,0.3);color:var(--danger)}.status-msg.success{background:rgba(102,214,154,0.1);border:1px solid rgba(102,214,154,0.3);color:var(--accent)}.status-msg.pending{background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);color:var(--keys-accent)}.status-msg a{color:var(--accent);text-decoration:underline}
+    .toggle-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px}.toggle-btn{padding:8px 12px;background:rgba(15,23,42,0.4);border:1px solid rgba(245,200,66,0.35);border-radius:6px;font-size:12px;color:var(--text-main);cursor:pointer}.toggle-btn:hover{border-color:var(--keys-accent)}.toggle-btn.active{border-color:var(--keys-accent);background:rgba(245,200,66,0.2);color:var(--keys-accent)}
+    .reply-section{display:none;margin-bottom:14px;padding:12px;background:rgba(15,23,42,0.5);border:1px solid rgba(148,163,184,0.2);border-radius:8px}.reply-section.active{display:block}
+    .signal-list{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto}.signal-item{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:10px 12px;background:rgba(15,23,42,0.4);border:1px solid rgba(148,163,184,0.15);border-radius:8px;cursor:pointer;transition:all 0.2s}.signal-item:hover{border-color:var(--keys-accent)}.signal-item.selected{border-color:var(--keys-accent);background:rgba(245,200,66,0.1)}.signal-item-header{display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap;font-size:11px}.signal-key{color:var(--keys-accent);font-weight:600}.signal-content-preview{font-size:12px;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.signal-attests{font-size:11px;color:#fbbf24}.signal-time{font-size:10px;color:var(--text-soft)}
+    .attest-signal-item{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer}.attest-signal-item:hover{background:rgba(251,191,36,0.1)}.attest-signal-item.selected{background:rgba(251,191,36,0.2);border-left:3px solid var(--keys-accent)}.attest-signal-item .signal-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}.attest-signal-item .signal-content{font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .intent-filters{display:flex;align-items:center;gap:4px}.intent-checkbox{display:flex;align-items:center;cursor:pointer;opacity:0.5}.intent-checkbox:has(input:checked){opacity:1}.intent-checkbox input{display:none}
+    
+    /* OVERVIEW LAYOUT - EVEN LANGE CARDS */
+    .overview-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:stretch}
+    @media(max-width:900px){.overview-layout{grid-template-columns:1fr}.artefact-preview-card{max-width:280px;margin:0 auto}.overview-layout .artefact-preview-card,.overview-layout .section-card{min-height:auto}}
+    .overview-layout .artefact-preview-card,.overview-layout .section-card{min-height:420px;display:flex;flex-direction:column}
+    
+    /* ARTEFACT PREVIEW - CLICKABLE */
+    .artefact-preview-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
+    .artefact-preview-card:hover{transform:scale(1.02);box-shadow:0 8px 32px rgba(102,214,154,0.15)}
+    .artefact-preview-img{width:100%;max-width:200px;aspect-ratio:500/760;border-radius:12px;background:linear-gradient(135deg,#0a0f1a 0%,#111827 50%,#0f172a 100%);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border:1px solid rgba(102,214,154,0.2)}
+    .artefact-preview-img img{width:100%;height:100%;object-fit:contain;border-radius:12px}
+    .artefact-preview-label{font-size:10px;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+    .artefact-preview-status{font-size:12px;color:var(--accent);margin-bottom:12px;min-height:18px}
+    .artefact-preview-status.no-artefact{color:var(--text-soft)}
+    .artefact-placeholder{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:64px;color:rgba(102,214,154,0.15)}
+    
+    /* ACTIVITY SECTION */
+    .activity-section{flex:1;display:flex;flex-direction:column}
+    .activity-tabs{display:flex;gap:4px;margin-bottom:12px;background:rgba(15,23,42,0.5);padding:4px;border-radius:8px}
+    .activity-tab{flex:1;padding:8px 12px;border:none;background:transparent;color:var(--text-soft);font-size:12px;font-weight:500;cursor:pointer;border-radius:6px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+    .activity-tab:hover{background:rgba(255,255,255,0.05);color:var(--text-main)}
+    .activity-tab.active{background:rgba(245,200,66,0.15);color:var(--keys-accent)}
+    .activity-tab .tab-count{background:rgba(245,200,66,0.3);color:var(--keys-accent);font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center}
+    .activity-tab.active .tab-count{background:var(--keys-accent);color:#000}
+    .activity-tab .unread-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:none}
+    .activity-tab.has-unread .unread-dot{display:block}
+    
+    /* ACTIVITY FEED */
+    .activity-feed{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto}
+    .activity-feed::-webkit-scrollbar{width:4px}
+    .activity-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+    
+    /* ACTIVITY ITEM */
+    .activity-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(15,23,42,0.4);border:1px solid rgba(148,163,184,0.1);border-radius:8px;font-size:12px;line-height:1.4;cursor:pointer;transition:all 0.2s;position:relative}
+    .activity-item:hover{border-color:rgba(148,163,184,0.25);background:rgba(15,23,42,0.6)}
+   .activity-item.unread{background:rgba(245,200,66,0.08);border-left:none}
+.activity-item.unread::after{display:none}
+.activity-item.unread .activity-title{color:var(--keys-accent)}
+
+/* UNREAD GLOW - voor items in Signals/Attests/Whispers tabs */
+    .signal-item.unread-glow{background:rgba(245,200,66,0.08) !important;border-color:rgba(245,200,66,0.25) !important;position:relative}
+    .signal-item.unread-glow::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--keys-accent);border-radius:3px 0 0 3px}
+    
+    /* ACTIVITY ICON - Uniforme kleuren */
+    .activity-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+    
+    /* Signals, Attests, Whispers - allemaal geel */
+    .activity-icon.signal,
+    .activity-icon.attest,
+    .activity-icon.whisper,
+    .activity-icon.intent-c,
+    .activity-icon.intent-i,
+    .activity-icon.intent-k,
+    .activity-icon.intent-s{background:rgba(245,200,66,0.15);color:var(--keys-accent)}
+    
+    /* Artefacts - groen */
+    .activity-icon.artefact{background:rgba(102,214,154,0.15);color:var(--accent)}
+    
+    /* Canon - paars */
+    .activity-icon.canon{background:rgba(192,132,252,0.15);color:#c084fc}
+    
+    /* Treasury - blauw */
+    .activity-icon.treasury{background:rgba(96,165,250,0.15);color:#60a5fa}
+    
+    /* ACTIVITY CONTENT */
+    .activity-content{flex:1;min-width:0}
+    .activity-title{color:var(--text-main);margin-bottom:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .activity-title strong{color:var(--keys-accent)}
+    .activity-title .key-link{color:var(--keys-accent);font-weight:600}
+    .activity-preview{color:var(--text-soft);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+    .activity-meta{display:none}
+    .activity-meta .epoch-badge{color:var(--keys-accent);opacity:0.8}
+    
+    /* ACTIVITY EMPTY & LOADING */
+    .activity-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:var(--text-soft);text-align:center}
+    .activity-empty-icon{font-size:32px;opacity:0.3;margin-bottom:12px}
+    .activity-empty-text{font-size:12px}
+    .activity-loading{display:flex;align-items:center;justify-content:center;padding:40px 20px;color:var(--text-soft);font-size:12px}
+    .activity-loading::before{content:'';width:16px;height:16px;border:2px solid rgba(245,200,66,0.3);border-top-color:var(--keys-accent);border-radius:50%;animation:spin 1s linear infinite;margin-right:10px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    
+    .artefact-mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}@media(max-width:700px){.artefact-mini-grid{grid-template-columns:repeat(2,1fr)}}.artefact-mini-card{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;transition:all 0.2s;border:2px solid transparent}.artefact-mini-card:hover{transform:scale(1.03)}.artefact-mini-card.live{border-color:rgba(102,214,154,0.4)}.artefact-mini-img{width:100%;aspect-ratio:1;object-fit:cover;background:rgba(15,23,42,0.5)}.artefact-mini-overlay{position:absolute;bottom:0;left:0;right:0;padding:8px;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);font-size:10px}.artefact-type-badge{padding:2px 6px;border-radius:4px;font-weight:600}.artefact-type-badge.live{background:rgba(102,214,154,0.3);color:var(--accent)}
+    .treasury-summary{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}.treasury-box{padding:20px;background:rgba(15,23,42,0.5);border-radius:12px;text-align:center}.treasury-amount{font-size:32px;font-weight:700;margin-bottom:4px}.treasury-amount.total{color:var(--text-main)}.treasury-amount.claimable{color:var(--accent)}.treasury-label{font-size:11px;color:var(--text-soft);text-transform:uppercase}
+    .whisper-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.whisper-stat{padding:12px;background:rgba(15,23,42,0.4);border-radius:8px;text-align:center}.whisper-stat-value{font-size:20px;font-weight:700}.whisper-stat-value.received{color:var(--accent)}.whisper-stat-value.sent{color:var(--keys-accent)}.whisper-stat-label{font-size:9px;color:var(--text-soft);text-transform:uppercase}
+    .whisper-item{padding:12px 14px;background:rgba(15,23,42,0.4);border:1px solid rgba(148,163,184,0.15);border-radius:8px;margin-bottom:8px}.whisper-item.incoming{border-left:3px solid var(--accent)}.whisper-item.outgoing{border-left:3px solid var(--keys-accent)}.whisper-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:11px}.whisper-from{color:var(--accent);font-weight:600}.whisper-to{color:var(--keys-accent);font-weight:600}.whisper-time{color:var(--text-soft)}.whisper-content{font-size:13px;line-height:1.5}
+    .filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+    footer{border-top:1px solid rgba(255,255,255,0.05);padding:20px;font-size:12px;text-align:center;opacity:0.7;margin-top:40px}
+    .toast{position:fixed;top:20px;right:20px;padding:14px 20px;background:rgba(245,200,66,0.95);color:#000;border-radius:10px;font-size:14px;font-weight:600;z-index:10000;opacity:0;transform:translateY(-20px);transition:all 0.3s ease;pointer-events:none}
+    .toast.show{opacity:1;transform:translateY(0)}
+    .toast.error{background:rgba(248,113,113,0.95);color:#fff}
+    .stealth-eye-tab{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;border:2px solid var(--accent);background:rgba(102,214,154,0.15);color:var(--accent)}
+    .stealth-eye-tab:hover{transform:scale(1.1);background:rgba(102,214,154,0.25)}
+    .stealth-eye-tab.active{border-color:#f87171;background:rgba(248,113,113,0.2);color:#f87171}
+    .stealth-tooltip{display:none;position:absolute;top:120px;right:24px;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:12px 16px;max-width:280px;z-index:1000;box-shadow:0 8px 32px rgba(0,0,0,0.5);line-height:1.5}
+    .stealth-tooltip.visible{display:block}
+    .stealth-tooltip .tt-title{font-weight:600;color:var(--accent);margin-bottom:6px;font-size:14px}
+    .stealth-tooltip .tt-body{color:var(--text-soft);font-size:12px}
+    .stealth-tooltip.active-stealth{border-color:#f87171}
+    .stealth-tooltip.active-stealth .tt-title{color:#f87171}
+
+    /* MODAL STYLES */
+    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;justify-content:center;align-items:center;padding:20px}.modal-overlay.active{display:flex}.modal{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;width:100%;max-width:600px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}.modal-header{padding:16px 20px;border-bottom:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center}.modal-title{font-size:16px;font-weight:600;color:var(--keys-accent)}.modal-close{background:none;border:none;color:var(--text-soft);font-size:24px;cursor:pointer}.modal-filters{padding:12px 20px;border-bottom:1px solid var(--card-border);display:flex;flex-wrap:wrap;gap:10px;align-items:center}.filter-group{display:flex;align-items:center;gap:6px}.filter-label{font-size:11px;color:var(--text-soft)}.filter-input{width:70px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:12px}.filter-btn{padding:6px 12px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:11px;cursor:pointer}.filter-btn:hover{border-color:var(--keys-accent);color:var(--keys-accent)}.modal-body{flex:1;overflow-y:auto;padding:12px 20px}.signals-list{display:flex;flex-direction:column;gap:10px}.signal-card{background:rgba(15,23,42,0.4);border:1px solid var(--card-border);border-radius:10px;padding:12px 14px;cursor:pointer}.signal-card:hover{border-color:var(--keys-accent)}.signal-card.selected{border-color:var(--keys-accent);background:rgba(245,200,66,0.1)}.signal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.signal-meta{display:flex;align-items:center;gap:8px;font-size:12px}.signal-key{font-weight:600;color:var(--keys-accent)}.signal-epoch{color:var(--text-soft);font-size:11px}.signal-time{color:var(--text-soft);font-size:11px}.signal-content{font-size:13px;color:var(--text-main);line-height:1.4;margin-bottom:8px;word-break:break-word}.signal-hash{font-family:monospace;font-size:10px;color:var(--text-soft);opacity:0.7}.load-more-btn{width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px dashed var(--card-border);background:transparent;color:var(--text-soft);font-size:12px;cursor:pointer}.no-signals,.loading-signals{text-align:center;padding:40px 20px;color:var(--text-soft)}.modal-footer{padding:12px 20px;border-top:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center}.btn-select-signal{padding:8px 20px;border-radius:999px;border:1px solid var(--keys-accent);background:rgba(245,200,66,0.2);color:var(--keys-accent);font-size:12px;font-weight:600;cursor:pointer}.btn-select-signal[disabled]{opacity:0.5;cursor:not-allowed}
+
+    /* CANON STYLES - PURPLE THEME */
+.canon-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+@media(max-width:700px){.canon-summary{grid-template-columns:1fr}}
+.canon-box{padding:20px;background:rgba(15,23,42,0.5);border-radius:12px;text-align:center;border:1px solid rgba(168,85,247,0.2)}
+.canon-amount{font-size:32px;font-weight:700;margin-bottom:4px;color:#a855f7}
+.canon-label{font-size:11px;color:var(--text-soft);text-transform:uppercase}
+
+.canon-list{display:flex;flex-direction:column;gap:10px}
+.canon-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(15,23,42,0.4);border:1px solid rgba(168,85,247,0.2);border-radius:10px;transition:all 0.2s}
+.canon-item:hover{border-color:#a855f7}
+.canon-epoch{font-size:20px;font-weight:700;color:#a855f7}
+.canon-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.canon-time{font-size:11px;color:var(--text-soft)}
+.canon-hash{font-family:monospace;font-size:10px;color:var(--text-soft);opacity:0.6}
+
+.canon-empty{text-align:center;padding:40px 20px;color:var(--text-soft);font-size:13px}
+.canon-empty p{margin-bottom:16px}
+
+/* Canon filter bar */
+.canon-filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+
+/* Canon filter pills - PURPLE */
+.canon-filter-pill{background:transparent;border:1px solid rgba(168,85,247,0.3);color:#a855f7;padding:6px 12px;font-size:11px;border-radius:6px;cursor:pointer;transition:all 0.2s}
+.canon-filter-pill:hover{background:rgba(168,85,247,0.15);border-color:#a855f7}
+.canon-filter-pill.active{background:rgba(168,85,247,0.25);border-color:#a855f7;color:#c084fc}
+
+/* Canon grid */
+.canon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+
+/* Canon cards - PURPLE */
+.canon-card{background:rgba(15,23,42,0.5);border:1px solid rgba(168,85,247,0.2);border-radius:10px;padding:16px;text-align:center;transition:all 0.2s}
+.canon-card:hover{border-color:#a855f7;background:rgba(168,85,247,0.08)}
+.canon-card-epoch{font-size:22px;font-weight:700;color:#a855f7;margin-bottom:4px}
+.canon-card-time{font-size:11px;color:var(--text-soft);margin-bottom:6px}
+.canon-card-tx{font-family:monospace;font-size:10px;color:#66d69a;opacity:0.7;text-decoration:none;display:block}
+.canon-card-tx:hover{opacity:1;text-decoration:underline}
+
+
+    /* ARTEFACT MODAL SPECIFIC */
+    .artefact-modal-content{text-align:center;padding:20px 0}.artefact-modal-img{max-width:200px;max-height:200px;border-radius:12px;margin:0 auto 16px;display:block}.artefact-modal-info{text-align:left;background:rgba(15,23,42,0.4);border-radius:8px;padding:12px 16px;margin-top:16px}.artefact-modal-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px}.artefact-modal-row:last-child{border-bottom:none}.artefact-modal-label{color:var(--text-soft)}.artefact-modal-value{color:var(--text-main);font-weight:500}.artefact-modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:center;flex-wrap:wrap}
+ 
+    #tab-attests label:has(input:checked) .intent-tag { opacity: 1 !important; }
+
+    /* Fix voor lange berichten in attest signals */
+    #attestSignalsListInline .signal-content {
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow: visible !important;
+      text-overflow: unset !important;
+    }
+
+    #attestSignalsListInline .attest-signal-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+.artefact-section-header h3.section-title{margin:0;font-size:13px}
+.artefact-section-header .count{font-weight:400;opacity:0.7}
+.stealth-eye-tab.whisper-disabled{border-color:#f87171!important;background:rgba(248,113,113,0.2)!important;color:#f87171!important}
+.stealth-eye-tab.whisper-disabled:hover{background:rgba(248,113,113,0.3)!important;transform:none}
+
+.presence-badges{display:flex;gap:6px;align-items:center}
+.presence-badge{min-width:18px;height:18px;padding:0 6px;border-radius:10px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;opacity:0.4}
+.presence-badge:hover{transform:scale(1.1)}
+.presence-badge.has-items{opacity:1}
+.presence-badge.active{transform:scale(1.15);box-shadow:0 0 8px currentColor}
+.presence-badge.yellow{background:rgba(245,200,66,0.3);color:var(--keys-accent)}
+.presence-badge.green{background:rgba(102,214,154,0.3);color:var(--accent)}
+.presence-badge.purple{background:rgba(192,132,252,0.3);color:#c084fc}
+.presence-badge.blue{background:rgba(96,165,250,0.3);color:#60a5fa}
+
+.artefact-section-header .header-actions{display:flex;align-items:center;gap:8px}
+.artefact-section-header .btn.btn-green{height:32px;border-radius:6px;padding:0 14px;margin:0}
+
+/* Treasury Styles */
+.treasury-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.treasury-box.claimable { background: rgba(96, 165, 250, 0.25); border-color: rgba(96, 165, 250, 0.4); }
+.treasury-box.claimable .treasury-amount { color: #60a5fa; font-weight: 700; }
+.treasury-box.claimable .treasury-label { color: rgba(255, 255, 255, 0.8); }
+.treasury-box.earned .treasury-amount { font-weight: 700; color: #60a5fa; }
+.treasury-box { padding: 24px 20px; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 12px; text-align: center; position: relative; }
+.treasury-box.has-claimable { border-color: rgba(96, 165, 250, 0.4); animation: treasury-glow 2s ease-in-out infinite; }
+@keyframes treasury-glow { 0%, 100% { box-shadow: 0 0 0 rgba(96, 165, 250, 0); } 50% { box-shadow: 0 0 20px rgba(96, 165, 250, 0.3); } }
+.treasury-amount { font-size: 36px; font-weight: 700; margin-bottom: 6px; font-family: monospace; letter-spacing: -1px; }
+.treasury-amount.total { color: var(--text-main); }
+.treasury-amount.claimable { color: #60a5fa; font-weight: 400; }
+.treasury-label { font-size: 11px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.08em; }
+.btn-claim-all { width: 100%; padding: 16px 24px; background: linear-gradient(135deg, #3b82f6, #60a5fa); border: none; border-radius: 10px; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn-claim-all:hover:not(:disabled) { background: linear-gradient(135deg, #2563eb, #3b82f6); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3); }
+.btn-claim-all:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-claim-all.claiming { background: linear-gradient(135deg, #1e40af, #3b82f6); }
+.progress-bar-container { height: 8px; background: rgba(96, 165, 250, 0.2); border-radius: 4px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 4px; transition: width 0.3s ease; width: 0%; }
+.progress-text { font-size: 12px; color: var(--text-soft); margin-top: 8px; text-align: center; }
+.treasury-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .treasury-grid { grid-template-columns: 1fr; } }
+.treasury-list { max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; }
+.treasury-list::-webkit-scrollbar { width: 8px; }
+.treasury-list::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 2px; }
+.treasury-epoch-item { background: rgba(96, 165, 250, 0.12); border: 1px solid rgba(96, 165, 250, 0.25); border-radius: 10px; padding: 14px 16px; transition: all 0.2s; }
+.treasury-epoch-item:hover { border-color: rgba(96, 165, 250, 0.35); background: rgba(96, 165, 250, 0.1); }
+.treasury-epoch-item.claiming { border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+.treasury-epoch-item.claimed { border-color: rgba(96, 165, 250, 0.4); background: rgba(96, 165, 250, 0.08); }
+.treasury-epoch-item.urgent { border-color: rgba(96, 165, 250, 0.5); background: rgba(96, 165, 250, 0.12); }
+.epoch-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.epoch-item-id { font-size: 14px; font-weight: 600; color: #60a5fa; display: flex; align-items: center; gap: 8px; }
+.epoch-item-amount { font-size: 16px; font-weight: 700; color: #60a5fa; font-family: monospace; }
+.epoch-deadline { font-size: 10px; color: var(--text-soft); padding: 2px 6px; background: rgba(96, 165, 250, 0.1); border-radius: 4px; }
+.epoch-deadline.warning { color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
+.epoch-deadline.danger { color: #f87171; background: rgba(248, 113, 113, 0.15); animation: pulse-danger 1s infinite; }
+@keyframes pulse-danger { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+.epoch-item-breakdown { font-size: 11px; color: var(--text-soft); margin-bottom: 10px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.breakdown-item { display: inline-flex; align-items: center; gap: 4px; cursor: help; position: relative; }
+.breakdown-item .info-icon { font-size: 10px; opacity: 0.5; transition: opacity 0.2s; }
+.breakdown-item:hover .info-icon { opacity: 1; }
+.breakdown-tooltip { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: rgba(5, 8, 18, 0.95); border: 1px solid #60a5fa; border-radius: 6px; padding: 8px 12px; font-size: 11px; color: var(--text-main); white-space: nowrap; z-index: 100; opacity: 0; visibility: hidden; transition: all 0.2s; pointer-events: none; margin-bottom: 6px; }
+.breakdown-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: #60a5fa; }
+.breakdown-item:hover .breakdown-tooltip { opacity: 1; visibility: visible; }
+.epoch-item-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.btn-epoch { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 12px; font-size: 11px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s; border: 1px solid; white-space: nowrap; }
+.btn-epoch:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-epoch .btn-icon { font-size: 14px; }
+.btn-epoch.claim, .btn-epoch.recycle, .btn-epoch.nexus { background: rgba(96, 165, 250, 0.2); border-color: rgba(96, 165, 250, 0.4); color: #fff; }
+.btn-epoch.claim:hover:not(:disabled), .btn-epoch.recycle:hover:not(:disabled), .btn-epoch.nexus:hover:not(:disabled) { background: rgba(96, 165, 250, 0.45); border-color: #60a5fa; color: #fff; }
+.epoch-status { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
+.epoch-status.pending { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+.epoch-status.success { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
+.epoch-status.error { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+.treasury-epoch-item.claimed .epoch-item-id { color: #60a5fa; }
+.treasury-epoch-item.claimed .epoch-item-amount { color: #60a5fa; }
+.claimed-info { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--text-soft); margin-top: 6px; }
+.claimed-type { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; background: rgba(96, 165, 250, 0.25); color: #fff; }
+.treasury-empty { padding: 50px 20px; text-align: center; }
+.treasury-empty-icon { font-size: 56px; opacity: 0.25; margin-bottom: 16px; color: #60a5fa; }
+.treasury-empty-text { color: var(--text-soft); font-size: 14px; margin-bottom: 8px; }
+.treasury-empty-sub { color: var(--text-soft); font-size: 12px; opacity: 0.7; }
+.treasury-empty-small { padding: 30px 20px; text-align: center; color: var(--text-soft); font-size: 12px; }
+.treasury-header-actions { display: flex; align-items: center; gap: 8px; }
+.sort-btn, .csv-btn { background: transparent; border: 1px solid rgba(96, 165, 250, 0.3); color: #60a5fa; padding: 5px 10px; font-size: 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+.sort-btn:hover, .csv-btn:hover { background: rgba(96, 165, 250, 0.15); border-color: #60a5fa; }
+.tab-badge.badge-treasury.has-claimable { animation: badge-pulse-blue 1.5s ease-in-out infinite; }
+@keyframes badge-pulse-blue { 0%, 100% { background: rgba(96, 165, 250, 0.3); box-shadow: 0 0 0 rgba(96, 165, 250, 0); } 50% { background: rgba(96, 165, 250, 0.5); box-shadow: 0 0 8px rgba(96, 165, 250, 0.4); } }
+.treasury-loading { display: flex; align-items: center; justify-content: center; padding: 40px 20px; color: var(--text-soft); font-size: 12px; gap: 10px; }
+.treasury-loading::before { content: ''; width: 18px; height: 18px; border: 2px solid rgba(96, 165, 250, 0.3); border-top-color: #60a5fa; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.claim-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+.claim-modal-overlay.active { display: flex; }
+.claim-modal { background: var(--card-bg); border: 1px solid rgba(96, 165, 250, 0.3); border-radius: 16px; padding: 24px; max-width: 400px; width: 90%; text-align: center; }
+.claim-modal-title { font-size: 18px; font-weight: 600; color: #60a5fa; margin-bottom: 8px; }
+.claim-modal-subtitle { font-size: 13px; color: var(--text-soft); margin-bottom: 24px; }
+.claim-modal-buttons { display: flex; flex-direction: column; gap: 10px; }
+.claim-modal-btn { padding: 14px 20px; border-radius: 10px; border: 1px solid rgba(96, 165, 250, 0.4); background: rgba(96, 165, 250, 0.15); color: #60a5fa; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.claim-modal-btn:hover { background: rgba(96, 165, 250, 0.3); border-color: #60a5fa; }
+.claim-modal-btn.cancel { background: transparent; border-color: var(--card-border); color: var(--text-soft); margin-top: 10px; }
+
+#tab-attests .two-col .section-card {
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+#tab-attests .two-col .section-card .signal-list {
+  flex: 1;
+}
+
+</style>
+
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<header><div class="nav-inner"><a href="/index.html" class="logo-link"><div class="logo-dot">Ω</div><div class="logo-text">Z1N Protocol</div></a><nav class="nav-links"><a href="/about.html">About</a><a href="/live-stats.html">Live Stats</a><a href="/artefacts.html">Artefacts</a><a href="/mint-key.html">Mint Key</a><a href="/your-keys.html" class="active" id="navYourKeys">Your Keys</a></nav></div></header>
+<main class="page">
+  <a href="/your-keys.html" class="back-link" id="backLink">← Back to Your Keys</a>
+  <div id="connectState" class="connect-prompt"><p>Connect your wallet to view your Key dashboard</p><button class="btn-connect" id="btnConnect">Connect Wallet</button></div>
+  <div id="mainContent" style="display:none;">
+    <div class="key-header-card"><div class="key-identity"><span class="key-id" id="keyIdDisplay">Key #—</span><span class="genesis-badge" id="genesisBadge">✶ Genesis</span><span class="key-glyphs" id="keyGlyphs">—</span></div><div class="key-meta"><span class="wallet-badge"><span class="dot"></span><span id="walletDisplay">0x...</span></span><a href="#" id="viewOnChainLink" target="_blank">View on chain ↗</a></div></div>
+   <div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('signals')">Signals<span class="tab-dots" id="tabSignalDots"><span class="tab-dot open"></span><span class="tab-dot open"></span></span></button>
+  <button class="tab-btn" onclick="switchTab('attests')">Attests<span class="tab-dots" id="tabAttestDots"><span class="tab-dot open"></span><span class="tab-dot open"></span></span></button>
+  <button class="tab-btn" onclick="switchTab('whispers')">Whispers<span class="tab-badge" id="whisperBadge">0</span></button>
+  <button class="tab-btn" onclick="switchTab('artefacts')">Artefacts<span class="tab-badge badge-artefacts" id="artefactBadge">0</span></button>
+  <button class="tab-btn" onclick="switchTab('canon')">Canon<span class="tab-badge badge-canon" id="canonBadge">0</span></button>
+  <button class="tab-btn" onclick="switchTab('treasury')">Treasury<span class="tab-badge badge-treasury" id="treasuryBadge">0</span></button>
+  <div style="margin-left:auto;display:flex;align-items:center;"><div class="stealth-eye-tab" id="globalStealthToggle" onclick="toggleGlobalStealth()"><svg id="globalStealthIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+</div>
+<div class="stealth-tooltip" id="stealthTooltip"><div class="tt-title">Stealth Mode</div><div class="tt-body">When active (red), your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.</div></div>
+
+<!-- OVERVIEW TAB -->
+<div id="tab-overview" class="tab-content active">
+  <div class="overview-layout">
+    
+    <!-- LEFT: ARTEFACT PREVIEW -->
+    <div class="artefact-preview-card">
+      <div class="artefact-preview-label">Live Artefact</div>
+      <div class="artefact-preview-img" id="overviewArtefactContainer">
+        <img id="overviewArtefactPreview" src="" alt="Artefact Preview" style="display:none;">
+        <div class="artefact-placeholder" id="overviewArtefactPlaceholder">◈</div>
+      </div>
+      <div class="artefact-preview-status" id="artefactStatus">Loading...</div>
+      <button class="btn btn-green" id="btnMintLiveArtefactOverview" onclick="mintLiveArtefact()" style="width:100%;">+ Mint Artefact</button>
+      <div id="mintArtefactStatusOverview" style="margin-top:10px;"></div>
+    </div>
+    
+    <!-- RIGHT: UNSEEN PRESENCE -->
+    <div class="section-card" style="margin-bottom:0;">
+      <div class="section-header" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="section-title title-white">Unseen Presence</span>
+          <div class="presence-badges" id="presenceBadges">
+            <span class="presence-badge yellow" id="badgeSignals" onclick="filterPresence('signals')" title="Signals/Attests/Whispers">0</span>
+            <span class="presence-badge green" id="badgeArtefacts" onclick="filterPresence('artefacts')" title="Artefacts">0</span>
+            <span class="presence-badge purple" id="badgeCanon" onclick="filterPresence('canon')" title="Canon" style="display:none;">0</span>
+            <span class="presence-badge blue" id="badgeTreasury" onclick="filterPresence('treasury')" title="Treasury">0</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;color:var(--text-soft);">E<span id="overviewEpoch">—</span></span>
+          <button onclick="markAllActivitiesRead()" style="padding:4px 8px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;" title="Mark all as read">✓ Read</button>
+          <button onclick="refreshActivityFeed()" style="padding:4px 8px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;" title="Refresh">↻</button>
+        </div>
+      </div>
+      
+      <div class="activity-section">
+        <div class="activity-feed" id="activityFeed">
+          <div class="activity-loading">Loading activity...</div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- SIGNALS TAB -->
+<div id="tab-signals" class="tab-content">
+  <div class="two-col">
+    
+    <!-- LEFT: NEW SIGNAL -->
+    <div class="section-card">
+      <div class="section-header" style="margin-bottom:16px;">
+        <span class="section-title">New Signal</span>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="epoch-timer" id="pogEpochTimer">⏱ --:--</span>
+          <span id="pogEpochDisplay" style="font-size:12px;color:var(--text-soft);">Epoch —</span>
+        </div>
+      </div>
+      
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:14px;cursor:pointer;font-size:12px;color:var(--text-soft);">
+        <input type="checkbox" id="replyCheckbox" onchange="toggleReplySection()" style="width:16px;height:16px;accent-color:var(--keys-accent);">
+        <span>Reply to another signal</span>
+        <span style="opacity:0.5;">(optional)</span>
+      </label>
+      
+      <div id="replySection" style="display:none;margin-bottom:14px;padding:12px;background:rgba(15,23,42,0.5);border:1px solid rgba(148,163,184,0.2);border-radius:8px;">
+        <div style="font-size:11px;color:var(--text-soft);margin-bottom:6px;">Signal to reply to:</div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="replyToHash" placeholder="0x... signal hash" autocomplete="off" style="flex:1;font-family:monospace;font-size:11px;">
+          <button onclick="openReplyModal()" style="padding:8px 14px;border-radius:6px;border:1px solid var(--keys-accent);background:transparent;color:var(--keys-accent);font-size:12px;cursor:pointer;">Browse</button>
+        </div>
+      </div>
+      
+      <div class="input-label">Intent</div>
+      <div class="intent-grid">
+        <div class="intent-btn selected" data-intent="0" onclick="selectIntent(0)"><div class="intent-symbol">ΩC</div><div class="intent-name">Collective</div></div>
+        <div class="intent-btn" data-intent="1" onclick="selectIntent(1)"><div class="intent-symbol">ΩI</div><div class="intent-name">Individual</div></div>
+        <div class="intent-btn" data-intent="2" onclick="selectIntent(2)"><div class="intent-symbol">ΩK</div><div class="intent-name">Co-Create</div></div>
+        <div class="intent-btn" data-intent="3" onclick="selectIntent(3)"><div class="intent-symbol">ΩS</div><div class="intent-name">Silence</div></div>
+      </div>
+      
+      <div class="input-group" id="signalContentCard">
+        <div class="input-label"><span>Signal Content</span><span class="char-count" id="charCount">0 / 280</span></div>
+        <textarea id="signalContent" placeholder="Your signal to the Field..." maxlength="280" oninput="updateCharCount()"></textarea>
+      </div>
+      
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;">
+        <button class="btn-submit" id="btnSubmitPog" onclick="submitPoGSignal()">Submit Signal</button>
+      </div>
+      <div id="pogStatus"></div>
+    </div>
+    
+    <!-- RIGHT: REPLIES TO YOUR SIGNALS -->
+    <div class="section-card">
+      <div class="section-header" style="margin-bottom:12px;">
+        <span class="section-title">Replies to Your Signals <span id="receivedRepliesCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <select class="filter-select" id="repliesSortSelect" onchange="loadReceivedReplies()">
+            <option value="recent">↓ Recent</option>
+            <option value="attested">↓ Most Attested</option>
+          </select>
+          <select class="filter-select" id="repliesIntentFilter" onchange="loadReceivedReplies()">
+            <option value="">All Intents</option>
+            <option value="0">ΩC</option>
+            <option value="1">ΩI</option>
+            <option value="2">ΩK</option>
+            <option value="3">ΩS</option>
+          </select>
+          <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedRepliesCSV()">⬇ CSV</button>
+        </div>
+      </div>
+      <div class="signal-list" id="receivedRepliesList" style="max-height:320px;">
+        <div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">
+          <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">💬</div>
+          No replies yet
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- SENT SIGNALS - FULL WIDTH BELOW -->
+  <div class="section-card" style="margin-top:20px;">
+    <div class="section-header" style="margin-bottom:16px;">
+      <span class="section-title">Sent Signals <span id="sentSignalsCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <select class="filter-select" id="sentSortSelect" onchange="loadSentSignals()">
+          <option value="recent">↓ Recent</option>
+          <option value="attested">↓ Most Attested</option>
+        </select>
+        <select class="filter-select" id="sentIntentFilter" onchange="loadSentSignals()">
+          <option value="">All Intents</option>
+          <option value="0">ΩC</option>
+          <option value="1">ΩI</option>
+          <option value="2">ΩK</option>
+          <option value="3">ΩS</option>
+        </select>
+        <select class="filter-select" id="sentTypeFilter" onchange="loadSentSignals()">
+          <option value="">All Types</option>
+          <option value="new">New</option>
+          <option value="reply">Reply</option>
+        </select>
+        <button class="filter-select" style="cursor:pointer;" onclick="downloadSentSignalsCSV()">⬇ CSV</button>
+      </div>
+    </div>
+    <div class="signal-list" id="sentSignalsList" style="max-height:250px;">
+      <div style="padding:20px;text-align:center;color:var(--text-soft);font-size:12px;">Loading...</div>
+    </div>
+  </div>
+</div>
+
+   <!-- ATTESTS TAB -->
+<div id="tab-attests" class="tab-content">
+  <div class="two-col">
+    
+    <!-- LEFT: NEW ATTEST -->
+    <div class="section-card">
+      <div class="section-header" style="margin-bottom:16px;">
+        <span class="section-title">Attestable Signals</span>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="epoch-timer" id="attestEpochTimer">⏱ --:--</span>
+          <span id="attestEpochBadge" style="font-size:12px;color:var(--text-soft);">Epoch —</span>
+        </div>
+      </div>
+      
+      <div style="margin-bottom:12px;">
+        <input type="text" id="attestSearchHash" placeholder="Search by hash or Key ID..." autocomplete="off" style="width:100%;padding:10px 12px;border-radius:8px;font-size:12px;" oninput="filterAttestSignals()">
+      </div>
+      
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
+        <select class="filter-select" id="attestSortSelect" onchange="loadAttestableSignals()">
+          <option value="recent">Recent</option>
+          <option value="attested">Most Attested</option>
+        </select>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <label style="cursor:pointer;" title="ΩC"><input type="checkbox" id="attestIntentC" checked onchange="loadAttestableSignals()" style="display:none;"><span class="intent-tag oc" style="opacity:0.5;">ΩC</span></label>
+          <label style="cursor:pointer;" title="ΩI"><input type="checkbox" id="attestIntentI" checked onchange="loadAttestableSignals()" style="display:none;"><span class="intent-tag oi" style="opacity:0.5;">ΩI</span></label>
+          <label style="cursor:pointer;" title="ΩK"><input type="checkbox" id="attestIntentK" checked onchange="loadAttestableSignals()" style="display:none;"><span class="intent-tag ok" style="opacity:0.5;">ΩK</span></label>
+          <label style="cursor:pointer;" title="ΩS"><input type="checkbox" id="attestIntentS" checked onchange="loadAttestableSignals()" style="display:none;"><span class="intent-tag os" style="opacity:0.5;">ΩS</span></label>
+        </div>
+        <button onclick="loadAttestableSignals()" style="padding:6px 10px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:11px;cursor:pointer;">↻</button>
+      </div>
+      
+      <div id="attestLoadingInline" style="padding:20px;text-align:center;color:var(--text-soft);font-size:11px;">Loading signals...</div>
+      <div id="attestSignalsListInline" style="max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"></div>
+      
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(148,163,184,0.15);">
+        <div id="attestSelectedInfoInline" style="font-size:11px;color:var(--text-soft);margin-bottom:10px;">Select a signal to attest</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <button class="btn-submit" id="btnAttestNormalInline" onclick="submitAttestInline()" disabled>✓ Attest Signal</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- RIGHT: ATTESTS TO YOUR SIGNALS -->
+    <div class="section-card">
+      <div class="section-header" style="margin-bottom:12px;">
+        <span class="section-title">Attests to Your Signals <span id="receivedAttestsCountTitle" style="font-weight:400;opacity:0.8;">(0)</span></span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input type="text" id="receivedAttestsSearchKey" placeholder="Key ID..." style="width:60px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterReceivedAttests()">
+          <select class="filter-select" id="receivedAttestsSortSelect" onchange="loadReceivedAttests()">
+            <option value="recent">↓ Recent</option>
+            <option value="epoch">↓ By Epoch</option>
+          </select>
+          <select class="filter-select" id="receivedAttestsIntentFilter" onchange="loadReceivedAttests()">
+            <option value="">All Intents</option>
+            <option value="0">ΩC</option>
+            <option value="1">ΩI</option>
+            <option value="2">ΩK</option>
+            <option value="3">ΩS</option>
+          </select>
+          <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedAttestsCSV()">⬇ CSV</button>
+        </div>
+      </div>
+      <div class="signal-list" id="receivedAttestsList" style="max-height:320px;">
+        <div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">
+          <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">✓</div>
+          No attestations received yet
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- SENT ATTESTS - FULL WIDTH BELOW -->
+  <div class="section-card" style="margin-top:20px;">
+    <div class="section-header" style="margin-bottom:16px;">
+      <span class="section-title">Sent Attests <span id="sentAttestsCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <select class="filter-select" id="sentAttestsSortSelect" onchange="loadSentAttests()">
+          <option value="recent">↓ Recent</option>
+          <option value="epoch">↓ By Epoch</option>
+        </select>
+        <select class="filter-select" id="sentAttestsIntentFilter" onchange="loadSentAttests()">
+          <option value="">All Intents</option>
+          <option value="0">ΩC</option>
+          <option value="1">ΩI</option>
+          <option value="2">ΩK</option>
+          <option value="3">ΩS</option>
+        </select>
+        <button class="filter-select" style="cursor:pointer;" onclick="downloadSentAttestsCSV()">⬇ CSV</button>
+      </div>
+    </div>
+    <div class="signal-list" id="sentAttestsList" style="max-height:250px;">
+      <div style="padding:20px;text-align:center;color:var(--text-soft);font-size:12px;">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- WHISPERS TAB -->
+    <div id="tab-whispers" class="tab-content">
+      <div class="two-col">
+        
+        <!-- LEFT: SEND WHISPER -->
+        <div class="section-card">
+          <div class="section-header" style="margin-bottom:16px;">
+  <span class="section-title">Send Whisper</span>
+</div>
+          
+          <div class="input-group">
+  <div class="input-label">Recipient Key ID</div>
+  <input type="text" id="whisperRecipient" placeholder="e.g. 42" autocomplete="off" oninput="validateWhisperRecipient()">
+  <div id="whisperRecipientValidation" class="validation-msg"></div>
+</div>
+          
+          <div class="input-group">
+            <div class="input-label"><span>Message</span><span class="char-count" id="whisperCharCount">0 / 500</span></div>
+            <textarea id="whisperContent" placeholder="Your whisper to another Key..." maxlength="500" oninput="updateWhisperCharCount()"></textarea>
+          </div>
+          
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;">
+            <button class="btn-submit" id="btnSubmitWhisper" onclick="submitWhisper()">Send Whisper</button>
+          </div>
+          <div id="whisperStatus"></div>
+        </div>
+        
+        <!-- RIGHT: SENT WHISPERS -->
+        <div class="section-card">
+          <div class="section-header" style="margin-bottom:16px;">
+            <span class="section-title">Whispers Sent <span id="sentWhispersCountTitle" style="font-weight:400;opacity:0.8;">(0)</span></span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <input type="text" id="sentWhispersSearchKey" placeholder="To Key..." style="width:70px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterSentWhispers()">
+              <select class="filter-select" id="sentWhispersSortSelect" onchange="loadSentWhispers()">
+                <option value="recent">↓ Recent</option>
+                <option value="oldest">↓ Oldest</option>
+              </select>
+              <button class="filter-select" style="cursor:pointer;" onclick="downloadSentWhispersCSV()">⬇ CSV</button>
+            </div>
+          </div>
+          <div class="signal-list" id="sentWhispersList" style="max-height:320px;">
+            <div style="padding:20px;text-align:center;color:var(--text-soft);font-size:12px;">Loading...</div>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- RECEIVED WHISPERS -->
+      <div class="section-card" style="margin-top:20px;">
+        <div class="section-header" style="margin-bottom:12px;">
+          <span class="section-title">Whispers Received <span id="receivedWhispersCountTitle" style="font-weight:400;opacity:0.8;">(0)</span></span>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <input type="text" id="receivedWhispersSearchKey" placeholder="From Key..." style="width:80px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterReceivedWhispers()">
+            <select class="filter-select" id="receivedWhispersSortSelect" onchange="loadReceivedWhispers()">
+              <option value="recent">↓ Recent</option>
+              <option value="oldest">↓ Oldest</option>
+            </select>
+            <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedWhispersCSV()">⬇ CSV</button>
+          </div>
+        </div>
+        <div class="signal-list" id="receivedWhispersList" style="max-height:300px;">
+          <div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">
+            <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">💬</div>
+            No whispers received yet
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- ARTEFACTS TAB -->
+<div id="tab-artefacts" class="tab-content">
+  <div class="section-card">
+    <div id="ownedArtefactsSection"></div>
+  </div>
+  <div class="section-card">
+    <div id="sharedWithMeSection"></div>
+  </div>
+</div>
+
+    <!-- CANON TAB -->
+<div id="tab-canon" class="tab-content">
+  
+  <!-- Stats Row - 3 cards -->
+  <div class="canon-summary">
+    <div class="canon-box">
+      <div class="canon-amount" id="canonTotalAnchored">—</div>
+      <div class="canon-label">Epochs Anchored</div>
+    </div>
+    <div class="canon-box">
+      <div class="canon-amount" id="canonPercentAnchored">—</div>
+      <div class="canon-label">% of Epochs</div>
+    </div>
+    <div class="canon-box">
+      <div class="canon-amount" id="canonLatestEpoch">—</div>
+      <div class="canon-label">Latest Anchored</div>
+    </div>
+  </div>
+
+  <!-- Canon Anchors Section -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" style="color:var(--canon-color);">Your Canon Anchors <span id="canonCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
+      <button type="button" class="btn btn-canon" id="mintCanonBtn" onclick="sessionStorage.setItem('canonReturnUrl', window.location.href + (window.location.href.includes('tab=') ? '' : (window.location.href.includes('?') ? '&tab=canon' : '?tab=canon'))); window.location.href='mint-canon.html?key='+(window.Z1N?.keyId||0);">+ Mint Anchor</button>
+    </div>
+    <p style="font-size:12px;color:var(--text-soft);margin-bottom:16px;">
+      Permanent markers of meaningful epochs. Non-transferable declarations written to the Field.
+    </p>
+    
+    <!-- Filter Bar (shows when >5 canons) -->
+    <div class="canon-filter-bar" id="canonFilterBar" style="display: none;">
+      <button class="canon-filter-pill active" data-sort="latest" onclick="setCanonSort('latest')">Latest minted</button>
+      <button class="canon-filter-pill" data-sort="oldest" onclick="setCanonSort('oldest')">Oldest minted</button>
+      <button class="canon-filter-pill" data-sort="epoch-desc" onclick="setCanonSort('epoch-desc')">Epoch ↓</button>
+      <button class="canon-filter-pill" data-sort="epoch-asc" onclick="setCanonSort('epoch-asc')">Epoch ↑</button>
+    </div>
+    
+    <!-- Canon Grid -->
+    <div id="canonList"></div>
+  </div>
+
+</div>
+
+<!-- TREASURY TAB -->
+<div id="tab-treasury" class="tab-content">
+  
+  <!-- Summary Cards -->
+  <div class="treasury-summary">
+    <div class="treasury-box claimable" id="treasuryClaimableBox">
+      <div class="treasury-amount claimable" id="treasuryClaimable">—</div>
+      <div class="treasury-label">Claimable Now</div>
+    </div>
+    <div class="treasury-box earned" id="treasuryTotalBox">
+      <div class="treasury-amount total" id="treasuryTotal">—</div>
+      <div class="treasury-label">Total Earned (POL)</div>
+    </div>
+  </div>
+  
+  <!-- Claim All Button -->
+  <div id="claimAllSection" style="display:none;">
+    <button id="btnClaimAll" class="btn-claim-all" onclick="claimAllRewards()">
+      <span class="btn-icon">⬡</span>
+      <span>Claim All Rewards</span>
+    </button>
+    <div id="claimAllProgress" style="display:none;margin-top:14px;padding:12px 16px;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);border-radius:8px;">
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="claimProgressBar"></div>
+      </div>
+      <div class="progress-text" id="claimProgressText">Claiming...</div>
+    </div>
+  </div>
+  
+  <!-- Two Column Layout -->
+  <div class="treasury-grid">
+    
+    <!-- LEFT: Claimable Epochs -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title title-blue"><span style="font-size:14px;margin-right:6px;">⬡</span>Claimable Epochs <span id="treasuryClaimableCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
+        <div class="treasury-header-actions">
+          <button class="sort-btn" onclick="sortClaimableEpochs()" title="Sort by epoch">E <span id="claimableSortIcon">↓</span></button>
+        </div>
+      </div>
+      <div id="claimableEpochsList" class="treasury-list">
+        <div class="treasury-loading">Loading claimable rewards...</div>
+      </div>
+    </div>
+    
+    <!-- RIGHT: Claimed Epochs -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title title-blue"><span style="font-size:14px;margin-right:6px;">⬡</span>Claimed History <span id="treasuryClaimedCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
+        <div class="treasury-header-actions">
+          <button class="sort-btn" id="filterSelf" onclick="filterClaimedByType('self')" title="Filter Self">Self</button>
+          <button class="sort-btn" id="filterField" onclick="filterClaimedByType('recycle')" title="Filter Field">Field</button>
+          <button class="sort-btn" id="filterNexus" onclick="filterClaimedByType('nexus')" title="Filter Nexus">Nexus</button>
+          <button class="sort-btn" onclick="sortClaimedEpochs()" title="Sort by epoch">E <span id="claimedSortIcon">↓</span></button>
+          <button class="csv-btn" onclick="downloadClaimedCSV()" title="Download CSV">⬇ CSV</button>
+        </div>
+      </div>
+      <div id="claimedEpochsList" class="treasury-list">
+        <div class="treasury-empty-small">No claimed rewards yet</div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- Info Footer -->
+  <div style="margin-top:20px;padding:14px 16px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.15);border-radius:8px;">
+    <div style="display:flex;align-items:flex-start;gap:10px;font-size:11px;color:var(--text-soft);">
+      <span style="font-size:14px;color:#60a5fa;">ℹ️</span>
+      <div>
+        <strong style="color:#60a5fa;">Claim Window:</strong> 
+        You have <strong>21 epochs</strong> to claim rewards after an epoch closes. Unclaimed rewards are recycled.
+        <br><br>
+        <strong style="color:#60a5fa;">Reward Split:</strong>
+        <span class="breakdown-item" style="cursor:help;">Presence<span class="info-icon">ⓘ</span><span class="breakdown-tooltip">Equal share for all 21 winners</span></span> + 
+        <span class="breakdown-item" style="cursor:help;">Attention<span class="info-icon">ⓘ</span><span class="breakdown-tooltip">Based on attestations × layer weight</span></span>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- REPLY MODAL -->
+<div class="modal-overlay" id="replyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Browse Signals <span id="replyCurrentEpochBadge" style="font-size:12px;font-weight:normal;color:var(--text-soft);">(Epoch —)</span></span>
+      <button class="modal-close" onclick="closeReplyModal()">&times;</button>
+    </div>
+
+    <div class="modal-filters">
+      <div class="filter-group"><span class="filter-label">Key:</span><input type="text" class="filter-input" id="replyFilterKeyId" placeholder="All" autocomplete="off" oninput="debouncedReplyFilter()"></div>
+      <div class="filter-group">
+        <span class="filter-label">Epoch:</span>
+        <input type="text" class="filter-input" id="replyFilterEpochFrom" placeholder="From" style="width:55px;" autocomplete="off" oninput="debouncedReplyFilter()">
+        <span>–</span>
+        <input type="text" class="filter-input" id="replyFilterEpochTo" placeholder="To" style="width:55px;" autocomplete="off" oninput="debouncedReplyFilter()">
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Sort:</span>
+        <select class="filter-select" id="replyFilterSort" onchange="immediateReplyFilter()">
+          <option value="recent">Recent</option>
+          <option value="attested">Attested</option>
+        </select>
+      </div>
+      <div class="filter-group intent-filters">
+        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentC" checked onchange="immediateReplyFilter()"><span class="intent-tag oc">ΩC</span></label>
+        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentI" checked onchange="immediateReplyFilter()"><span class="intent-tag oi">ΩI</span></label>
+        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentK" checked onchange="immediateReplyFilter()"><span class="intent-tag ok">ΩK</span></label>
+        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentS" checked onchange="immediateReplyFilter()"><span class="intent-tag os">ΩS</span></label>
+      </div>
+      <button class="filter-btn" onclick="resetReplyFilters()">↺ Clear</button>
+    </div>
+
+    <div style="padding:8px 20px;border-bottom:1px solid var(--card-border);font-size:10px;color:var(--text-soft);display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+      <span><b style="color:var(--keys-accent);">K#</b> = Key ID</span>
+      <span><b>E</b> = Epoch</span>
+      <span><b style="color:#fbbf24;">✓</b> = Attestations</span>
+      <button onclick="downloadReplySignalsCSV(event)" style="margin-left:auto;padding:4px 10px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;">⬇ CSV</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="loading-signals" id="replySignalsLoading">Loading...</div>
+      <div class="no-signals" id="replyNoSignals" style="display:none;">No signals found.</div>
+      <div class="signals-list" id="replySignalsList"></div>
+      <button class="load-more-btn" id="replyLoadMoreBtn" onclick="loadMoreReplySignals()" style="display:none;">Load More...</button>
+    </div>
+
+    <div class="modal-footer">
+      <span id="replySignalCountInfo" style="font-size:11px;color:var(--text-soft);">– signals</span>
+      <button class="btn-select-signal" id="btnConfirmReplySelect" onclick="confirmReplySignalSelection()" disabled>Select Signal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ARTEFACT MODAL -->
+<div class="modal-overlay" id="artefactModal">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-header">
+      <span class="modal-title" id="artefactModalTitle">Artefact</span>
+      <button class="modal-close" onclick="closeArtefactModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="artefactModalBody">
+      <!-- Dynamic content loaded here -->
+    </div>
+  </div>
+</div>
+
+<!-- ARTEFACT SHARING MODAL (NIEUW) -->
+<div id="artefactSharingModal"></div>
+
+<!-- CLAIM ALL MODAL -->
+<div class="claim-modal-overlay" id="claimAllModal">
+  <div class="claim-modal">
+    <div class="claim-modal-title">Claim All Rewards</div>
+    <div class="claim-modal-subtitle">Choose where to send your rewards:</div>
+    <div class="claim-modal-buttons">
+      <button class="claim-modal-btn" onclick="executeClaimAll('self')">Self — To My Wallet</button>
+      <button class="claim-modal-btn" onclick="executeClaimAll('recycle')">Field — Recycle to Next Epoch</button>
+      <button class="claim-modal-btn" onclick="executeClaimAll('nexus')">Nexus — Donate to Protocol</button>
+      <button class="claim-modal-btn cancel" onclick="closeClaimAllModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<footer>Your presence is real · The Field remembers</footer>
+<script src="js/key-dashboard.js"></script>
+<script src="js/key-dashboard-artefacts.js"></script>
+<script src="js/Key-dashboard-canon.js"></script>
+
+</body>
+</html>
+

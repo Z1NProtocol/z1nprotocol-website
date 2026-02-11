@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z1N Protocol – Mint Canon</title>
+  <style>
+    :root {
+      --bg: #050812;
+      --card-bg: #020617;
+      --text-main: #ffffff;
+      --text-soft: #8f9ab5;
+      --accent: #66d69a;
+      --card-border: rgba(148,163,184,0.25);
+      --keys-accent: #f5c842;
+      --keys-accent-soft: #d4a012;
+      --keys-accent-dim: rgba(245,200,66,0.15);
+      --danger: #f44336;
+      /* CANON PURPLE */
+  --canon-purple: #a855f7;
+  --canon-purple-soft: #9333ea;
+  --canon-purple-dim: rgba(168,85,247,0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scrollbar-gutter: stable; overflow-y: scroll; }
+    body { background: var(--bg); color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+
+    header { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-inner { width: 100%; max-width: 1200px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
+    .logo-dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .logo-text { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+    .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
+    .nav-links a.active-keys { color: var(--keys-accent); }
+
+    .page { max-width: 1000px; margin: 0 auto; padding: 32px 24px 72px; }
+    .back-link { color: var(--text-soft); font-size: 13px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 20px; }
+    .back-link:hover { color: var(--keys-accent); }
+
+    .page-header { margin-bottom: 32px; }
+    h1 { font-size: 32px; font-weight: 700; color: var(--keys-accent); margin-bottom: 8px; }
+    .subtitle { font-size: 15px; color: var(--text-soft); line-height: 1.6; max-width: 600px; }
+
+    .mint-layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
+
+    .key-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 20px; }
+    .key-header { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .key-id { font-size: 20px; font-weight: 600; color: var(--keys-accent); margin-bottom: 4px; }
+    .key-glyphs { font-size: 14px; color: var(--text-soft); letter-spacing: 1px; }
+    .key-info-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; }
+    .key-info-label { color: var(--text-soft); }
+    .key-info-value { color: var(--text-main); font-weight: 500; }
+    .key-stats { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+    .stat-label { font-size: 11px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { font-size: 24px; font-weight: 700; color: var(--canon-purple); }
+
+    .mint-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 24px; }
+    .mint-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 20px; }
+
+    .epoch-selector { margin-bottom: 24px; }
+    .epoch-label { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-soft); margin-bottom: 12px; }
+    .epoch-range { color: var(--canon-purple); font-weight: 600; }
+    
+    .epoch-display-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 16px; }
+    .epoch-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(168,85,247,0.3); background: transparent; color: var(--canon-purple); font-size: 20px; cursor: pointer; transition: all 0.2s; }
+.epoch-btn:hover { border-color: var(--canon-purple); color: var(--canon-purple); background: rgba(168,85,247,0.1); }
+    .epoch-display { font-size: 56px; font-weight: 700; color: var(--canon-purple); min-width: 140px; text-align: center; }
+    
+    .epoch-slider { width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); -webkit-appearance: none; cursor: pointer; }
+    .epoch-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--canon-purple); cursor: pointer; border: 2px solid var(--bg); }
+
+    .epoch-status { text-align: center; margin-top: 12px; font-size: 13px; padding: 10px 16px; border-radius: 8px; }
+    .epoch-status.available { background: rgba(168,85,247,0.1); color: var(--canon-purple); }
+    .epoch-status.anchored { background: rgba(244,67,54,0.1); color: var(--danger); }
+    .epoch-status.checking { background: rgba(245,200,66,0.1); color: var(--keys-accent); }
+
+    .commitment-section { margin-bottom: 24px; padding: 16px; background: rgba(15,23,42,0.5); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+    .commitment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .commitment-label { font-size: 12px; color: var(--text-soft); }
+   .optional-badge { font-size: 9px; color: var(--canon-purple); background: rgba(168,85,247,0.15); padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+    .commitment-input { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--card-border); background: rgba(5,8,18,0.8); color: var(--text-main); font-family: monospace; font-size: 11px; }
+    .commitment-input:focus { outline: none; border-color: var(--keys-accent); }
+    .commitment-input::placeholder { color: var(--text-soft); opacity: 0.5; }
+    .commitment-hint { font-size: 11px; color: var(--text-soft); margin-top: 8px; line-height: 1.4; }
+
+    .mint-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px; }
+    .price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .price-label { font-size: 13px; color: var(--text-soft); }
+    .price-value { font-size: 20px; font-weight: 700; color: var(--canon-purple); }
+
+    .mint-btn { width: 100%; padding: 16px 24px; border-radius: 12px; border: 2px solid var(--canon-purple); background: linear-gradient(90deg, rgba(168,85,247,0.2), rgba(147,51,234,0.2)); color: var(--canon-purple); font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.mint-btn:hover:not(:disabled) { background: linear-gradient(90deg, var(--canon-purple), var(--canon-purple-soft)); color: #000; box-shadow: 0 8px 32px rgba(168,85,247,0.3); }
+.mint-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.mint-btn.minting { background: rgba(143,154,181,0.2); border-color: rgba(143,154,181,0.4); color: var(--text-soft); }
+.mint-btn.success { background: linear-gradient(90deg, var(--canon-purple), var(--canon-purple-soft)); border-color: var(--canon-purple); color: #fff; }
+.mint-btn.already-anchored { background: rgba(244,67,54,0.1); border-color: rgba(244,67,54,0.4); color: var(--danger); }
+
+    .status-area { margin-top: 16px; }
+    .status-msg { padding: 12px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+    .status-msg.success { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--canon-purple); }
+    .status-msg.error { background: rgba(244,67,54,0.1); border: 1px solid rgba(244,67,54,0.3); color: var(--danger); }
+    .status-msg.pending { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--canon-purple); }
+
+    .info-notice { display: flex; align-items: flex-start; gap: 10px; background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.15); border-radius: 10px; padding: 14px; margin-top: 20px; font-size: 12px; color: var(--text-soft); line-height: 1.5; }
+.info-notice::before { content: "Ω"; color: var(--canon-purple); font-size: 14px; font-weight: 700; flex-shrink: 0; }
+
+    .toast { position: fixed; top: 20px; right: 20px; padding: 14px 20px; background: rgba(168,85,247,0.95); color: #fff; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 10000; opacity: 0; transform: translateY(-20px); transition: all 0.3s ease; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px; font-size: 12px; text-align: center; opacity: 0.7; margin-top: 40px; }
+
+    @media (max-width: 768px) {
+      .mint-layout { grid-template-columns: 1fr; }
+      .key-card { order: 1; }
+      .mint-card { order: 0; }
+      h1 { font-size: 26px; }
+      .epoch-display { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<header>
+  <div class="nav-inner">
+    <a href="index.html" class="logo-link">
+      <div class="logo-dot">Ω</div>
+      <div class="logo-text">Z1N PROTOCOL</div>
+    </a>
+    <nav class="nav-links">
+      <a href="about.html">About</a>
+      <a href="live-stats.html">Live Stats</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="mint-key.html">Mint Key</a>
+      <a href="your-keys.html" class="active-keys">Your Keys</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <a href="#" class="back-link" id="backLink">← Back to Key Dashboard</a>
+
+  <div class="page-header">
+    <h1>Mint Canon Anchor</h1>
+    <p class="subtitle">A permanent declaration that an epoch holds meaning for your Key. Not an image — a marker in the Field.</p>
+  </div>
+
+  <div class="mint-layout">
+    <div class="key-card">
+      <div class="key-header">
+        <div class="key-id" id="keyTitle">Key #—</div>
+        <div class="key-glyphs" id="keyGlyphs">Loading...</div>
+      </div>
+
+      <div class="key-info-row">
+        <span class="key-info-label">Wallet</span>
+        <span class="key-info-value" id="walletDisplay">—</span>
+      </div>
+      <div class="key-info-row">
+        <span class="key-info-label">First Active Epoch</span>
+        <span class="key-info-value">Epoch <span id="mintEpochDisplay">—</span></span>
+      </div>
+      <div class="key-info-row">
+        <span class="key-info-label">Current Epoch</span>
+        <span class="key-info-value" id="currentEpochDisplay">—</span>
+      </div>
+
+      <div class="key-stats">
+        <div class="stat-row">
+          <span class="stat-label">Canon Anchored</span>
+          <span class="stat-value" id="canonCountDisplay">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mint-card">
+      <div class="mint-title">Select Epoch to Anchor</div>
+
+      <div class="epoch-selector">
+        <div class="epoch-label">
+          <span>Eligible Epochs</span>
+          <span class="epoch-range" id="epochRangeLabel">—</span>
+        </div>
+        
+        <div class="epoch-display-row">
+          <button class="epoch-btn" id="epochPrev">‹</button>
+          <div class="epoch-display" id="epochDisplay">—</div>
+          <button class="epoch-btn" id="epochNext">›</button>
+        </div>
+        
+        <input type="range" class="epoch-slider" id="epochSlider" min="0" max="100" value="50">
+        
+        <div class="epoch-status checking" id="anchorStatus">Checking availability...</div>
+      </div>
+
+      <div class="commitment-section">
+        <div class="commitment-header">
+          <span class="commitment-label">Link Hash</span>
+          <span class="optional-badge">Optional</span>
+        </div>
+        <input type="text" class="commitment-input" id="commitmentHash" placeholder="0x... or leave empty for pure epoch marker">
+        <div class="commitment-hint">Attach an off-chain reference, reflection hash, or verifiable proof to this anchor.</div>
+      </div>
+
+      <div class="mint-footer">
+        <div class="price-row">
+          <span class="price-label">Price</span>
+          <span class="price-value">7 POL</span>
+        </div>
+        <button class="mint-btn" id="anchorBtn">Mint Canon Anchor</button>
+      </div>
+
+      <div class="status-area" id="statusArea"></div>
+
+      <div class="info-notice">
+        Once anchored, this marker is permanent and irreversible. Canon is truth, not aesthetics.
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>Your presence is real · The Field remembers</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var API = 'https://z1n-backend-production.up.railway.app/api';
+  var CHAIN_ID = '0x89';
+  var Z1N_KEY = '0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469';
+  var Z1N_CANON = '0x2bb85Ee047E86264311De540C7eBfF0CdD873DEB';
+  var CANON_PRICE = '0x6124fee993bc0000';
+  var EXPLORER = 'https://polygonscan.com';
+
+  var RPC_URLS = [
+    'https://polygon-rpc.com',
+    'https://polygon-bor-rpc.publicnode.com',
+    'https://rpc-mainnet.maticvigil.com'
+  ];
+  var currentRpcIndex = 0;
+
+  var provider = null;
+  var account = null;
+  var keyId = null;
+  var walletParam = '';
+  var selectedEpoch = 0;
+  var minEpoch = 1;
+  var maxEpoch = 0;
+  var keyMintEpoch = 1;
+  var epochAnchored = false;
+  var keyOwner = '';
+
+  var keyTitle = document.getElementById('keyTitle');
+  var keyGlyphs = document.getElementById('keyGlyphs');
+  var walletDisplay = document.getElementById('walletDisplay');
+  var mintEpochDisplay = document.getElementById('mintEpochDisplay');
+  var currentEpochDisplay = document.getElementById('currentEpochDisplay');
+  var canonCountDisplay = document.getElementById('canonCountDisplay');
+  var epochRangeLabel = document.getElementById('epochRangeLabel');
+  var epochSlider = document.getElementById('epochSlider');
+  var epochDisplay = document.getElementById('epochDisplay');
+  var epochPrev = document.getElementById('epochPrev');
+  var epochNext = document.getElementById('epochNext');
+  var commitmentHashInput = document.getElementById('commitmentHash');
+  var anchorBtn = document.getElementById('anchorBtn');
+  var statusArea = document.getElementById('statusArea');
+  var anchorStatus = document.getElementById('anchorStatus');
+  var backLink = document.getElementById('backLink');
+  var toast = document.getElementById('toast');
+
+  function getParam(name) {
+    var url = new URL(window.location.href);
+    return url.searchParams.get(name) || '';
+  }
+  
+  function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '—'; }
+  function enc256(v) { return BigInt(v).toString(16).padStart(64, '0'); }
+
+  function showToast(message, duration) {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, duration || 3000);
+  }
+
+  function getProvider() {
+    var eth = window.ethereum;
+    if (!eth) {
+      if (window.phantom && window.phantom.ethereum) return window.phantom.ethereum;
+      return null;
+    }
+    if (eth.providers && eth.providers.length) {
+      var mm = eth.providers.find(function(p) { return p.isMetaMask && !p.isBraveWallet; });
+      if (mm) return mm;
+      return eth.providers[0];
+    }
+    return eth;
+  }
+
+  async function rpc(method, params, retryCount) {
+    retryCount = retryCount || 0;
+    var maxRetries = RPC_URLS.length * 2;
+    
+    try {
+      var rpcUrl = RPC_URLS[currentRpcIndex];
+      var response = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: Date.now(), method: method, params: params })
+      });
+      var data = await response.json();
+      
+      if (data.error) {
+        if (data.error.message && (data.error.message.includes('rate') || data.error.message.includes('Too Many'))) {
+          currentRpcIndex = (currentRpcIndex + 1) % RPC_URLS.length;
+          if (retryCount < maxRetries) {
+            await new Promise(function(r) { setTimeout(r, 300); });
+            return rpc(method, params, retryCount + 1);
+          }
+        }
+        throw new Error(data.error.message);
+      }
+      return data.result;
+    } catch (err) {
+      currentRpcIndex = (currentRpcIndex + 1) % RPC_URLS.length;
+      if (retryCount < maxRetries) {
+        await new Promise(function(r) { setTimeout(r, 300); });
+        return rpc(method, params, retryCount + 1);
+      }
+      throw err;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // INIT - Use first signal epoch as reliable minimum
+  // ═══════════════════════════════════════════════════════════════════
+
+  var keyParam = getParam('key');
+keyId = keyParam ? parseInt(keyParam) : NaN;
+console.log('mint-canon keyId from URL:', keyId);
+
+if (isNaN(keyId) || keyId < 1) {
+  try {
+    var ctx = JSON.parse(localStorage.getItem('z1n_signal_context') || '{}');
+    keyId = typeof ctx.keyId === 'number' && ctx.keyId > 0 ? ctx.keyId : 0;
+  } catch (e) { keyId = 0; }
+}
+
+// If still no valid keyId, try to extract from sessionStorage returnUrl
+if (!keyId || keyId < 1) {
+  var storedUrl = sessionStorage.getItem('canonReturnUrl');
+  if (storedUrl) {
+    var match = storedUrl.match(/[?&]key=(\d+)/);
+    if (match) {
+      keyId = parseInt(match[1]);
+      console.log('mint-canon keyId extracted from returnUrl:', keyId);
+    }
+  }
+}
+
+walletParam = getParam('wallet') || '';
+if (!walletParam) {
+  try {
+    var ctx = JSON.parse(localStorage.getItem('z1n_signal_context') || '{}');
+    walletParam = ctx.wallet || '';
+  } catch (e) {}
+}
+
+// Back link - prioritize sessionStorage, then construct from keyId
+var storedReturn = sessionStorage.getItem('canonReturnUrl');
+var walletQuery = walletParam ? '&wallet=' + encodeURIComponent(walletParam) : '';
+
+if (storedReturn) {
+  backLink.href = storedReturn;
+} else if (keyId > 0) {
+  backLink.href = 'key-dashboard?key=' + keyId + walletQuery + '&tab=canon';
+} else {
+  backLink.href = 'your-keys.html';
+}
+  
+  keyTitle.textContent = 'Key #' + keyId;
+  walletDisplay.textContent = shortAddr(walletParam);
+  keyOwner = walletParam.toLowerCase();
+
+  // Load data - use LOWEST anchored epoch from canon data as minimum
+  var keyData = null;
+  var canonMarkers = [];
+  
+  fetch(API + '/keys/' + keyId)
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    keyData = data;
+    keyGlyphs.textContent = data.glyphLine || '◇ · ∞ · ☰';
+    return fetch(API + '/live');
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(live) {
+    maxEpoch = live.currentEpoch || 1;
+    currentEpochDisplay.textContent = maxEpoch;
+    
+    // Fetch canon markers to find the LOWEST anchored epoch
+    return fetch(API + '/canon/key/' + keyId);
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(canonData) {
+    canonMarkers = canonData.markers || [];
+    canonCountDisplay.textContent = canonMarkers.length;
+    
+    // Find the LOWEST epoch from canon markers - this tells us when key was first active
+    var lowestAnchoredEpoch = maxEpoch;
+    if (canonMarkers.length > 0) {
+      canonMarkers.forEach(function(m) {
+        var ep = m.epochId || m.epoch || maxEpoch;
+        if (ep < lowestAnchoredEpoch) lowestAnchoredEpoch = ep;
+      });
+    }
+    
+    // Also check API epochMinted
+    var apiEpochMinted = keyData.epochMinted || 0;
+    
+    // Use the LOWEST of: API epochMinted (if valid), lowest anchored epoch
+    if (apiEpochMinted > 0 && apiEpochMinted < lowestAnchoredEpoch) {
+      keyMintEpoch = apiEpochMinted;
+    } else if (lowestAnchoredEpoch < maxEpoch) {
+      keyMintEpoch = lowestAnchoredEpoch;
+    } else {
+      // Fallback: allow from epoch 1
+      keyMintEpoch = 1;
+    }
+    
+    console.log('Epoch sources - API epochMinted:', apiEpochMinted, 'lowestAnchored:', lowestAnchoredEpoch, 'using:', keyMintEpoch);
+    
+    mintEpochDisplay.textContent = keyMintEpoch;
+    minEpoch = keyMintEpoch;
+    
+    // Ensure valid range - ALWAYS allow from minEpoch to maxEpoch
+    if (minEpoch < 1) minEpoch = 1;
+    if (minEpoch > maxEpoch) minEpoch = 1; // Safety: if something went wrong, allow all
+    
+    // Set slider range
+    epochSlider.min = minEpoch;
+    epochSlider.max = maxEpoch;
+    selectedEpoch = Math.max(minEpoch, maxEpoch - 1);
+    if (selectedEpoch < minEpoch) selectedEpoch = minEpoch;
+    epochSlider.value = selectedEpoch;
+    epochRangeLabel.textContent = minEpoch + ' – ' + maxEpoch;
+    
+    updateEpochDisplay();
+    checkEpochAnchored();
+  })
+  .catch(function(e) {
+    console.error('Load error:', e);
+    keyGlyphs.textContent = 'Error loading';
+    // FALLBACK: Allow ALL epochs from 1 to current
+    minEpoch = 1;
+    epochSlider.min = 1;
+    epochSlider.max = maxEpoch || 1000;
+    selectedEpoch = maxEpoch || 1;
+    epochSlider.value = selectedEpoch;
+    epochRangeLabel.textContent = '1 – ' + (maxEpoch || '?');
+    updateEpochDisplay();
+  });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // EPOCH CONTROLS
+  // ═══════════════════════════════════════════════════════════════════
+
+  function updateEpochDisplay() { 
+    epochDisplay.textContent = selectedEpoch; 
+  }
+
+  async function checkEpochAnchored() {
+    anchorStatus.textContent = 'Checking...';
+    anchorStatus.className = 'epoch-status checking';
+    
+    try {
+      var sig = ethers.keccak256(ethers.toUtf8Bytes('hasCanonForEpoch(uint256,uint256)')).slice(0, 10);
+      var data = sig + enc256(keyId) + enc256(selectedEpoch);
+      var result = await rpc('eth_call', [{ to: Z1N_CANON, data: data }, 'latest']);
+      epochAnchored = parseInt(result, 16) === 1;
+      updateAnchorStatus();
+    } catch (e) {
+      console.warn('Check failed:', e);
+      epochAnchored = false;
+      updateAnchorStatus();
+    }
+  }
+
+  async function loadCanonCount() {
+    try {
+      var sig = ethers.keccak256(ethers.toUtf8Bytes('canonCountOfKey(uint256)')).slice(0, 10);
+      var data = sig + enc256(keyId);
+      var result = await rpc('eth_call', [{ to: Z1N_CANON, data: data }, 'latest']);
+      var count = parseInt(result, 16);
+      canonCountDisplay.textContent = count;
+    } catch (e) {
+      canonCountDisplay.textContent = '—';
+    }
+  }
+
+  function updateAnchorStatus() {
+    if (epochAnchored) {
+      anchorStatus.textContent = '✗ Epoch ' + selectedEpoch + ' already anchored';
+      anchorStatus.className = 'epoch-status anchored';
+      anchorBtn.textContent = 'Already Anchored';
+      anchorBtn.classList.add('already-anchored');
+      anchorBtn.disabled = true;
+    } else {
+      anchorStatus.textContent = '✓ Epoch ' + selectedEpoch + ' available';
+      anchorStatus.className = 'epoch-status available';
+      anchorBtn.textContent = 'Mint Canon Anchor';
+      anchorBtn.classList.remove('already-anchored');
+      anchorBtn.disabled = false;
+    }
+  }
+
+  var checkTimer = null;
+  function debouncedCheck() {
+    if (checkTimer) clearTimeout(checkTimer);
+    anchorStatus.textContent = 'Checking...';
+    anchorStatus.className = 'epoch-status checking';
+    checkTimer = setTimeout(checkEpochAnchored, 300);
+  }
+
+  epochSlider.addEventListener('input', function() {
+    selectedEpoch = parseInt(this.value);
+    updateEpochDisplay();
+    debouncedCheck();
+  });
+
+  epochPrev.addEventListener('click', function() {
+    if (selectedEpoch > minEpoch) { 
+      selectedEpoch--; 
+      epochSlider.value = selectedEpoch; 
+      updateEpochDisplay(); 
+      debouncedCheck();
+    }
+  });
+
+  epochNext.addEventListener('click', function() {
+    if (selectedEpoch < maxEpoch) { 
+      selectedEpoch++; 
+      epochSlider.value = selectedEpoch; 
+      updateEpochDisplay(); 
+      debouncedCheck();
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // WALLET & MINT
+  // ═══════════════════════════════════════════════════════════════════
+
+  async function connectWallet() {
+    var eth = getProvider();
+    if (!eth) {
+      statusArea.innerHTML = '<div class="status-msg error">No wallet found. Install MetaMask.</div>';
+      return false;
+    }
+
+    provider = eth;
+
+    try {
+      var accs = await provider.request({ method: 'eth_accounts' });
+      if (!accs || accs.length === 0) {
+        accs = await provider.request({ method: 'eth_requestAccounts' });
+      }
+
+      var urlWallet = walletParam.toLowerCase();
+      account = urlWallet ? (accs.find(function(a) { return a.toLowerCase() === urlWallet; }) || accs[0]) : accs[0];
+      account = account.toLowerCase();
+      walletDisplay.textContent = shortAddr(account);
+
+      var chainId = await provider.request({ method: 'eth_chainId' });
+      if (chainId !== CHAIN_ID) {
+        try {
+          await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID }] });
+        } catch (switchError) {
+          if (switchError.code === 4902) {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: CHAIN_ID,
+                chainName: 'Polygon',
+                nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 },
+                rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
+                blockExplorerUrls: ['https://polygonscan.com']
+              }]
+            });
+          }
+        }
+      }
+
+      // Verify ownership
+      var ownerData = '0x6352211e' + enc256(keyId);
+      var ownerResult = await rpc('eth_call', [{ to: Z1N_KEY, data: ownerData }, 'latest']);
+      keyOwner = '0x' + ownerResult.slice(26).toLowerCase();
+
+      if (keyOwner !== account) {
+        statusArea.innerHTML = '<div class="status-msg error">This Key is owned by ' + shortAddr(keyOwner) + '. Switch wallet.</div>';
+        anchorBtn.disabled = true;
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      statusArea.innerHTML = '<div class="status-msg error">' + (e.message || 'Connection failed') + '</div>';
+      return false;
+    }
+  }
+
+  anchorBtn.addEventListener('click', async function() {
+    if (epochAnchored) return;
+
+    if (!account || !provider) {
+      statusArea.innerHTML = '<div class="status-msg pending">Connecting wallet...</div>';
+      var connected = await connectWallet();
+      if (!connected) return;
+    }
+
+    anchorBtn.disabled = true;
+    anchorBtn.textContent = 'Preparing...';
+    anchorBtn.classList.add('minting');
+    statusArea.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
+
+    try {
+      var commitment = commitmentHashInput.value.trim();
+      var commitmentBytes32;
+      
+      if (!commitment || commitment === '' || commitment === '0x') {
+        commitmentBytes32 = '0x' + '0'.repeat(64);
+      } else if (commitment.startsWith('0x') && commitment.length === 66) {
+        commitmentBytes32 = commitment;
+      } else if (commitment.startsWith('0x')) {
+        commitmentBytes32 = commitment.slice(0, 2) + commitment.slice(2).padStart(64, '0');
+      } else {
+        commitmentBytes32 = ethers.keccak256(ethers.toUtf8Bytes(commitment));
+      }
+      
+      var iface = new ethers.Interface([
+        'function anchorCanon(uint256 keyId, uint256 epochId, bytes32 commitmentHash) payable'
+      ]);
+      
+      var encodedData = iface.encodeFunctionData('anchorCanon', [
+        BigInt(keyId),
+        BigInt(selectedEpoch),
+        commitmentBytes32
+      ]);
+
+      statusArea.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
+      anchorBtn.textContent = 'Confirm in wallet...';
+
+      var txHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: account,
+          to: Z1N_CANON,
+          value: CANON_PRICE,
+          data: encodedData
+        }]
+      });
+
+      statusArea.innerHTML = '<div class="status-msg pending">Waiting for confirmation... <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent);">View tx</a></div>';
+      anchorBtn.textContent = 'Confirming...';
+
+      var success = await waitForReceipt(txHash);
+
+      if (success) {
+        statusArea.innerHTML = '<div class="status-msg success">✓ Canon anchored! Epoch ' + selectedEpoch + ' is now permanent. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent);">View tx</a></div>';
+        anchorBtn.textContent = '✓ Anchored!';
+        anchorBtn.classList.remove('minting');
+        anchorBtn.classList.add('success');
+        showToast('Ω Canon anchored — Epoch ' + selectedEpoch, 4000);
+
+        // Go back to where we came from with refresh flag
+        setTimeout(function() {
+          var returnUrl = sessionStorage.getItem('canonReturnUrl');
+          if (returnUrl) {
+            sessionStorage.removeItem('canonReturnUrl');
+            // Add refresh parameter to force data reload
+            var separator = returnUrl.includes('?') ? '&' : '?';
+            window.location.href = returnUrl + separator + 'refresh=' + Date.now();
+          } else {
+            // Fallback: construct URL from current key
+            window.location.href = 'key-dashboard?key=' + keyId + '&tab=canon&refresh=' + Date.now();
+          }
+        }, 2500);
+        
+      } else {
+        throw new Error('Transaction failed');
+      }
+
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) {
+        msg = 'Transaction rejected';
+      } else if (msg.includes('EpochAlreadyAnchored')) {
+        msg = 'Epoch already anchored';
+        epochAnchored = true;
+        updateAnchorStatus();
+      }
+      
+      statusArea.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
+      anchorBtn.disabled = false;
+      anchorBtn.classList.remove('minting');
+      if (!epochAnchored) {
+        anchorBtn.textContent = 'Mint Canon Anchor';
+      }
+    }
+  });
+
+  async function waitForReceipt(txHash) {
+    for (var i = 0; i < 60; i++) {
+      await new Promise(function(r) { setTimeout(r, 2000); });
+      try {
+        var rc = await rpc('eth_getTransactionReceipt', [txHash]);
+        if (rc && rc.status === '0x1') return true;
+        if (rc && rc.status === '0x0') return false;
+      } catch (e) {}
+    }
+    return false;
+  }
+
+  // Auto-connect
+  (async function() {
+    var eth = getProvider();
+    if (eth) {
+      try {
+        var accs = await eth.request({ method: 'eth_accounts' });
+        if (accs && accs.length > 0) {
+          await connectWallet();
+        }
+      } catch (e) {}
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
