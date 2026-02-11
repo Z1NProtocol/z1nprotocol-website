@@ -2810,6 +2810,8 @@ window.Z1N_DEBUG = {
 
 // Auto-connect on page load
 document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.getElementById('btnConnect');
+  if (btn) btn.addEventListener('click', connect);
   if (getProvider()) {
     connect();
   }
