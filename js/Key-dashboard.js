@@ -962,7 +962,7 @@ if (sentAttestsCountEl) sentAttestsCountEl.textContent = '(' + attests.length + 
     if (attests.length === 0) { list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No attestations sent yet</div>'; return; }
     
     await fetchKeyGlyphs(attests.map(function(a) { return a.signalKeyId; }));
-    
+    // Full content shown
     list.innerHTML = '';
     attests.forEach(function(att) {
       var it = document.createElement('div'); it.className = 'signal-item';
@@ -971,8 +971,8 @@ if (sentAttestsCountEl) sentAttestsCountEl.textContent = '(' + attests.length + 
       var sg = getShortGlyphs(att.signalKeyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = att.signalContent || att.signalCid || '[Signal]';
-      if (content.length > 60) content = content.slice(0, 60) + '...';
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:#fbbf24;font-size:11px;">✓ Attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--keys-accent);margin-left:6px;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;">'+escapeHtml(content)+'</div></div><span class="signal-time">'+(att.timeAgo||'')+'</span>';
+      
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:#fbbf24;font-size:11px;">✓ Attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--keys-accent);margin-left:6px;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();replyWhisper('+(att.signalKeyId||0)+')" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       list.appendChild(it);
     });
   } catch (e) { list.innerHTML = '<div style="padding:20px;text-align:center;color:#f87171;font-size:11px;">Error loading attestations</div>'; }
