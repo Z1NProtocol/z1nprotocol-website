@@ -1632,7 +1632,7 @@ window.submitWhisper = async function() {
         showToast('⚠️ Switch MM to ' + urlWallet.slice(0,6) + '...' + urlWallet.slice(-4), 5000);
       }
 
-      var walletUrl = './your-keys?wallet=' + encodeURIComponent(currentAccount);
+      var walletUrl = './your-keys.html?wallet=' + encodeURIComponent(currentAccount);
       document.getElementById('backLink').href = walletUrl;
       document.getElementById('navYourKeys').href = walletUrl;
       window.Z1N = {
