@@ -859,7 +859,7 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
       
      // Check unread state
       var activityId = 'reply_recv_' + sig.hash;
-      var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
+      var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.loaded && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
       if (isUnread) it.classList.add('unread-glow');
       it.dataset.activityId = activityId;
       
@@ -972,7 +972,7 @@ if (sentAttestsCountEl) sentAttestsCountEl.textContent = '(' + attests.length + 
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = att.signalContent || att.signalCid || '[Signal]';
       
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:#fbbf24;font-size:11px;">✓ Attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--keys-accent);margin-left:6px;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();replyWhisper('+(att.signalKeyId||0)+')" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:#fbbf24;font-size:11px;">✓ Attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--keys-accent);margin-left:6px;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       list.appendChild(it);
     });
   } catch (e) { list.innerHTML = '<div style="padding:20px;text-align:center;color:#f87171;font-size:11px;">Error loading attestations</div>'; }
@@ -1024,12 +1024,12 @@ if (receivedAttestsCountTitleEl) receivedAttestsCountTitleEl.textContent = '(' +
       var content = att.signalContent || att.signalCid || '[Your signal]';
       // Check unread state
       var activityId = 'attest_recv_' + (att.signalHash || '') + '_' + (att.fromKeyId || '') + '_' + (att.blockNumber || '');
-      var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
+      var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.loaded && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
       if (isUnread) it.classList.add('unread-glow');
       it.dataset.activityId = activityId;
       
       var fromKeyDisplay = att.fromKeyId !== null ? 'K#' + att.fromKeyId : (att.fromWallet ? att.fromWallet.slice(0,6) + '...' : '?');
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span style="margin-left:6px;font-size:10px;color:#fbbf24;">attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;">'+escapeHtml(content)+'</div></div><span class="signal-time">'+(att.timeAgo||'')+'</span>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span style="margin-left:6px;font-size:10px;color:#fbbf24;">attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.fromKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       
       // Click to mark as read
       it.addEventListener('click', function() {
@@ -1205,7 +1205,7 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
         var epoch = w.epoch || '—';
        // Check unread state
         var activityId = 'whisper_recv_' + (w.txHash || w.blockNumber || '');
-        var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
+        var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.loaded && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
         if (isUnread) it.classList.add('unread-glow');
         it.dataset.activityId = activityId;
         
