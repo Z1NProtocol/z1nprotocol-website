@@ -189,6 +189,21 @@
     }
     .lens.active{ display:block; }
 
+    /* NBI lens code blocks: one consistent monospace style */
+      #lensNBI pre.dialogue{
+        margin:8px 0 10px;
+        padding:12px 14px;
+        border-radius:14px;
+        border:1px solid rgba(148,163,184,0.25);
+        background:rgba(2,6,23,0.55);
+
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size:12.5px;
+        line-height:1.5;
+        white-space:pre-wrap;
+        opacity:1;
+      }
+
     /* Sticky chapters (only visible when BI is active) */
     .chapters-row{
       position:sticky;
@@ -2070,8 +2085,8 @@ Interpretation:
     </p></pre>
 
     <div class="h2">13. Governance (Governor + Hybrid Voting + AntiSwarm)</div>
-    <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5;line-height:1.5;white-space:pre-wrap;">
-Governor stack:
+
+<pre class="dialogue">Governor stack:
 - GovernorVotes(Key as IVotes)
 - GovernorVotesQuorumFraction
 - GovernorTimelockControl(Timelock)
@@ -2098,13 +2113,11 @@ Upgrade slots:
 Timelock truth note:
 - Timelock authority MUST be derived from on-chain roles.
 - If Timelock constructor pre-grants proposer/executor/canceller to admin,
-  governance finality is compromised. Prefer role wiring from deploy scripts.
-    </p></pre>
+  governance finality is compromised. Prefer role wiring from deploy scripts.</pre>
+
 
   </article>
 </section>
-
-
 </main>
 
 <footer>
@@ -2217,5 +2230,3 @@ Timelock truth note:
 
 </body>
 </html>
-
-
