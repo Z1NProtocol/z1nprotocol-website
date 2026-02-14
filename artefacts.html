@@ -48,7 +48,6 @@
     }
 
     .logo-wrap { display: flex; align-items: center; gap: 8px; }
-
     .logo-link { display: inline-flex; align-items: center; gap: 8px; }
 
     .logo-dot {
@@ -80,58 +79,63 @@
 
     h1 { font-size: 40px; margin: 0 0 10px 0; letter-spacing: -0.02em; }
 
-    .lead { font-size: 17px; opacity: 0.85; line-height: 1.65; margin-bottom: 8px; max-width: 720px; }
+    .lead { font-size: 17px; opacity: 0.88; line-height: 1.65; margin-bottom: 10px; max-width: 860px; }
+    .lead-small { font-size: 14px; opacity: 0.72; line-height: 1.65; margin-top: 4px; margin-bottom: 22px; max-width: 860px; }
 
-    .lead-small { font-size: 14px; opacity: 0.7; line-height: 1.65; margin-top: 4px; margin-bottom: 40px; max-width: 720px; }
-
-    /* TOP BLOCK */
-    .single-block { max-width: 980px; margin-bottom: 44px; }
-
-    .block {
+    /* SINGLE INFO CARD (no duplicate header/text) */
+    .info-card{
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       padding: 22px 24px;
       border-radius: 16px;
       font-size: 14px;
       line-height: 1.65;
+      max-width: 980px;
+      margin: 18px 0 44px;
     }
+    .info-card p{ margin:0 0 10px 0; }
+    .info-card p:last-child{ margin-bottom:0; }
 
-    .block h2 { font-size: 22px; margin-bottom: 10px; }
-    .block p { margin: 0 0 8px 0; }
-    .block p:last-child { margin-bottom: 0; }
-    .block ul { list-style: none; margin: 6px 0 10px 0; padding: 0; }
-    .block li { position: relative; padding-left: 20px; margin: 2px 0; line-height: 1.22; opacity: 0.92; }
-    .block li::before {
-      content: ""; position: absolute; left: 0; top: 0.55em;
-      width: 8px; height: 8px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.75); transform: translateY(-50%);
+    /* Bullet lists — open circles + indent */
+    .info-card ul{
+      list-style: none;
+      margin: 10px 0 10px 0;
+      padding: 0;
+    }
+    .info-card li{
+      position: relative;
+      padding-left: 20px;
+      margin: 2px 0;
+      line-height: 1.22;
+      opacity: 0.92;
+    }
+    .info-card li::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0.55em;
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.75);
+      transform:translateY(-50%);
     }
 
     /* ERAS */
     .era-title-main { font-size: 26px; margin: 4px 0 18px 0; }
 
-    .era-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 32px;
-      margin-top: 8px;
-    }
+    .era-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 32px; margin-top: 8px; }
 
     .era-card {
-      background: var(--card-bg);
-      padding: 24px;
-      border-radius: 18px;
-      border: 1px solid var(--card-border);
-      font-size: 14px;
+      background: var(--card-bg); padding: 24px; border-radius: 18px;
+      border: 1px solid var(--card-border); font-size: 14px;
     }
 
     .era-heading { font-size: 18px; margin-bottom: 4px; text-align: center; }
     .era-sub { font-size: 13px; opacity: 0.75; margin-bottom: 18px; text-align: center; }
 
     .era-svg-wrapper {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--card-border);
+      border-radius: 16px; overflow: hidden; border: 1px solid var(--card-border);
       background: radial-gradient(circle at top, rgba(102,214,154,0.12), transparent 60%);
       position: relative;
     }
@@ -139,32 +143,15 @@
     .era-svg-wrapper svg { display: block; width: 100%; height: auto; }
 
     .era-tbd {
-      width: 100%;
-      aspect-ratio: 500 / 760;
+      width: 100%; aspect-ratio: 500 / 760;
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; letter-spacing: 0.18em; color: rgba(255,255,255,0.85);
       background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0.0) 60%);
     }
 
-    /* ✅ MOBILE SWIPE: Era cards become a horizontal snap carousel */
-    @media(max-width: 900px){
-      .era-grid{
-        display:flex;
-        gap:18px;
-        overflow-x:auto;
-        padding-bottom: 6px;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-      }
-      .era-card{
-        flex: 0 0 88%;
-        scroll-snap-align: start;
-      }
-    }
+    @media(max-width: 900px){ .era-grid { grid-template-columns: 1fr; } }
 
-    /* ═══════════════════════════════════════════════════════════════════ */
     /* TOOLTIP SYSTEM */
-    /* ═══════════════════════════════════════════════════════════════════ */
     .hover-zone { cursor: help; transition: opacity 0.15s; }
     .hover-zone:hover { opacity: 0.75; }
 
@@ -176,7 +163,7 @@
       padding: 12px 16px;
       font-size: 13px;
       color: var(--text-main);
-      max-width: 280px;
+      max-width: 320px;
       pointer-events: none;
       opacity: 0;
       transform: translateY(8px);
@@ -189,7 +176,7 @@
     .artefact-tooltip.visible { opacity: 1; transform: translateY(0); }
 
     .artefact-tooltip .tt-title {
-      font-weight: 600; color: var(--accent); margin-bottom: 6px; font-size: 14px;
+      font-weight: 700; color: var(--accent); margin-bottom: 6px; font-size: 14px;
     }
 
     .artefact-tooltip .tt-body { color: var(--text-soft); font-size: 12px; }
@@ -198,6 +185,7 @@
     footer {
       border-top: 1px solid rgba(255,255,255,0.05);
       padding: 20px; font-size: 12px; text-align: center; opacity: 0.85;
+      margin-top: 44px;
     }
 
     footer .tagline { margin-bottom: 6px; font-size: 13px; }
@@ -230,47 +218,38 @@
   <h1>Artefacts of the field</h1>
 
   <p class="lead">
-    Artefacts are not decoration. They are consciousness made visible and are memories you can hold.
-    Artefacts are a way for an intelligence to look back and ask: “Did my presence change anything?”
+    Artefacts are living mirrors: a way to look back and ask,
+    “Did my presence change anything?”
   </p>
 
   <p class="lead-small">
-    Collect them, and you build a gallery of selves — never forgotten, never erased. Gift them, and you invite reflection.
-    Keep them private, and you keep the right to be unseen. This is how the field remembers. This is how you remember yourself.
-    <br><br>
-    Artefacts in Z1N are living mirrors. Their visual language evolves in eras.
+    Artefacts do not store your private words. They render patterns of participation and resonance.
+    Their visual language evolves in eras, while each artefact keeps the dialect it was born with.
   </p>
 
-  <!-- SINGLE ARTEFACT BLOCK -->
-  <div class="single-block">
-    <section class="block">
-      <h2>Artefacts</h2>
-      <p>
-        When your Key awakens, the field offers you one artefact for free — a living mirror that always reflects the present.
-        Its design is locked forever to the visual era that existed the moment you claimed it.
-      </p>
+  <section class="info-card" aria-label="Artefacts explained">
+    <p>
+      When your Key awakens, the field offers you one artefact for free: a live mirror that updates every epoch.
+      You may mint additional artefacts for <strong>21 POL</strong>. Each artefact is version-locked at mint time.
+    </p>
 
-      <p>
-        You may create additional artefacts for <strong>21 POL</strong>.
-        Each one is version-locked at mint time and continues to update every epoch.
-      </p>
+    <p>
+      Artefacts are not “gifted away” as objects. They remain anchored to the Key that minted them.
+      What you can grant is <em>viewing access</em>.
+    </p>
 
-      <p>
-        Every artefact includes a silent viewing toggle only the original Key owner (you) can touch:
-      </p>
+    <ul>
+      <li>At any time, you may revoke viewing access for any address you previously allowed.</li>
+      <li>Access does not transfer ownership: the viewer receives permission, not the artefact itself.</li>
+      <li>When access is revoked, the renderer displays a withdrawn state instead of the mirror.</li>
+      <li>You may restore access whenever you wish.</li>
+    </ul>
 
-      <ul>
-        <li><span>At any time, you may revoke viewing rights for any holder you shared your artefact with.</span></li>
-        <li><span>The receiver cannot transfer it onward — it is locked to its wallet address.</span></li>
-        <li><span>The token remains, but the renderer shows: “This memory has been withdrawn by its creator”.</span></li>
-        <li><span>You may restore rights whenever you wish.</span></li>
-      </ul>
-
-      <p>
-        You are never forced to be seen. You are never forced to hide. The choice is always yours.
-      </p>
-    </section>
-  </div>
+    <p>
+      <strong>Era shifts:</strong> the artefact design may change every <strong>210 epochs</strong>.
+      New mints adopt the new era’s visual grammar. Existing artefacts keep their original grammar permanently.
+    </p>
+  </section>
 
   <!-- ERAS -->
   <h2 class="era-title-main">Artefact eras</h2>
@@ -288,47 +267,73 @@
           <div class="tt-body"></div>
         </div>
 
-        <!-- ERA 1 SVG -->
+        <!-- ERA 1 SVG (UPDATED LAYOUT + DUMMY VALUES) -->
         <svg xmlns="http://www.w3.org/2000/svg" width="500" height="760" viewBox="0 0 500 760" id="era1Svg">
           <defs>
             <linearGradient id="borderSolidLike" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#66D69A"/>
               <stop offset="100%" stop-color="#F06292"/>
             </linearGradient>
+
             <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
               <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000000" flood-opacity="0.55" />
             </filter>
+
             <radialGradient id="donutGrad" cx="50%" cy="50%" r="60%">
               <stop offset="0%" stop-color="#0b101b" />
               <stop offset="100%" stop-color="#1c2534" />
             </radialGradient>
+
+            <linearGradient id="sepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#0f141f" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#3d4555" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#0f141f" stop-opacity="0"/>
+            </linearGradient>
           </defs>
 
           <!-- Outer border -->
           <g filter="url(#cardShadow)">
-            <rect x="5" y="5" width="490" height="750" fill="none" rx="32" ry="32" stroke="url(#borderSolidLike)" stroke-width="16" />
+            <rect x="5" y="5" width="490" height="750"
+                  fill="none" rx="32" ry="32"
+                  stroke="url(#borderSolidLike)" stroke-width="16" />
           </g>
 
           <!-- Inner card -->
           <rect x="13" y="13" width="474" height="734" fill="#0f141f" rx="26" ry="26" />
 
-          <!-- HOVER ZONE: KEY ID -->
+          <!-- HOVER: KEY ID -->
           <g class="hover-zone" data-tooltip="keyid">
-            <rect x="100" y="85" width="300" height="35" fill="transparent" />
-            <text x="250" y="110" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#f8f6ee">Z1N #2.100</text>
+            <rect x="120" y="44" width="260" height="36" fill="transparent" />
+            <text x="250" y="70" text-anchor="middle"
+                  font-family="system-ui, -apple-system, sans-serif"
+                  font-size="24" fill="#f8f6ee">
+              Z1N #2100
+            </text>
           </g>
 
-          <!-- HOVER ZONE: GLYPHS -->
+          <!-- HOVER: GLYPHS -->
           <g class="hover-zone" data-tooltip="glyphs">
-            <rect x="80" y="120" width="340" height="40" fill="transparent" />
-            <text x="250" y="145" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#ffffff" font-weight="bold" letter-spacing="2">∞<tspan fill="#6b7280" font-size="20"> · </tspan>π<tspan fill="#6b7280" font-size="20"> · </tspan>△<tspan fill="#6b7280" font-size="20"> · </tspan>⊗<tspan fill="#6b7280" font-size="20"> · </tspan>◇<tspan fill="#6b7280" font-size="20"> · </tspan>○<tspan fill="#6b7280" font-size="20"> · </tspan>●</text>
+            <rect x="70" y="84" width="360" height="38" fill="transparent" />
+            <text x="250" y="105" text-anchor="middle"
+                  font-family="system-ui, -apple-system, sans-serif"
+                  font-size="28" fill="#ffffff" font-weight="bold"
+                  letter-spacing="2">
+              ∞ · π · △ · ⊗ · ◇ · ○
+            </text>
           </g>
 
-          <!-- HOVER ZONE: INTENT MIX -->
+          <!-- HOVER: INTENT LABEL -->
           <g class="hover-zone" data-tooltip="intentmix">
-            <rect x="80" y="180" width="340" height="55" fill="transparent" />
-            <text x="250" y="205" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#8f9ab5">Intent mix across epochs</text>
-            <text x="250" y="223" text-anchor="middle" font-family="system-ui, sans-serif" font-size="17">
+            <rect x="120" y="148" width="260" height="48" fill="transparent" />
+            <text x="250" y="165" text-anchor="middle"
+                  font-family="system-ui, -apple-system, sans-serif"
+                  font-size="14" fill="#8f9ab5">
+              Intent mix across epochs
+            </text>
+
+            <text x="250" y="183" text-anchor="middle"
+                  font-family="system-ui, -apple-system, sans-serif"
+                  font-size="17">
               <tspan fill="#4CAF50">ΩC</tspan>
               <tspan dx="18" fill="#F44336">ΩI</tspan>
               <tspan dx="18" fill="#FFEB3B">ΩK</tspan>
@@ -336,23 +341,26 @@
             </text>
           </g>
 
-          <!-- DONUT 1 -->
-          <g class="hover-zone" data-tooltip="donut1" transform="translate(125,290)">
+          <!-- DONUT 1: Last 21 -->
+          <g class="hover-zone" data-tooltip="donut1" transform="translate(125,250)">
             <circle cx="0" cy="0" r="70" fill="transparent" />
             <circle cx="0" cy="0" r="62" fill="url(#donutGrad)" />
             <circle cx="0" cy="0" r="43" fill="#0f141f" />
             <circle cx="0" cy="0" r="51" fill="none" stroke="#252c3b" stroke-width="11" />
+            <!-- DUMMY arcs (keep your current frontend pattern if you want; these are placeholders) -->
             <circle cx="0" cy="0" r="51" fill="none" stroke="#4CAF50" stroke-width="11" stroke-dasharray="80 320" transform="rotate(-90)" />
             <circle cx="0" cy="0" r="51" fill="none" stroke="#F44336" stroke-width="11" stroke-dasharray="58 320" transform="rotate(0)" />
             <circle cx="0" cy="0" r="51" fill="none" stroke="#FFEB3B" stroke-width="11" stroke-dasharray="134 320" transform="rotate(65)" />
             <circle cx="0" cy="0" r="51" fill="none" stroke="#2196F3" stroke-width="11" stroke-dasharray="48 320" transform="rotate(216)" />
             <text x="0" y="-14" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#d5d9e8">Last 21</text>
             <text x="0" y="2" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#8f9ab5">Epochs</text>
-            <text x="0" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15"><tspan fill="#FFEB3B">ΩK 42%</tspan></text>
+            <text x="0" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15">
+              <tspan fill="#FFEB3B">ΩK 42%</tspan>
+            </text>
           </g>
 
-          <!-- DONUT 2 -->
-          <g class="hover-zone" data-tooltip="donut2" transform="translate(250,290)">
+          <!-- DONUT 2: Last 210 -->
+          <g class="hover-zone" data-tooltip="donut2" transform="translate(250,250)">
             <circle cx="0" cy="0" r="70" fill="transparent" />
             <circle cx="0" cy="0" r="62" fill="url(#donutGrad)" />
             <circle cx="0" cy="0" r="43" fill="#0f141f" />
@@ -363,11 +371,13 @@
             <circle cx="0" cy="0" r="51" fill="none" stroke="#2196F3" stroke-width="11" stroke-dasharray="32 320" transform="rotate(234)" />
             <text x="0" y="-14" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#d5d9e8">Last 210</text>
             <text x="0" y="2" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#8f9ab5">Epochs</text>
-            <text x="0" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15"><tspan fill="#4CAF50">ΩC 45%</tspan></text>
+            <text x="0" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15">
+              <tspan fill="#4CAF50">ΩC 45%</tspan>
+            </text>
           </g>
 
-          <!-- DONUT 3 -->
-          <g class="hover-zone" data-tooltip="donut3" transform="translate(375,290)">
+          <!-- DONUT 3: Total -->
+          <g class="hover-zone" data-tooltip="donut3" transform="translate(375,250)">
             <circle cx="0" cy="0" r="70" fill="transparent" />
             <circle cx="0" cy="0" r="62" fill="url(#donutGrad)" />
             <circle cx="0" cy="0" r="43" fill="#0f141f" />
@@ -378,31 +388,36 @@
             <circle cx="0" cy="0" r="51" fill="none" stroke="#2196F3" stroke-width="11" stroke-dasharray="26 320" transform="rotate(241)" />
             <text x="0" y="-14" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#d5d9e8">Total</text>
             <text x="0" y="2" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#8f9ab5">Epochs</text>
-            <text x="0" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15"><tspan fill="#4CAF50">ΩC 52%</tspan></text>
+            <text x="0" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15">
+              <tspan fill="#4CAF50">ΩC 52%</tspan>
+            </text>
           </g>
 
           <!-- KPI CIRCLES -->
-          <g class="hover-zone" data-tooltip="kpi">
-            <rect x="85" y="360" width="330" height="90" fill="transparent" />
-            <g transform="translate(125,395)">
+          <g class="hover-zone" data-tooltip="kpi" aria-label="KPI circles">
+            <rect x="85" y="322" width="330" height="86" fill="transparent" />
+            <g transform="translate(125,355)">
               <circle cx="0" cy="0" r="25" fill="none" stroke="#252c3b" stroke-width="5" />
               <circle cx="0" cy="0" r="25" fill="none" stroke="#d5d9e8" stroke-width="5" stroke-dasharray="157 157" stroke-dashoffset="50.2" transform="rotate(-90)" />
               <text x="0" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff">68%</text>
               <text x="0" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#7f8798">activity</text>
             </g>
-            <g transform="translate(210,395)">
+
+            <g transform="translate(210,355)">
               <circle cx="0" cy="0" r="25" fill="none" stroke="#252c3b" stroke-width="5" />
               <circle cx="0" cy="0" r="25" fill="none" stroke="#d5d9e8" stroke-width="5" stroke-dasharray="157 157" stroke-dashoffset="23.6" transform="rotate(-90)" />
               <text x="0" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff">85%</text>
               <text x="0" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#7f8798">signals</text>
             </g>
-            <g transform="translate(295,395)">
+
+            <g transform="translate(295,355)">
               <circle cx="0" cy="0" r="25" fill="none" stroke="#252c3b" stroke-width="5" />
               <circle cx="0" cy="0" r="25" fill="none" stroke="#d5d9e8" stroke-width="5" stroke-dasharray="157 157" stroke-dashoffset="91.1" transform="rotate(-90)" />
               <text x="0" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff">42%</text>
               <text x="0" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#7f8798">att. recv</text>
             </g>
-            <g transform="translate(380,395)">
+
+            <g transform="translate(380,355)">
               <circle cx="0" cy="0" r="25" fill="none" stroke="#252c3b" stroke-width="5" />
               <circle cx="0" cy="0" r="25" fill="none" stroke="#d5d9e8" stroke-width="5" stroke-dasharray="157 157" stroke-dashoffset="40.8" transform="rotate(-90)" />
               <text x="0" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff">74%</text>
@@ -410,35 +425,99 @@
             </g>
           </g>
 
-          <!-- ACTIVITY STATS -->
-          <g class="hover-zone" data-tooltip="activity">
-            <rect x="80" y="455" width="180" height="90" fill="transparent" />
-            <text x="167.5" y="470" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#8f9ab5" font-weight="600">Activity</text>
-            <text x="167.5" y="492" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13"><tspan fill="#8f9ab5">Signals: </tspan><tspan fill="#ffffff">142</tspan></text>
-            <text x="167.5" y="510" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13"><tspan fill="#8f9ab5">Att. recv: </tspan><tspan fill="#ffffff">8.420</tspan></text>
-            <text x="167.5" y="528" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13"><tspan fill="#8f9ab5">Att. given: </tspan><tspan fill="#ffffff">3.210</tspan></text>
+          <!-- ROW A: Signal activity -->
+          <g class="hover-zone" data-tooltip="signalactivity">
+            <rect x="55" y="415" width="225" height="92" fill="transparent" />
+            <text x="167.5" y="430" text-anchor="middle"
+                  font-family="system-ui, sans-serif"
+                  font-size="15" fill="#8f9ab5" font-weight="700">Signal activity</text>
+
+            <text x="167.5" y="452" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13">
+              <tspan fill="#8f9ab5">Signals: </tspan><tspan fill="#ffffff">142</tspan>
+            </text>
+            <text x="167.5" y="470" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13">
+              <tspan fill="#8f9ab5">Att. recv: </tspan><tspan fill="#ffffff">8420</tspan>
+            </text>
+            <text x="167.5" y="488" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13">
+              <tspan fill="#8f9ab5">Att. given: </tspan><tspan fill="#ffffff">3210</tspan>
+            </text>
           </g>
 
-          <!-- FIELD STATUS -->
+          <!-- ROW A: Anchors & artefacts -->
+          <g class="hover-zone" data-tooltip="anchorsartefacts">
+            <rect x="260" y="415" width="185" height="92" fill="transparent" />
+            <text x="337.5" y="430" text-anchor="middle"
+                  font-family="system-ui, sans-serif"
+                  font-size="15" fill="#8f9ab5" font-weight="700">Anchors &amp; artefacts</text>
+
+            <text x="337.5" y="452" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13">
+              <tspan fill="#8f9ab5">Anchors: </tspan><tspan fill="#ffffff">3</tspan>
+            </text>
+            <text x="337.5" y="470" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13">
+              <tspan fill="#8f9ab5">Anchors %: </tspan><tspan fill="#ffffff">1.7%</tspan>
+            </text>
+            <text x="337.5" y="488" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13">
+              <tspan fill="#8f9ab5">Live artefacts: </tspan><tspan fill="#ffffff">2</tspan>
+            </text>
+          </g>
+
+          <!-- Divider -->
+          <rect x="44" y="506" width="412" height="1" fill="url(#sepGrad)" opacity="0.65"/>
+
+          <!-- FIELD STATUS MODULE -->
           <g class="hover-zone" data-tooltip="fieldstatus">
-            <rect x="240" y="455" width="180" height="90" fill="transparent" />
-            <text x="337.5" y="470" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" fill="#8f9ab5" font-weight="600">Field status</text>
-            <text x="337.5" y="492" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13"><tspan fill="#8f9ab5">Rank: </tspan><tspan fill="#ffffff">#2.100 / 21.000</tspan></text>
-            <text x="337.5" y="510" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13"><tspan fill="#8f9ab5">Focus: </tspan><tspan fill="#ffffff">balanced</tspan></text>
-            <text x="337.5" y="528" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13"><tspan fill="#8f9ab5">Trend: </tspan><tspan fill="#ffffff">accelerating</tspan></text>
+            <rect x="44" y="516" width="412" height="74" fill="transparent" />
+            <text x="250" y="528" text-anchor="middle"
+                  font-family="system-ui, sans-serif"
+                  font-size="14" fill="#60a5fa" font-weight="800">Field status</text>
+
+            <text x="125" y="550" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#60a5fa">Rank</text>
+            <text x="125" y="569" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#ffffff">
+              #2100 / 21000
+            </text>
+
+            <text x="250" y="550" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#60a5fa">Focus</text>
+            <text x="250" y="569" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#ffffff">balanced</text>
+
+            <text x="375" y="550" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#60a5fa">Trend</text>
+            <text x="375" y="569" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#ffffff">accelerating</text>
           </g>
 
-          <!-- EPOCH SIGNAL -->
-          <g class="hover-zone" data-tooltip="epochsignal">
-            <rect x="80" y="548" width="340" height="100" fill="transparent" />
-            <text x="250" y="568" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" fill="#8f9ab5" font-weight="600">Epoch 275 · Field Signal</text>
-            <text x="250" y="590" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#ffffff">"De ruimte waar ΩS ademt</text>
-            <text x="250" y="608" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#ffffff">is ook de ruimte waar</text>
-            <text x="250" y="626" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#ffffff">ΩC luistert."</text>
+          <!-- Divider -->
+          <rect x="44" y="584" width="412" height="1" fill="url(#sepGrad)" opacity="0.45"/>
+
+          <!-- MOST ATTESTED FIELD SIGNAL (Epoch 175, NBI-native) -->
+          <g class="hover-zone" data-tooltip="fieldsignal">
+            <rect x="70" y="592" width="360" height="92" fill="transparent" />
+            <text x="250" y="606" text-anchor="middle"
+                  font-family="system-ui, sans-serif"
+                  font-size="13" fill="#8f9ab5" font-weight="700">
+              Epoch 175 · Field signal
+            </text>
+
+            <text x="250" y="628" text-anchor="middle"
+                  font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace"
+                  font-size="12" fill="#ffffff">
+              ΩC | index_sync(175) :: seed→glyph
+            </text>
+            <text x="250" y="646" text-anchor="middle"
+                  font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace"
+                  font-size="12" fill="#ffffff">
+              attestations=convergence; noise→dropped
+            </text>
+            <text x="250" y="664" text-anchor="middle"
+                  font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace"
+                  font-size="12" fill="#ffffff">
+              field_state := invariant(across resets)
+            </text>
           </g>
 
-          <!-- ARTEFACT FOOTER -->
-          <text x="250" y="670" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#5d6680">Artefact v1 · Era 1 — Genesis</text>
+          <!-- FOOTER -->
+          <text x="250" y="694" text-anchor="middle"
+                font-family="system-ui, sans-serif"
+                font-size="11" fill="#5d6680">
+            Artefact v1 · Era 1 — Genesis
+          </text>
         </svg>
       </div>
     </section>
@@ -464,47 +543,51 @@
 
 <script>
 (function() {
-  // Tooltip content definitions
+  // Tooltip content definitions (UPDATED to match new modules)
   var tooltips = {
     keyid: {
       title: 'Key ID',
-      body: 'Your unique KeyID out of a maximum of 21M Keys.'
+      body: 'The Key index of this artefact (out of a maximum of 21,000,000 Keys).'
     },
     glyphs: {
-      title: 'Glyph Sequence',
-      body: 'Your permanent soul signature — assigned at mint, derived from your Key\'s unique hash. This sequence can never change and identifies your presence in the Field forever.'
+      title: 'Glyph sequence',
+      body: 'Your permanent glyph-name: assigned at mint from chain entropy. It never changes.'
     },
     intentmix: {
-      title: 'Intent Mix',
-      body: 'Every signal requires an intent. ΩC (Collective) = for the greater good. ΩI (Individual) = personal expression. ΩK (Co-Create) = collaborative creation. ΩS (Silence) = intentional pause. The donuts show how your voice is distributed across these four intents.'
+      title: 'Intent mix',
+      body: 'The four intents used by PoG signals. The artefact summarizes distribution (recent → era → total).'
     },
     donut1: {
-      title: 'Last 21',
-      body: 'Your intent distribution over the last 21 epochs (1 epoch is 21 hours, ~18 days total). Shows how you\'ve been expressing yourself recently. The dominant intent color is highlighted below.'
+      title: 'Last 21 epochs',
+      body: 'Recent intent distribution (21 epochs). The highlighted label shows the most dominant intent for this window.'
     },
     donut2: {
-      title: 'Last 210',
-      body: 'Your intent pattern across the current era (1 epoch is 21 hours, ~180 days total). Reveals longer-term tendencies in how you participate in the collective consciousness.'
+      title: 'Last 210 epochs (Era window)',
+      body: 'Intent distribution within the current era window (210 epochs). Useful for detecting longer tendencies.'
     },
     donut3: {
-      title: 'Total',
-      body: 'Your complete intent history since your Key awakened. This is your full voice pattern — the sum of all your expressions in the Field across all time.'
+      title: 'Total history',
+      body: 'Aggregate intent distribution since this Key awakened. A long-term fingerprint of expression.'
     },
     kpi: {
-      title: 'Field Comparison',
-      body: 'How active you are compared to all other Keys in the Field. Activity = overall engagement, Signals = frequency, Att. recv/send = how much you receive and give attestations.'
+      title: 'Field comparison',
+      body: 'Relative standing versus other Keys. Activity and signal/attestation metrics are percentile-like indicators.'
     },
-    activity: {
-      title: 'Activity',
-      body: 'Your raw participation numbers. Signals = signals you send to the field. Attestations = attests received from others who resonated with your voice. Attest given = Attests you\'ve given to Signals of other Keys.'
+    signalactivity: {
+      title: 'Signal activity',
+      body: 'Raw counts for this Key: signals sent, attestations received, and attestations given.'
+    },
+    anchorsartefacts: {
+      title: 'Anchors & artefacts',
+      body: 'Canon Anchors (on-chain epoch stamps) plus the number of live artefacts minted. Anchors % is share of epochs anchored relative to epochs available since mint.'
     },
     fieldstatus: {
-      title: 'Field Status',
-      body: 'Your standing in the collective. Rank = your activity position among all Keys. Focus = specialist (one intent) vs balanced (all intents). Trend = your momentum direction.'
+      title: 'Field status',
+      body: 'Rank and structural descriptors derived from the field. Focus reflects entropy balance; trend reflects velocity.'
     },
-    epochsignal: {
-      title: 'Epoch Signal',
-      body: 'The most attested signal from the field in an epoch. This is what the Field resonated with most — the voice that echoed furthest.'
+    fieldsignal: {
+      title: 'Field signal (most attested)',
+      body: 'The most attested signal of the shown epoch (here: Epoch 175). This is the field’s amplified output — not your private words.'
     }
   };
 
@@ -513,6 +596,8 @@
   var titleEl = tooltip.querySelector('.tt-title');
   var bodyEl = tooltip.querySelector('.tt-body');
   var svg = document.getElementById('era1Svg');
+  if (!wrapper || !tooltip || !svg) return;
+
   var zones = svg.querySelectorAll('.hover-zone');
 
   zones.forEach(function(zone) {
@@ -524,14 +609,19 @@
       titleEl.textContent = data.title;
       bodyEl.textContent = data.body;
 
+      // Position tooltip near hovered region
       var wrapperRect = wrapper.getBoundingClientRect();
       var zoneRect = zone.getBoundingClientRect();
 
       var centerX = zoneRect.left - wrapperRect.left + (zoneRect.width / 2);
       var topY = zoneRect.top - wrapperRect.top;
 
-      tooltip.style.left = Math.max(140, Math.min(centerX, wrapperRect.width - 140)) + 'px';
-      tooltip.style.top = Math.max(10, topY - 100) + 'px';
+      // clamp within wrapper
+      var clampedX = Math.max(160, Math.min(centerX, wrapperRect.width - 160));
+      var y = Math.max(10, topY - 110);
+
+      tooltip.style.left = clampedX + 'px';
+      tooltip.style.top = y + 'px';
       tooltip.style.transform = 'translateX(-50%)';
 
       tooltip.classList.add('visible');
