@@ -11,7 +11,7 @@
   var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
   var Z1N_SIGNAL = '0x3CD0DF7b0aC8fdF4dB1c65149741dB12F144e3bd';
   var Z1N_ARTEFACT = '0xf1887e8D53bbb61F64bfD16Ec41598618053bd2c';
-  var RPC_URLS = ['https://polygon-rpc.com','https://polygon-bor-rpc.publicnode.com','https://rpc-mainnet.maticvigil.com'];
+  var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var currentRpcIndex = 0;
   var EXPLORER = 'https://polygonscan.com';
   var API_BASE = 'https://z1n-backend-production.up.railway.app/api';

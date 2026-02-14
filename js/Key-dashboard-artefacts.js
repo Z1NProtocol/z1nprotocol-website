@@ -18,11 +18,7 @@
   var Z1N_ARTEFACT = '0xf1887e8D53bbb61F64bfD16Ec41598618053bd2c';
   var Z1N_KEY = '0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469';
   
-  var RPC_URLS = [
-    'https://polygon-rpc.com',
-    'https://polygon-bor-rpc.publicnode.com',
-    'https://rpc-mainnet.maticvigil.com'
-  ];
+  var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var currentRpcIndex = 0;
   
   var SELECTORS = {
@@ -866,7 +862,7 @@
   // MINT FUNCTION - Based on proven mint-live-artefact.html logic
   // ═══════════════════════════════════════════════════════════════════════════
   
-  var MINT_RPC_URLS = ['https://polygon-rpc.com','https://polygon-bor-rpc.publicnode.com','https://rpc-mainnet.maticvigil.com'];
+  var MINT_RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var mintRpcIndex = 0;
   var MINT_PRICE = '0x1236efcbcbb340000'; // 21 POL
   

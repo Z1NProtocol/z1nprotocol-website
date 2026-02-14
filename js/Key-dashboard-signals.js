@@ -239,7 +239,7 @@
         div.className = 'sent-signal-item';
         
         var content = sig.cid || '[Silence]';
-        if (content.length > 60) content = content.slice(0, 60) + '...';
+        // content niet afkappen - volledig tonen
         
         var replyBadge = '';
         if (sig.isReply && sig.replyTo) {
