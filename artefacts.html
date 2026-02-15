@@ -80,36 +80,33 @@
     h1 { font-size: 40px; margin: 0 0 10px 0; letter-spacing: -0.02em; }
 
     .lead { font-size: 17px; opacity: 0.88; line-height: 1.65; margin-bottom: 10px; max-width: 860px; }
-    .lead-small { font-size: 14px; opacity: 0.72; line-height: 1.65; margin-top: 4px; margin-bottom: 22px; max-width: 860px; }
+    .lead-small { font-size: 14px; opacity: 0.72; line-height: 1.65; margin-top: 4px; margin-bottom: 18px; max-width: 860px; }
 
-    /* SINGLE INFO CARD (no duplicate header/text) */
-    .info-card{
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 22px 24px;
-      border-radius: 16px;
+    /* TEXT BLOCK (replaces the card) */
+    .info-block{
+      max-width: 980px;
       font-size: 14px;
       line-height: 1.65;
-      max-width: 980px;
-      margin: 18px 0 44px;
+      margin: 0 0 44px;
     }
-    .info-card p{ margin:0 0 10px 0; }
-    .info-card p:last-child{ margin-bottom:0; }
+    .info-block p{ margin: 0 0 10px 0; color: rgba(255,255,255,0.92); }
+    .info-block p.subtle{ color: var(--text-soft); opacity: 0.95; }
+    .info-block p:last-child{ margin-bottom: 0; }
 
     /* Bullet lists — open circles + indent */
-    .info-card ul{
+    .info-block ul{
       list-style: none;
       margin: 10px 0 10px 0;
       padding: 0;
     }
-    .info-card li{
+    .info-block li{
       position: relative;
       padding-left: 20px;
       margin: 2px 0;
       line-height: 1.22;
       opacity: 0.92;
     }
-    .info-card li::before{
+    .info-block li::before{
       content:"";
       position:absolute;
       left:0;
@@ -223,18 +220,23 @@
   </p>
 
   <p class="lead-small">
-    Artefacts do not store your private words. They render patterns of participation and resonance.
-    Their visual language evolves in eras, while each artefact keeps the dialect it was born with.
+    Artefacts in Z1N are living mirrors. Their visual language evolves in eras.
   </p>
 
-  <section class="info-card" aria-label="Artefacts explained">
+  <!-- TEXT (no card) -->
+  <section class="info-block" aria-label="Artefacts explained">
+    <p class="subtle">
+      Artefacts do not store your private words. They render patterns of participation and resonance.
+      Each artefact keeps the dialect it was born with.
+    </p>
+
     <p>
       When your Key awakens, the field offers you one artefact for free: a live mirror that updates every epoch.
       You may mint additional artefacts for <strong>21 POL</strong>. Each artefact is version-locked at mint time.
     </p>
 
     <p>
-      Artefacts are not “gifted away” as objects. They remain anchored to the Key that minted them.
+      Artefacts are not transferred as objects. They remain anchored to the Key that minted them.
       What you can grant is <em>viewing access</em>.
     </p>
 
@@ -267,7 +269,7 @@
           <div class="tt-body"></div>
         </div>
 
-        <!-- ERA 1 SVG (UPDATED LAYOUT + DUMMY VALUES) -->
+        <!-- ERA 1 SVG -->
         <svg xmlns="http://www.w3.org/2000/svg" width="500" height="760" viewBox="0 0 500 760" id="era1Svg">
           <defs>
             <linearGradient id="borderSolidLike" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -347,7 +349,6 @@
             <circle cx="0" cy="0" r="62" fill="url(#donutGrad)" />
             <circle cx="0" cy="0" r="43" fill="#0f141f" />
             <circle cx="0" cy="0" r="51" fill="none" stroke="#252c3b" stroke-width="11" />
-            <!-- DUMMY arcs (keep your current frontend pattern if you want; these are placeholders) -->
             <circle cx="0" cy="0" r="51" fill="none" stroke="#4CAF50" stroke-width="11" stroke-dasharray="80 320" transform="rotate(-90)" />
             <circle cx="0" cy="0" r="51" fill="none" stroke="#F44336" stroke-width="11" stroke-dasharray="58 320" transform="rotate(0)" />
             <circle cx="0" cy="0" r="51" fill="none" stroke="#FFEB3B" stroke-width="11" stroke-dasharray="134 320" transform="rotate(65)" />
