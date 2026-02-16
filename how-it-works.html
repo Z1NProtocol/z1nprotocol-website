@@ -12,20 +12,22 @@
       --card-bg:#020617;
       --text-main:#ffffff;
       --text-soft:#8f9ab5;
+
       --accent:#66d69a;
       --accent-soft:#3a9f63;
-      --card-border:rgba(148,163,184,0.25);
 
-      --keys-accent:#f5c842;
+      --keys-accent:#f5c842;       /* keep available */
       --canon:#c084fc;
       --treasury:#60a5fa;
 
-      --oc:#4ade80;  /* ΩC */
-      --oi:#f87171;  /* ΩI */
-      --ok:#fbbf24;  /* ΩK */
-      --os:#60a5fa;  /* ΩS */
-
+      --card-border:rgba(148,163,184,0.25);
       --shadow: 0 14px 34px rgba(0,0,0,0.42);
+
+      /* intent colors (match your live-stats) */
+      --C:#4CAF50;
+      --I:#F44336;
+      --K:#FFEB3B;
+      --S:#2196F3;
     }
 
     *{ box-sizing:border-box; margin:0; padding:0; }
@@ -38,7 +40,7 @@
     a{ color: inherit; text-decoration:none; }
     a:hover{ opacity:0.92; }
 
-    /* HEADER (matches your other pages) */
+    /* HEADER (align with your other pages) */
     header{
       height:72px;
       display:flex;
@@ -92,14 +94,10 @@
     }
     @media(max-width:900px){ .page{ padding: 28px 18px 60px; } }
 
-    h1{
-      font-size:42px;
-      letter-spacing:-0.02em;
-      margin: 0 0 10px 0;
-    }
+    h1{ font-size:42px; letter-spacing:-0.02em; margin:0 0 10px 0; }
     .lead{
       font-size:16px;
-      opacity:0.86;
+      opacity:0.88;
       line-height:1.7;
       max-width:980px;
       margin-bottom: 10px;
@@ -112,7 +110,7 @@
       margin-bottom: 18px;
     }
 
-    /* TOP: Compact “4 steps” strip */
+    /* 4-step strip (keep: readable) */
     .strip{
       position:relative;
       margin-top: 16px;
@@ -145,7 +143,7 @@
       background: rgba(2,6,23,0.62);
       border:1px solid rgba(148,163,184,0.18);
       border-radius: 16px;
-      padding: 14px 14px 14px;
+      padding: 14px;
       position:relative;
       overflow:hidden;
       transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
@@ -157,13 +155,7 @@
       box-shadow: 0 12px 30px rgba(0,0,0,0.35), 0 0 20px rgba(102,214,154,0.10);
     }
 
-    .step-top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-    }
+    .step-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 10px; }
     .step-kicker{
       font-size:11px;
       letter-spacing:0.16em;
@@ -179,31 +171,10 @@
       color: rgba(255,255,255,0.78);
       white-space:nowrap;
     }
-    .step-title{
-      font-size:15px;
-      font-weight:700;
-      margin-bottom: 6px;
-      letter-spacing:-0.01em;
-    }
-    .step-body{
-      font-size:12.5px;
-      line-height:1.65;
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 10px;
-    }
-    .bullets{
-      list-style:none;
-      display:flex;
-      flex-direction:column;
-      gap:7px;
-      font-size:12px;
-      line-height:1.55;
-      color: var(--text-soft);
-    }
-    .bullets li{
-      padding-left:16px;
-      position:relative;
-    }
+    .step-title{ font-size:15px; font-weight:800; margin-bottom: 6px; letter-spacing:-0.01em; }
+    .step-body{ font-size:12.5px; line-height:1.65; color: rgba(255,255,255,0.85); margin-bottom: 10px; }
+    .bullets{ list-style:none; display:flex; flex-direction:column; gap:7px; font-size:12px; line-height:1.55; color: var(--text-soft); }
+    .bullets li{ padding-left:16px; position:relative; }
     .bullets li::before{
       content:"";
       position:absolute;
@@ -215,100 +186,47 @@
       opacity:0.9;
     }
 
-    /* CTA row */
-    .cta-row{
-      margin-top: 12px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.45);
-      background: transparent;
-      color: #e5e7eb;
-      font-size: 12px;
-      cursor:pointer;
-      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
-      white-space:nowrap;
-    }
-    .btn:hover{
-      border-color: rgba(102,214,154,0.75);
-      transform: translateY(-1px);
-    }
-    .btn-primary{
-      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
-      border-color: rgba(58,159,99,0.95);
-      color:#061018;
-      font-weight:800;
-    }
-    .btn-primary:hover{
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-      box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.14);
-    }
+    /* SECTION TITLES */
+    .section-title{ margin-top: 28px; font-size: 18px; letter-spacing:-0.01em; }
+    .section-sub{ margin-top: 6px; font-size: 13px; line-height:1.7; color: var(--text-soft); max-width: 980px; }
 
-    /* MID: “System map” (2 rows of 3) */
-    .section-title{
-      margin-top: 26px;
-      font-size: 18px;
-      letter-spacing:-0.01em;
-    }
-    .section-sub{
-      margin-top: 6px;
-      font-size: 13px;
-      line-height:1.7;
-      color: var(--text-soft);
-      max-width: 980px;
-    }
-
-    .map{
+    /* ===== Field Ritual Loop (circular infographic) ===== */
+    .loop-wrap{
       margin-top: 14px;
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    .rail{
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 18px;
-      padding: 16px;
+      padding: 18px;
       position:relative;
       overflow:hidden;
     }
-    .rail::before{
+    .loop-wrap::before{
       content:"";
       position:absolute;
       inset:-1px;
       pointer-events:none;
       border-radius:18px;
-      background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0) 65%);
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 65%);
       opacity:0.9;
     }
-    .rail > *{ position:relative; }
-
-    .rail-head{
+    .loop-head{
+      position:relative;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
       margin-bottom: 12px;
+      flex-wrap:wrap;
     }
-    .rail-title{
-      font-size: 12px;
+    .loop-kicker{
+      font-size:11px;
       letter-spacing:0.16em;
       text-transform:uppercase;
-      color: rgba(255,255,255,0.70);
+      color: rgba(255,255,255,0.75);
     }
-    .rail-note{
-      font-size: 11px;
-      color: rgba(255,255,255,0.70);
-      opacity:0.85;
+    .loop-note{
+      font-size:11px;
+      color: rgba(255,255,255,0.75);
       border:1px solid rgba(148,163,184,0.22);
       padding:6px 10px;
       border-radius:999px;
@@ -316,171 +234,192 @@
       white-space:nowrap;
     }
 
-    .nodes{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 12px;
+    .loop-grid{
       position:relative;
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 18px;
+      align-items:center;
     }
-    @media(max-width:900px){ .nodes{ grid-template-columns:1fr; } }
+    @media(max-width:980px){ .loop-grid{ grid-template-columns:1fr; } }
 
-    /* Animated connector line */
-    .nodes::before{
-      content:"";
-      position:absolute;
-      left: 18px;
-      right: 18px;
-      top: 44px;
-      height: 2px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(102,214,154,0.12), rgba(102,214,154,0.32), rgba(102,214,154,0.12));
-      opacity:0.8;
+    /* The circle */
+    .loop-circle{
+      position:relative;
+      width: 100%;
+      max-width: 520px;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
     }
-    @media(max-width:900px){
-      .nodes::before{ display:none; }
-    }
-    .nodes::after{
-      content:"";
-      position:absolute;
-      left: 18px;
-      right: 18px;
-      top: 44px;
-      height: 2px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(102,214,154,0.0), rgba(102,214,154,0.75), rgba(102,214,154,0.0));
-      filter: blur(0.2px);
-      opacity:0.55;
-      animation: sweep 2.8s linear infinite;
-      transform-origin:left;
-    }
-    @keyframes sweep{
-      0%{ transform: translateX(-35%); opacity:0.0; }
-      15%{ opacity:0.55; }
-      50%{ opacity:0.55; }
-      85%{ opacity:0.55; }
-      100%{ transform: translateX(35%); opacity:0.0; }
-    }
-    @media(max-width:900px){ .nodes::after{ display:none; } }
 
-    .node{
-      background: rgba(15,23,42,0.42);
+    .ring{
+      position:absolute;
+      inset: 8%;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background:
+        radial-gradient(circle at center, rgba(2,6,23,0.25), rgba(2,6,23,0.0) 65%),
+        conic-gradient(
+          from 0deg,
+          rgba(102,214,154,0.08),
+          rgba(102,214,154,0.22),
+          rgba(102,214,154,0.08)
+        );
+      filter: saturate(1.05);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+
+    /* rotating "flow" highlight */
+    .ring-flow{
+      position:absolute;
+      inset: 8%;
+      border-radius: 999px;
+      border: 2px solid rgba(102,214,154,0.18);
+      box-shadow: 0 0 18px rgba(102,214,154,0.10);
+      mask: radial-gradient(circle at center, transparent 57%, #000 58%);
+      -webkit-mask: radial-gradient(circle at center, transparent 57%, #000 58%);
+      background: conic-gradient(
+        from 0deg,
+        rgba(102,214,154,0.0),
+        rgba(102,214,154,0.55),
+        rgba(102,214,154,0.0)
+      );
+      animation: spin 4.6s linear infinite;
+      opacity:0.85;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+
+    /* center omega */
+    .omega-core{
+      position:absolute;
+      inset: 34%;
+      border-radius: 999px;
+      background: rgba(2,6,23,0.75);
+      border: 1px solid rgba(148,163,184,0.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    }
+    .omega-core .omega{
+      font-size: 56px;
+      line-height:1;
+      color: rgba(255,255,255,0.88);
+      letter-spacing: -0.04em;
+      text-shadow: 0 0 18px rgba(102,214,154,0.12);
+    }
+    .omega-core .sub{
+      position:absolute;
+      bottom: 18px;
+      font-size: 11px;
+      color: var(--text-soft);
+      opacity: 0.85;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* nodes around the ring */
+    .loop-node{
+      position:absolute;
+      width: 178px;
+      max-width: 44%;
+      background: rgba(15,23,42,0.55);
+      border: 1px solid rgba(148,163,184,0.18);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.30);
+      transition: transform 200ms ease, border-color 200ms ease;
+    }
+    .loop-node:hover{ transform: translateY(-2px); border-color: rgba(102,214,154,0.45); }
+
+    .loop-node .top{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 6px;
+    }
+    .loop-node .name{ font-size:13px; font-weight:800; letter-spacing:-0.01em; }
+    .loop-node .pill{
+      font-size:10px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.02);
+      color: rgba(255,255,255,0.78);
+      white-space:nowrap;
+    }
+    .loop-node .body{ font-size:12px; color: rgba(255,255,255,0.82); line-height:1.55; }
+    .loop-node .mini{ margin-top:8px; font-size:11px; color: var(--text-soft); line-height:1.5; }
+
+    /* positions */
+    .n-signal{ left: 4%; top: 16%; }
+    .n-attest{ right: 2%; top: 42%; }
+    .n-output{ left: 8%; bottom: 12%; }
+
+    /* fallback layout for small screens: stack nodes */
+    @media(max-width:560px){
+      .loop-circle{ aspect-ratio: auto; max-width: 100%; }
+      .ring, .ring-flow, .omega-core{ position:relative; inset:auto; width:100%; height: 260px; border-radius:18px; }
+      .ring{ height:260px; }
+      .ring-flow{ display:none; }
+      .omega-core{ margin-top:-260px; height:260px; border-radius:18px; inset:auto; }
+      .omega-core .omega{ font-size:46px; }
+      .loop-node{ position:relative; width:100%; max-width:100%; left:auto; right:auto; top:auto; bottom:auto; margin-top: 12px; }
+    }
+
+    /* Right-side explanation block */
+    .loop-explain{
+      position:relative;
+      background: rgba(15,23,42,0.35);
       border: 1px solid rgba(148,163,184,0.18);
       border-radius: 16px;
       padding: 14px;
-      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
-      min-height: 160px;
-      position:relative;
-      overflow:hidden;
     }
-    .node:hover{
-      transform: translateY(-2px);
-      border-color: rgba(102,214,154,0.40);
-      box-shadow: 0 10px 26px rgba(0,0,0,0.33);
-    }
-
-    .node-top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 8px;
-    }
-    .node-name{
-      font-size: 14px;
-      font-weight: 750;
-      letter-spacing:-0.01em;
-    }
-    .node-badge{
-      font-size: 10px;
-      padding: 6px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.22);
+    .loop-explain .title{
+      font-size:12px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
       color: rgba(255,255,255,0.75);
-      background: rgba(255,255,255,0.02);
-      white-space:nowrap;
-    }
-    .node-body{
-      font-size: 12.5px;
-      line-height: 1.65;
-      color: rgba(255,255,255,0.84);
       margin-bottom: 10px;
     }
-
-    /* Intent legend */
-    .intent-legend{
+    .intent-row{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      align-items:center;
-      font-size:12px;
-      margin-top: 8px;
+      margin-top: 10px;
       padding-top: 10px;
       border-top: 1px solid rgba(148,163,184,0.16);
+      font-size:12px;
+      color: rgba(255,255,255,0.82);
     }
-    .tag{
+    .itag{
       display:inline-flex;
       align-items:center;
       gap:6px;
-      padding: 6px 9px;
-      border-radius: 999px;
+      padding:6px 9px;
+      border-radius:999px;
       border:1px solid rgba(148,163,184,0.18);
       background: rgba(2,6,23,0.45);
-      color: rgba(255,255,255,0.82);
       white-space:nowrap;
     }
-    .dot{
-      width:9px; height:9px;
-      border-radius:50%;
-      background: rgba(255,255,255,0.3);
-    }
-    .oc .dot{ background: var(--oc); }
-    .oi .dot{ background: var(--oi); }
-    .ok .dot{ background: var(--ok); }
-    .os .dot{ background: var(--os); }
+    .idot{ width:9px; height:9px; border-radius:50%; }
+    .c .idot{ background:var(--C); }
+    .i .idot{ background:var(--I); }
+    .k .idot{ background:var(--K); }
+    .s .idot{ background:var(--S); }
 
-    /* Key glyph preview */
-    .glyph-box{
-      margin-top: 8px;
-      font-family: "Segoe UI Symbol", system-ui, sans-serif;
-      font-size: 16px;
-      letter-spacing: 2px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border:1px solid rgba(148,163,184,0.18);
-      background: rgba(2,6,23,0.55);
-      color: rgba(255,255,255,0.86);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .glyph-box span.small{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size: 11px;
-      color: var(--text-soft);
-      letter-spacing: 0;
-      opacity:0.85;
-      white-space:nowrap;
-    }
-
-    /* Live stats */
-    .stats{
+    /* ===== Personal Presence (3 connected cards) ===== */
+    .presence-wrap{
       margin-top: 14px;
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 12px;
-    }
-    @media(max-width:900px){ .stats{ grid-template-columns:1fr; } }
-
-    .stat{
       background: var(--card-bg);
-      border:1px solid var(--card-border);
+      border: 1px solid var(--card-border);
       border-radius: 18px;
-      padding: 16px;
+      padding: 18px;
       position:relative;
       overflow:hidden;
     }
-    .stat::before{
+    .presence-wrap::before{
       content:"";
       position:absolute;
       inset:-1px;
@@ -489,87 +428,276 @@
       background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0) 65%);
       opacity:0.9;
     }
-    .stat > *{ position:relative; }
-    .stat-kicker{
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.70);
-      margin-bottom: 8px;
-    }
-    .stat-value{
-      font-size: 34px;
-      font-weight: 800;
-      letter-spacing:-0.02em;
-      color: var(--accent);
-      margin-bottom: 6px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-    }
-    .stat-sub{
-      font-size: 12px;
-      color: var(--text-soft);
-      line-height:1.6;
-    }
-    .stat-link{
-      margin-top: 10px;
-      display:inline-flex;
-      gap:8px;
+    .presence-wrap > *{ position:relative; }
+
+    .presence-head{
+      display:flex;
       align-items:center;
-      font-size: 12px;
-      color: rgba(255,255,255,0.80);
-      border: 1px solid rgba(148,163,184,0.22);
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.02);
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 12px;
+      flex-wrap:wrap;
+    }
+    .presence-kicker{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,0.75);
     }
 
-    /* FAQ */
-    .faq{
-      margin-top: 14px;
+    .presence-grid{
+      position:relative;
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0,1fr));
       gap: 12px;
     }
-    @media(max-width:900px){ .faq{ grid-template-columns: 1fr; } }
+    @media(max-width:900px){ .presence-grid{ grid-template-columns:1fr; } }
 
-    details{
-      background: var(--card-bg);
-      border:1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 14px 14px 12px;
+    /* connector line */
+    .presence-grid::before{
+      content:"";
+      position:absolute;
+      left: 18px;
+      right: 18px;
+      top: 34px;
+      height: 2px;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(102,214,154,0.15), rgba(192,132,252,0.20), rgba(102,214,154,0.15));
+      opacity:0.8;
     }
-    summary{
-      cursor:pointer;
-      list-style:none;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing:-0.01em;
+    @media(max-width:900px){ .presence-grid::before{ display:none; } }
+
+    .p-card{
+      background: rgba(15,23,42,0.42);
+      border: 1px solid rgba(148,163,184,0.18);
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 168px;
+      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .p-card:hover{ transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,0.32); }
+
+    .p-card.key{ border-color: rgba(102,214,154,0.28); }
+    .p-card.key:hover{ border-color: rgba(102,214,154,0.55); }
+
+    .p-card.artefacts{ border-color: rgba(102,214,154,0.28); }
+    .p-card.artefacts:hover{ border-color: rgba(102,214,154,0.55); }
+
+    .p-card.canon{ border-color: rgba(192,132,252,0.28); }
+    .p-card.canon:hover{ border-color: rgba(192,132,252,0.60); }
+
+    .p-top{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 8px;
+    }
+    .p-name{ font-size:14px; font-weight:850; letter-spacing:-0.01em; }
+    .p-pill{
+      font-size:10px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.02);
+      color: rgba(255,255,255,0.78);
+      white-space:nowrap;
+    }
+    .p-body{ font-size:12.5px; line-height:1.6; color: rgba(255,255,255,0.84); }
+
+    .glyph-line{
+      margin-top:10px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.18);
+      background: rgba(2,6,23,0.55);
+      font-family: "Segoe UI Symbol", system-ui, sans-serif;
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.86);
     }
-    summary::-webkit-details-marker{ display:none; }
-    .faq-body{
+    .glyph-line .small{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 11px;
+      letter-spacing: 0;
+      color: var(--text-soft);
+      opacity:0.85;
+      white-space:nowrap;
+    }
+
+    /* ===== Live stats (lite) – embed your style but 3 lenses ===== */
+    .intent-legend{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      margin: 6px 0 14px;
+      user-select:none;
+    }
+    .intent-legend .title{
+      font-size:13px;
+      color:var(--text-soft);
+      opacity:0.95;
+    }
+    .intent-legend .row{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      letter-spacing:0.02em;
+      flex-wrap:wrap;
+    }
+    .intent-legend .c{ color:var(--C); }
+    .intent-legend .i{ color:var(--I); }
+    .intent-legend .k{ color:var(--K); }
+    .intent-legend .s{ color:var(--S); }
+
+    .donut-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:16px;
       margin-top: 10px;
-      font-size: 13px;
-      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+    .donut-card{
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 14px 14px 16px;
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+    .donut-card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      pointer-events:none;
+      border-radius:18px;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 62%);
+      opacity:0.85;
+    }
+    .donut-card > *{ position:relative; }
+    .donut-top{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .donut-top .label{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,0.75);
+      opacity:0.9;
+    }
+    .donut-top .sub{
+      font-size:12px;
+      color: var(--text-soft);
+      white-space:nowrap;
+    }
+    .donut-mid{ display:flex; align-items:center; justify-content:center; padding: 4px 0 2px; }
+    .donut-svg{ width: 150px; height: 150px; display:block; }
+    .donut-center-win{ font-size:20px; font-weight:800; letter-spacing:0.01em; }
+    .donut-card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(102,214,154,0.45);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.10);
+    }
+    .donut-card.active{
+      border-color: rgba(102,214,154,0.85);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.45), 0 0 28px rgba(102,214,154,0.18);
+      transform: translateY(-1px);
+    }
+    @media(max-width:900px){
+      .donut-grid{ grid-template-columns:1fr; }
+    }
+
+    .field-cards{
+      margin-top: 6px;
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:16px;
+      width:100%;
+    }
+    .field-card{
+      background:var(--card-bg);
+      border-radius:16px;
+      border:1px solid var(--card-border);
+      padding:14px 14px 16px;
+      font-size:13px;
+      position:relative;
+      overflow:hidden;
+      transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+    }
+    .field-card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      pointer-events:none;
+      border-radius:16px;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0.0) 62%);
+      opacity:0.9;
+    }
+    .field-card > *{ position:relative; }
+    .fc-label{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      opacity:0.55;
+      margin-bottom:6px;
+    }
+    .fc-value{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .fc-sub{
+      font-size:12px;
+      opacity:0.75;
+      line-height:1.55;
       color: var(--text-soft);
     }
+    .field-card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(102,214,154,0.35);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.30), 0 0 18px rgba(102,214,154,0.10);
+    }
+    @media(max-width:900px){
+      .field-cards{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media(max-width:600px){
+      .field-cards{ grid-template-columns: 1fr; }
+    }
 
+    /* FOOTER */
     footer{
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 18px 20px;
-      font-size: 12px;
+      border-top:1px solid rgba(255,255,255,0.05);
+      padding:20px;
+      font-size:12px;
       text-align:center;
       opacity:0.85;
-      margin-top: 44px;
+      margin-top:44px;
     }
-    footer .tagline{ margin-bottom: 6px; font-size: 13px; }
-    footer .links{ display:flex; justify-content:center; gap:18px; font-size: 13px; }
+    footer .tagline{ margin-bottom:6px; font-size:13px; }
+    footer .links{ display:flex; justify-content:center; gap:18px; font-size:13px; }
 
-    /* Small utility */
-    .muted{ color: var(--text-soft); }
+    @media (prefers-reduced-motion: reduce){
+      *{ scroll-behavior: auto !important; }
+      .donut-card, .field-card, .loop-node, .p-card{ transition:none; }
+      .ring-flow{ animation:none; }
+    }
   </style>
 </head>
 
@@ -580,11 +708,11 @@
       <div class="logo-dot">Ω</div>
       <div class="logo-text">Z1N PROTOCOL</div>
     </a>
-
     <nav class="nav-links">
       <a href="/about.html">About</a>
-      <!-- You can rename this label to "Live Stats" if you want to keep the menu wording -->
+      <!-- keep Live Stats in menu, but make How it works active here -->
       <a href="/how-it-works.html" class="active">How it works</a>
+      <a href="/live-stats.html">Live Stats</a>
       <a href="/artefacts.html">Artefacts</a>
       <a href="/nbi-artefacts.html">4 NBIs</a>
       <a href="/mint-key.html">Mint your Key</a>
@@ -602,7 +730,7 @@
     The Field records <b>structure</b> (intent, timing, attestation weight) — not your private words.
   </p>
 
-  <!-- 4-step strip -->
+  <!-- 4-step strip (keep: most readable) -->
   <section class="strip" aria-label="Core steps">
     <div class="strip-inner">
       <div class="steps">
@@ -616,7 +744,7 @@
           <ul class="bullets">
             <li>Connect → sign ritual (0 gas)</li>
             <li>Mint at epoch price</li>
-            <li>Glyphs become permanent</li>
+            <li>Glyph sequence becomes permanent</li>
           </ul>
         </article>
 
@@ -626,11 +754,11 @@
             <div class="epoch-pill">Epoch t</div>
           </div>
           <div class="step-title">Signals (Field Ritual)</div>
-          <div class="step-body">Cast intent into the Field. The loop begins here.</div>
+          <div class="step-body">Cast an intent-mix into the window.</div>
           <ul class="bullets">
             <li>Choose ΩC / ΩI / ΩK / ΩS</li>
             <li>Epoch-scoped signal window</li>
-            <li>Optional: reply or whisper</li>
+            <li>Optional: reply / whisper</li>
           </ul>
         </article>
 
@@ -662,201 +790,202 @@
           </ul>
         </article>
       </div>
-
-      <div class="cta-row" style="margin-top:14px;">
-        <a class="btn btn-primary" href="/mint-key.html">Mint your Key</a>
-        <a class="btn" href="/your-keys.html">Open Your Keys</a>
-        <a class="btn" href="/artefacts.html">View Artefacts</a>
-      </div>
+      <!-- Buttons intentionally removed (per your request) -->
     </div>
   </section>
 
-  <!-- SYSTEM MAP -->
-  <h2 class="section-title">System map</h2>
+  <!-- FIELD RITUAL LOOP (visual) -->
+  <h2 class="section-title">Field Ritual Loop</h2>
   <p class="section-sub">
-    Two rails: the <b>Field Ritual loop</b> (the live mechanism) and <b>Personal Presence</b> (what your Key accumulates over time).
+    A closed loop with sealed windows: signals in <b>t</b>, attestation in <b>t+1</b>, winners & claims in <b>t+2</b>.
   </p>
 
-  <section class="map" aria-label="System map">
-    <!-- Rail 1 -->
-    <div class="rail">
-      <div class="rail-head">
-        <div class="rail-title">Field Ritual Loop</div>
-        <div class="rail-note">t → t+1 → t+2</div>
-      </div>
-
-      <div class="nodes">
-        <div class="node">
-          <div class="node-top">
-            <div class="node-name">Signals</div>
-            <div class="node-badge">Epoch t</div>
-          </div>
-          <div class="node-body">
-            Cast an intent-mix into the window. The Field indexes pattern, not private text.
-          </div>
-
-          <div class="intent-legend" aria-label="Intent legend">
-            <span class="tag oc"><span class="dot"></span> ΩC · Collective</span>
-            <span class="tag oi"><span class="dot"></span> ΩI · Individual</span>
-            <span class="tag ok"><span class="dot"></span> ΩK · Creative</span>
-            <span class="tag os"><span class="dot"></span> ΩS · Silence</span>
-          </div>
-        </div>
-
-        <div class="node">
-          <div class="node-top">
-            <div class="node-name">Attest</div>
-            <div class="node-badge">Epoch t+1</div>
-          </div>
-          <div class="node-body">
-            Attestation happens only after closure so the target can’t move.
-          </div>
-          <ul class="bullets">
-            <li>Settles “what happened” in epoch t</li>
-            <li>Amplifies resonance weight</li>
-            <li>Enables deterministic output</li>
-          </ul>
-        </div>
-
-        <div class="node">
-          <div class="node-top">
-            <div class="node-name">Winners + Claim</div>
-            <div class="node-badge">Epoch t+2</div>
-          </div>
-          <div class="node-body">
-            Winners finalize after attestation settlement. Claims appear per Key.
-          </div>
-          <ul class="bullets">
-            <li>Claim route: <b>self</b> / <b>recycle</b> / <b>nexus</b></li>
-            <li>Claim window: <b>21 epochs</b></li>
-            <li>Unclaimed recycles forward</li>
-          </ul>
-        </div>
-      </div>
+  <section class="loop-wrap" aria-label="Field Ritual Loop">
+    <div class="loop-head">
+      <div class="loop-kicker">Closed loop</div>
+      <div class="loop-note">t → t+1 → t+2</div>
     </div>
 
-    <!-- Rail 2 -->
-    <div class="rail">
-      <div class="rail-head">
-        <div class="rail-title">Personal Presence</div>
-        <div class="rail-note">identity → mirrors → anchors</div>
+    <div class="loop-grid">
+      <div class="loop-circle" aria-hidden="false">
+        <div class="ring"></div>
+        <div class="ring-flow"></div>
+
+        <div class="omega-core">
+          <div class="omega">Ω</div>
+          <div class="sub">field</div>
+        </div>
+
+        <div class="loop-node n-signal">
+          <div class="top">
+            <div class="name">Signals</div>
+            <div class="pill">Epoch t</div>
+          </div>
+          <div class="body">
+            Cast an intent-mix into the window.
+          </div>
+          <div class="mini">Structure indexed · no raw private log.</div>
+        </div>
+
+        <div class="loop-node n-attest">
+          <div class="top">
+            <div class="name">Attest</div>
+            <div class="pill">Epoch t+1</div>
+          </div>
+          <div class="body">
+            Attestation only after closure (sealed target).
+          </div>
+          <div class="mini">Weight builds convergence.</div>
+        </div>
+
+        <div class="loop-node n-output">
+          <div class="top">
+            <div class="name">Output</div>
+            <div class="pill">Epoch t+2</div>
+          </div>
+          <div class="body">
+            Winners finalize · claims appear per Key.
+          </div>
+          <div class="mini">Choose: self / recycle / nexus.</div>
+        </div>
       </div>
 
-      <div class="nodes">
-        <div class="node">
-          <div class="node-top">
-            <div class="node-name">Key</div>
-            <div class="node-badge">Soulbound</div>
-          </div>
-          <div class="node-body">
-            A Key is a coordinate in the 21M manifold — permanently bound to an address.
-          </div>
-          <div class="glyph-box" title="Example glyph sequence">
-            <div id="glyphPreview">Ω · ◈ · ⌁</div>
-            <span class="small">glyphs</span>
-          </div>
+      <div class="loop-explain">
+        <div class="title">Intent mix</div>
+        <div style="font-size:13px; line-height:1.7; color:rgba(255,255,255,0.86);">
+          In epoch <b>t</b>, signals carry an intent label. The Field reads the distribution across time — then attestation amplifies what converged.
         </div>
 
-        <div class="node">
-          <div class="node-top">
-            <div class="node-name">Artefacts</div>
-            <div class="node-badge" style="border-color: rgba(102,214,154,0.35); color: rgba(102,214,154,0.95);">Live</div>
-          </div>
-          <div class="node-body">
-            Mirrors of participation patterns. Access is keyed — not public raw logs.
-          </div>
-          <div class="cta-row">
-            <a class="btn" href="/artefacts.html">Open Artefacts</a>
-            <a class="btn" href="/mint-live-artefact.html">Mint Artefact</a>
-          </div>
+        <div class="intent-row" aria-label="Intent legend">
+          <span class="itag c"><span class="idot"></span> ΩC · Collective</span>
+          <span class="itag i"><span class="idot"></span> ΩI · Individual</span>
+          <span class="itag k"><span class="idot"></span> ΩK · Creative</span>
+          <span class="itag s"><span class="idot"></span> ΩS · Silence</span>
         </div>
 
-        <div class="node">
-          <div class="node-top">
-            <div class="node-name">Canon Anchors</div>
-            <div class="node-badge" style="border-color: rgba(192,132,252,0.35); color: rgba(192,132,252,0.95);">Permanent</div>
-          </div>
-          <div class="node-body">
-            Anchors are irreversible markers of meaningful epochs — written to the Field.
-          </div>
-          <div class="cta-row">
-            <a class="btn" href="/your-keys.html">Open Dashboard</a>
-            <a class="btn" href="/mint-canon.html">Mint Anchor</a>
-          </div>
+        <div style="margin-top:12px; font-size:12px; color:var(--text-soft); line-height:1.65;">
+          Attestation is delayed by design: it must reference a closed window. This is what keeps the loop deterministic and non-gameable.
         </div>
       </div>
     </div>
   </section>
 
-  <!-- LIVE STATS -->
-  <h2 class="section-title" style="margin-top:28px;">Live stats</h2>
+  <!-- PERSONAL PRESENCE -->
+  <h2 class="section-title">Personal Presence</h2>
   <p class="section-sub">
-    Compact epoch stats (no charts). If stats can’t load, the cards stay at <b>—</b> and you can still open the full stats page.
+    Not a loop. These are persistent objects your Key accumulates over time — connected, but not circular.
   </p>
 
-  <section class="stats" aria-label="Live stats">
-    <div class="stat">
-      <div class="stat-kicker">Last 21 epochs</div>
-      <div class="stat-value" id="stat21">—</div>
-      <div class="stat-sub">Rolling window aligned to claim cycle.</div>
-      <a class="stat-link" href="/live-stats.html">Open full stats ↗</a>
+  <section class="presence-wrap" aria-label="Personal Presence">
+    <div class="presence-head">
+      <div class="presence-kicker">Connected layer</div>
     </div>
 
-    <div class="stat">
-      <div class="stat-kicker">Last 210 epochs</div>
-      <div class="stat-value" id="stat210">—</div>
-      <div class="stat-sub">Longer window for drift & convergence.</div>
-      <a class="stat-link" href="/live-stats.html">Open full stats ↗</a>
-    </div>
+    <div class="presence-grid">
+      <div class="p-card key">
+        <div class="p-top">
+          <div class="p-name">Key (Mint)</div>
+          <div class="p-pill" style="border-color:rgba(102,214,154,0.35); color:rgba(102,214,154,0.95);">Soulbound</div>
+        </div>
+        <div class="p-body">
+          Your identity coordinate. One Key = one persistent presence node.
+        </div>
+        <div class="glyph-line">
+          <div id="glyphPreview">Ω · ◈ · ⌁</div>
+          <span class="small">glyphs</span>
+        </div>
+      </div>
 
-    <div class="stat">
-      <div class="stat-kicker">Total epochs</div>
-      <div class="stat-value" id="statTotal">—</div>
-      <div class="stat-sub">Total epochs observed by the Field.</div>
-      <a class="stat-link" href="/live-stats.html">Open full stats ↗</a>
+      <div class="p-card artefacts">
+        <div class="p-top">
+          <div class="p-name">Artefacts</div>
+          <div class="p-pill" style="border-color:rgba(102,214,154,0.35); color:rgba(102,214,154,0.95);">Mirrors</div>
+        </div>
+        <div class="p-body">
+          Rendered mirrors of participation. Never raw content. Pattern-first.
+        </div>
+        <div style="margin-top:10px; font-size:12px; color:var(--text-soft);">
+          Live artefacts evolve · static artefacts persist.
+        </div>
+      </div>
+
+      <div class="p-card canon">
+        <div class="p-top">
+          <div class="p-name">Canon Anchors</div>
+          <div class="p-pill" style="border-color:rgba(192,132,252,0.35); color:rgba(192,132,252,0.95);">Permanent</div>
+        </div>
+        <div class="p-body">
+          Irreversible anchors for meaningful epochs. Written to the Field.
+        </div>
+        <div style="margin-top:10px; font-size:12px; color:var(--text-soft);">
+          Think: “this epoch mattered” — permanently.
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <h2 class="section-title" style="margin-top:28px;">FAQ</h2>
-  <section class="faq" aria-label="FAQ">
-    <details>
-      <summary>Are my signals stored on the blockchain? <span class="muted">+</span></summary>
-      <div class="faq-body">
-        The protocol focuses on <b>structure</b> (intent, epoch timing, attestation weight). The goal is not to publish private text as raw on-chain content.
-        Depending on the path (direct vs relayed / stealth), your wallet address may be hidden while the Field still records participation.
-      </div>
-    </details>
+  <!-- LIVE STATS (lite) -->
+  <h2 class="section-title">Live stats (lite)</h2>
+  <p class="section-sub">
+    Same spirit as Live Stats — but without the “last epoch” lens. Use this as a compact readout.
+  </p>
 
-    <details>
-      <summary>Why attestation happens one epoch later? <span class="muted">+</span></summary>
-      <div class="faq-body">
-        Attestation must reference a <b>closed</b> window (epoch t). This prevents moving targets and keeps the output deterministic.
-      </div>
-    </details>
+  <div class="intent-legend" aria-label="Intent legend">
+    <div class="title">Intent mix across epochs</div>
+    <div class="row">
+      <span class="c">ΩC - Collective</span>
+      <span class="i">ΩI - Individual</span>
+      <span class="k">ΩK - Creative</span>
+      <span class="s">ΩS - Silence</span>
+    </div>
+  </div>
 
-    <details>
-      <summary>Why winners are t+2 and not earlier? <span class="muted">+</span></summary>
-      <div class="faq-body">
-        Winners finalize after attestation settlement (t+1). The extra step (t+2) avoids ambiguity and makes the result verifiable.
-      </div>
-    </details>
+  <section class="donut-grid" aria-label="Intent mix donuts">
+    <article class="donut-card"
+      data-key="21"
+      data-window="Last 21 epochs"
+      data-sub="short lens"
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
-    <details>
-      <summary>What is “recycle” vs “nexus”? <span class="muted">+</span></summary>
-      <div class="faq-body">
-        <b>Recycle</b> routes rewards back into the next epoch’s pool. <b>Nexus</b> routes rewards to a designated protocol wallet.
-        Both are routing policies, not ownership changes of your Key.
-      </div>
-    </details>
+    <article class="donut-card"
+      data-key="210"
+      data-window="Last 210 epochs"
+      data-sub="pattern lens"
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
 
-    <details>
-      <summary>Can I mint multiple keys from 1 wallet? <span class="muted">+</span></summary>
-      <div class="faq-body">
-        Yes. One address can mint multiple Keys (for itself or on behalf of others). Each Key stays soulbound once minted.
-      </div>
-    </details>
+    <article class="donut-card"
+      data-key="total"
+      data-window="Total epochs"
+      data-sub="field memory"
+      data-c="25" data-i="25" data-k="25" data-s="25"></article>
   </section>
+
+  <section class="field-cards" aria-label="Field cards">
+    <div class="field-card">
+      <div class="fc-label">Keys awakened</div>
+      <div class="fc-value" id="vKeys">—</div>
+      <div class="fc-sub">Number of minted soulbound identities.</div>
+    </div>
+
+    <div class="field-card">
+      <div class="fc-label">PoG signals</div>
+      <div class="fc-value" id="vSignals">—</div>
+      <div class="fc-sub">Signals sent to the Field.</div>
+    </div>
+
+    <div class="field-card">
+      <div class="fc-label">% signals attested</div>
+      <div class="fc-value" id="vAttested">—</div>
+      <div class="fc-sub">Share of signals that received attestation.</div>
+    </div>
+
+    <div class="field-card">
+      <div class="fc-label">Artefacts minted</div>
+      <div class="fc-value" id="vArtefacts">—</div>
+      <div class="fc-sub">Mirrors as a memory of presence.</div>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -868,94 +997,213 @@
 </footer>
 
 <script>
-(function(){
-  // Glyph preview (pure front-end, no chain reads)
+(function () {
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Glyph preview (front-end only)
+  // ─────────────────────────────────────────────────────────────────────────────
   var glyphSet = ["Ω","◈","⌁","◇","⬡","⟡","⟢","⟁","⟠","⟣","⟐","✶","⧈","⧉","⧊","⧋","⧌","⧍","⧎","⧏"];
   function pick(n){
     var out = [];
-    for (var i=0;i<n;i++){
-      out.push(glyphSet[Math.floor(Math.random()*glyphSet.length)]);
-    }
+    for (var i=0;i<n;i++) out.push(glyphSet[Math.floor(Math.random()*glyphSet.length)]);
     return out.join("  ");
   }
-  var el = document.getElementById("glyphPreview");
-  if (el) el.textContent = pick(6);
+  var glyphEl = document.getElementById("glyphPreview");
+  if (glyphEl) glyphEl.textContent = pick(6);
 
-  // Live stats (best-effort).
-  // If your API endpoint differs, this fails gracefully and leaves "—".
-  var API_BASE = "https://z1n-backend-production.up.railway.app/api";
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Live stats lite: reuse your /api/field endpoint (same as live-stats.html)
+  // We render ONLY lenses 21 / 210 / total (no "last epoch")
+  // ─────────────────────────────────────────────────────────────────────────────
+  const API_BASE = "https://z1n-backend-production.up.railway.app/api";
+  const COLORS = { C: "#4CAF50", I: "#F44336", K: "#FFEB3B", S: "#2196F3" };
+  const ORDER = ["C","I","K","S"];
+  const r = 51;
+  const circumference = 2 * Math.PI * r;
 
-  function setText(id, val){
-    var e = document.getElementById(id);
-    if (!e) return;
-    e.textContent = (val === null || val === undefined || val === "") ? "—" : String(val);
+  function formatNumber(n) {
+    if (n === undefined || n === null || n === "—") return "—";
+    try { return n.toLocaleString("en-US").replace(/,/g, " "); } catch(e) { return String(n); }
   }
 
-  async function tryFetch(url){
-    try{
-      var r = await fetch(url, { cache: "no-store" });
-      if (!r.ok) return null;
-      return await r.json();
-    }catch(e){
+  async function fetchFieldData() {
+    try {
+      const res = await fetch(`${API_BASE}/field`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (e) {
+      console.error("Failed to fetch field data:", e);
       return null;
     }
   }
 
-  // We try a few likely endpoints; first that returns usable values wins.
-  async function loadStats(){
-    var candidates = [
-      API_BASE + "/stats",
-      API_BASE + "/live-stats",
-      API_BASE + "/epochs/stats",
-      API_BASE + "/protocol/stats"
-    ];
-
-    for (var i=0;i<candidates.length;i++){
-      var data = await tryFetch(candidates[i]);
-      if (!data) continue;
-
-      // Accept a few possible shapes:
-      // { last21: X, last210: Y, totalEpochs: Z }
-      // { epochs: { last21: X, last210: Y, total: Z } }
-      // { windows: { "21": X, "210": Y }, totalEpochs: Z }
-      var last21 = null, last210 = null, total = null;
-
-      if (typeof data.last21 !== "undefined") last21 = data.last21;
-      if (typeof data.last210 !== "undefined") last210 = data.last210;
-      if (typeof data.totalEpochs !== "undefined") total = data.totalEpochs;
-
-      if (data.epochs){
-        if (typeof data.epochs.last21 !== "undefined") last21 = data.epochs.last21;
-        if (typeof data.epochs.last210 !== "undefined") last210 = data.epochs.last210;
-        if (typeof data.epochs.total !== "undefined") total = data.epochs.total;
-        if (typeof data.epochs.totalEpochs !== "undefined") total = data.epochs.totalEpochs;
-      }
-
-      if (data.windows){
-        if (typeof data.windows["21"] !== "undefined") last21 = data.windows["21"];
-        if (typeof data.windows["210"] !== "undefined") last210 = data.windows["210"];
-      }
-
-      // If we got at least one meaningful number, render and stop.
-      var gotSomething = (last21 !== null) || (last210 !== null) || (total !== null);
-      if (gotSomething){
-        setText("stat21", last21);
-        setText("stat210", last210);
-        setText("statTotal", total);
-        return;
-      }
-    }
-
-    // fallback stays as "—"
-    setText("stat21", "—");
-    setText("stat210", "—");
-    setText("statTotal", "—");
+  function dominantKey(intents){
+    const entries = Object.entries(intents).sort((a,b) => b[1]-a[1]);
+    return { key: entries[0][0], pct: entries[0][1] };
   }
 
-  loadStats();
+  function buildDonutSVG(intents){
+    const sum = intents.C + intents.I + intents.K + intents.S;
+    const safe = sum === 0 ? {C:25,I:25,K:25,S:25} : {
+      C: (intents.C / sum) * 100,
+      I: (intents.I / sum) * 100,
+      K: (intents.K / sum) * 100,
+      S: (intents.S / sum) * 100,
+    };
+
+    const win = dominantKey({
+      C: Math.round(safe.C),
+      I: Math.round(safe.I),
+      K: Math.round(safe.K),
+      S: Math.round(safe.S),
+    });
+    const winColor = COLORS[win.key];
+
+    let offsetDeg = -90;
+    const segments = ORDER.map((k) => {
+      const pct = safe[k];
+      const arc = (pct / 100) * circumference;
+      const dasharray = `${arc.toFixed(1)} ${(circumference - arc).toFixed(1)}`;
+      const seg = { key:k, dasharray, rotate: offsetDeg };
+      offsetDeg += (pct / 100) * 360;
+      return seg;
+    });
+
+    return `
+      <svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Intent donut">
+        <defs>
+          <radialGradient id="donutBg" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#0b101b"/>
+            <stop offset="100%" stop-color="#1c2534"/>
+          </radialGradient>
+        </defs>
+
+        <circle cx="70" cy="70" r="62" fill="url(#donutBg)"></circle>
+        <circle cx="70" cy="70" r="43" fill="#0f141f"></circle>
+
+        <circle cx="70" cy="70" r="${r}"
+                fill="none" stroke="#252c3b" stroke-width="11"
+                transform="rotate(-90 70 70)"></circle>
+
+        ${segments.map(s => `
+          <circle cx="70" cy="70" r="${r}"
+                  fill="none" stroke="${COLORS[s.key]}" stroke-width="11"
+                  stroke-linecap="butt"
+                  stroke-dasharray="${s.dasharray}"
+                  transform="rotate(${s.rotate} 70 70)"></circle>
+        `).join("")}
+
+        <text x="70" y="78" text-anchor="middle" class="donut-center-win" fill="${winColor}">
+          Ω${win.key} ${win.pct}%
+        </text>
+      </svg>
+    `;
+  }
+
+  function renderDonutCard(card){
+    const windowLabel = card.getAttribute("data-window") || "Window";
+    const sub = card.getAttribute("data-sub") || "";
+    const intents = {
+      C: Number(card.getAttribute("data-c") || 0),
+      I: Number(card.getAttribute("data-i") || 0),
+      K: Number(card.getAttribute("data-k") || 0),
+      S: Number(card.getAttribute("data-s") || 0),
+    };
+
+    card.innerHTML = `
+      <div class="donut-top">
+        <div class="label">${windowLabel}</div>
+        <div class="sub">${sub}</div>
+      </div>
+      <div class="donut-mid">
+        ${buildDonutSVG(intents)}
+      </div>
+    `;
+  }
+
+  function setActiveLens(key){
+    document.querySelectorAll(".donut-card").forEach(el => {
+      el.classList.toggle("active", el.getAttribute("data-key") === key);
+    });
+  }
+
+  function applyCardsFromLens(stats){
+    const cards = {
+      keys: formatNumber(stats?.keys ?? 0),
+      signals: formatNumber(stats?.signals ?? 0),
+      attested: (stats?.attestedPercent ?? 0) + "%",
+      artefacts: formatNumber(stats?.artefacts ?? 0)
+    };
+
+    document.getElementById("vKeys").textContent = cards.keys;
+    document.getElementById("vSignals").textContent = cards.signals;
+    document.getElementById("vAttested").textContent = cards.attested;
+    document.getElementById("vArtefacts").textContent = cards.artefacts;
+  }
+
+  function updateFromAPI(data){
+    if (!data) return;
+
+    const lensStats = data.lensStats || {};
+    const dist = data.intentDistribution || {};
+
+    const mapping = {
+      "21": dist.last21Epochs,
+      "210": dist.last210Epochs,
+      "total": dist.total
+    };
+
+    document.querySelectorAll(".donut-card").forEach(card => {
+      const key = card.getAttribute("data-key");
+      const intentData = mapping[key];
+      if (intentData){
+        card.setAttribute("data-c", intentData.ΩC || 0);
+        card.setAttribute("data-i", intentData.ΩI || 0);
+        card.setAttribute("data-k", intentData.ΩK || 0);
+        card.setAttribute("data-s", intentData.ΩS || 0);
+      }
+      renderDonutCard(card);
+    });
+
+    // default lens = total
+    applyCardsFromLens(lensStats.total);
+    setActiveLens("total");
+  }
+
+  // init
+  document.querySelectorAll(".donut-card").forEach(renderDonutCard);
+
+  // click to lock lens (optional)
+  document.querySelectorAll(".donut-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const key = card.getAttribute("data-key");
+      setActiveLens(key);
+      // switch cards to same lens
+      // (keeps it simple for how-it-works)
+      // map stats:
+      // 21 -> last21Epochs; 210 -> last210Epochs; total -> total
+      // if missing, stays as-is
+      fetchFieldData().then(data => {
+        if (!data) return;
+        const ls = data.lensStats || {};
+        if (key === "21") applyCardsFromLens(ls.last21Epochs);
+        else if (key === "210") applyCardsFromLens(ls.last210Epochs);
+        else applyCardsFromLens(ls.total);
+      });
+    });
+  });
+
+  // load + refresh
+  (async function(){
+    const data = await fetchFieldData();
+    if (data) updateFromAPI(data);
+
+    setInterval(async () => {
+      const d = await fetchFieldData();
+      if (d) updateFromAPI(d);
+    }, 30000);
+  })();
 })();
 </script>
 
-<script src="js/gas-banner.js"></script>
 </body>
 </html>
