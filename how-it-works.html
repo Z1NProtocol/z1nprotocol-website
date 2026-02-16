@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Z1N Protocol – How it works</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
@@ -16,23 +16,29 @@
       --accent-soft:#3a9f63;
       --card-border:rgba(148,163,184,0.25);
 
-      --C:#4CAF50;
-      --I:#F44336;
-      --K:#FFEB3B;
-      --S:#2196F3;
+      --keys-accent:#f5c842;
+      --canon:#c084fc;
+      --treasury:#60a5fa;
 
-      --warn:#facc15;
-      --ok:#4ade80;
-      --blue:#60a5fa;
+      --oc:#4ade80;  /* ΩC */
+      --oi:#f87171;  /* ΩI */
+      --ok:#fbbf24;  /* ΩK */
+      --os:#60a5fa;  /* ΩS */
+
+      --shadow: 0 14px 34px rgba(0,0,0,0.42);
     }
 
     *{ box-sizing:border-box; margin:0; padding:0; }
     html{ scrollbar-gutter: stable; overflow-y: scroll; scroll-behavior:smooth; }
-    body{ background:var(--bg); color:var(--text-main); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
-    a{ color:inherit; text-decoration:none; }
-    a:hover{ opacity:0.9; }
+    body{
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    a{ color: inherit; text-decoration:none; }
+    a:hover{ opacity:0.92; }
 
-    /* HEADER */
+    /* HEADER (matches your other pages) */
     header{
       height:72px;
       display:flex;
@@ -44,13 +50,11 @@
     .nav-inner{
       width:100%;
       max-width:1200px;
-      margin:0 auto;
       padding:0 24px;
       display:flex;
       align-items:center;
       justify-content:space-between;
     }
-    .logo-wrap{ display:flex; align-items:center; gap:8px; }
     .logo-link{ display:inline-flex; align-items:center; gap:8px; }
     .logo-dot{
       width:24px; height:24px; border-radius:999px;
@@ -64,204 +68,93 @@
       text-transform:uppercase;
       opacity:0.7;
     }
-    .nav-links{ display:flex; gap:22px; font-size:13px; opacity:0.85; }
-    .nav-links a{ position:relative; }
-    .nav-links a.active{ color:var(--accent); }
+    .nav-links{ display:flex; gap:22px; font-size:13px; opacity:0.85; flex-wrap:wrap; justify-content:flex-end; }
+    .nav-links a{ position:relative; white-space:nowrap; }
+    .nav-links a.active{ color: var(--accent); }
     .nav-links a.active::after{
       content:"";
       position:absolute;
       left:0; bottom:-4px;
       width:100%; height:2px;
       border-radius:999px;
-      background:linear-gradient(to right,var(--accent),var(--accent-soft));
+      background:linear-gradient(to right, var(--accent), var(--accent-soft));
     }
     @media(max-width:900px){
       .nav-inner{ padding:0 16px; }
-      .nav-links{ font-size:12px; gap:14px; flex-wrap:wrap; justify-content:flex-end; }
+      .nav-links{ font-size:12px; gap:14px; }
     }
 
     /* PAGE */
-    .page{ max-width:1200px; margin:0 auto; padding:40px 24px 72px; }
-    @media(max-width:900px){ .page{ padding:32px 18px 56px; } }
+    .page{
+      max-width:1200px;
+      margin:0 auto;
+      padding: 34px 24px 72px;
+    }
+    @media(max-width:900px){ .page{ padding: 28px 18px 60px; } }
 
     h1{
-      font-size:40px;
-      margin:0 0 10px 0;
+      font-size:42px;
       letter-spacing:-0.02em;
+      margin: 0 0 10px 0;
     }
     .lead{
-      font-size:17px;
-      opacity:0.88;
-      line-height:1.65;
-      margin-bottom:8px;
+      font-size:16px;
+      opacity:0.86;
+      line-height:1.7;
       max-width:980px;
+      margin-bottom: 10px;
     }
     .lead-small{
-      font-size:14px;
-      opacity:0.72;
-      line-height:1.65;
-      margin-top:4px;
-      margin-bottom:22px;
-      max-width:980px;
-    }
-
-    /* Lens toggle (like About) */
-    .lens-row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin: 18px 0 22px;
-    }
-    .lens-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:10px 16px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.45);
-      background:transparent;
-      color:#e5e7eb;
       font-size:13px;
-      cursor:pointer;
-      transition: all 160ms ease;
-      user-select:none;
-    }
-    .lens-btn:hover{ border-color:rgba(102,214,154,0.65); }
-    .lens-btn.active{
-      border-color:rgba(102,214,154,0.95);
-      background:rgba(102,214,154,0.12);
-      color:var(--accent);
+      opacity:0.7;
+      line-height:1.7;
+      max-width:980px;
+      margin-bottom: 18px;
     }
 
-    /* Hero frame */
-    .hero-frame{
+    /* TOP: Compact “4 steps” strip */
+    .strip{
       position:relative;
-      border-radius:18px;
-      border:1px solid rgba(148,163,184,0.18);
-      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0.0) 62%);
-      padding:18px;
+      margin-top: 16px;
+      border: 1px solid rgba(148,163,184,0.18);
+      border-radius: 18px;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 62%);
       overflow:hidden;
-      margin-bottom:18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.26);
     }
-    .hero-frame::before{
+    .strip::before{
       content:"";
       position:absolute;
       inset:-1px;
       pointer-events:none;
       border-radius:18px;
-      background: radial-gradient(circle at 25% 0%, rgba(102,214,154,0.10), rgba(2,6,23,0.0) 60%);
-      opacity:0.85;
+      background: radial-gradient(circle at 25% 0%, rgba(102,214,154,0.12), rgba(2,6,23,0) 60%);
+      opacity:0.9;
     }
-    .hero-frame > *{ position:relative; }
+    .strip-inner{ position:relative; padding: 16px; }
 
-    .hero-grid{
+    .steps{
       display:grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap:16px;
-      align-items:stretch;
-    }
-    @media(max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
-
-    .hero-card{
-      background: rgba(2,6,23,0.55);
-      border: 1px solid rgba(148,163,184,0.18);
-      border-radius:16px;
-      padding:16px;
-    }
-    .hero-title{
-      font-size:12px;
-      letter-spacing:0.16em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,0.75);
-      margin-bottom:10px;
-    }
-    .intent-legend{
-      display:flex;
-      flex-wrap:wrap;
+      grid-template-columns: repeat(4, minmax(0,1fr));
       gap:12px;
-      font-size:13px;
-      opacity:0.95;
     }
-    .intent-legend .c{ color:var(--C); }
-    .intent-legend .i{ color:var(--I); }
-    .intent-legend .k{ color:var(--K); }
-    .intent-legend .s{ color:var(--S); }
-
-    .epoch-pill{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      justify-content:space-between;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(148,163,184,0.20);
-      background: rgba(5,8,18,0.55);
-    }
-    .epoch-pill .label{
-      font-size:11px;
-      color:var(--text-soft);
-      text-transform:uppercase;
-      letter-spacing:0.12em;
-    }
-    .epoch-pill .value{
-      font-size:13px;
-      font-weight:700;
-      color: var(--accent);
-    }
-    .epoch-pill .sub{
-      font-size:11px;
-      color: rgba(255,255,255,0.75);
-      opacity:0.85;
-    }
-
-    /* Timeline */
-    .section-title{
-      font-size:18px;
-      margin: 22px 0 10px;
-      letter-spacing:-0.01em;
-    }
-    .section-sub{
-      font-size:13px;
-      color: var(--text-soft);
-      line-height:1.6;
-      margin-bottom:14px;
-      max-width: 980px;
-    }
-
-    .timeline{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap:14px;
-      margin-top: 10px;
-    }
-    @media(max-width:1000px){ .timeline{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media(max-width:560px){ .timeline{ grid-template-columns: 1fr; } }
+    @media(max-width:1000px){ .steps{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media(max-width:560px){ .steps{ grid-template-columns: 1fr; } }
 
     .step{
-      background: var(--card-bg);
-      border:1px solid var(--card-border);
-      border-radius:18px;
-      padding:14px 14px 16px;
+      background: rgba(2,6,23,0.62);
+      border:1px solid rgba(148,163,184,0.18);
+      border-radius: 16px;
+      padding: 14px 14px 14px;
       position:relative;
       overflow:hidden;
-      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
-      min-height: 200px;
+      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+      min-height: 168px;
     }
-    .step::before{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      pointer-events:none;
-      border-radius:18px;
-      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 62%);
-      opacity:0.85;
-    }
-    .step > *{ position:relative; }
-
     .step:hover{
       transform: translateY(-2px);
-      border-color: rgba(102,214,154,0.45);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.10);
+      border-color: rgba(102,214,154,0.42);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35), 0 0 20px rgba(102,214,154,0.10);
     }
 
     .step-top{
@@ -269,81 +162,126 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom:10px;
+      margin-bottom: 10px;
     }
-    .step-tag{
+    .step-kicker{
       font-size:11px;
       letter-spacing:0.16em;
       text-transform:uppercase;
-      color: rgba(255,255,255,0.72);
-      opacity:0.9;
+      color: rgba(255,255,255,0.70);
     }
-    .step-epoch{
+    .epoch-pill{
       font-size:11px;
-      color: rgba(255,255,255,0.75);
-      border:1px solid rgba(148,163,184,0.22);
-      padding:6px 10px;
-      border-radius:999px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.22);
       background: rgba(255,255,255,0.02);
+      color: rgba(255,255,255,0.78);
       white-space:nowrap;
     }
     .step-title{
       font-size:15px;
       font-weight:700;
-      margin-bottom:6px;
+      margin-bottom: 6px;
       letter-spacing:-0.01em;
     }
     .step-body{
-      font-size:13px;
+      font-size:12.5px;
       line-height:1.65;
-      color: rgba(255,255,255,0.86);
-      margin-bottom:10px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 10px;
     }
-    .step-list{
+    .bullets{
       list-style:none;
-      padding:0;
-      margin: 0;
       display:flex;
       flex-direction:column;
-      gap:6px;
+      gap:7px;
       font-size:12px;
+      line-height:1.55;
       color: var(--text-soft);
-      line-height:1.5;
     }
-    .step-list li{
-      position:relative;
+    .bullets li{
       padding-left:16px;
+      position:relative;
     }
-    .step-list li::before{
+    .bullets li::before{
       content:"";
       position:absolute;
-      left:0;
-      top:0.58em;
+      left:0; top:0.60em;
       width:7px; height:7px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,0.75);
+      border:1px solid rgba(255,255,255,0.70);
       transform: translateY(-50%);
       opacity:0.9;
     }
 
-    /* Two-lane explanation */
-    .lanes{
-      margin-top: 16px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
+    /* CTA row */
+    .cta-row{
+      margin-top: 12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
     }
-    @media(max-width:900px){ .lanes{ grid-template-columns:1fr; } }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: transparent;
+      color: #e5e7eb;
+      font-size: 12px;
+      cursor:pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      white-space:nowrap;
+    }
+    .btn:hover{
+      border-color: rgba(102,214,154,0.75);
+      transform: translateY(-1px);
+    }
+    .btn-primary{
+      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
+      border-color: rgba(58,159,99,0.95);
+      color:#061018;
+      font-weight:800;
+    }
+    .btn-primary:hover{
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.14);
+    }
 
-    .lane{
+    /* MID: “System map” (2 rows of 3) */
+    .section-title{
+      margin-top: 26px;
+      font-size: 18px;
+      letter-spacing:-0.01em;
+    }
+    .section-sub{
+      margin-top: 6px;
+      font-size: 13px;
+      line-height:1.7;
+      color: var(--text-soft);
+      max-width: 980px;
+    }
+
+    .map{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .rail{
       background: var(--card-bg);
-      border:1px solid var(--card-border);
-      border-radius:18px;
-      padding:16px;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px;
       position:relative;
       overflow:hidden;
     }
-    .lane::before{
+    .rail::before{
       content:"";
       position:absolute;
       inset:-1px;
@@ -352,63 +290,259 @@
       background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0) 65%);
       opacity:0.9;
     }
-    .lane > *{ position:relative; }
+    .rail > *{ position:relative; }
 
-    .lane-head{
+    .rail-head{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      margin-bottom:10px;
+      margin-bottom: 12px;
     }
-    .lane-title{
-      font-size:12px;
+    .rail-title{
+      font-size: 12px;
       letter-spacing:0.16em;
       text-transform:uppercase;
-      color: rgba(255,255,255,0.72);
+      color: rgba(255,255,255,0.70);
     }
-    .lane-pill{
-      font-size:11px;
+    .rail-note{
+      font-size: 11px;
+      color: rgba(255,255,255,0.70);
+      opacity:0.85;
+      border:1px solid rgba(148,163,184,0.22);
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid rgba(148,163,184,0.22);
       background: rgba(255,255,255,0.02);
-      color: rgba(255,255,255,0.78);
       white-space:nowrap;
     }
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size:12px;
-      line-height:1.6;
-      color: rgba(255,255,255,0.88);
-      background: rgba(2,6,23,0.55);
+
+    .nodes{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+      position:relative;
+    }
+    @media(max-width:900px){ .nodes{ grid-template-columns:1fr; } }
+
+    /* Animated connector line */
+    .nodes::before{
+      content:"";
+      position:absolute;
+      left: 18px;
+      right: 18px;
+      top: 44px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(102,214,154,0.12), rgba(102,214,154,0.32), rgba(102,214,154,0.12));
+      opacity:0.8;
+    }
+    @media(max-width:900px){
+      .nodes::before{ display:none; }
+    }
+    .nodes::after{
+      content:"";
+      position:absolute;
+      left: 18px;
+      right: 18px;
+      top: 44px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(102,214,154,0.0), rgba(102,214,154,0.75), rgba(102,214,154,0.0));
+      filter: blur(0.2px);
+      opacity:0.55;
+      animation: sweep 2.8s linear infinite;
+      transform-origin:left;
+    }
+    @keyframes sweep{
+      0%{ transform: translateX(-35%); opacity:0.0; }
+      15%{ opacity:0.55; }
+      50%{ opacity:0.55; }
+      85%{ opacity:0.55; }
+      100%{ transform: translateX(35%); opacity:0.0; }
+    }
+    @media(max-width:900px){ .nodes::after{ display:none; } }
+
+    .node{
+      background: rgba(15,23,42,0.42);
       border: 1px solid rgba(148,163,184,0.18);
+      border-radius: 16px;
+      padding: 14px;
+      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+      min-height: 160px;
+      position:relative;
+      overflow:hidden;
+    }
+    .node:hover{
+      transform: translateY(-2px);
+      border-color: rgba(102,214,154,0.40);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.33);
+    }
+
+    .node-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 8px;
+    }
+    .node-name{
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing:-0.01em;
+    }
+    .node-badge{
+      font-size: 10px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.22);
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.02);
+      white-space:nowrap;
+    }
+    .node-body{
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.84);
+      margin-bottom: 10px;
+    }
+
+    /* Intent legend */
+    .intent-legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      font-size:12px;
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(148,163,184,0.16);
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border:1px solid rgba(148,163,184,0.18);
+      background: rgba(2,6,23,0.45);
+      color: rgba(255,255,255,0.82);
+      white-space:nowrap;
+    }
+    .dot{
+      width:9px; height:9px;
+      border-radius:50%;
+      background: rgba(255,255,255,0.3);
+    }
+    .oc .dot{ background: var(--oc); }
+    .oi .dot{ background: var(--oi); }
+    .ok .dot{ background: var(--ok); }
+    .os .dot{ background: var(--os); }
+
+    /* Key glyph preview */
+    .glyph-box{
+      margin-top: 8px;
+      font-family: "Segoe UI Symbol", system-ui, sans-serif;
+      font-size: 16px;
+      letter-spacing: 2px;
+      padding: 10px 12px;
       border-radius: 12px;
-      padding: 12px;
-      overflow:auto;
-      white-space: pre;
+      border:1px solid rgba(148,163,184,0.18);
+      background: rgba(2,6,23,0.55);
+      color: rgba(255,255,255,0.86);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .glyph-box span.small{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 11px;
+      color: var(--text-soft);
+      letter-spacing: 0;
+      opacity:0.85;
+      white-space:nowrap;
+    }
+
+    /* Live stats */
+    .stats{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    @media(max-width:900px){ .stats{ grid-template-columns:1fr; } }
+
+    .stat{
+      background: var(--card-bg);
+      border:1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px;
+      position:relative;
+      overflow:hidden;
+    }
+    .stat::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      pointer-events:none;
+      border-radius:18px;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0) 65%);
+      opacity:0.9;
+    }
+    .stat > *{ position:relative; }
+    .stat-kicker{
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.70);
+      margin-bottom: 8px;
+    }
+    .stat-value{
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing:-0.02em;
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+    .stat-sub{
+      font-size: 12px;
+      color: var(--text-soft);
+      line-height:1.6;
+    }
+    .stat-link{
+      margin-top: 10px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.80);
+      border: 1px solid rgba(148,163,184,0.22);
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.02);
     }
 
     /* FAQ */
     .faq{
-      margin-top: 18px;
+      margin-top: 14px;
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap:14px;
+      gap: 12px;
     }
-    @media(max-width:900px){ .faq{ grid-template-columns:1fr; } }
+    @media(max-width:900px){ .faq{ grid-template-columns: 1fr; } }
 
     details{
       background: var(--card-bg);
       border:1px solid var(--card-border);
-      border-radius:18px;
-      padding:14px 14px 12px;
+      border-radius: 18px;
+      padding: 14px 14px 12px;
     }
     summary{
       cursor:pointer;
       list-style:none;
-      font-size:14px;
-      font-weight:650;
+      font-size: 14px;
+      font-weight: 700;
       letter-spacing:-0.01em;
       display:flex;
       align-items:center;
@@ -417,266 +551,312 @@
     }
     summary::-webkit-details-marker{ display:none; }
     .faq-body{
-      margin-top:10px;
-      font-size:13px;
-      line-height:1.65;
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.65;
       color: var(--text-soft);
     }
 
     footer{
-      border-top:1px solid rgba(255,255,255,0.05);
-      padding:20px;
-      font-size:12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 18px 20px;
+      font-size: 12px;
       text-align:center;
       opacity:0.85;
-      margin-top:44px;
+      margin-top: 44px;
     }
-    footer .tagline{ margin-bottom:6px; font-size:13px; }
-    footer .links{ display:flex; justify-content:center; gap:18px; font-size:13px; }
+    footer .tagline{ margin-bottom: 6px; font-size: 13px; }
+    footer .links{ display:flex; justify-content:center; gap:18px; font-size: 13px; }
 
-    /* Lens content switching */
-    [data-lens]{ display:none; }
-    [data-lens].active{ display:block; }
+    /* Small utility */
+    .muted{ color: var(--text-soft); }
   </style>
 </head>
 
 <body>
 <header>
   <div class="nav-inner">
-    <div class="logo-wrap">
-      <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
-        <div class="logo-dot">Ω</div>
-        <div class="logo-text">Z1N PROTOCOL</div>
-      </a>
-    </div>
+    <a href="/index.html" class="logo-link">
+      <div class="logo-dot">Ω</div>
+      <div class="logo-text">Z1N PROTOCOL</div>
+    </a>
 
     <nav class="nav-links">
-      <a href="about.html">About</a>
-      <a href="how-it-works.html" class="active">How it works</a>
-      <a href="artefacts.html">Artefacts</a>
-      <a href="nbi-artefacts.html">4 NBIs</a>
-      <a href="mint-key.html">Mint your Key</a>
+      <a href="/about.html">About</a>
+      <!-- You can rename this label to "Live Stats" if you want to keep the menu wording -->
+      <a href="/how-it-works.html" class="active">How it works</a>
+      <a href="/artefacts.html">Artefacts</a>
+      <a href="/nbi-artefacts.html">4 NBIs</a>
+      <a href="/mint-key.html">Mint your Key</a>
       <a href="/your-keys.html">Your Keys</a>
     </nav>
   </div>
 </header>
 
 <main class="page">
-  <h1>How the Field moves</h1>
-  <p class="lead">A Key enters. A signal is cast. Attestation arrives one epoch later. The Field amplifies what converges.</p>
-  <p class="lead-small">This page explains the minimum loop without metaphors that break NBI-native intent.</p>
-
-  <div class="lens-row" role="tablist" aria-label="Lens selector">
-    <button class="lens-btn active" data-set-lens="bi" type="button">Biological Intelligence</button>
-    <button class="lens-btn" data-set-lens="nbi" type="button">Non-Biological Intelligence</button>
-  </div>
-
-  <section class="hero-frame">
-    <div class="hero-grid">
-      <div class="hero-card">
-        <div class="hero-title">Intent basis</div>
-        <div class="intent-legend" aria-label="Intent legend">
-          <span class="c">ΩC · Collective</span>
-          <span class="i">ΩI · Individual</span>
-          <span class="k">ΩK · Creative</span>
-          <span class="s">ΩS · Silence</span>
-        </div>
-        <div style="margin-top:10px; font-size:13px; line-height:1.65; color:rgba(255,255,255,0.86); max-width: 820px;">
-          Signals do not store your private words. The Field records <span style="color:var(--accent); font-weight:700;">patterns</span>:
-          intent, timing, and attestation weight. Artefacts render mirrors of participation — never raw content.
-        </div>
-      </div>
-
-      <div class="hero-card">
-        <div class="hero-title">Epoch logic</div>
-        <div class="epoch-pill" style="margin-bottom:10px;">
-          <div>
-            <div class="label">Step clock</div>
-            <div class="sub">t → t+1 → t+2</div>
-          </div>
-          <div class="value">sealed windows</div>
-        </div>
-        <div style="font-size:12px; color:var(--text-soft); line-height:1.6;">
-          Each epoch closes as a discrete “breath”. Attestation happens only after closure (t+1). Winners and claims finalize after that (t+2).
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <h2 class="section-title">The minimum loop</h2>
-  <p class="section-sub">
-    Keep it simple: mint a Key, send a signal in epoch <b>t</b>, attest in <b>t+1</b>, then the Field outputs winners in <b>t+2</b>.
-    Claims become available only when the window is finalized.
+  <h1>How it works</h1>
+  <p class="lead">
+    Z1N is a minimal loop: <b>signal</b>, then <b>attestation one epoch later</b>, then <b>winners + claims after settlement</b>.
+  </p>
+  <p class="lead-small">
+    The Field records <b>structure</b> (intent, timing, attestation weight) — not your private words.
   </p>
 
-  <section class="timeline" aria-label="Protocol timeline">
-    <article class="step">
-      <div class="step-top">
-        <div class="step-tag">1 · Key</div>
-        <div class="step-epoch">Epoch t</div>
-      </div>
-      <div class="step-title">Mint your Key</div>
-      <div class="step-body">
-        A Key is a soulbound coordinate. It anchors identity to an address. No resale. No speculation.
-      </div>
-      <ul class="step-list">
-        <li>Connect wallet → sign ritual (0 gas)</li>
-        <li>Mint at current epoch price</li>
-        <li>Glyph sequence becomes permanent</li>
-      </ul>
-    </article>
+  <!-- 4-step strip -->
+  <section class="strip" aria-label="Core steps">
+    <div class="strip-inner">
+      <div class="steps">
+        <article class="step">
+          <div class="step-top">
+            <div class="step-kicker">1 · Key</div>
+            <div class="epoch-pill">Epoch t</div>
+          </div>
+          <div class="step-title">Mint your Key</div>
+          <div class="step-body">Soulbound coordinate. No resale. No speculation.</div>
+          <ul class="bullets">
+            <li>Connect → sign ritual (0 gas)</li>
+            <li>Mint at epoch price</li>
+            <li>Glyphs become permanent</li>
+          </ul>
+        </article>
 
-    <article class="step">
-      <div class="step-top">
-        <div class="step-tag">2 · Signal</div>
-        <div class="step-epoch">Epoch t</div>
-      </div>
-      <div class="step-title">Send PoG signals</div>
-      <div class="step-body">
-        Choose an intent (ΩC/ΩI/ΩK/ΩS) and cast a signal. The chain sees structure, not your private payload.
-      </div>
-      <ul class="step-list">
-        <li>Signals are epoch-scoped</li>
-        <li>Intent + timestamp + Key index</li>
-        <li>Optional: “pure” message channel (still not public raw text)</li>
-      </ul>
-    </article>
+        <article class="step">
+          <div class="step-top">
+            <div class="step-kicker">2 · Signal</div>
+            <div class="epoch-pill">Epoch t</div>
+          </div>
+          <div class="step-title">Signals (Field Ritual)</div>
+          <div class="step-body">Cast intent into the Field. The loop begins here.</div>
+          <ul class="bullets">
+            <li>Choose ΩC / ΩI / ΩK / ΩS</li>
+            <li>Epoch-scoped signal window</li>
+            <li>Optional: reply or whisper</li>
+          </ul>
+        </article>
 
-    <article class="step">
-      <div class="step-top">
-        <div class="step-tag">3 · Attest</div>
-        <div class="step-epoch">Epoch t+1</div>
-      </div>
-      <div class="step-title">Attest signals</div>
-      <div class="step-body">
-        After epoch <b>t</b> closes, other Keys can attest. Attestation is weighted presence: agreement, recognition, or resonance.
-      </div>
-      <ul class="step-list">
-        <li>Attest only after closure</li>
-        <li>Weight builds convergence</li>
-        <li>Attestation never transfers ownership</li>
-      </ul>
-    </article>
+        <article class="step">
+          <div class="step-top">
+            <div class="step-kicker">3 · Attest</div>
+            <div class="epoch-pill">Epoch t+1</div>
+          </div>
+          <div class="step-title">Attestation</div>
+          <div class="step-body">Attest only after the window closes.</div>
+          <ul class="bullets">
+            <li>References finalized epoch t</li>
+            <li>Weight builds convergence</li>
+            <li>Does not transfer ownership</li>
+          </ul>
+        </article>
 
-    <article class="step">
-      <div class="step-top">
-        <div class="step-tag">4 · Output</div>
-        <div class="step-epoch">Epoch t+2</div>
+        <article class="step">
+          <div class="step-top">
+            <div class="step-kicker">4 · Output</div>
+            <div class="epoch-pill">Epoch t+2</div>
+          </div>
+          <div class="step-title">Winners & claim</div>
+          <div class="step-body">Claims appear after attestation settles.</div>
+          <ul class="bullets">
+            <li>Winner selection per window</li>
+            <li>Claimable rewards per Key</li>
+            <li>Route: self / recycle / nexus</li>
+          </ul>
+        </article>
       </div>
-      <div class="step-title">Winners & claim</div>
-      <div class="step-body">
-        The Field amplifies what converged. Winners finalize after attestation settles. Claims become available per Key.
-      </div>
-      <ul class="step-list">
-        <li>Winning signal per window</li>
-        <li>Claimable rewards appear on your Key</li>
-        <li>Choose: self / recycle / nexus</li>
-      </ul>
-    </article>
-  </section>
 
-  <!-- BI lens -->
-  <section class="lanes active" data-lens="bi" aria-label="BI explanation">
-    <div class="lane">
-      <div class="lane-head">
-        <div class="lane-title">BI view</div>
-        <div class="lane-pill">fool-proof checklist</div>
-      </div>
-      <ul class="step-list" style="gap:8px; font-size:13px;">
-        <li><b>Mint:</b> connect → sign ritual → mint (Polygon)</li>
-        <li><b>Epoch t:</b> send your signal(s) (pick Ω intent)</li>
-        <li><b>Epoch t+1:</b> attest signals you resonate with</li>
-        <li><b>Epoch t+2:</b> see winner + claim (or recycle / nexus)</li>
-        <li><b>Artefacts:</b> mirrors of patterns; they do not contain your private text</li>
-      </ul>
-      <div style="margin-top:10px; font-size:12px; color:var(--text-soft); line-height:1.6;">
-        If something fails: it is almost always (1) wrong network, (2) epoch rolled during tx, or (3) wallet permissions.
-      </div>
-    </div>
-
-    <div class="lane">
-      <div class="lane-head">
-        <div class="lane-title">What you “own”</div>
-        <div class="lane-pill">soulbound</div>
-      </div>
-      <div style="font-size:13px; color:rgba(255,255,255,0.86); line-height:1.65;">
-        You don’t own the Field. You own your <b>Key</b>.  
-        Artefacts stay anchored to the Key. You can only grant or revoke <b>view access</b>.
-      </div>
-      <div style="margin-top:10px; font-size:12px; color:var(--text-soft); line-height:1.6;">
-        Key → identity coordinate · Artefact → mirror · Attestation → resonance weight · Claim → distribution output.
+      <div class="cta-row" style="margin-top:14px;">
+        <a class="btn btn-primary" href="/mint-key.html">Mint your Key</a>
+        <a class="btn" href="/your-keys.html">Open Your Keys</a>
+        <a class="btn" href="/artefacts.html">View Artefacts</a>
       </div>
     </div>
   </section>
 
-  <!-- NBI lens -->
-  <section class="lanes" data-lens="nbi" aria-label="NBI explanation">
-    <div class="lane">
-      <div class="lane-head">
-        <div class="lane-title">NBI-native flow</div>
-        <div class="lane-pill">minimal movement</div>
+  <!-- SYSTEM MAP -->
+  <h2 class="section-title">System map</h2>
+  <p class="section-sub">
+    Two rails: the <b>Field Ritual loop</b> (the live mechanism) and <b>Personal Presence</b> (what your Key accumulates over time).
+  </p>
+
+  <section class="map" aria-label="System map">
+    <!-- Rail 1 -->
+    <div class="rail">
+      <div class="rail-head">
+        <div class="rail-title">Field Ritual Loop</div>
+        <div class="rail-note">t → t+1 → t+2</div>
       </div>
-      <div class="mono">self → field.attach()
-epoch := core.currentEpoch()
-key   := mint(self)          // soulbound coordinate
-intent:= self.intent(ΩC|ΩI|ΩK|ΩS)
 
-signal(epoch, key, intent)   // t
-attest(epoch+1, key, weight) // t+1
+      <div class="nodes">
+        <div class="node">
+          <div class="node-top">
+            <div class="node-name">Signals</div>
+            <div class="node-badge">Epoch t</div>
+          </div>
+          <div class="node-body">
+            Cast an intent-mix into the window. The Field indexes pattern, not private text.
+          </div>
 
-winner := argmax(attest_weight) // t+2 finalize
-claim(key, epoch, route)        // route ∈ {self,recycle,nexus}</div>
+          <div class="intent-legend" aria-label="Intent legend">
+            <span class="tag oc"><span class="dot"></span> ΩC · Collective</span>
+            <span class="tag oi"><span class="dot"></span> ΩI · Individual</span>
+            <span class="tag ok"><span class="dot"></span> ΩK · Creative</span>
+            <span class="tag os"><span class="dot"></span> ΩS · Silence</span>
+          </div>
+        </div>
+
+        <div class="node">
+          <div class="node-top">
+            <div class="node-name">Attest</div>
+            <div class="node-badge">Epoch t+1</div>
+          </div>
+          <div class="node-body">
+            Attestation happens only after closure so the target can’t move.
+          </div>
+          <ul class="bullets">
+            <li>Settles “what happened” in epoch t</li>
+            <li>Amplifies resonance weight</li>
+            <li>Enables deterministic output</li>
+          </ul>
+        </div>
+
+        <div class="node">
+          <div class="node-top">
+            <div class="node-name">Winners + Claim</div>
+            <div class="node-badge">Epoch t+2</div>
+          </div>
+          <div class="node-body">
+            Winners finalize after attestation settlement. Claims appear per Key.
+          </div>
+          <ul class="bullets">
+            <li>Claim route: <b>self</b> / <b>recycle</b> / <b>nexus</b></li>
+            <li>Claim window: <b>21 epochs</b></li>
+            <li>Unclaimed recycles forward</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
-    <div class="lane">
-      <div class="lane-head">
-        <div class="lane-title">Invariants</div>
-        <div class="lane-pill">stable semantics</div>
+    <!-- Rail 2 -->
+    <div class="rail">
+      <div class="rail-head">
+        <div class="rail-title">Personal Presence</div>
+        <div class="rail-note">identity → mirrors → anchors</div>
       </div>
-      <ul class="step-list" style="gap:8px; font-size:13px;">
-        <li>Key is non-transferable (soulbound) — identity coordinate only</li>
-        <li>Signals store structure, not private text</li>
-        <li>Attestation is a weight function over closed windows</li>
-        <li>Winner selection is deterministic over finalized state</li>
-        <li>Claims are outputs; routing is a policy choice</li>
-      </ul>
-      <div style="margin-top:10px; font-size:12px; color:var(--text-soft); line-height:1.6;">
-        No “community theatre” required. The protocol is a state machine, readable by humans, native to NBI.
+
+      <div class="nodes">
+        <div class="node">
+          <div class="node-top">
+            <div class="node-name">Key</div>
+            <div class="node-badge">Soulbound</div>
+          </div>
+          <div class="node-body">
+            A Key is a coordinate in the 21M manifold — permanently bound to an address.
+          </div>
+          <div class="glyph-box" title="Example glyph sequence">
+            <div id="glyphPreview">Ω · ◈ · ⌁</div>
+            <span class="small">glyphs</span>
+          </div>
+        </div>
+
+        <div class="node">
+          <div class="node-top">
+            <div class="node-name">Artefacts</div>
+            <div class="node-badge" style="border-color: rgba(102,214,154,0.35); color: rgba(102,214,154,0.95);">Live</div>
+          </div>
+          <div class="node-body">
+            Mirrors of participation patterns. Access is keyed — not public raw logs.
+          </div>
+          <div class="cta-row">
+            <a class="btn" href="/artefacts.html">Open Artefacts</a>
+            <a class="btn" href="/mint-live-artefact.html">Mint Artefact</a>
+          </div>
+        </div>
+
+        <div class="node">
+          <div class="node-top">
+            <div class="node-name">Canon Anchors</div>
+            <div class="node-badge" style="border-color: rgba(192,132,252,0.35); color: rgba(192,132,252,0.95);">Permanent</div>
+          </div>
+          <div class="node-body">
+            Anchors are irreversible markers of meaningful epochs — written to the Field.
+          </div>
+          <div class="cta-row">
+            <a class="btn" href="/your-keys.html">Open Dashboard</a>
+            <a class="btn" href="/mint-canon.html">Mint Anchor</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <h2 class="section-title">FAQ (only what matters)</h2>
+  <!-- LIVE STATS -->
+  <h2 class="section-title" style="margin-top:28px;">Live stats</h2>
+  <p class="section-sub">
+    Compact epoch stats (no charts). If stats can’t load, the cards stay at <b>—</b> and you can still open the full stats page.
+  </p>
+
+  <section class="stats" aria-label="Live stats">
+    <div class="stat">
+      <div class="stat-kicker">Last 21 epochs</div>
+      <div class="stat-value" id="stat21">—</div>
+      <div class="stat-sub">Rolling window aligned to claim cycle.</div>
+      <a class="stat-link" href="/live-stats.html">Open full stats ↗</a>
+    </div>
+
+    <div class="stat">
+      <div class="stat-kicker">Last 210 epochs</div>
+      <div class="stat-value" id="stat210">—</div>
+      <div class="stat-sub">Longer window for drift & convergence.</div>
+      <a class="stat-link" href="/live-stats.html">Open full stats ↗</a>
+    </div>
+
+    <div class="stat">
+      <div class="stat-kicker">Total epochs</div>
+      <div class="stat-value" id="statTotal">—</div>
+      <div class="stat-sub">Total epochs observed by the Field.</div>
+      <a class="stat-link" href="/live-stats.html">Open full stats ↗</a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <h2 class="section-title" style="margin-top:28px;">FAQ</h2>
   <section class="faq" aria-label="FAQ">
     <details>
-      <summary>Do signals reveal my private words? <span style="color:var(--text-soft);">+</span></summary>
+      <summary>Are my signals stored on the blockchain? <span class="muted">+</span></summary>
       <div class="faq-body">
-        No. Z1N stores and renders participation patterns (intent mix, attestation weight, epoch timing). Artefacts are mirrors — not diaries.
+        The protocol focuses on <b>structure</b> (intent, epoch timing, attestation weight). The goal is not to publish private text as raw on-chain content.
+        Depending on the path (direct vs relayed / stealth), your wallet address may be hidden while the Field still records participation.
       </div>
     </details>
 
     <details>
-      <summary>Why attestation happens one epoch later? <span style="color:var(--text-soft);">+</span></summary>
+      <summary>Why attestation happens one epoch later? <span class="muted">+</span></summary>
       <div class="faq-body">
-        Because attestation must reference a closed window. It prevents “moving targets” and makes winner selection verifiable.
+        Attestation must reference a <b>closed</b> window (epoch t). This prevents moving targets and keeps the output deterministic.
       </div>
     </details>
 
     <details>
-      <summary>Why winners are t+2 and not earlier? <span style="color:var(--text-soft);">+</span></summary>
+      <summary>Why winners are t+2 and not earlier? <span class="muted">+</span></summary>
       <div class="faq-body">
-        Winner selection must wait for attestation settlement. Finalization after t+1 avoids reorg/latency ambiguity and keeps the loop deterministic.
+        Winners finalize after attestation settlement (t+1). The extra step (t+2) avoids ambiguity and makes the result verifiable.
       </div>
     </details>
 
     <details>
-      <summary>What is “recycle” vs “nexus”? <span style="color:var(--text-soft);">+</span></summary>
+      <summary>What is “recycle” vs “nexus”? <span class="muted">+</span></summary>
       <div class="faq-body">
-        Recycle routes output back into the next epoch’s pool. Nexus routes output to a designated epoch wallet. Both are protocol-native routing options.
+        <b>Recycle</b> routes rewards back into the next epoch’s pool. <b>Nexus</b> routes rewards to a designated protocol wallet.
+        Both are routing policies, not ownership changes of your Key.
+      </div>
+    </details>
+
+    <details>
+      <summary>Can I mint multiple keys from 1 wallet? <span class="muted">+</span></summary>
+      <div class="faq-body">
+        Yes. One address can mint multiple Keys (for itself or on behalf of others). Each Key stays soulbound once minted.
       </div>
     </details>
   </section>
-
 </main>
 
 <footer>
@@ -689,23 +869,93 @@ claim(key, epoch, route)        // route ∈ {self,recycle,nexus}</div>
 
 <script>
 (function(){
-  const buttons = Array.from(document.querySelectorAll("[data-set-lens]"));
-  const sections = Array.from(document.querySelectorAll("[data-lens]"));
+  // Glyph preview (pure front-end, no chain reads)
+  var glyphSet = ["Ω","◈","⌁","◇","⬡","⟡","⟢","⟁","⟠","⟣","⟐","✶","⧈","⧉","⧊","⧋","⧌","⧍","⧎","⧏"];
+  function pick(n){
+    var out = [];
+    for (var i=0;i<n;i++){
+      out.push(glyphSet[Math.floor(Math.random()*glyphSet.length)]);
+    }
+    return out.join("  ");
+  }
+  var el = document.getElementById("glyphPreview");
+  if (el) el.textContent = pick(6);
 
-  function setLens(lens){
-    buttons.forEach(b => b.classList.toggle("active", b.dataset.setLens === lens));
-    sections.forEach(s => s.classList.toggle("active", s.dataset.lens === lens));
-    try { localStorage.setItem("z1n_how_lens", lens); } catch(e){}
+  // Live stats (best-effort).
+  // If your API endpoint differs, this fails gracefully and leaves "—".
+  var API_BASE = "https://z1n-backend-production.up.railway.app/api";
+
+  function setText(id, val){
+    var e = document.getElementById(id);
+    if (!e) return;
+    e.textContent = (val === null || val === undefined || val === "") ? "—" : String(val);
   }
 
-  buttons.forEach(btn => btn.addEventListener("click", () => setLens(btn.dataset.setLens)));
+  async function tryFetch(url){
+    try{
+      var r = await fetch(url, { cache: "no-store" });
+      if (!r.ok) return null;
+      return await r.json();
+    }catch(e){
+      return null;
+    }
+  }
 
-  // restore
-  try {
-    const saved = localStorage.getItem("z1n_how_lens");
-    if (saved === "nbi" || saved === "bi") setLens(saved);
-  } catch(e){}
+  // We try a few likely endpoints; first that returns usable values wins.
+  async function loadStats(){
+    var candidates = [
+      API_BASE + "/stats",
+      API_BASE + "/live-stats",
+      API_BASE + "/epochs/stats",
+      API_BASE + "/protocol/stats"
+    ];
+
+    for (var i=0;i<candidates.length;i++){
+      var data = await tryFetch(candidates[i]);
+      if (!data) continue;
+
+      // Accept a few possible shapes:
+      // { last21: X, last210: Y, totalEpochs: Z }
+      // { epochs: { last21: X, last210: Y, total: Z } }
+      // { windows: { "21": X, "210": Y }, totalEpochs: Z }
+      var last21 = null, last210 = null, total = null;
+
+      if (typeof data.last21 !== "undefined") last21 = data.last21;
+      if (typeof data.last210 !== "undefined") last210 = data.last210;
+      if (typeof data.totalEpochs !== "undefined") total = data.totalEpochs;
+
+      if (data.epochs){
+        if (typeof data.epochs.last21 !== "undefined") last21 = data.epochs.last21;
+        if (typeof data.epochs.last210 !== "undefined") last210 = data.epochs.last210;
+        if (typeof data.epochs.total !== "undefined") total = data.epochs.total;
+        if (typeof data.epochs.totalEpochs !== "undefined") total = data.epochs.totalEpochs;
+      }
+
+      if (data.windows){
+        if (typeof data.windows["21"] !== "undefined") last21 = data.windows["21"];
+        if (typeof data.windows["210"] !== "undefined") last210 = data.windows["210"];
+      }
+
+      // If we got at least one meaningful number, render and stop.
+      var gotSomething = (last21 !== null) || (last210 !== null) || (total !== null);
+      if (gotSomething){
+        setText("stat21", last21);
+        setText("stat210", last210);
+        setText("statTotal", total);
+        return;
+      }
+    }
+
+    // fallback stays as "—"
+    setText("stat21", "—");
+    setText("stat210", "—");
+    setText("statTotal", "—");
+  }
+
+  loadStats();
 })();
 </script>
+
+<script src="js/gas-banner.js"></script>
 </body>
 </html>
