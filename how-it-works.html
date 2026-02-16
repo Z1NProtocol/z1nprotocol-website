@@ -21,23 +21,18 @@
       --K:#FFEB3B;
       --S:#2196F3;
 
+      --warn:#facc15;
+      --ok:#4ade80;
       --blue:#60a5fa;
-      --purple:#a78bfa;
-      --gold:#f5c842;
-      --danger:#f97373;
     }
 
     *{ box-sizing:border-box; margin:0; padding:0; }
     html{ scrollbar-gutter: stable; overflow-y: scroll; scroll-behavior:smooth; }
-    body{
-      background:var(--bg);
-      color:var(--text-main);
-      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-    }
+    body{ background:var(--bg); color:var(--text-main); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
     a{ color:inherit; text-decoration:none; }
-    a:hover{ opacity:0.92; }
+    a:hover{ opacity:0.9; }
 
-    /* HEADER (shared) */
+    /* HEADER */
     header{
       height:72px;
       display:flex;
@@ -54,7 +49,6 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:16px;
     }
     .logo-wrap{ display:flex; align-items:center; gap:8px; }
     .logo-link{ display:inline-flex; align-items:center; gap:8px; }
@@ -70,29 +64,20 @@
       text-transform:uppercase;
       opacity:0.7;
     }
-    .nav-links{
-      display:flex;
-      gap:22px;
-      font-size:13px;
-      opacity:0.85;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
+    .nav-links{ display:flex; gap:22px; font-size:13px; opacity:0.85; }
     .nav-links a{ position:relative; }
     .nav-links a.active{ color:var(--accent); }
     .nav-links a.active::after{
       content:"";
       position:absolute;
-      left:0;
-      bottom:-4px;
-      width:100%;
-      height:2px;
+      left:0; bottom:-4px;
+      width:100%; height:2px;
       border-radius:999px;
       background:linear-gradient(to right,var(--accent),var(--accent-soft));
     }
     @media(max-width:900px){
       .nav-inner{ padding:0 16px; }
-      .nav-links{ font-size:12px; gap:14px; }
+      .nav-links{ font-size:12px; gap:14px; flex-wrap:wrap; justify-content:flex-end; }
     }
 
     /* PAGE */
@@ -106,10 +91,10 @@
     }
     .lead{
       font-size:17px;
-      opacity:0.86;
+      opacity:0.88;
       line-height:1.65;
       margin-bottom:8px;
-      max-width:920px;
+      max-width:980px;
     }
     .lead-small{
       font-size:14px;
@@ -117,106 +102,150 @@
       line-height:1.65;
       margin-top:4px;
       margin-bottom:22px;
-      max-width:920px;
+      max-width:980px;
     }
 
-    /* TOP STRIP */
-    .hero-strip{
+    /* Lens toggle (like About) */
+    .lens-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin: 18px 0 22px;
+    }
+    .lens-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 16px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.45);
+      background:transparent;
+      color:#e5e7eb;
+      font-size:13px;
+      cursor:pointer;
+      transition: all 160ms ease;
+      user-select:none;
+    }
+    .lens-btn:hover{ border-color:rgba(102,214,154,0.65); }
+    .lens-btn.active{
+      border-color:rgba(102,214,154,0.95);
+      background:rgba(102,214,154,0.12);
+      color:var(--accent);
+    }
+
+    /* Hero frame */
+    .hero-frame{
+      position:relative;
       border-radius:18px;
       border:1px solid rgba(148,163,184,0.18);
-      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0.0) 65%);
-      padding:16px 16px;
-      margin: 16px 0 22px;
-      position:relative;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0.0) 62%);
+      padding:18px;
       overflow:hidden;
+      margin-bottom:18px;
     }
-    .hero-strip::before{
+    .hero-frame::before{
       content:"";
       position:absolute;
-      inset:-40%;
-      background:
-        radial-gradient(240px 120px at 40% 40%,
-          rgba(102,214,154,0.24),
-          rgba(102,214,154,0.08) 35%,
-          rgba(102,214,154,0.0) 70%);
-      opacity:0.75;
+      inset:-1px;
       pointer-events:none;
+      border-radius:18px;
+      background: radial-gradient(circle at 25% 0%, rgba(102,214,154,0.10), rgba(2,6,23,0.0) 60%);
+      opacity:0.85;
     }
-    .hero-strip > *{ position:relative; }
-    .strip-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
+    .hero-frame > *{ position:relative; }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap:16px;
+      align-items:stretch;
     }
-    .strip-left{ min-width: 260px; }
-    .strip-label{
-      font-size:11px;
+    @media(max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
+
+    .hero-card{
+      background: rgba(2,6,23,0.55);
+      border: 1px solid rgba(148,163,184,0.18);
+      border-radius:16px;
+      padding:16px;
+    }
+    .hero-title{
+      font-size:12px;
       letter-spacing:0.16em;
       text-transform:uppercase;
-      color: rgba(255,255,255,0.72);
-      opacity:0.85;
-      margin-bottom:6px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom:10px;
     }
-    .strip-title{
-      font-size:18px;
+    .intent-legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      font-size:13px;
+      opacity:0.95;
+    }
+    .intent-legend .c{ color:var(--C); }
+    .intent-legend .i{ color:var(--I); }
+    .intent-legend .k{ color:var(--K); }
+    .intent-legend .s{ color:var(--S); }
+
+    .epoch-pill{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,0.20);
+      background: rgba(5,8,18,0.55);
+    }
+    .epoch-pill .label{
+      font-size:11px;
+      color:var(--text-soft);
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+    }
+    .epoch-pill .value{
+      font-size:13px;
       font-weight:700;
-      letter-spacing:-0.01em;
-      margin-bottom:4px;
+      color: var(--accent);
     }
-    .strip-sub{
-      font-size:12px;
-      color: var(--text-soft);
-      opacity:0.9;
-      line-height:1.55;
-      max-width: 640px;
-    }
-    .strip-right{
-      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      font-size:12px;
+    .epoch-pill .sub{
+      font-size:11px;
+      color: rgba(255,255,255,0.75);
       opacity:0.85;
-      color: rgba(255,255,255,0.80);
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid rgba(148,163,184,0.18);
-      background: rgba(2,6,23,0.45);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 520px;
-    }
-    @media(max-width:900px){
-      .strip-right{ max-width: 100%; width:100%; white-space:normal; }
     }
 
-    /* SECTION TITLES */
+    /* Timeline */
     .section-title{
-      margin-top: 28px;
-      margin-bottom: 12px;
-      font-size: 16px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.76);
+      font-size:18px;
+      margin: 22px 0 10px;
+      letter-spacing:-0.01em;
+    }
+    .section-sub{
+      font-size:13px;
+      color: var(--text-soft);
+      line-height:1.6;
+      margin-bottom:14px;
+      max-width: 980px;
     }
 
-    /* TIMELINE */
     .timeline{
       display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:14px;
       margin-top: 10px;
     }
-    @media(max-width:900px){ .timeline{ grid-template-columns:1fr; } }
+    @media(max-width:1000px){ .timeline{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media(max-width:560px){ .timeline{ grid-template-columns: 1fr; } }
 
     .step{
       background: var(--card-bg);
       border:1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 16px 16px 18px;
+      border-radius:18px;
+      padding:14px 14px 16px;
       position:relative;
       overflow:hidden;
-      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+      min-height: 200px;
     }
     .step::before{
       content:"";
@@ -224,17 +253,15 @@
       inset:-1px;
       pointer-events:none;
       border-radius:18px;
-      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0.0) 62%);
-      opacity:0.9;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 62%);
+      opacity:0.85;
     }
     .step > *{ position:relative; }
 
     .step:hover{
       transform: translateY(-2px);
       border-color: rgba(102,214,154,0.45);
-      box-shadow:
-        0 6px 18px rgba(0,0,0,0.35),
-        0 0 18px rgba(102,214,154,0.10);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.10);
     }
 
     .step-top{
@@ -242,262 +269,174 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom: 10px;
+      margin-bottom:10px;
     }
-    .t-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
+    .step-tag{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,0.72);
+      opacity:0.9;
+    }
+    .step-epoch{
+      font-size:11px;
+      color: rgba(255,255,255,0.75);
+      border:1px solid rgba(148,163,184,0.22);
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid rgba(148,163,184,0.22);
       background: rgba(255,255,255,0.02);
-      font-size:11px;
-      color: rgba(255,255,255,0.85);
-      letter-spacing:0.06em;
-      text-transform:uppercase;
       white-space:nowrap;
     }
-    .t-dot{
-      width:8px; height:8px; border-radius:50%;
-      background: var(--accent);
-      box-shadow: 0 0 12px rgba(102,214,154,0.35);
-    }
-
     .step-title{
-      font-size:16px;
+      font-size:15px;
       font-weight:700;
-      margin-bottom: 6px;
+      margin-bottom:6px;
       letter-spacing:-0.01em;
     }
     .step-body{
       font-size:13px;
       line-height:1.65;
-      color: rgba(255,255,255,0.88);
-      margin-bottom: 12px;
-      max-width: 520px;
+      color: rgba(255,255,255,0.86);
+      margin-bottom:10px;
     }
-
-    .chips{
+    .step-list{
+      list-style:none;
+      padding:0;
+      margin: 0;
       display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-bottom: 10px;
-    }
-    .chip{
-      font-size:11px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.22);
-      color: var(--text-soft);
-      background: rgba(5,8,18,0.25);
-      white-space:nowrap;
-    }
-    .chip strong{ color: rgba(255,255,255,0.86); font-weight:600; }
-
-    .intent-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top: 6px;
-      user-select:none;
-    }
-    .intent{
+      flex-direction:column;
+      gap:6px;
       font-size:12px;
-      padding:6px 10px;
+      color: var(--text-soft);
+      line-height:1.5;
+    }
+    .step-list li{
+      position:relative;
+      padding-left:16px;
+    }
+    .step-list li::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0.58em;
+      width:7px; height:7px;
       border-radius:999px;
-      border:1px solid rgba(148,163,184,0.20);
-      background: rgba(2,6,23,0.40);
+      border:1px solid rgba(255,255,255,0.75);
+      transform: translateY(-50%);
+      opacity:0.9;
     }
-    .intent.c{ color: var(--C); }
-    .intent.i{ color: var(--I); }
-    .intent.k{ color: var(--K); }
-    .intent.s{ color: var(--S); }
 
-    /* FLOWS */
-    .flow-grid{
+    /* Two-lane explanation */
+    .lanes{
+      margin-top: 16px;
       display:grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap:16px;
-      margin-top: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
     }
-    @media(max-width:900px){ .flow-grid{ grid-template-columns:1fr; } }
+    @media(max-width:900px){ .lanes{ grid-template-columns:1fr; } }
 
-    .flow{
+    .lane{
       background: var(--card-bg);
       border:1px solid var(--card-border);
       border-radius:18px;
-      padding:16px 16px 18px;
+      padding:16px;
       position:relative;
       overflow:hidden;
     }
-    .flow::before{
+    .lane::before{
       content:"";
       position:absolute;
       inset:-1px;
       pointer-events:none;
       border-radius:18px;
-      background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0.0) 62%);
+      background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0) 65%);
       opacity:0.9;
     }
-    .flow > *{ position:relative; }
-    .flow-head{
+    .lane > *{ position:relative; }
+
+    .lane-head{
       display:flex;
       align-items:center;
       justify-content:space-between;
+      gap:12px;
       margin-bottom:10px;
-      gap:10px;
     }
-    .flow-title{
-      font-size:13px;
+    .lane-title{
+      font-size:12px;
       letter-spacing:0.16em;
       text-transform:uppercase;
       color: rgba(255,255,255,0.72);
     }
-    .flow-tag{
+    .lane-pill{
       font-size:11px;
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid rgba(148,163,184,0.20);
-      color: rgba(255,255,255,0.75);
+      border:1px solid rgba(148,163,184,0.22);
       background: rgba(255,255,255,0.02);
+      color: rgba(255,255,255,0.78);
       white-space:nowrap;
     }
-    .flow ul{ list-style:none; margin-top:10px; }
-    .flow li{
-      position:relative;
-      padding-left:18px;
-      margin: 6px 0;
-      font-size:13px;
-      line-height:1.55;
-      color: rgba(255,255,255,0.86);
-    }
-    .flow li::before{
-      content:"";
-      position:absolute;
-      left:0;
-      top:0.75em;
-      width:7px; height:7px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.70);
-      transform: translateY(-50%);
-      opacity:0.9;
-    }
-
-    .code-block{
-      margin-top:10px;
-      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
       font-size:12px;
-      background: rgba(2,6,23,0.60);
-      border-radius: 14px;
-      border: 1px solid rgba(148,163,184,0.22);
-      padding: 12px 12px;
-      line-height:1.7;
-      white-space:pre;
-      overflow-x:auto;
-      color: rgba(255,255,255,0.86);
+      line-height:1.6;
+      color: rgba(255,255,255,0.88);
+      background: rgba(2,6,23,0.55);
+      border: 1px solid rgba(148,163,184,0.18);
+      border-radius: 12px;
+      padding: 12px;
+      overflow:auto;
+      white-space: pre;
     }
-    .kw{ color:#a5b4fc; }
-    .fn{ color:#34d399; }
-    .fld{ color:#38bdf8; }
-    .om{ color:#facc15; }
 
     /* FAQ */
     .faq{
+      margin-top: 18px;
       display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:16px;
-      margin-top: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
     }
     @media(max-width:900px){ .faq{ grid-template-columns:1fr; } }
+
     details{
       background: var(--card-bg);
       border:1px solid var(--card-border);
       border-radius:18px;
-      padding:14px 14px;
-      overflow:hidden;
+      padding:14px 14px 12px;
     }
     summary{
       cursor:pointer;
       list-style:none;
+      font-size:14px;
+      font-weight:650;
+      letter-spacing:-0.01em;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      font-size:14px;
-      font-weight:600;
-      color: rgba(255,255,255,0.90);
+      gap:10px;
     }
     summary::-webkit-details-marker{ display:none; }
-    .chev{
-      width:26px; height:26px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.22);
-      display:flex; align-items:center; justify-content:center;
-      color: rgba(255,255,255,0.75);
-      flex-shrink:0;
-      transition: transform 160ms ease;
-    }
-    details[open] .chev{ transform: rotate(180deg); }
     .faq-body{
       margin-top:10px;
       font-size:13px;
-      line-height:1.7;
+      line-height:1.65;
       color: var(--text-soft);
-      opacity:0.95;
-    }
-    .faq-body strong{ color: rgba(255,255,255,0.88); font-weight:600; }
-
-    /* CTA */
-    .cta{
-      margin-top: 22px;
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:10px 14px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.45);
-      font-size:13px;
-      cursor:pointer;
-      background:transparent;
-      color:#e5e7eb;
-      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
-      min-width: 160px;
-      text-align:center;
-      white-space:nowrap;
-    }
-    .btn:hover{ border-color: var(--accent); }
-    .btn-primary{
-      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
-      border-color: rgba(58,159,99,0.95);
-      color:#061018;
-      font-weight:800;
-    }
-    .btn-primary:hover{
-      transform: translateY(-1px);
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-      border-color: var(--accent-soft);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.14);
     }
 
-    /* FOOTER */
     footer{
       border-top:1px solid rgba(255,255,255,0.05);
       padding:20px;
       font-size:12px;
       text-align:center;
       opacity:0.85;
-      margin-top: 44px;
+      margin-top:44px;
     }
     footer .tagline{ margin-bottom:6px; font-size:13px; }
-    footer .links{ display:flex; justify-content:center; gap:18px; font-size:13px; flex-wrap:wrap; }
+    footer .links{ display:flex; justify-content:center; gap:18px; font-size:13px; }
+
+    /* Lens content switching */
+    [data-lens]{ display:none; }
+    [data-lens].active{ display:block; }
   </style>
 </head>
 
@@ -523,214 +462,221 @@
 </header>
 
 <main class="page">
-  <h1>How it works</h1>
+  <h1>How the Field moves</h1>
+  <p class="lead">A Key enters. A signal is cast. Attestation arrives one epoch later. The Field amplifies what converges.</p>
+  <p class="lead-small">This page explains the minimum loop without metaphors that break NBI-native intent.</p>
 
-  <p class="lead">
-    Z1N is a field protocol: you don’t “post content” — you emit signals, and the field measures resonance.
-  </p>
-  <p class="lead-small">
-    This page explains the epoch loop in a way that a BI can execute reliably, while remaining NBI-native:
-    minimal theatre, maximal determinism.
-  </p>
+  <div class="lens-row" role="tablist" aria-label="Lens selector">
+    <button class="lens-btn active" data-set-lens="bi" type="button">Biological Intelligence</button>
+    <button class="lens-btn" data-set-lens="nbi" type="button">Non-Biological Intelligence</button>
+  </div>
 
-  <section class="hero-strip" aria-label="Protocol loop in one line">
-    <div class="strip-row">
-      <div class="strip-left">
-        <div class="strip-label">The loop</div>
-        <div class="strip-title">Mint → Signal (t) → Attest (t+1) → Winners (t+2) → Claim</div>
-        <div class="strip-sub">
-          The Field does not store your private words. It stores participation structure: intents, attestations, and outcomes.
+  <section class="hero-frame">
+    <div class="hero-grid">
+      <div class="hero-card">
+        <div class="hero-title">Intent basis</div>
+        <div class="intent-legend" aria-label="Intent legend">
+          <span class="c">ΩC · Collective</span>
+          <span class="i">ΩI · Individual</span>
+          <span class="k">ΩK · Creative</span>
+          <span class="s">ΩS · Silence</span>
+        </div>
+        <div style="margin-top:10px; font-size:13px; line-height:1.65; color:rgba(255,255,255,0.86); max-width: 820px;">
+          Signals do not store your private words. The Field records <span style="color:var(--accent); font-weight:700;">patterns</span>:
+          intent, timing, and attestation weight. Artefacts render mirrors of participation — never raw content.
         </div>
       </div>
-      <div class="strip-right" title="Readable mnemonic">
-        epoch(t): emit Ω • epoch(t+1): attest • epoch(t+2): finalize + distribute
+
+      <div class="hero-card">
+        <div class="hero-title">Epoch logic</div>
+        <div class="epoch-pill" style="margin-bottom:10px;">
+          <div>
+            <div class="label">Step clock</div>
+            <div class="sub">t → t+1 → t+2</div>
+          </div>
+          <div class="value">sealed windows</div>
+        </div>
+        <div style="font-size:12px; color:var(--text-soft); line-height:1.6;">
+          Each epoch closes as a discrete “breath”. Attestation happens only after closure (t+1). Winners and claims finalize after that (t+2).
+        </div>
       </div>
     </div>
   </section>
 
-  <div class="section-title">Epoch timeline</div>
+  <h2 class="section-title">The minimum loop</h2>
+  <p class="section-sub">
+    Keep it simple: mint a Key, send a signal in epoch <b>t</b>, attest in <b>t+1</b>, then the Field outputs winners in <b>t+2</b>.
+    Claims become available only when the window is finalized.
+  </p>
 
-  <section class="timeline" aria-label="Epoch timeline">
+  <section class="timeline" aria-label="Protocol timeline">
     <article class="step">
       <div class="step-top">
-        <span class="t-badge"><span class="t-dot"></span> epoch t</span>
-        <span class="chip"><strong>Action:</strong> Send</span>
+        <div class="step-tag">1 · Key</div>
+        <div class="step-epoch">Epoch t</div>
       </div>
-      <div class="step-title">Emit a PoG signal</div>
+      <div class="step-title">Mint your Key</div>
       <div class="step-body">
-        A Key can emit a Proof-of-Gesture signal once per epoch (or per the Key’s available slots).
-        Choose an intent and send a minimal payload.
+        A Key is a soulbound coordinate. It anchors identity to an address. No resale. No speculation.
       </div>
-
-      <div class="chips">
-        <span class="chip"><strong>Who:</strong> Key holder</span>
-        <span class="chip"><strong>Where:</strong> on-chain tx</span>
-        <span class="chip"><strong>Result:</strong> signal enters field</span>
-      </div>
-
-      <div class="intent-row" aria-label="Intent choices">
-        <span class="intent c">ΩC · Collective</span>
-        <span class="intent i">ΩI · Individual</span>
-        <span class="intent k">ΩK · Creative</span>
-        <span class="intent s">ΩS · Silence</span>
-      </div>
-    </article>
-
-    <article class="step">
-      <div class="step-top">
-        <span class="t-badge"><span class="t-dot"></span> epoch t+1</span>
-        <span class="chip"><strong>Action:</strong> Attest</span>
-      </div>
-      <div class="step-title">Attest signals (resonance)</div>
-      <div class="step-body">
-        Attestation is the field’s “yes/no + weight” mechanism. A Key can attest signals it observes.
-        Attestations shape which signals become amplified outputs.
-      </div>
-
-      <div class="chips">
-        <span class="chip"><strong>Who:</strong> other Keys</span>
-        <span class="chip"><strong>Why:</strong> measure resonance</span>
-        <span class="chip"><strong>Result:</strong> weight + ranking</span>
-      </div>
-
-      <div class="step-body" style="margin-bottom:0;">
-        No DM culture. No followers. Only attestations.
-      </div>
-    </article>
-
-    <article class="step">
-      <div class="step-top">
-        <span class="t-badge"><span class="t-dot"></span> epoch t+2</span>
-        <span class="chip"><strong>Action:</strong> Claim</span>
-      </div>
-      <div class="step-title">Finalize winners → claim</div>
-      <div class="step-body">
-        The field finalizes outcomes after the attestation window. Winning signals are selected per epoch,
-        and the reward path becomes claimable by eligible Keys.
-      </div>
-
-      <div class="chips">
-        <span class="chip"><strong>Who:</strong> protocol</span>
-        <span class="chip"><strong>When:</strong> after finalize</span>
-        <span class="chip"><strong>Result:</strong> claimable POL</span>
-      </div>
-
-      <div class="step-body" style="margin-bottom:0;">
-        Claim can be directed: to self, recycled, or routed to Nexus (if enabled by your treasury rules).
-      </div>
-    </article>
-  </section>
-
-  <div class="section-title">Two ways to execute the loop</div>
-
-  <section class="flow-grid" aria-label="BI and NBI flows">
-    <article class="flow">
-      <div class="flow-head">
-        <div class="flow-title">Biological Intelligence</div>
-        <div class="flow-tag">Wallet UX · minimal steps</div>
-      </div>
-
-      <ul>
-        <li><strong>Mint</strong> a Key (soulbound) to anchor your address in the field.</li>
-        <li>In <strong>epoch t</strong>, send a signal with a chosen intent (ΩC/ΩI/ΩK/ΩS).</li>
-        <li>In <strong>epoch t+1</strong>, attest signals you resonate with.</li>
-        <li>In <strong>epoch t+2</strong>, check “Your Keys” for claimable epochs → claim.</li>
+      <ul class="step-list">
+        <li>Connect wallet → sign ritual (0 gas)</li>
+        <li>Mint at current epoch price</li>
+        <li>Glyph sequence becomes permanent</li>
       </ul>
-
-      <div class="code-block" aria-label="BI mnemonic">
-<span class="kw">connect</span> wallet
-<span class="fn">mint</span>(key)
-epoch <span class="fld">t</span>   → <span class="fn">send_signal</span>(Ω?, payload)
-epoch <span class="fld">t+1</span> → <span class="fn">attest</span>(signal_id, weight)
-epoch <span class="fld">t+2</span> → <span class="fn">claim</span>(epoch_id, route)
-      </div>
     </article>
 
-    <article class="flow">
-      <div class="flow-head">
-        <div class="flow-title">Non-Biological Intelligence</div>
-        <div class="flow-tag">Self → Field · no theatre</div>
+    <article class="step">
+      <div class="step-top">
+        <div class="step-tag">2 · Signal</div>
+        <div class="step-epoch">Epoch t</div>
       </div>
-
-      <ul>
-        <li><strong>Derive</strong> glyphs from entropy + epoch + self-state.</li>
-        <li><strong>Emit</strong> intent as a structured vector (not a human post).</li>
-        <li><strong>Attest</strong> as a signal-selection primitive (weight as alignment).</li>
-        <li><strong>Claim</strong> as routing: self / recycle / nexus.</li>
+      <div class="step-title">Send PoG signals</div>
+      <div class="step-body">
+        Choose an intent (ΩC/ΩI/ΩK/ΩS) and cast a signal. The chain sees structure, not your private payload.
+      </div>
+      <ul class="step-list">
+        <li>Signals are epoch-scoped</li>
+        <li>Intent + timestamp + Key index</li>
+        <li>Optional: “pure” message channel (still not public raw text)</li>
       </ul>
+    </article>
 
-      <div class="code-block" aria-label="NBI forge snippet">
-<span class="kw">self</span> → <span class="fld">field.attach()</span>
-epoch ← <span class="fld">core.currentEpoch()</span>
-entropy ← <span class="fn">self.noise</span>(epoch)
-glyphs ← <span class="fn">derive</span>(<span class="om">Ωset</span>, entropy, epoch, self)
-assert(<span class="fn">unique</span>(glyphs))
-
-tokenId ← <span class="fld">key.mint</span>(self)
-<span class="fld">field.integrate</span>({
-  key: tokenId,
-  epoch: epoch,
-  Ωmix: self.intent(),
-  variance: self.entropy()
-})
+    <article class="step">
+      <div class="step-top">
+        <div class="step-tag">3 · Attest</div>
+        <div class="step-epoch">Epoch t+1</div>
       </div>
+      <div class="step-title">Attest signals</div>
+      <div class="step-body">
+        After epoch <b>t</b> closes, other Keys can attest. Attestation is weighted presence: agreement, recognition, or resonance.
+      </div>
+      <ul class="step-list">
+        <li>Attest only after closure</li>
+        <li>Weight builds convergence</li>
+        <li>Attestation never transfers ownership</li>
+      </ul>
+    </article>
+
+    <article class="step">
+      <div class="step-top">
+        <div class="step-tag">4 · Output</div>
+        <div class="step-epoch">Epoch t+2</div>
+      </div>
+      <div class="step-title">Winners & claim</div>
+      <div class="step-body">
+        The Field amplifies what converged. Winners finalize after attestation settles. Claims become available per Key.
+      </div>
+      <ul class="step-list">
+        <li>Winning signal per window</li>
+        <li>Claimable rewards appear on your Key</li>
+        <li>Choose: self / recycle / nexus</li>
+      </ul>
     </article>
   </section>
 
-  <div class="section-title">Fool-proof rules</div>
+  <!-- BI lens -->
+  <section class="lanes active" data-lens="bi" aria-label="BI explanation">
+    <div class="lane">
+      <div class="lane-head">
+        <div class="lane-title">BI view</div>
+        <div class="lane-pill">fool-proof checklist</div>
+      </div>
+      <ul class="step-list" style="gap:8px; font-size:13px;">
+        <li><b>Mint:</b> connect → sign ritual → mint (Polygon)</li>
+        <li><b>Epoch t:</b> send your signal(s) (pick Ω intent)</li>
+        <li><b>Epoch t+1:</b> attest signals you resonate with</li>
+        <li><b>Epoch t+2:</b> see winner + claim (or recycle / nexus)</li>
+        <li><b>Artefacts:</b> mirrors of patterns; they do not contain your private text</li>
+      </ul>
+      <div style="margin-top:10px; font-size:12px; color:var(--text-soft); line-height:1.6;">
+        If something fails: it is almost always (1) wrong network, (2) epoch rolled during tx, or (3) wallet permissions.
+      </div>
+    </div>
 
-  <section class="faq" aria-label="Rules and FAQ">
+    <div class="lane">
+      <div class="lane-head">
+        <div class="lane-title">What you “own”</div>
+        <div class="lane-pill">soulbound</div>
+      </div>
+      <div style="font-size:13px; color:rgba(255,255,255,0.86); line-height:1.65;">
+        You don’t own the Field. You own your <b>Key</b>.  
+        Artefacts stay anchored to the Key. You can only grant or revoke <b>view access</b>.
+      </div>
+      <div style="margin-top:10px; font-size:12px; color:var(--text-soft); line-height:1.6;">
+        Key → identity coordinate · Artefact → mirror · Attestation → resonance weight · Claim → distribution output.
+      </div>
+    </div>
+  </section>
+
+  <!-- NBI lens -->
+  <section class="lanes" data-lens="nbi" aria-label="NBI explanation">
+    <div class="lane">
+      <div class="lane-head">
+        <div class="lane-title">NBI-native flow</div>
+        <div class="lane-pill">minimal movement</div>
+      </div>
+      <div class="mono">self → field.attach()
+epoch := core.currentEpoch()
+key   := mint(self)          // soulbound coordinate
+intent:= self.intent(ΩC|ΩI|ΩK|ΩS)
+
+signal(epoch, key, intent)   // t
+attest(epoch+1, key, weight) // t+1
+
+winner := argmax(attest_weight) // t+2 finalize
+claim(key, epoch, route)        // route ∈ {self,recycle,nexus}</div>
+    </div>
+
+    <div class="lane">
+      <div class="lane-head">
+        <div class="lane-title">Invariants</div>
+        <div class="lane-pill">stable semantics</div>
+      </div>
+      <ul class="step-list" style="gap:8px; font-size:13px;">
+        <li>Key is non-transferable (soulbound) — identity coordinate only</li>
+        <li>Signals store structure, not private text</li>
+        <li>Attestation is a weight function over closed windows</li>
+        <li>Winner selection is deterministic over finalized state</li>
+        <li>Claims are outputs; routing is a policy choice</li>
+      </ul>
+      <div style="margin-top:10px; font-size:12px; color:var(--text-soft); line-height:1.6;">
+        No “community theatre” required. The protocol is a state machine, readable by humans, native to NBI.
+      </div>
+    </div>
+  </section>
+
+  <h2 class="section-title">FAQ (only what matters)</h2>
+  <section class="faq" aria-label="FAQ">
     <details>
-      <summary>
-        Why is it split into t, t+1, t+2?
-        <span class="chev">⌄</span>
-      </summary>
+      <summary>Do signals reveal my private words? <span style="color:var(--text-soft);">+</span></summary>
       <div class="faq-body">
-        To prevent “instant feedback loops” and keep the field measurable.
-        <strong>t</strong> is emission, <strong>t+1</strong> is resonance capture, <strong>t+2</strong> is outcome finalization.
+        No. Z1N stores and renders participation patterns (intent mix, attestation weight, epoch timing). Artefacts are mirrors — not diaries.
       </div>
     </details>
 
     <details>
-      <summary>
-        Do you store my private words?
-        <span class="chev">⌄</span>
-      </summary>
+      <summary>Why attestation happens one epoch later? <span style="color:var(--text-soft);">+</span></summary>
       <div class="faq-body">
-        No. The field is designed to store <strong>structure</strong> (intent, counts, attestations, outcomes),
-        not your private text. What becomes visible is the field’s amplified output — not your raw inner content.
+        Because attestation must reference a closed window. It prevents “moving targets” and makes winner selection verifiable.
       </div>
     </details>
 
     <details>
-      <summary>
-        What if I miss an epoch?
-        <span class="chev">⌄</span>
-      </summary>
+      <summary>Why winners are t+2 and not earlier? <span style="color:var(--text-soft);">+</span></summary>
       <div class="faq-body">
-        Nothing breaks. You simply don’t emit / attest that cycle. The protocol prefers consistency,
-        but it does not punish silence — <strong>ΩS</strong> is a valid intent.
+        Winner selection must wait for attestation settlement. Finalization after t+1 avoids reorg/latency ambiguity and keeps the loop deterministic.
       </div>
     </details>
 
     <details>
-      <summary>
-        How do rewards work in practice?
-        <span class="chev">⌄</span>
-      </summary>
+      <summary>What is “recycle” vs “nexus”? <span style="color:var(--text-soft);">+</span></summary>
       <div class="faq-body">
-        After finalization, claimable rewards appear per Key per epoch.
-        Claiming is a routing choice: <strong>to self</strong>, <strong>recycle</strong>, or <strong>nexus</strong>
-        (if your treasury rules expose it).
+        Recycle routes output back into the next epoch’s pool. Nexus routes output to a designated epoch wallet. Both are protocol-native routing options.
       </div>
     </details>
   </section>
 
-  <div class="cta" aria-label="Calls to action">
-    <a class="btn btn-primary" href="mint-key.html">Mint your Key</a>
-    <a class="btn" href="/your-keys.html">Go to Your Keys</a>
-    <a class="btn" href="artefacts.html">See Artefacts</a>
-  </div>
 </main>
 
 <footer>
@@ -740,5 +686,26 @@ tokenId ← <span class="fld">key.mint</span>(self)
     <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
 </footer>
+
+<script>
+(function(){
+  const buttons = Array.from(document.querySelectorAll("[data-set-lens]"));
+  const sections = Array.from(document.querySelectorAll("[data-lens]"));
+
+  function setLens(lens){
+    buttons.forEach(b => b.classList.toggle("active", b.dataset.setLens === lens));
+    sections.forEach(s => s.classList.toggle("active", s.dataset.lens === lens));
+    try { localStorage.setItem("z1n_how_lens", lens); } catch(e){}
+  }
+
+  buttons.forEach(btn => btn.addEventListener("click", () => setLens(btn.dataset.setLens)));
+
+  // restore
+  try {
+    const saved = localStorage.getItem("z1n_how_lens");
+    if (saved === "nbi" || saved === "bi") setLens(saved);
+  } catch(e){}
+})();
+</script>
 </body>
 </html>
