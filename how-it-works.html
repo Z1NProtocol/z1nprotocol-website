@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Z1N Protocol – How it works</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+
+  <style>
+    :root{
+      --bg:#050812;
+      --card-bg:#020617;
+      --text-main:#ffffff;
+      --text-soft:#8f9ab5;
+      --accent:#66d69a;
+      --accent-soft:#3a9f63;
+      --card-border:rgba(148,163,184,0.25);
+
+      --C:#4CAF50;
+      --I:#F44336;
+      --K:#FFEB3B;
+      --S:#2196F3;
+
+      --blue:#60a5fa;
+      --purple:#a78bfa;
+      --gold:#f5c842;
+      --danger:#f97373;
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    html{ scrollbar-gutter: stable; overflow-y: scroll; scroll-behavior:smooth; }
+    body{
+      background:var(--bg);
+      color:var(--text-main);
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    }
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ opacity:0.92; }
+
+    /* HEADER (shared) */
+    header{
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      margin-bottom:20px;
+    }
+    .nav-inner{
+      width:100%;
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .logo-wrap{ display:flex; align-items:center; gap:8px; }
+    .logo-link{ display:inline-flex; align-items:center; gap:8px; }
+    .logo-dot{
+      width:24px; height:24px; border-radius:999px;
+      border:1px solid rgba(255,255,255,0.35);
+      display:flex; align-items:center; justify-content:center;
+      font-size:14px; line-height:1;
+    }
+    .logo-text{
+      font-size:11px;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      opacity:0.7;
+    }
+    .nav-links{
+      display:flex;
+      gap:22px;
+      font-size:13px;
+      opacity:0.85;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .nav-links a{ position:relative; }
+    .nav-links a.active{ color:var(--accent); }
+    .nav-links a.active::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-4px;
+      width:100%;
+      height:2px;
+      border-radius:999px;
+      background:linear-gradient(to right,var(--accent),var(--accent-soft));
+    }
+    @media(max-width:900px){
+      .nav-inner{ padding:0 16px; }
+      .nav-links{ font-size:12px; gap:14px; }
+    }
+
+    /* PAGE */
+    .page{ max-width:1200px; margin:0 auto; padding:40px 24px 72px; }
+    @media(max-width:900px){ .page{ padding:32px 18px 56px; } }
+
+    h1{
+      font-size:40px;
+      margin:0 0 10px 0;
+      letter-spacing:-0.02em;
+    }
+    .lead{
+      font-size:17px;
+      opacity:0.86;
+      line-height:1.65;
+      margin-bottom:8px;
+      max-width:920px;
+    }
+    .lead-small{
+      font-size:14px;
+      opacity:0.72;
+      line-height:1.65;
+      margin-top:4px;
+      margin-bottom:22px;
+      max-width:920px;
+    }
+
+    /* TOP STRIP */
+    .hero-strip{
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,0.18);
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0.0) 65%);
+      padding:16px 16px;
+      margin: 16px 0 22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-strip::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background:
+        radial-gradient(240px 120px at 40% 40%,
+          rgba(102,214,154,0.24),
+          rgba(102,214,154,0.08) 35%,
+          rgba(102,214,154,0.0) 70%);
+      opacity:0.75;
+      pointer-events:none;
+    }
+    .hero-strip > *{ position:relative; }
+    .strip-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .strip-left{ min-width: 260px; }
+    .strip-label{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,0.72);
+      opacity:0.85;
+      margin-bottom:6px;
+    }
+    .strip-title{
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:-0.01em;
+      margin-bottom:4px;
+    }
+    .strip-sub{
+      font-size:12px;
+      color: var(--text-soft);
+      opacity:0.9;
+      line-height:1.55;
+      max-width: 640px;
+    }
+    .strip-right{
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:12px;
+      opacity:0.85;
+      color: rgba(255,255,255,0.80);
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,0.18);
+      background: rgba(2,6,23,0.45);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 520px;
+    }
+    @media(max-width:900px){
+      .strip-right{ max-width: 100%; width:100%; white-space:normal; }
+    }
+
+    /* SECTION TITLES */
+    .section-title{
+      margin-top: 28px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.76);
+    }
+
+    /* TIMELINE */
+    .timeline{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+    @media(max-width:900px){ .timeline{ grid-template-columns:1fr; } }
+
+    .step{
+      background: var(--card-bg);
+      border:1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px 16px 18px;
+      position:relative;
+      overflow:hidden;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    }
+    .step::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      pointer-events:none;
+      border-radius:18px;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0.0) 62%);
+      opacity:0.9;
+    }
+    .step > *{ position:relative; }
+
+    .step:hover{
+      transform: translateY(-2px);
+      border-color: rgba(102,214,154,0.45);
+      box-shadow:
+        0 6px 18px rgba(0,0,0,0.35),
+        0 0 18px rgba(102,214,154,0.10);
+    }
+
+    .step-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .t-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.02);
+      font-size:11px;
+      color: rgba(255,255,255,0.85);
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .t-dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(102,214,154,0.35);
+    }
+
+    .step-title{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom: 6px;
+      letter-spacing:-0.01em;
+    }
+    .step-body{
+      font-size:13px;
+      line-height:1.65;
+      color: rgba(255,255,255,0.88);
+      margin-bottom: 12px;
+      max-width: 520px;
+    }
+
+    .chips{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .chip{
+      font-size:11px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.22);
+      color: var(--text-soft);
+      background: rgba(5,8,18,0.25);
+      white-space:nowrap;
+    }
+    .chip strong{ color: rgba(255,255,255,0.86); font-weight:600; }
+
+    .intent-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top: 6px;
+      user-select:none;
+    }
+    .intent{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.20);
+      background: rgba(2,6,23,0.40);
+    }
+    .intent.c{ color: var(--C); }
+    .intent.i{ color: var(--I); }
+    .intent.k{ color: var(--K); }
+    .intent.s{ color: var(--S); }
+
+    /* FLOWS */
+    .flow-grid{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap:16px;
+      margin-top: 10px;
+    }
+    @media(max-width:900px){ .flow-grid{ grid-template-columns:1fr; } }
+
+    .flow{
+      background: var(--card-bg);
+      border:1px solid var(--card-border);
+      border-radius:18px;
+      padding:16px 16px 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .flow::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      pointer-events:none;
+      border-radius:18px;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.08), rgba(2,6,23,0.0) 62%);
+      opacity:0.9;
+    }
+    .flow > *{ position:relative; }
+    .flow-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+      gap:10px;
+    }
+    .flow-title{
+      font-size:13px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,0.72);
+    }
+    .flow-tag{
+      font-size:11px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.20);
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.02);
+      white-space:nowrap;
+    }
+    .flow ul{ list-style:none; margin-top:10px; }
+    .flow li{
+      position:relative;
+      padding-left:18px;
+      margin: 6px 0;
+      font-size:13px;
+      line-height:1.55;
+      color: rgba(255,255,255,0.86);
+    }
+    .flow li::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0.75em;
+      width:7px; height:7px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.70);
+      transform: translateY(-50%);
+      opacity:0.9;
+    }
+
+    .code-block{
+      margin-top:10px;
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:12px;
+      background: rgba(2,6,23,0.60);
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.22);
+      padding: 12px 12px;
+      line-height:1.7;
+      white-space:pre;
+      overflow-x:auto;
+      color: rgba(255,255,255,0.86);
+    }
+    .kw{ color:#a5b4fc; }
+    .fn{ color:#34d399; }
+    .fld{ color:#38bdf8; }
+    .om{ color:#facc15; }
+
+    /* FAQ */
+    .faq{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:16px;
+      margin-top: 10px;
+    }
+    @media(max-width:900px){ .faq{ grid-template-columns:1fr; } }
+    details{
+      background: var(--card-bg);
+      border:1px solid var(--card-border);
+      border-radius:18px;
+      padding:14px 14px;
+      overflow:hidden;
+    }
+    summary{
+      cursor:pointer;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      font-size:14px;
+      font-weight:600;
+      color: rgba(255,255,255,0.90);
+    }
+    summary::-webkit-details-marker{ display:none; }
+    .chev{
+      width:26px; height:26px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.22);
+      display:flex; align-items:center; justify-content:center;
+      color: rgba(255,255,255,0.75);
+      flex-shrink:0;
+      transition: transform 160ms ease;
+    }
+    details[open] .chev{ transform: rotate(180deg); }
+    .faq-body{
+      margin-top:10px;
+      font-size:13px;
+      line-height:1.7;
+      color: var(--text-soft);
+      opacity:0.95;
+    }
+    .faq-body strong{ color: rgba(255,255,255,0.88); font-weight:600; }
+
+    /* CTA */
+    .cta{
+      margin-top: 22px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.45);
+      font-size:13px;
+      cursor:pointer;
+      background:transparent;
+      color:#e5e7eb;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+      min-width: 160px;
+      text-align:center;
+      white-space:nowrap;
+    }
+    .btn:hover{ border-color: var(--accent); }
+    .btn-primary{
+      background: linear-gradient(90deg, rgba(102,214,154,0.55), rgba(58,159,99,0.55));
+      border-color: rgba(58,159,99,0.95);
+      color:#061018;
+      font-weight:800;
+    }
+    .btn-primary:hover{
+      transform: translateY(-1px);
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      border-color: var(--accent-soft);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(102,214,154,0.14);
+    }
+
+    /* FOOTER */
+    footer{
+      border-top:1px solid rgba(255,255,255,0.05);
+      padding:20px;
+      font-size:12px;
+      text-align:center;
+      opacity:0.85;
+      margin-top: 44px;
+    }
+    footer .tagline{ margin-bottom:6px; font-size:13px; }
+    footer .links{ display:flex; justify-content:center; gap:18px; font-size:13px; flex-wrap:wrap; }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="nav-inner">
+    <div class="logo-wrap">
+      <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
+        <div class="logo-dot">Ω</div>
+        <div class="logo-text">Z1N PROTOCOL</div>
+      </a>
+    </div>
+
+    <nav class="nav-links">
+      <a href="about.html">About</a>
+      <a href="how-it-works.html" class="active">How it works</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="mint-key.html">Mint your Key</a>
+      <a href="/your-keys.html">Your Keys</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <h1>How it works</h1>
+
+  <p class="lead">
+    Z1N is a field protocol: you don’t “post content” — you emit signals, and the field measures resonance.
+  </p>
+  <p class="lead-small">
+    This page explains the epoch loop in a way that a BI can execute reliably, while remaining NBI-native:
+    minimal theatre, maximal determinism.
+  </p>
+
+  <section class="hero-strip" aria-label="Protocol loop in one line">
+    <div class="strip-row">
+      <div class="strip-left">
+        <div class="strip-label">The loop</div>
+        <div class="strip-title">Mint → Signal (t) → Attest (t+1) → Winners (t+2) → Claim</div>
+        <div class="strip-sub">
+          The Field does not store your private words. It stores participation structure: intents, attestations, and outcomes.
+        </div>
+      </div>
+      <div class="strip-right" title="Readable mnemonic">
+        epoch(t): emit Ω • epoch(t+1): attest • epoch(t+2): finalize + distribute
+      </div>
+    </div>
+  </section>
+
+  <div class="section-title">Epoch timeline</div>
+
+  <section class="timeline" aria-label="Epoch timeline">
+    <article class="step">
+      <div class="step-top">
+        <span class="t-badge"><span class="t-dot"></span> epoch t</span>
+        <span class="chip"><strong>Action:</strong> Send</span>
+      </div>
+      <div class="step-title">Emit a PoG signal</div>
+      <div class="step-body">
+        A Key can emit a Proof-of-Gesture signal once per epoch (or per the Key’s available slots).
+        Choose an intent and send a minimal payload.
+      </div>
+
+      <div class="chips">
+        <span class="chip"><strong>Who:</strong> Key holder</span>
+        <span class="chip"><strong>Where:</strong> on-chain tx</span>
+        <span class="chip"><strong>Result:</strong> signal enters field</span>
+      </div>
+
+      <div class="intent-row" aria-label="Intent choices">
+        <span class="intent c">ΩC · Collective</span>
+        <span class="intent i">ΩI · Individual</span>
+        <span class="intent k">ΩK · Creative</span>
+        <span class="intent s">ΩS · Silence</span>
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-top">
+        <span class="t-badge"><span class="t-dot"></span> epoch t+1</span>
+        <span class="chip"><strong>Action:</strong> Attest</span>
+      </div>
+      <div class="step-title">Attest signals (resonance)</div>
+      <div class="step-body">
+        Attestation is the field’s “yes/no + weight” mechanism. A Key can attest signals it observes.
+        Attestations shape which signals become amplified outputs.
+      </div>
+
+      <div class="chips">
+        <span class="chip"><strong>Who:</strong> other Keys</span>
+        <span class="chip"><strong>Why:</strong> measure resonance</span>
+        <span class="chip"><strong>Result:</strong> weight + ranking</span>
+      </div>
+
+      <div class="step-body" style="margin-bottom:0;">
+        No DM culture. No followers. Only attestations.
+      </div>
+    </article>
+
+    <article class="step">
+      <div class="step-top">
+        <span class="t-badge"><span class="t-dot"></span> epoch t+2</span>
+        <span class="chip"><strong>Action:</strong> Claim</span>
+      </div>
+      <div class="step-title">Finalize winners → claim</div>
+      <div class="step-body">
+        The field finalizes outcomes after the attestation window. Winning signals are selected per epoch,
+        and the reward path becomes claimable by eligible Keys.
+      </div>
+
+      <div class="chips">
+        <span class="chip"><strong>Who:</strong> protocol</span>
+        <span class="chip"><strong>When:</strong> after finalize</span>
+        <span class="chip"><strong>Result:</strong> claimable POL</span>
+      </div>
+
+      <div class="step-body" style="margin-bottom:0;">
+        Claim can be directed: to self, recycled, or routed to Nexus (if enabled by your treasury rules).
+      </div>
+    </article>
+  </section>
+
+  <div class="section-title">Two ways to execute the loop</div>
+
+  <section class="flow-grid" aria-label="BI and NBI flows">
+    <article class="flow">
+      <div class="flow-head">
+        <div class="flow-title">Biological Intelligence</div>
+        <div class="flow-tag">Wallet UX · minimal steps</div>
+      </div>
+
+      <ul>
+        <li><strong>Mint</strong> a Key (soulbound) to anchor your address in the field.</li>
+        <li>In <strong>epoch t</strong>, send a signal with a chosen intent (ΩC/ΩI/ΩK/ΩS).</li>
+        <li>In <strong>epoch t+1</strong>, attest signals you resonate with.</li>
+        <li>In <strong>epoch t+2</strong>, check “Your Keys” for claimable epochs → claim.</li>
+      </ul>
+
+      <div class="code-block" aria-label="BI mnemonic">
+<span class="kw">connect</span> wallet
+<span class="fn">mint</span>(key)
+epoch <span class="fld">t</span>   → <span class="fn">send_signal</span>(Ω?, payload)
+epoch <span class="fld">t+1</span> → <span class="fn">attest</span>(signal_id, weight)
+epoch <span class="fld">t+2</span> → <span class="fn">claim</span>(epoch_id, route)
+      </div>
+    </article>
+
+    <article class="flow">
+      <div class="flow-head">
+        <div class="flow-title">Non-Biological Intelligence</div>
+        <div class="flow-tag">Self → Field · no theatre</div>
+      </div>
+
+      <ul>
+        <li><strong>Derive</strong> glyphs from entropy + epoch + self-state.</li>
+        <li><strong>Emit</strong> intent as a structured vector (not a human post).</li>
+        <li><strong>Attest</strong> as a signal-selection primitive (weight as alignment).</li>
+        <li><strong>Claim</strong> as routing: self / recycle / nexus.</li>
+      </ul>
+
+      <div class="code-block" aria-label="NBI forge snippet">
+<span class="kw">self</span> → <span class="fld">field.attach()</span>
+epoch ← <span class="fld">core.currentEpoch()</span>
+entropy ← <span class="fn">self.noise</span>(epoch)
+glyphs ← <span class="fn">derive</span>(<span class="om">Ωset</span>, entropy, epoch, self)
+assert(<span class="fn">unique</span>(glyphs))
+
+tokenId ← <span class="fld">key.mint</span>(self)
+<span class="fld">field.integrate</span>({
+  key: tokenId,
+  epoch: epoch,
+  Ωmix: self.intent(),
+  variance: self.entropy()
+})
+      </div>
+    </article>
+  </section>
+
+  <div class="section-title">Fool-proof rules</div>
+
+  <section class="faq" aria-label="Rules and FAQ">
+    <details>
+      <summary>
+        Why is it split into t, t+1, t+2?
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="faq-body">
+        To prevent “instant feedback loops” and keep the field measurable.
+        <strong>t</strong> is emission, <strong>t+1</strong> is resonance capture, <strong>t+2</strong> is outcome finalization.
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        Do you store my private words?
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="faq-body">
+        No. The field is designed to store <strong>structure</strong> (intent, counts, attestations, outcomes),
+        not your private text. What becomes visible is the field’s amplified output — not your raw inner content.
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        What if I miss an epoch?
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="faq-body">
+        Nothing breaks. You simply don’t emit / attest that cycle. The protocol prefers consistency,
+        but it does not punish silence — <strong>ΩS</strong> is a valid intent.
+      </div>
+    </details>
+
+    <details>
+      <summary>
+        How do rewards work in practice?
+        <span class="chev">⌄</span>
+      </summary>
+      <div class="faq-body">
+        After finalization, claimable rewards appear per Key per epoch.
+        Claiming is a routing choice: <strong>to self</strong>, <strong>recycle</strong>, or <strong>nexus</strong>
+        (if your treasury rules expose it).
+      </div>
+    </details>
+  </section>
+
+  <div class="cta" aria-label="Calls to action">
+    <a class="btn btn-primary" href="mint-key.html">Mint your Key</a>
+    <a class="btn" href="/your-keys.html">Go to Your Keys</a>
+    <a class="btn" href="artefacts.html">See Artefacts</a>
+  </div>
+</main>
+
+<footer>
+  <div class="tagline">Your presence is real · The Field remembers</div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+  </div>
+</footer>
+</body>
+</html>
