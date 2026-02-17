@@ -736,7 +736,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
     try {
       var ae = activeEpoch > 0 ? activeEpoch - 1 : 0; var p = new URLSearchParams(); p.set('limit', '100'); p.set('minEpoch', String(ae)); p.set('maxEpoch', String(ae));
       var sort = document.getElementById('attestSortSelect'); if (sort) p.set('sort', sort.value);
-      var ints = []; if (document.getElementById('attestIntentC')?.checked) ints.push('0'); if (document.getElementById('attestIntentI')?.checked) ints.push('1'); if (document.getElementById('attestIntentK')?.checked) ints.push('2'); if (document.getElementById('attestIntentS')?.checked) ints.push('3');
+      var attestIntentFilter = document.getElementById('attestIntentFilter'); var ints = []; if (attestIntentFilter && attestIntentFilter.value) { ints.push(attestIntentFilter.value); } else { ints = ['0','1','2','3']; }
       if (ints.length === 0) { if (load) load.style.display = 'none'; list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No intents selected.</div>'; return; }
       if (ints.length < 4) p.set('intents', ints.join(','));
       var r = await fetch(API_BASE + '/signals?' + p.toString(), {cache:'no-store'}), d = await r.json();
@@ -985,7 +985,7 @@ async function loadSentAttests() {
   try {
     // Use all wallet Key IDs for multi-key support
 var keyIdsParam = currentKeyId;
-var r = await fetch(API_BASE + '/attestations?fromKeyIds=' + keyIdsParam + '&limit=50', {cache:'no-store'});
+var r = await fetch(API_BASE + '/attestations?fromKeyIds=' + keyIdsParam + '&limit=1000', {cache:'no-store'});
     if (!r.ok) { list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No attestations sent yet</div>'; return; }
     var d = await r.json(); var attests = d.attestations || [];
     
@@ -1034,7 +1034,7 @@ async function loadReceivedAttests() {
   try {
     // Use all wallet Key IDs for multi-key support
 var keyIdsParam = currentKeyId;
-var r = await fetch(API_BASE + '/attestations?toKeyIds=' + keyIdsParam + '&limit=50', {cache:'no-store'});
+var r = await fetch(API_BASE + '/attestations?toKeyIds=' + keyIdsParam + '&limit=1000', {cache:'no-store'});
     if (!r.ok) { if (badge) badge.textContent = '0'; list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;"><div style="font-size:24px;opacity:0.3;margin-bottom:8px;">✓</div>No attestations received yet</div>'; return; }
     var d = await r.json(); var attests = d.attestations || [];
     
@@ -1107,6 +1107,29 @@ window.filterReceivedAttests = function() {
   });
 };
 window.loadReceivedAttests = loadReceivedAttests;
+
+
+window.showSignalPopup = function(hash) {
+  var sig = null;
+  if (allAttestableSignals) sig = allAttestableSignals.find(function(s) { return s.hash === hash; });
+  if (!sig && allReceivedReplies) sig = allReceivedReplies.find(function(s) { return s.hash === hash; });
+  if (!sig) return;
+  var content = sig.cid || '[Silence]';
+  var isym = sig.intentSymbol || ['ΩC','ΩI','ΩK','ΩS'][sig.intent] || '?';
+  var msg = 'Signal from K#' + sig.keyId + '\n\nIntent: ' + isym + '\nEpoch: ' + (sig.epoch || '?') + '\nAttestations: ' + (sig.attestCount || 0) + '\n\nContent:\n' + content;
+  alert(msg);
+};
+
+window.downloadAttestableCSV = function() {
+  if (!allAttestableSignals || allAttestableSignals.length === 0) { showToast('No attestable signals to export', 2000); return; }
+  var intents = ['ΩC (Collective)','ΩI (Individual)','ΩK (Co-Create)','ΩS (Silence)'];
+  var rows = [['Hash','Key ID','Key Glyphs','Intent','Signal Content','Epoch','Attestations','Time']];
+  allAttestableSignals.forEach(function(sig) {
+    rows.push([sig.hash, sig.keyId, keyGlyphsCache[sig.keyId]||'', intents[sig.intent]||'', sig.cid||'[Silence]', sig.epoch||'', sig.attestCount||0, sig.timeAgo||'']);
+  });
+  downloadCSV(rows, 'z1n_attestable_signals_' + new Date().toISOString().slice(0,10) + '.csv');
+  showToast('CSV downloaded (' + allAttestableSignals.length + ' signals)', 2000);
+};
 
 window.downloadSentAttestsCSV = function() { 
   if (allSentAttests.length === 0) { showToast('No attestations to export', 2000); return; } 

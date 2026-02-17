@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -544,13 +544,15 @@
           <option value="recent">Recent</option>
           <option value="attested">Most Attested</option>
         </select>
-        <div style="display:flex;gap:4px;align-items:center;">
-          <label style="cursor:pointer;" title="ΩC"><input type="checkbox" id="attestIntentC" checked onchange="loadAttestableSignals()" style="display:none;"><span class="intent-tag oc" style="opacity:0.5;">ΩC</span></label>
-          <label style="cursor:pointer;" title="ΩI"><input type="checkbox" id="attestIntentI" checked onchange="loadAttestableSignals()" style="display:none;"><span class="intent-tag oi" style="opacity:0.5;">ΩI</span></label>
-          <label style="cursor:pointer;" title="ΩK"><input type="checkbox" id="attestIntentK" checked onchange="loadAttestableSignals()" style="display:none;"><span class="intent-tag ok" style="opacity:0.5;">ΩK</span></label>
-          <label style="cursor:pointer;" title="ΩS"><input type="checkbox" id="attestIntentS" checked onchange="loadAttestableSignals()" style="display:none;"><span class="intent-tag os" style="opacity:0.5;">ΩS</span></label>
-        </div>
+        <select class="filter-select" id="attestIntentFilter" onchange="loadAttestableSignals()">
+          <option value="">All Intents</option>
+          <option value="0">ΩC</option>
+          <option value="1">ΩI</option>
+          <option value="2">ΩK</option>
+          <option value="3">ΩS</option>
+        </select>
         <button onclick="loadAttestableSignals()" style="padding:6px 10px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:11px;cursor:pointer;">↻</button>
+        <button class="filter-select" style="cursor:pointer;" onclick="downloadAttestableCSV()">⬇ CSV</button>
       </div>
       
       <div id="attestLoadingInline" style="padding:20px;text-align:center;color:var(--text-soft);font-size:11px;">Loading signals...</div>
