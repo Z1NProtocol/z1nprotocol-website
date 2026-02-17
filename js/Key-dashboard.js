@@ -359,7 +359,7 @@ window.toggleGlobalStealth = function() {
       if (countInfo) countInfo.textContent = (d.total || 0) + ' signals';
       var sigs = d.signals || [];
       if (sigs.length === 0 && !append) { if (noSig) { noSig.textContent = 'No signals found.'; noSig.style.display = 'block'; } return; }
-      await fetchKeyGlyphs(sigs.map(function(s){ return s.keyId; }));
+      await fetchKeyGlyphs(sigs.map(function(s){ return s.keyId; }).concat(sigs.map(function(s){ return s.replyToKeyId; }).filter(Boolean)));
       if (!append) allReplySignals = sigs; else allReplySignals = allReplySignals.concat(sigs);
       sigs.forEach(function(sig) {
         var card = document.createElement('div'); card.className = 'signal-card'; card.dataset.hash = sig.hash;
@@ -398,7 +398,7 @@ window.toggleGlobalStealth = function() {
     var sigs = d.signals || [];
     if (sigs.length === 0) { showToast('No signals to export', 2000); return; }
     var in_ = ['ΩC (Collective)', 'ΩI (Individual)', 'ΩK (Co-Create)', 'ΩS (Silence)'];
-    var rows = [['Hash','Key ID','Key Glyphs','Intent','Type','Reply To Hash','Signal Content','Epoch','Attestations','Timestamp']];
+    var rows = [['Hash','Key ID','Key Glyphs','Intent','Type','Reply To Hash','Reply To Key ID','Reply To Key Glyphs','Signal Content','Epoch','Attestations','Timestamp']];
     sigs.forEach(function(sig) {
       var isReply = sig.replyTo && sig.replyTo !== '0x0000000000000000000000000000000000000000000000000000000000000000';
       rows.push([
@@ -406,6 +406,8 @@ window.toggleGlobalStealth = function() {
         in_[sig.intent] || sig.intentSymbol || '',
         isReply ? 'Reply' : 'New',
         isReply ? sig.replyTo : '',
+        isReply && sig.replyToKeyId ? 'K#' + sig.replyToKeyId : '',
+        isReply && sig.replyToKeyId ? (keyGlyphsCache[sig.replyToKeyId] || '') : '',
         sig.cid || '[Silence]', sig.epoch, sig.attestCount || 0, sig.timeAgo || ''
       ]);
     });
@@ -750,7 +752,7 @@ if (currentAccount) {
     return true;
   });
 }
-      allAttestableSignals = sigs; await fetchKeyGlyphs(sigs.map(function(s){ return s.keyId; })); renderAttestSignals(sigs, list, info, ae); updateAttestBtn();
+      allAttestableSignals = sigs; await fetchKeyGlyphs(sigs.map(function(s){ return s.keyId; }).concat(sigs.map(function(s){ return s.replyToKeyId; }).filter(Boolean))); renderAttestSignals(sigs, list, info, ae); updateAttestBtn();
     } catch (e) { if (load) load.style.display = 'none'; list.innerHTML = '<div style="padding:20px;text-align:center;color:#f87171;font-size:11px;">Error loading signals.</div>'; }
   }
   window.loadAttestableSignals = loadAttestableSignals;
@@ -818,7 +820,7 @@ async function loadSentSignals() {
     if (sentSignalsCountEl) sentSignalsCountEl.textContent = '(' + sigs.length + ')';
     if (sigs.length === 0) { list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No signals sent yet</div>'; return; }
     
-    await fetchKeyGlyphs(sigs.map(function(s){ return s.replyToKeyId; }).filter(Boolean));
+    await fetchKeyGlyphs(sigs.map(function(s){ return s.keyId; }).concat(sigs.map(function(s){ return s.replyToKeyId; }).filter(Boolean)));
     
     list.innerHTML = '';
     sigs.forEach(function(sig) {
@@ -927,9 +929,9 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
 window.downloadReceivedRepliesCSV = function() {
   if (allReceivedReplies.length === 0) { showToast('No replies to export', 2000); return; }
   var intents = ['ΩC (Collective)','ΩI (Individual)','ΩK (Co-Create)','ΩS (Silence)'];
-  var rows = [['Hash','From Key ID','From Glyphs','Intent','Reply To Hash','Content','Epoch','Attestations','Time']];
+  var rows = [['Hash','From Key ID','From Glyphs','Intent','Reply To Hash','Reply To Key ID','Reply To Key Glyphs','Content','Epoch','Attestations','Time']];
   allReceivedReplies.forEach(function(sig) {
-    rows.push([sig.hash, sig.keyId, keyGlyphsCache[sig.keyId]||'', intents[sig.intent]||'', sig.replyTo||'', sig.cid||'[Silence]', sig.epoch, sig.attestCount||0, sig.timeAgo||'']);
+    rows.push([sig.hash, sig.keyId, keyGlyphsCache[sig.keyId]||'', intents[sig.intent]||'', sig.replyTo||'', sig.replyToKeyId ? 'K#'+sig.replyToKeyId : '', sig.replyToKeyId ? (keyGlyphsCache[sig.replyToKeyId]||'') : '', sig.cid||'[Silence]', sig.epoch, sig.attestCount||0, sig.timeAgo||'']);
   });
   downloadCSV(rows, 'z1n_received_replies_' + new Date().toISOString().slice(0,10) + '.csv');
   showToast('CSV downloaded', 2000);
@@ -1590,7 +1592,7 @@ window.submitWhisper = async function() {
     }
     if (sigs.length === 0) { showToast('No signals to export', 2000); return; }
     var in_ = ['ΩC (Collective)', 'ΩI (Individual)', 'ΩK (Co-Create)', 'ΩS (Silence)'];
-    var rows = [['Hash', 'Key ID', 'Key Glyphs', 'Intent', 'Type', 'Reply To Hash', 'Signal Content', 'Epoch', 'Attestations', 'Timestamp']];
+    var rows = [['Hash', 'Key ID', 'Key Glyphs', 'Intent', 'Type', 'Reply To Hash', 'Reply To Key ID', 'Reply To Key Glyphs', 'Signal Content', 'Epoch', 'Attestations', 'Timestamp']];
     sigs.forEach(function(sig) {
       var isReply = sig.replyTo && sig.replyTo !== '0x0000000000000000000000000000000000000000000000000000000000000000';
       rows.push([
@@ -1598,6 +1600,8 @@ window.submitWhisper = async function() {
         in_[sig.intent] || sig.intentSymbol || '',
         isReply ? 'Reply' : 'New',
         isReply ? sig.replyTo : '',
+        isReply && sig.replyToKeyId ? 'K#' + sig.replyToKeyId : '',
+        isReply && sig.replyToKeyId ? (keyGlyphsCache[sig.replyToKeyId] || '') : '',
         sig.cid || '[Silence]', sig.epoch, sig.attestCount || 0, sig.timeAgo || ''
       ]);
     });
