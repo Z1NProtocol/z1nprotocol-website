@@ -373,7 +373,46 @@ window.toggleGlobalStealth = function() {
   }
   window.loadMoreReplySignals = function() { replyModalOffset += replyModalLimit; loadReplyModalSignals(true); };
   window.confirmReplySignalSelection = function() { if (!replySelectedSignal) return; var el = document.getElementById('replyToHash'); if (el) el.value = replySelectedSignal.hash; closeReplyModal(); showToast('Signal selected for reply', 2000); };
-  window.downloadReplySignalsCSV = function(evt) { if (evt) evt.preventDefault(); if (allReplySignals.length === 0) { showToast('No signals to export', 2000); return; } var in_ = ['ΩC (Collective)', 'ΩI (Individual)', 'ΩK (Co-Create)', 'ΩS (Silence)']; var rows = [['Hash','Key ID','Key Glyphs','Intent','Signal Content','Epoch','Attestations','Timestamp']]; allReplySignals.forEach(function(sig) { rows.push([sig.hash, sig.keyId, keyGlyphsCache[sig.keyId]||'', in_[sig.intent]||sig.intentSymbol||'', sig.cid||'[Silence]', sig.epoch, sig.attestCount||0, sig.timeAgo||'']); }); downloadCSV(rows, 'z1n_reply_signals_' + new Date().toISOString().slice(0,10) + '.csv'); showToast('CSV downloaded', 2000); };
+  window.downloadReplySignalsCSV = async function(evt) {
+  if (evt) evt.preventDefault();
+  showToast('Preparing CSV...', 2000);
+  try {
+    var p = new URLSearchParams();
+    p.set('limit', '1000');
+    var kf = document.getElementById('replyFilterKeyId');
+    if (kf && kf.value.trim()) p.set('keyId', kf.value.trim());
+    var ef = document.getElementById('replyFilterEpochFrom');
+    if (ef && ef.value.trim()) p.set('minEpoch', ef.value.trim());
+    var et = document.getElementById('replyFilterEpochTo');
+    if (et && et.value.trim()) p.set('maxEpoch', et.value.trim());
+    var so = document.getElementById('replyFilterSort');
+    if (so) p.set('sort', so.value);
+    var ints = [];
+    var icEl = document.getElementById('replyFilterIntentC'); if (icEl && icEl.checked) ints.push('0');
+    var iiEl = document.getElementById('replyFilterIntentI'); if (iiEl && iiEl.checked) ints.push('1');
+    var ikEl = document.getElementById('replyFilterIntentK'); if (ikEl && ikEl.checked) ints.push('2');
+    var isEl = document.getElementById('replyFilterIntentS'); if (isEl && isEl.checked) ints.push('3');
+    if (ints.length > 0 && ints.length < 4) p.set('intents', ints.join(','));
+    var r = await fetch(API_BASE + '/signals?' + p.toString(), {cache:'no-store'});
+    var d = await r.json();
+    var sigs = d.signals || [];
+    if (sigs.length === 0) { showToast('No signals to export', 2000); return; }
+    var in_ = ['ΩC (Collective)', 'ΩI (Individual)', 'ΩK (Co-Create)', 'ΩS (Silence)'];
+    var rows = [['Hash','Key ID','Key Glyphs','Intent','Type','Reply To Hash','Signal Content','Epoch','Attestations','Timestamp']];
+    sigs.forEach(function(sig) {
+      var isReply = sig.replyTo && sig.replyTo !== '0x0000000000000000000000000000000000000000000000000000000000000000';
+      rows.push([
+        sig.hash, sig.keyId, keyGlyphsCache[sig.keyId] || '',
+        in_[sig.intent] || sig.intentSymbol || '',
+        isReply ? 'Reply' : 'New',
+        isReply ? sig.replyTo : '',
+        sig.cid || '[Silence]', sig.epoch, sig.attestCount || 0, sig.timeAgo || ''
+      ]);
+    });
+    downloadCSV(rows, 'z1n_signals_' + new Date().toISOString().slice(0,10) + '.csv');
+    showToast('CSV downloaded (' + sigs.length + ' signals)', 2000);
+  } catch (e) { showToast('CSV failed: ' + e.message, 3000, true); }
+};
   document.addEventListener('click', function(e) { if (e.target.classList.contains('modal-overlay')) { closeReplyModal(); closeArtefactModal(); } });
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeReplyModal(); closeArtefactModal(); } });
 
@@ -863,9 +902,13 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
       if (isUnread) it.classList.add('unread-glow');
       it.dataset.activityId = activityId;
       
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ic + '">' + isym + '</span><span style="color:var(--text-soft);margin-left:6px;">E' + displayEpoch + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span>' + replyBadge + '</div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span><button class="reply-btn" onclick="replyToSignal(\'' + sig.hash + '\', ' + sig.keyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
-      
-      // Click to mark as read
+      var displayEpoch = sig.epoch || '—';
+      var parentHash = sig.replyTo || '';
+      var replyBadge = '';
+      if (parentHash && parentHash !== '0x0000000000000000000000000000000000000000000000000000000000000000') {
+        replyBadge = '<span style="font-size:9px;padding:2px 6px;background:rgba(245,200,66,0.2);color:#f5c842;border-radius:4px;margin-left:4px;cursor:pointer;" onclick="showParentSignal(\'' + parentHash + '\')">\u21a9 ' + parentHash.slice(0,10) + '...</span>';
+      }
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + sig.keyId + '</span>' + gs + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span><span style="color:var(--text-soft);margin-left:6px;">E' + displayEpoch + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span>' + replyBadge + '</div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span><button class="reply-btn" onclick="replyToSignal(\'' + sig.hash + '\', ' + sig.keyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';// Click to mark as read
       it.addEventListener('click', function(e) {
         if (e.target.classList.contains('reply-btn')) return;
         markTabItemRead(activityId, it);
@@ -884,9 +927,9 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
 window.downloadReceivedRepliesCSV = function() {
   if (allReceivedReplies.length === 0) { showToast('No replies to export', 2000); return; }
   var intents = ['ΩC (Collective)','ΩI (Individual)','ΩK (Co-Create)','ΩS (Silence)'];
-  var rows = [['Hash','From Key ID','From Glyphs','Intent','Content','Epoch','Attestations','Time']];
+  var rows = [['Hash','From Key ID','From Glyphs','Intent','Reply To Hash','Content','Epoch','Attestations','Time']];
   allReceivedReplies.forEach(function(sig) {
-    rows.push([sig.hash, sig.keyId, keyGlyphsCache[sig.keyId]||'', intents[sig.intent]||'', sig.cid||'[Silence]', sig.epoch, sig.attestCount||0, sig.timeAgo||'']);
+    rows.push([sig.hash, sig.keyId, keyGlyphsCache[sig.keyId]||'', intents[sig.intent]||'', sig.replyTo||'', sig.cid||'[Silence]', sig.epoch, sig.attestCount||0, sig.timeAgo||'']);
   });
   downloadCSV(rows, 'z1n_received_replies_' + new Date().toISOString().slice(0,10) + '.csv');
   showToast('CSV downloaded', 2000);
@@ -1523,9 +1566,45 @@ window.submitWhisper = async function() {
   };
 
   // CSV
-  function escapeCSV(val) { if (val === null || val === undefined) return ''; var s = String(val); if (s.includes(',') || s.includes('"') || s.includes('\n')) return '"' + s.replace(/"/g, '""') + '"'; return s; }
+  function escapeCSV(val) { if (val === null || val === undefined) return ''; var s = String(val).replace(/\r\n/g, ' ').replace(/\r/g, ' ').replace(/\n/g, ' ').replace(/\t/g, ' '); if (s.includes(',') || s.includes('"')) return '"' + s.replace(/"/g, '""') + '"'; return s; }
   function downloadCSV(rows, filename) { var csv = rows.map(function(row){ return row.map(escapeCSV).join(','); }).join('\n'); var blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }); var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
-  window.downloadSentSignalsCSV = function() { if (allSentSignals.length === 0) { showToast('No signals to export', 2000); return; } var in_ = ['ΩC (Collective)', 'ΩI (Individual)', 'ΩK (Co-Create)', 'ΩS (Silence)']; var rows = [['Hash', 'Intent', 'Content', 'Epoch', 'Attestations', 'Time']]; allSentSignals.forEach(function(sig) { rows.push([sig.hash, in_[sig.intent] || '', sig.cid || '[Silence]', sig.epoch, sig.attestCount || 0, sig.timeAgo || '']); }); downloadCSV(rows, 'z1n_sent_signals_' + new Date().toISOString().slice(0, 10) + '.csv'); showToast('CSV downloaded', 2000); };
+  window.downloadSentSignalsCSV = async function() {
+  showToast('Preparing CSV...', 2000);
+  try {
+    var p = new URLSearchParams();
+    p.set('keyId', String(currentKeyId));
+    p.set('limit', '1000');
+    var sortSelect = document.getElementById('sentSortSelect');
+    if (sortSelect) p.set('sort', sortSelect.value);
+    var intentFilter = document.getElementById('sentIntentFilter');
+    if (intentFilter && intentFilter.value) p.set('intents', intentFilter.value);
+    var r = await fetch(API_BASE + '/signals?' + p.toString(), {cache:'no-store'});
+    var d = await r.json();
+    var sigs = d.signals || [];
+    var typeFilter = document.getElementById('sentTypeFilter');
+    if (typeFilter && typeFilter.value) {
+      sigs = sigs.filter(function(sig) {
+        var isReply = sig.replyTo && sig.replyTo !== '0x0000000000000000000000000000000000000000000000000000000000000000';
+        return typeFilter.value === 'reply' ? isReply : !isReply;
+      });
+    }
+    if (sigs.length === 0) { showToast('No signals to export', 2000); return; }
+    var in_ = ['ΩC (Collective)', 'ΩI (Individual)', 'ΩK (Co-Create)', 'ΩS (Silence)'];
+    var rows = [['Hash', 'Key ID', 'Key Glyphs', 'Intent', 'Type', 'Reply To Hash', 'Signal Content', 'Epoch', 'Attestations', 'Timestamp']];
+    sigs.forEach(function(sig) {
+      var isReply = sig.replyTo && sig.replyTo !== '0x0000000000000000000000000000000000000000000000000000000000000000';
+      rows.push([
+        sig.hash, sig.keyId, keyGlyphsCache[sig.keyId] || '',
+        in_[sig.intent] || sig.intentSymbol || '',
+        isReply ? 'Reply' : 'New',
+        isReply ? sig.replyTo : '',
+        sig.cid || '[Silence]', sig.epoch, sig.attestCount || 0, sig.timeAgo || ''
+      ]);
+    });
+    downloadCSV(rows, 'z1n_sent_signals_' + new Date().toISOString().slice(0,10) + '.csv');
+    showToast('CSV downloaded (' + sigs.length + ' signals)', 2000);
+  } catch (e) { showToast('CSV failed: ' + e.message, 3000, true); }
+};
 
   // ═══════════════════════════════════════════════════════════════
   // WALLET CONNECTION - v2.3.0: Uses indexed API instead of RPC
