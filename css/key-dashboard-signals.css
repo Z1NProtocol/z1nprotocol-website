@@ -1,755 +1,136 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   Z1N Key Dashboard - Signals Tab Styles
-   Version: 2.3.0-Ω (Reply Tracking)
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ───────────────────────────────────────────────────────────────────────────
-   SIGNALS TAB LAYOUT - Full width stacked cards
-   ─────────────────────────────────────────────────────────────────────────── */
-
-.signals-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* ───────────────────────────────────────────────────────────────────────────
-   NEW SIGNAL CARD
-   ─────────────────────────────────────────────────────────────────────────── */
-
-.new-signal-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 14px;
-  padding: 20px 24px;
-}
-
-.new-signal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.new-signal-header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.new-signal-header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 12px;
-  color: var(--text-soft);
-}
-
-.signal-epoch-timer {
-  color: var(--keys-accent);
-  font-family: monospace;
-  font-size: 13px;
-}
-
-.signal-epoch-display {
-  color: var(--text-soft);
-}
-
-/* Intent Grid - Larger buttons */
-.signal-intent-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.signal-intent-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 14px 8px;
-  background: rgba(15, 23, 42, 0.4);
-  border: 2px solid rgba(148, 163, 184, 0.2);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.signal-intent-btn:hover {
-  border-color: rgba(245, 200, 66, 0.5);
-  background: rgba(15, 23, 42, 0.6);
-}
-
-.signal-intent-btn.selected {
-  border-color: var(--keys-accent);
-  background: rgba(245, 200, 66, 0.15);
-}
-
-.signal-intent-btn .intent-symbol {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.signal-intent-btn .intent-label {
-  font-size: 11px;
-  color: var(--text-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.signal-intent-btn[data-intent="0"] .intent-symbol { color: #4ade80; }
-.signal-intent-btn[data-intent="1"] .intent-symbol { color: #f87171; }
-.signal-intent-btn[data-intent="2"] .intent-symbol { color: #fbbf24; }
-.signal-intent-btn[data-intent="3"] .intent-symbol { color: #60a5fa; }
-
-/* Content textarea */
-.signal-content-group {
-  margin-bottom: 16px;
-}
-
-.signal-content-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: var(--text-soft);
-  margin-bottom: 6px;
-}
-
-.signal-char-count {
-  color: var(--keys-accent);
-  font-weight: 500;
-}
-
-.signal-textarea {
-  width: 100%;
-  min-height: 100px;
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 1px solid var(--card-border);
-  background: rgba(15, 23, 42, 0.6);
-  color: var(--text-main);
-  font-family: inherit;
-  font-size: 14px;
-  line-height: 1.5;
-  resize: vertical;
-}
-
-.signal-textarea:focus {
-  outline: none;
-  border-color: var(--keys-accent);
-}
-
-.signal-textarea::placeholder {
-  color: var(--text-soft);
-  opacity: 0.6;
-}
-
-/* Reply Checkbox */
-.signal-reply-toggle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding: 12px 14px;
-  background: rgba(15, 23, 42, 0.3);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.signal-reply-toggle:hover {
-  border-color: rgba(245, 200, 66, 0.4);
-}
-
-.signal-reply-toggle.active {
-  border-color: var(--keys-accent);
-  background: rgba(245, 200, 66, 0.1);
-}
-
-.signal-reply-toggle input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--keys-accent);
-  cursor: pointer;
-}
-
-.signal-reply-toggle-label {
-  font-size: 13px;
-  color: var(--text-main);
-  flex: 1;
-}
-
-.signal-reply-toggle-hint {
-  font-size: 11px;
-  color: var(--text-soft);
-}
-
-/* Reply Input Section */
-.signal-reply-input {
-  display: none;
-  margin-bottom: 16px;
-  padding: 14px;
-  background: rgba(245, 200, 66, 0.05);
-  border: 1px solid rgba(245, 200, 66, 0.2);
-  border-radius: 8px;
-}
-
-.signal-reply-input.visible {
-  display: block;
-}
-
-.signal-reply-input-label {
-  font-size: 11px;
-  color: var(--text-soft);
-  margin-bottom: 8px;
-}
-
-.signal-reply-input-row {
-  display: flex;
-  gap: 10px;
-}
-
-.signal-reply-hash-input {
-  flex: 1;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--card-border);
-  background: rgba(15, 23, 42, 0.6);
-  color: var(--text-main);
-  font-family: monospace;
-  font-size: 12px;
-}
-
-.signal-reply-hash-input:focus {
-  outline: none;
-  border-color: var(--keys-accent);
-}
-
-.signal-reply-browse-btn {
-  padding: 10px 16px;
-  border-radius: 6px;
-  border: 1px solid var(--keys-accent);
-  background: transparent;
-  color: var(--keys-accent);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.signal-reply-browse-btn:hover {
-  background: rgba(245, 200, 66, 0.1);
-}
-
-/* Submit Row */
-.signal-submit-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--card-border);
-}
-
-.signal-submit-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.signal-stealth-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: rgba(102, 214, 154, 0.1);
-  border: 1px solid rgba(102, 214, 154, 0.4);
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
-}
-
-.signal-stealth-toggle:hover {
-  border-color: var(--accent);
-  background: rgba(102, 214, 154, 0.2);
-}
-
-.signal-stealth-toggle.active {
-  background: rgba(96, 165, 250, 0.2);
-  border-color: var(--stealth-color);
-}
-
-.signal-stealth-toggle .stealth-icon {
-  font-size: 16px;
-  transition: opacity 0.2s;
-}
-
-.signal-stealth-toggle.active .stealth-icon {
-  opacity: 0.6;
-}
-
-.signal-stealth-toggle .stealth-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.signal-stealth-toggle.active .stealth-label {
-  color: var(--stealth-color);
-}
-
-.signal-stealth-toggle.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.signal-fee-display {
-  font-size: 13px;
-  color: var(--text-soft);
-}
-
-.signal-fee-amount {
-  color: var(--keys-accent);
-  font-weight: 600;
-}
-
-.signal-submit-btn {
-  padding: 12px 28px;
-  border-radius: 999px;
-  border: 1px solid rgba(212, 160, 18, 0.8);
-  background: linear-gradient(90deg, rgba(245, 200, 66, 0.55), rgba(212, 160, 18, 0.55));
-  color: #061018;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.signal-submit-btn:hover:not([disabled]) {
-  background: linear-gradient(90deg, var(--keys-accent), #d4a012);
-}
-
-.signal-submit-btn[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Status message */
-.signal-status {
-  margin-top: 12px;
-}
-
-/* ───────────────────────────────────────────────────────────────────────────
-   SENT SIGNALS CARD
-   ─────────────────────────────────────────────────────────────────────────── */
-
-.sent-signals-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 14px;
-  padding: 20px 24px;
-}
-
-.sent-signals-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.sent-signals-filters {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sent-signals-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 320px;
-  overflow-y: auto;
-}
-
-.sent-signal-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 10px;
-  transition: all 0.2s;
-}
-
-.sent-signal-item:hover {
-  border-color: rgba(245, 200, 66, 0.3);
-}
-
-.sent-signal-main {
-  flex: 1;
-  min-width: 0;
-}
-
-.sent-signal-top {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
-}
-
-.sent-signal-content {
-  font-size: 13px;
-  color: var(--text-main);
-  line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.sent-signal-reply-badge {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-  font-size: 11px;
-  color: var(--text-soft);
-}
-
-.sent-signal-reply-badge .reply-icon {
-  color: var(--keys-accent);
-}
-
-.sent-signal-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.sent-signal-time {
-  font-size: 11px;
-  color: var(--text-soft);
-}
-
-.sent-signal-attests {
-  font-size: 12px;
-  color: #fbbf24;
-}
-
-/* ───────────────────────────────────────────────────────────────────────────
-   REPLIES TO YOUR SIGNALS CARD
-   ─────────────────────────────────────────────────────────────────────────── */
-
-.replies-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 14px;
-  padding: 20px 24px;
-}
-
-.replies-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.replies-subtitle {
-  font-size: 12px;
-  color: var(--text-soft);
-  margin-bottom: 16px;
-}
-
-.replies-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 320px;
-  overflow-y: auto;
-}
-
-.reply-item {
-  padding: 14px 16px;
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-left: 3px solid var(--keys-accent);
-  border-radius: 10px;
-  transition: all 0.2s;
-}
-
-.reply-item:hover {
-  border-color: rgba(245, 200, 66, 0.4);
-  border-left-color: var(--keys-accent);
-}
-
-.reply-item-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.reply-item-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.reply-item-key {
-  font-weight: 600;
-  color: var(--keys-accent);
-  font-size: 13px;
-}
-
-.reply-item-time {
-  font-size: 11px;
-  color: var(--text-soft);
-}
-
-.reply-item-attests {
-  font-size: 12px;
-  color: #fbbf24;
-}
-
-.reply-item-content {
-  font-size: 13px;
-  color: var(--text-main);
-  line-height: 1.5;
-  margin-bottom: 10px;
-  word-break: break-word;
-}
-
-.reply-item-context {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-}
-
-.reply-item-parent {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--text-soft);
-}
-
-.reply-item-parent .reply-icon {
-  color: var(--accent);
-}
-
-.reply-item-action {
-  padding: 6px 14px;
-  border-radius: 6px;
-  border: 1px solid var(--keys-accent);
-  background: transparent;
-  color: var(--keys-accent);
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.reply-item-action:hover {
-  background: rgba(245, 200, 66, 0.1);
-}
-
-.replies-empty {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--text-soft);
-}
-
-.replies-empty-icon {
-  font-size: 40px;
-  opacity: 0.3;
-  margin-bottom: 12px;
-}
-
-.replies-empty-text {
-  font-size: 13px;
-  margin-bottom: 8px;
-}
-
-.replies-empty-hint {
-  font-size: 11px;
-  opacity: 0.7;
-}
-
-/* ───────────────────────────────────────────────────────────────────────────
-   SHARED COMPONENTS
-   ─────────────────────────────────────────────────────────────────────────── */
-
-.signal-section-title {
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--keys-accent);
-}
-
-.signal-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.signal-badge-accent {
-  background: rgba(245, 200, 66, 0.3);
-  color: var(--keys-accent);
-}
-
-/* Intent tags */
-.signal-intent-tag {
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.signal-intent-tag.oc { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
-.signal-intent-tag.oi { background: rgba(248, 113, 113, 0.2); color: #f87171; }
-.signal-intent-tag.ok { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-.signal-intent-tag.os { background: rgba(96, 165, 250, 0.2); color: #60a5fa; }
-
-.signal-epoch-tag {
-  font-size: 11px;
-  color: var(--text-soft);
-}
-
-/* CSV button */
-.signal-csv-btn {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--card-border);
-  background: transparent;
-  color: var(--text-soft);
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.signal-csv-btn:hover {
-  border-color: var(--keys-accent);
-  color: var(--keys-accent);
-}
-
-/* Filter select */
-.signal-filter-select {
-  padding: 6px 28px 6px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--card-border);
-  background: rgba(15, 23, 42, 0.6);
-  color: var(--text-main);
-  font-size: 12px;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239aa3bb' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-}
-
-/* Intent filter checkboxes */
-.signal-intent-filters {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.signal-intent-checkbox {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-}
-
-.signal-intent-checkbox:has(input:checked) {
-  opacity: 1;
-}
-
-.signal-intent-checkbox input {
-  display: none;
-}
-
-/* Loading state */
-.signal-loading {
-  text-align: center;
-  padding: 30px 20px;
-  color: var(--text-soft);
-  font-size: 12px;
-}
-
-/* ───────────────────────────────────────────────────────────────────────────
-   RESPONSIVE
-   ─────────────────────────────────────────────────────────────────────────── */
-
-@media (max-width: 600px) {
-  .signal-intent-grid {
-    grid-template-columns: repeat(2, 1fr);
+/**
+ * Z1N Fix v6 — 6 targeted fixes on current Key-dashboard.js
+ * 
+ * 1. getShortGlyphs: Return FULL glyph sequence instead of truncated 4
+ * 2. Sent Signals: No K#/glyph for new signals; fix K#? for replies
+ * 3. Received Attests: unread-glow already in JS — no JS change needed (CSS fix separate)
+ * 4. Attestable signals: Full glyphs + white text on signal content
+ * 5. Whispers sent: Full glyphs (via fix #1)
+ * 6. Whispers received: K# yellow instead of green + unread-glow styling
+ * 
+ * Run: cd "C:\Users\bobva\Z1N Incl Pure\backend"; node fix-signals-v6.js
+ */
+
+const fs = require('fs');
+const TARGET = 'C:\\Users\\bobva\\Z1N Incl Pure\\frontend\\z1nprotocol-website-main\\js\\Key-dashboard.js';
+
+console.log('Reading:', TARGET);
+let code = fs.readFileSync(TARGET, 'utf8');
+const hadCRLF = code.includes('\r\n');
+code = code.replace(/\r\n/g, '\n');
+
+let changes = 0;
+let failures = 0;
+
+function applyFix(name, oldStr, newStr) {
+  if (code.includes(oldStr)) {
+    code = code.replace(oldStr, newStr);
+    console.log('  ✅ ' + name);
+    changes++;
+  } else {
+    console.log('  ❌ ' + name + ': NOT FOUND');
+    failures++;
   }
-  
-  .signal-submit-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-  
-  .signal-submit-left {
-    justify-content: space-between;
-  }
-  
-  .signal-submit-btn {
-    width: 100%;
-  }
-  
-  .sent-signals-header,
-  .replies-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .sent-signals-filters {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  /* Signal success - yellow instead of green */
-#tab-signals .status-msg,
-#pogStatus .status-msg {
-  background: rgba(245, 200, 66, 0.15) !important;
-  border: 1px solid #f5c842 !important;
-  color: #f5c842 !important;
 }
 
-#tab-signals .status-msg.error,
-#pogStatus .status-msg.error {
-  background: rgba(244, 67, 54, 0.15) !important;
-  border: 1px solid #f44336 !important;
-  color: #f44336 !important;
-}
+// ═══════════════════════════════════════════════════════════════
+// FIX 1: getShortGlyphs — return FULL glyphs, no truncation
+// This fixes glyphs everywhere: sent signals, attests, whispers, attestable
+// ═══════════════════════════════════════════════════════════════
 
+applyFix(
+  'FIX 1: getShortGlyphs → full glyphs',
+  "function getShortGlyphs(keyId) { var full = keyGlyphsCache[keyId] || ''; if (!full) return ''; return full.split(' · ').slice(0, 4).join('·'); }",
+  "function getShortGlyphs(keyId) { var full = keyGlyphsCache[keyId] || ''; if (!full) return ''; return full; }"
+);
+
+// ═══════════════════════════════════════════════════════════════
+// FIX 2a: Sent Signals — NON-REPLY: remove K# and glyphs entirely
+// Current code for non-reply:
+//   '<span style="color:var(--keys-accent);font-weight:600;">K#' + sig.keyId + '</span>' + gs +
+// Replace with: no K# line, just intent + attests + epoch
+// ═══════════════════════════════════════════════════════════════
+
+applyFix(
+  'FIX 2a: Sent Signals non-reply — remove K# and glyphs',
+  // The entire non-reply innerHTML block
+  "it.innerHTML = '<div style=\"flex:1;\"><div class=\"signal-item-header\"><span style=\"color:var(--keys-accent);font-weight:600;\">K#' + sig.keyId + '</span>' + gs + '<span class=\"intent-tag ' + ic + '\" style=\"margin-left:6px;\">' + isym + '</span><span class=\"signal-attests\" style=\"margin-left:6px;\">✓' + (sig.attestCount||0) + '</span><span style=\"color:var(--text-soft);margin-left:6px;\">Epoch ' + displayEpoch + '</span></div><div class=\"signal-content-preview\" style=\"white-space:pre-wrap;word-break:break-word;\">' + escapeHtml(content) + '</div></div><div style=\"display:flex;flex-direction:column;align-items:flex-end;gap:4px;\"><span class=\"signal-time\">' + (sig.timeAgo || '') + '</span></div>';",
+  // New: no K#, no glyphs, just intent badge + attests + epoch
+  "it.innerHTML = '<div style=\"flex:1;\"><div class=\"signal-item-header\"><span class=\"intent-tag ' + ic + '\">' + isym + '</span><span class=\"signal-attests\" style=\"margin-left:6px;\">✓' + (sig.attestCount||0) + '</span><span style=\"color:var(--text-soft);margin-left:6px;\">Epoch ' + displayEpoch + '</span></div><div class=\"signal-content-preview\" style=\"white-space:pre-wrap;word-break:break-word;\">' + escapeHtml(content) + '</div></div><div style=\"display:flex;flex-direction:column;align-items:flex-end;gap:4px;\"><span class=\"signal-time\">' + (sig.timeAgo || '') + '</span></div>';"
+);
+
+// ═══════════════════════════════════════════════════════════════
+// FIX 2b: Sent Signals — REPLY: fix K#? → use replyToKeyId properly
+// + use parent glyphs (pgs) from getShortGlyphs(parentKeyId)
+// The parentKeyId variable is already set: var parentKeyId = sig.replyToKeyId || '?';
+// Problem: replyToKeyId comes as undefined from API → shows "K#?"
+// We need to only show K# line when parentKeyId is a real number
+// ═══════════════════════════════════════════════════════════════
+
+applyFix(
+  'FIX 2b: Sent Signals reply — fix K#? display',
+  // Current reply block — find the parentKeyId setup + innerHTML
+  "var parentKeyId = sig.replyToKeyId || '?';\n        var parentGlyphs = parentKeyId !== '?' ? getShortGlyphs(parentKeyId) : '';\n        var pgs = parentGlyphs ? '<span style=\"font-size:10px;color:var(--text-soft);margin-left:4px;\">' + parentGlyphs + '</span>' : '';\n        it.innerHTML = '<div style=\"flex:1;\"><div class=\"signal-item-header\"><span style=\"color:var(--keys-accent);font-weight:600;\">K#' + parentKeyId + '</span>' + pgs + '<span class=\"intent-tag ' + ic + '\" style=\"margin-left:6px;\">' + isym + '</span><span class=\"signal-attests\" style=\"margin-left:6px;\">✓' + (sig.attestCount||0) + '</span><span style=\"color:var(--text-soft);margin-left:6px;\">Epoch ' + displayEpoch + '</span></div><div class=\"signal-content-preview\" style=\"white-space:pre-wrap;word-break:break-word;\">' + escapeHtml(content) + '</div></div><div style=\"display:flex;flex-direction:column;align-items:flex-end;gap:4px;\"><span class=\"signal-time\">' + (sig.timeAgo || '') + '</span><button onclick=\"event.stopPropagation();switchTab(\\'whispers\\');setTimeout(function(){replyWhisper(' + parentKeyId + ')},100);\" style=\"padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;\">💬 Whisper</button></div>';",
+  // New: only show K# when replyToKeyId is a real number, full glyphs
+  "var parentKeyId = sig.replyToKeyId;\n        var hasParentKey = parentKeyId !== undefined && parentKeyId !== null;\n        var parentGlyphs = hasParentKey ? getShortGlyphs(parentKeyId) : '';\n        var pgs = parentGlyphs ? '<span style=\"font-size:10px;color:var(--text-soft);margin-left:4px;\">' + parentGlyphs + '</span>' : '';\n        var keyLine = hasParentKey ? '<span style=\"color:var(--keys-accent);font-weight:600;\">K#' + parentKeyId + '</span>' + pgs : '';\n        var whisperKeyId = hasParentKey ? parentKeyId : 0;\n        it.innerHTML = '<div style=\"flex:1;\"><div class=\"signal-item-header\">' + keyLine + '<span class=\"intent-tag ' + ic + '\" style=\"margin-left:6px;\">' + isym + '</span><span class=\"signal-attests\" style=\"margin-left:6px;\">✓' + (sig.attestCount||0) + '</span><span style=\"color:var(--text-soft);margin-left:6px;\">Epoch ' + displayEpoch + '</span></div><div class=\"signal-content-preview\" style=\"white-space:pre-wrap;word-break:break-word;\">' + escapeHtml(content) + '</div></div><div style=\"display:flex;flex-direction:column;align-items:flex-end;gap:4px;\"><span class=\"signal-time\">' + (sig.timeAgo || '') + '</span>' + (hasParentKey ? '<button onclick=\"event.stopPropagation();switchTab(\\'whispers\\');setTimeout(function(){replyWhisper(' + whisperKeyId + ')},100);\" style=\"padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;\">💬 Whisper</button>' : '') + '</div>';"
+);
+
+// ═══════════════════════════════════════════════════════════════
+// FIX 3: Attestable signals — white text on signal content
+// Current: '<div class="signal-content">'+escapeHtml(sig.cid||'[Silence]')+'</div>'
+// Add: style="color:#fff;"
+// ═══════════════════════════════════════════════════════════════
+
+// Find in renderAttestSignals the signal-content div
+applyFix(
+  'FIX 3: Attestable signals — white content text',
+  "'<div class=\"signal-content\">'+escapeHtml(sig.cid||'[Silence]')+'</div>'",
+  "'<div class=\"signal-content\" style=\"color:#fff;\">'+escapeHtml(sig.cid||'[Silence]')+'</div>'"
+);
+
+// ═══════════════════════════════════════════════════════════════
+// FIX 4: Whispers received — K# yellow instead of green
+// Current: color:var(--accent) (green)
+// Change to: color:var(--keys-accent) (yellow)
+// ═══════════════════════════════════════════════════════════════
+
+// In loadReceivedWhispers:
+applyFix(
+  'FIX 4a: Received whispers K# — green to yellow',
+  "it.innerHTML = '<div style=\"flex:1;\"><div class=\"signal-item-header\"><span style=\"color:var(--accent);font-weight:600;\">K#' + w.fromKeyId + '</span>'",
+  "it.innerHTML = '<div style=\"flex:1;\"><div class=\"signal-item-header\"><span style=\"color:var(--keys-accent);font-weight:600;\">K#' + w.fromKeyId + '</span>'"
+);
+
+// Also in filterReceivedWhispers:
+applyFix(
+  'FIX 4b: Filtered received whispers K# — green to yellow',
+  "it.innerHTML = '<div style=\"flex:1;\"><div class=\"signal-item-header\"><span style=\"color:var(--accent);font-weight:600;\">K#' + w.fromKeyId + '</span>'",
+  "it.innerHTML = '<div style=\"flex:1;\"><div class=\"signal-item-header\"><span style=\"color:var(--keys-accent);font-weight:600;\">K#' + w.fromKeyId + '</span>'"
+);
+
+// ═══════════════════════════════════════════════════════════════
+// SAVE
+// ═══════════════════════════════════════════════════════════════
+
+console.log('\n═══════════════════════════════════════');
+if (changes > 0) {
+  if (hadCRLF) code = code.replace(/\n/g, '\r\n');
+  fs.writeFileSync(TARGET, code, 'utf8');
+  console.log('✅ ' + changes + ' fixes applied, ' + failures + ' failures');
+} else {
+  console.log('❌ No changes made');
 }
+console.log('═══════════════════════════════════════');
+
+// Summary
+console.log('\nWhat was fixed:');
+console.log('  1. Glyphs: Full sequence everywhere (no more truncation)');
+console.log('  2a. Sent signals (new): No K# or glyphs shown');
+console.log('  2b. Sent signals (reply): K# only when replyToKeyId exists');
+console.log('  3. Attestable signals: White text on content');
+console.log('  4. Received whispers: K# yellow instead of green');
+console.log('\nNOT changed (already correct in JS):');
+console.log('  - Received attests: unread-glow logic already present');
+console.log('  - Received whispers: unread-glow logic already present');
+console.log('\n⚠️  CSS note: If unread-glow styling (yellow border/glow)');
+console.log('   is not visible, check Key-dashboard.css for .unread-glow class');

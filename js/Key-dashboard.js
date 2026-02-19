@@ -160,44 +160,29 @@ function showSafetyWarning(callback) {
   if (tabId === 'whispers') {
     if (eye) {
       eye.style.display = 'flex';
+      eye.classList.add('whisper-disabled');
       eye.classList.remove('active');
-      eye.classList.remove('whisper-disabled');
-      eye.style.borderColor = 'var(--accent)';
-      eye.style.background = 'rgba(102,214,154,0.15)';
-      eye.style.color = 'var(--accent)';
-      eye.style.cursor = 'default';
-      eye.onclick = null;
-      eye.onmouseenter = function() { if (tooltip) { tooltip.className = 'stealth-tooltip visible'; tooltip.innerHTML = '<div class="tt-title" style="color:var(--accent);">Stealth Messaging</div><div class="tt-body">Stealth messaging is not yet available for whispers. All whispers are currently visible on-chain.<br><br><span style="font-size:11px;opacity:0.7;">This feature is planned for a future update.</span></div>'; } };
-      eye.onmouseleave = function() { if (tooltip) tooltip.classList.remove('visible'); };
+      eye.style.cursor = 'not-allowed';
+      eye.onclick = function() { showToast('Stealth not available for Whispers', 3000); };
+    }
+    if (tooltip) {
+      tooltip.innerHTML = '<div class="tt-title" style="color:#f87171;">Stealth Not Available</div><div class="tt-body">Whispers are always visible on-chain. Stealth mode only works for Signals and Attests.</div>';
     }
   } else if (tabId === 'signals' || tabId === 'attests') {
     if (eye) {
       eye.style.display = 'flex';
       eye.classList.remove('whisper-disabled');
-      eye.style.borderColor = '';
-      eye.style.background = '';
-      eye.style.color = '';
       eye.style.cursor = 'pointer';
       eye.onclick = toggleGlobalStealth;
       eye.classList.toggle('active', globalStealthEnabled);
-      eye.onmouseenter = function() {
-        if (tooltip) {
-          if (globalStealthEnabled) {
-            tooltip.className = 'stealth-tooltip visible active-stealth';
-            tooltip.innerHTML = '<div class="tt-title" style="color:#f87171;">Stealth Mode: Active</div><div class="tt-body">Your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.<br><br><span style="font-size:11px;opacity:0.7;">Click the eye to deactivate stealth.</span></div>';
-          } else {
-            tooltip.className = 'stealth-tooltip visible';
-            tooltip.innerHTML = '<div class="tt-title" style="color:var(--accent);">Stealth Mode: Visible</div><div class="tt-body">Your signals and attestations are submitted directly from your wallet. Your address is visible on-chain.<br><br><span style="font-size:11px;opacity:0.7;">Click the eye to activate stealth.</span></div>';
-          }
-        }
-      };
-      eye.onmouseleave = function() { if (tooltip) tooltip.classList.remove('visible'); };
+    }
+    if (tooltip) {
+      tooltip.innerHTML = '<div class="tt-title">Stealth Mode</div><div class="tt-body">When active (red), your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.</div>';
     }
   } else {
+    // Overview, Artefacts, Canon, Treasury - hide eye
     if (eye) {
       eye.style.display = 'none';
-      eye.onmouseenter = null;
-      eye.onmouseleave = null;
     }
   }
   
@@ -282,35 +267,24 @@ function showSafetyWarning(callback) {
   window.setSignalType = function(t) { signalType = t; document.querySelectorAll('.toggle-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.type === t); }); var rs = document.getElementById('replySection'); if (rs) rs.classList.toggle('active', t === 'reply'); };
 
 var globalStealthEnabled = false;
-try { globalStealthEnabled = localStorage.getItem('z1n_stealth_mode') === 'true'; } catch(e) {}
-
 
 window.toggleGlobalStealth = function() {
   if (!stealthRelayerAvailable) { showToast('Stealth relayer not available', 3000); return; }
   globalStealthEnabled = !globalStealthEnabled;
   pogStealthEnabled = globalStealthEnabled;
   attestStealthEnabled = globalStealthEnabled;
-  try { localStorage.setItem('z1n_stealth_mode', globalStealthEnabled ? 'true' : 'false'); } catch(e) {}
   var toggle = document.getElementById('globalStealthToggle');
   var tooltip = document.getElementById('stealthTooltip');
+  var feeDisplay = document.getElementById('pogFee');
   var submitBtn = document.getElementById('btnSubmitPog');
   if (toggle) toggle.classList.toggle('active', globalStealthEnabled);
+  if (tooltip) tooltip.classList.toggle('active-stealth', globalStealthEnabled);
   if (globalStealthEnabled) {
-    if (submitBtn) submitBtn.textContent = '\u{1F441}\u200D\u{1F5E8} Submit Hidden';
-    showToast('\u{1F534} Stealth ON', 2000);
-    if (tooltip) {
-      tooltip.className = 'stealth-tooltip visible active-stealth';
-      tooltip.innerHTML = '<div class="tt-title" style="color:#f87171;">Stealth Mode: Active</div><div class="tt-body">Your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.<br><br><span style="font-size:11px;opacity:0.7;">Click the eye to deactivate stealth.</span></div>';
-      setTimeout(function(){ tooltip.classList.remove('visible'); }, 4000);
-    }
+    if (submitBtn) submitBtn.textContent = '👁‍🗨 Submit Hidden';
+    showToast('🔴 Stealth ON', 2000);
   } else {
     if (submitBtn) submitBtn.textContent = 'Submit Signal';
-    showToast('\u{1F7E2} Stealth OFF', 2000);
-    if (tooltip) {
-      tooltip.className = 'stealth-tooltip visible';
-      tooltip.innerHTML = '<div class="tt-title" style="color:var(--accent);">Stealth Mode: Visible</div><div class="tt-body">Your signals and attestations are submitted directly from your wallet. Your address is visible on-chain.<br><br><span style="font-size:11px;opacity:0.7;">Click the eye to activate stealth.</span></div>';
-      setTimeout(function(){ tooltip.classList.remove('visible'); }, 4000);
-    }
+    showToast('🟢 Stealth OFF', 2000);
   }
 };
 
@@ -613,7 +587,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       
       html += '<div class="canon-card">' +
         '<div class="canon-card-epoch">E' + epochId + '</div>' +
-        '<div class="canon-card-time">' + timeAgo + '</div>' +
+        '<div class="canon-card-time">Minted in Epoch ' + epochId + '</div>' +
         // Green clickable hash - original design
         (txHash ? '<a href="' + txLink + '" target="_blank" class="canon-card-tx">' + shortHash + '</a>' : '') +
       '</div>';
@@ -640,6 +614,10 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
   // ═══════════════════════════════════════════════════════════════
   async function loadKeyData(keyId) {
     currentKeyId = keyId;
+    // Pre-load readItems so unread checks work during initial data loading
+    try { var _stored = localStorage.getItem('z1n_activity_read_' + keyId); if (_stored) { ActivityFeed.readItems = new Set(JSON.parse(_stored)); } else { ActivityFeed.readItems = new Set(); } } catch(e) { ActivityFeed.readItems = new Set(); }
+    // Pre-load readItems so unread checks work during initial data loading
+    try { var _stored = localStorage.getItem('z1n_activity_read_' + keyId); if (_stored) { ActivityFeed.readItems = new Set(JSON.parse(_stored)); } else { ActivityFeed.readItems = new Set(); } } catch(e) { ActivityFeed.readItems = new Set(); }
     try {
       // ── ROUND 1: owner check (must stay RPC for security) + epoch from API ──
       var ownerCall = rpc('eth_call', [{ to: Z1N_KEY, data: SEL.ownerOf + enc256(keyId) }, 'latest']);
@@ -704,7 +682,6 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       updateAttestBtn();
       initActivityFeed();
       initUnreadState();
-      reapplyUnreadGlow();
       
       // Switch to URL tab AFTER data loads
       switchToUrlTab();
@@ -810,7 +787,7 @@ window.filterAttestSignals = function() {
       var it = document.createElement('div'); it.className = 'attest-signal-item';
       it.onclick = function() { document.querySelectorAll('#attestSignalsListInline .attest-signal-item.selected').forEach(function(el){ el.classList.remove('selected'); }); it.classList.add('selected'); selectedAttestSignal = sig; if (info) info.innerHTML = 'Selected: <strong style="color:var(--keys-accent);">K#' + sig.keyId + '</strong>'; updateAttestBtn(); };
       var ic = ['oc','oi','ok','os'][sig.intent] || 'oc', isym = sig.intentSymbol || ['ΩC','ΩI','ΩK','ΩS'][sig.intent] || '?', sg = getShortGlyphs(sig.keyId), gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">'+sg+'</span>' : '';
-      it.innerHTML = '<div class="signal-top"><span style="color:var(--keys-accent);font-weight:600;font-size:11px;">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'" style="font-size:9px;">'+isym+'</span><span style="color:#fbbf24;font-size:10px;">✓'+(sig.attestCount||0)+'</span><span style="font-size:9px;color:var(--text-soft);">'+(sig.timeAgo||'')+'</span></div><div class="signal-content">'+escapeHtml(sig.cid||'[Silence]')+'</div>';
+      it.innerHTML = '<div class="signal-top"><span style="color:var(--keys-accent);font-weight:600;font-size:11px;">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'" style="font-size:9px;">'+isym+'</span><span style="color:#fbbf24;font-size:10px;">✓'+(sig.attestCount||0)+'</span><span style="font-size:9px;color:var(--text-soft);">'+(sig.timeAgo||'')+'</span></div><div class="signal-content" style="color:#fff;">'+escapeHtml(sig.cid||'[Silence]')+'</div>';
       list.appendChild(it);
     });
   }
@@ -858,17 +835,18 @@ async function loadSentSignals() {
       var content = sig.cid || '[Silence]';
       var displayEpoch = sig.epoch || activeEpoch;
       var isReply = sig.replyTo && sig.replyTo !== '0x0000000000000000000000000000000000000000000000000000000000000000';
-      var replyBadge = '';
+      // v5: Clean card layout — no typeBadge, no replyBadge, no Reply button
       if (isReply) {
-        var parentKeyId = sig.replyToKeyId || '?';
-        var parentGlyphs = getShortGlyphs(parentKeyId);
-        var glyphsSpan = parentGlyphs ? ' <span style="font-size:9px;color:var(--text-soft);">' + parentGlyphs + '</span>' : '';
-        replyBadge = '<span style="font-size:9px;padding:2px 6px;background:rgba(245,200,66,0.2);color:#f5c842;border-radius:4px;margin-left:4px;cursor:pointer;" onclick="showParentSignal(\'' + sig.replyTo + '\')">↩ K#' + parentKeyId + glyphsSpan + '</span>';
+        var parentKeyId = sig.replyToKeyId;
+        var hasParentKey = parentKeyId !== undefined && parentKeyId !== null;
+        var parentGlyphs = hasParentKey ? getShortGlyphs(parentKeyId) : '';
+        var pgs = parentGlyphs ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + parentGlyphs + '</span>' : '';
+        var keyLine = hasParentKey ? '<span style="color:var(--keys-accent);font-weight:600;">K#' + parentKeyId + '</span>' + pgs : '';
+        var whisperKeyId = hasParentKey ? parentKeyId : 0;
+        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header">' + keyLine + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span>' + (hasParentKey ? '<button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper(' + whisperKeyId + ')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button>' : '') + '</div>';
+      } else {
+        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ic + '">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span></div>';
       }
-      
-      var typeBadge = isReply ? '<span style="font-size:9px;padding:2px 6px;background:rgba(245,200,66,0.2);color:#f5c842;border-radius:4px;margin-left:6px;">↩ Reply</span>' : '<span style="font-size:9px;padding:2px 6px;background:rgba(245,200,66,0.2);color:#f5c842;border-radius:4px;margin-left:6px;">New</span>';
-      
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + sig.keyId + '</span>' + gs + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span>' + typeBadge + '<span style="color:var(--text-soft);margin-left:6px;">E' + displayEpoch + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span>' + replyBadge + '</div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span><button class="reply-btn" onclick="replyToSignal(\'' + sig.hash + '\', ' + sig.keyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
       
       list.appendChild(it);
     });
@@ -927,7 +905,7 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
       
      // Check unread state
       var activityId = 'reply_recv_' + sig.hash;
-      var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.loaded && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
+      var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
       if (isUnread) it.classList.add('unread-glow');
       it.dataset.activityId = activityId;
       
@@ -937,7 +915,7 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
       if (parentHash && parentHash !== '0x0000000000000000000000000000000000000000000000000000000000000000') {
         replyBadge = '<span style="font-size:9px;padding:2px 6px;background:rgba(245,200,66,0.2);color:#f5c842;border-radius:4px;margin-left:4px;cursor:pointer;" onclick="showParentSignal(\'' + parentHash + '\')">\u21a9 ' + parentHash.slice(0,10) + '...</span>';
       }
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + sig.keyId + '</span>' + gs + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span><span style="color:var(--text-soft);margin-left:6px;">E' + displayEpoch + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span>' + replyBadge + '</div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span><button class="reply-btn" onclick="replyToSignal(\'' + sig.hash + '\', ' + sig.keyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';// Click to mark as read
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + sig.keyId + '</span>' + gs + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyToSignal(\'' + sig.hash + '\', ' + sig.keyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper(' + sig.keyId + ')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';// Click to mark as read
       it.addEventListener('click', function(e) {
         if (e.target.classList.contains('reply-btn')) return;
         markTabItemRead(activityId, it);
@@ -1044,7 +1022,7 @@ if (sentAttestsCountEl) sentAttestsCountEl.textContent = '(' + attests.length + 
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = att.signalContent || att.signalCid || '[Signal]';
       
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:#fbbf24;font-size:11px;">✓ Attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--keys-accent);margin-left:6px;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       list.appendChild(it);
     });
   } catch (e) { list.innerHTML = '<div style="padding:20px;text-align:center;color:#f87171;font-size:11px;">Error loading attestations</div>'; }
@@ -1096,12 +1074,12 @@ if (receivedAttestsCountTitleEl) receivedAttestsCountTitleEl.textContent = '(' +
       var content = att.signalContent || att.signalCid || '[Your signal]';
       // Check unread state
       var activityId = 'attest_recv_' + (att.signalHash || '') + '_' + (att.fromKeyId || '') + '_' + (att.blockNumber || '');
-      var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.loaded && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
+      var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
       if (isUnread) it.classList.add('unread-glow');
       it.dataset.activityId = activityId;
       
       var fromKeyDisplay = att.fromKeyId !== null ? 'K#' + att.fromKeyId : (att.fromWallet ? att.fromWallet.slice(0,6) + '...' : '?');
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span style="margin-left:6px;font-size:10px;color:#fbbf24;">attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.fromKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.fromKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(245,200,66,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       
       // Click to mark as read
       it.addEventListener('click', function() {
@@ -1129,7 +1107,7 @@ window.filterReceivedAttests = function() {
     var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
     var content = att.signalContent || att.signalCid || '[Your signal]';
     var fromKeyDisplay = att.fromKeyId !== null ? 'K#' + att.fromKeyId : (att.fromWallet ? att.fromWallet.slice(0,6) + '...' : '?');
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span style="margin-left:6px;font-size:10px;color:#fbbf24;">attested</span><span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="color:var(--text-soft);margin-left:6px;">E'+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;">'+escapeHtml(content)+'</div></div><span class="signal-time">'+(att.timeAgo||'')+'</span>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;">'+escapeHtml(content)+'</div></div><span class="signal-time">'+(att.timeAgo||'')+'</span>';
     list.appendChild(it);
   });
 };
@@ -1249,12 +1227,12 @@ if (sentWhispersCountTitleEl) sentWhispersCountTitleEl.textContent = '(' + sent.
         var it = document.createElement('div');
         it.className = 'signal-item';
         it.style.cursor = 'pointer';
-        var sg = (keyGlyphsCache[w.toKeyId] || "");
+        var sg = getShortGlyphs(w.toKeyId);
         var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
         var content = w.cid || w.content || '[Empty]';
         if (content.length > 80) content = content.slice(0, 80) + '...';
         var epoch = w.epoch || '—';
-        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-size:11px;">→ To:</span><span style="color:var(--keys-accent);font-weight:600;margin-left:4px;">K#' + w.toKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">E' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</div></div><span class="signal-time">' + (w.timeAgo || '') + '</span>';
+        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-size:11px;">→ To:</span><span style="color:var(--keys-accent);font-weight:600;margin-left:4px;">K#' + w.toKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">Epoch ' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><span class="signal-time">' + (w.timeAgo || '') + '</span>';
         it.onclick = function() { showWhisperHistory(w.toKeyId); };
         list.appendChild(it);
       });
@@ -1293,18 +1271,18 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
         var it = document.createElement('div');
         it.className = 'signal-item';
         it.style.cursor = 'pointer';
-        var sg = (keyGlyphsCache[w.fromKeyId] || "");
+        var sg = getShortGlyphs(w.fromKeyId);
         var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
         var content = w.cid || w.content || '[Empty]';
         if (content.length > 100) content = content.slice(0, 100) + '...';
         var epoch = w.epoch || '—';
        // Check unread state
         var activityId = 'whisper_recv_' + (w.txHash || w.blockNumber || '');
-        var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.loaded && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
+        var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
         if (isUnread) it.classList.add('unread-glow');
         it.dataset.activityId = activityId;
         
-        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">E' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;border-radius:4px;border-left:2px solid rgba(148,163,184,0.25);">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
+        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">Epoch ' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;background:rgba(148,163,184,0.08);border-radius:4px;border-left:2px solid rgba(148,163,184,0.3);font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
         it.onclick = function(e) { 
           if (!e.target.classList.contains('reply-btn')) {
             markTabItemRead(activityId, it);
@@ -1335,12 +1313,12 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
     history.forEach(function(w) {
       var isMe = w.fromKeyId === currentKeyId;
       var align = isMe ? 'flex-end' : 'flex-start';
-      var bg = isMe ? 'rgba(245,200,66,0.15)' : 'rgba(245,200,66,0.08)';
-      var border = isMe ? 'var(--keys-accent)' : 'var(--keys-accent)';
+      var bg = isMe ? 'rgba(245,200,66,0.15)' : 'rgba(102,214,154,0.15)';
+      var border = isMe ? 'var(--keys-accent)' : 'var(--accent)';
       var label = isMe ? 'You' : 'K#' + w.fromKeyId;
       var epoch = w.epoch || '—';
       var content = w.cid || w.content || '[Empty]';
-      chatHtml += '<div style="display:flex;justify-content:' + align + ';margin-bottom:8px;"><div style="max-width:80%;padding:8px 12px;background:' + bg + ';border-left:2px solid ' + border + ';border-radius:6px;"><div style="font-size:10px;color:var(--text-soft);margin-bottom:4px;">' + label + ' · E' + epoch + ' · ' + (w.timeAgo || '') + '</div><div style="font-size:12px;word-break:break-word;">' + escapeHtml(content) + '</div></div></div>';
+      chatHtml += '<div style="display:flex;justify-content:' + align + ';margin-bottom:8px;"><div style="max-width:80%;padding:8px 12px;background:' + bg + ';border-left:2px solid ' + border + ';border-radius:6px;"><div style="font-size:10px;color:var(--text-soft);margin-bottom:4px;">' + label + ' · Epoch ' + epoch + ' · ' + (w.timeAgo || '') + '</div><div style="font-size:12px;word-break:break-word;">' + escapeHtml(content) + '</div></div></div>';
     });
     chatHtml += '</div><div style="padding:10px;border-top:1px solid var(--card-border);text-align:center;"><button onclick="replyWhisper(' + otherKeyId + ');closeWhisperHistoryModal();" style="padding:8px 16px;background:rgba(245,200,66,0.2);border:1px solid #f5c842;border-radius:6px;color:#f5c842;cursor:pointer;font-size:12px;">↩ Reply to K#' + otherKeyId + '</button></div>';
     var modal = document.getElementById('artefactModal');
@@ -1364,12 +1342,12 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
     list.innerHTML = '';
     filtered.forEach(function(w) {
       var it = document.createElement('div'); it.className = 'signal-item'; it.style.cursor = 'pointer';
-      var sg = (keyGlyphsCache[w.toKeyId] || "");
+      var sg = getShortGlyphs(w.toKeyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = w.cid || w.content || '[Empty]';
       if (content.length > 80) content = content.slice(0, 80) + '...';
       var epoch = w.epoch || '—';
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-size:11px;">→ To:</span><span style="color:var(--keys-accent);font-weight:600;margin-left:4px;">K#' + w.toKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">E' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;">' + escapeHtml(content) + '</div></div><span class="signal-time">' + (w.timeAgo || '') + '</span>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-size:11px;">→ To:</span><span style="color:var(--keys-accent);font-weight:600;margin-left:4px;">K#' + w.toKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">Epoch ' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><span class="signal-time">' + (w.timeAgo || '') + '</span>';
       it.onclick = function() { showWhisperHistory(w.toKeyId); };
       list.appendChild(it);
     });
@@ -1384,12 +1362,12 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
     list.innerHTML = '';
     filtered.forEach(function(w) {
       var it = document.createElement('div'); it.className = 'signal-item'; it.style.cursor = 'pointer';
-      var sg = (keyGlyphsCache[w.fromKeyId] || "");
+      var sg = getShortGlyphs(w.fromKeyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = w.cid || w.content || '[Empty]';
       if (content.length > 100) content = content.slice(0, 100) + '...';
       var epoch = w.epoch || '—';
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">E' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;border-radius:4px;border-left:2px solid rgba(148,163,184,0.25);">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">Epoch ' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;background:rgba(148,163,184,0.08);border-radius:4px;border-left:2px solid rgba(148,163,184,0.3);font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
       it.onclick = function() { showWhisperHistory(w.fromKeyId); };
       list.appendChild(it);
     });
@@ -1782,15 +1760,6 @@ window.submitWhisper = async function() {
 await loadKeyData(currentKeyId);
 
       await checkStealthAvailability();
-      // Apply saved stealth state
-      if (globalStealthEnabled && stealthRelayerAvailable) {
-        pogStealthEnabled = true;
-        attestStealthEnabled = true;
-        var toggle = document.getElementById('globalStealthToggle');
-        if (toggle) toggle.classList.add('active');
-        var submitBtn = document.getElementById('btnSubmitPog');
-        if (submitBtn) submitBtn.textContent = '\u{1F441}\u{200D}\u{1F5E8} Submit Hidden';
-      }
       
       if (!provider.__z1nBound) {
         provider.__z1nBound = true;
@@ -2949,19 +2918,6 @@ window.Z1N_DEBUG = {
   getActiveEpoch: function() { return activeEpoch; },
   getCurrentKeyId: function() { return currentKeyId; }
 };
-
-// Re-apply unread glow after ActivityFeed loads (whispers render before ActivityFeed.loaded)
-function reapplyUnreadGlow() {
-  if (!ActivityFeed.loaded || !ActivityFeed.readItems) return;
-  document.querySelectorAll('[data-activity-id]').forEach(function(el) {
-    var aid = el.dataset.activityId;
-    if (aid && !ActivityFeed.readItems.has(aid)) {
-      if (!el.classList.contains('unread-glow')) el.classList.add('unread-glow');
-    } else {
-      el.classList.remove('unread-glow');
-    }
-  });
-}
 
 // Auto-connect on page load
 document.addEventListener('DOMContentLoaded', function() {

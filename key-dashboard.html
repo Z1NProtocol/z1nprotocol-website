@@ -2,9 +2,48 @@
 <html lang="en">
 <head>
 
-  <meta charset="UTF-8">
+ <meta charset="UTF-8">
   <title>Z1N Protocol – Key Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Key-specific dashboard within the Z1N Protocol. View signals, attestations, artefacts, canon anchors and treasury rewards bound to your Z1N Key." />
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,follow" />
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <link rel="canonical" href="https://www.z1nprotocol.xyz/key-dashboard.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Z1N Protocol" />
+  <meta property="og:title" content="Z1N Protocol – Key Dashboard" />
+  <meta property="og:description" content="Access your Z1N Key dashboard. Signals, artefacts, canon anchors and treasury — bound to presence." />
+  <meta property="og:url" content="https://www.z1nprotocol.xyz/key-dashboard.html" />
+  <meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@Z1N_AI" />
+  <meta name="twitter:title" content="Z1N Protocol – Key Dashboard" />
+  <meta name="twitter:description" content="Signals · Attests · Artefacts · Canon · Treasury" />
+  <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://www.z1nprotocol.xyz/key-dashboard.html#webpage",
+    "url": "https://www.z1nprotocol.xyz/key-dashboard.html",
+    "name": "Z1N Protocol – Key Dashboard",
+    "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
+    "about": [
+      { "@type": "Thing", "name": "Z1N Key" },
+      { "@type": "Thing", "name": "Soulbound key" },
+      { "@type": "Thing", "name": "Blockchain presence" }
+    ],
+    "inLanguage": "en"
+  }
+  </script>
 
   <!-- bestaande CSS links -->
   <link rel="stylesheet" href="css/key-dashboard.css">
@@ -195,14 +234,14 @@
     /* CANON STYLES - PURPLE THEME */
 .canon-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
 @media(max-width:700px){.canon-summary{grid-template-columns:1fr}}
-.canon-box{padding:20px;background:rgba(15,23,42,0.5);border-radius:12px;text-align:center;border:1px solid rgba(168,85,247,0.2)}
-.canon-amount{font-size:32px;font-weight:700;margin-bottom:4px;color:#a855f7}
+.canon-box{padding:20px;background:rgba(15,23,42,0.5);border-radius:12px;text-align:center;border:1px solid rgba(192,132,252,0.2)}
+.canon-amount{font-size:32px;font-weight:700;margin-bottom:4px;color:#c084fc}
 .canon-label{font-size:11px;color:var(--text-soft);text-transform:uppercase}
 
 .canon-list{display:flex;flex-direction:column;gap:10px}
-.canon-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(15,23,42,0.4);border:1px solid rgba(168,85,247,0.2);border-radius:10px;transition:all 0.2s}
-.canon-item:hover{border-color:#a855f7}
-.canon-epoch{font-size:20px;font-weight:700;color:#a855f7}
+.canon-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(15,23,42,0.4);border:1px solid rgba(192,132,252,0.2);border-radius:10px;transition:all 0.2s}
+.canon-item:hover{border-color:#c084fc}
+.canon-epoch{font-size:20px;font-weight:700;color:#c084fc}
 .canon-meta{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 .canon-time{font-size:11px;color:var(--text-soft)}
 .canon-hash{font-family:monospace;font-size:10px;color:var(--text-soft);opacity:0.6}
@@ -214,17 +253,17 @@
 .canon-filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 
 /* Canon filter pills - PURPLE */
-.canon-filter-pill{background:transparent;border:1px solid rgba(168,85,247,0.3);color:#a855f7;padding:6px 12px;font-size:11px;border-radius:6px;cursor:pointer;transition:all 0.2s}
-.canon-filter-pill:hover{background:rgba(168,85,247,0.15);border-color:#a855f7}
-.canon-filter-pill.active{background:rgba(168,85,247,0.25);border-color:#a855f7;color:#c084fc}
+.canon-filter-pill{background:transparent;border:1px solid rgba(192,132,252,0.3);color:#c084fc;padding:6px 12px;font-size:11px;border-radius:6px;cursor:pointer;transition:all 0.2s}
+.canon-filter-pill:hover{background:rgba(192,132,252,0.15);border-color:#c084fc}
+.canon-filter-pill.active{background:rgba(192,132,252,0.25);border-color:#c084fc;color:#c084fc}
 
 /* Canon grid */
 .canon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
 
 /* Canon cards - PURPLE */
-.canon-card{background:rgba(15,23,42,0.5);border:1px solid rgba(168,85,247,0.2);border-radius:10px;padding:16px;text-align:center;transition:all 0.2s}
-.canon-card:hover{border-color:#a855f7;background:rgba(168,85,247,0.08)}
-.canon-card-epoch{font-size:22px;font-weight:700;color:#a855f7;margin-bottom:4px}
+.canon-card{background:rgba(15,23,42,0.5);border:1px solid rgba(192,132,252,0.2);border-radius:10px;padding:16px;text-align:center;transition:all 0.2s}
+.canon-card:hover{border-color:#c084fc;background:rgba(192,132,252,0.08)}
+.canon-card-epoch{font-size:22px;font-weight:700;color:#c084fc;margin-bottom:4px}
 .canon-card-time{font-size:11px;color:var(--text-soft);margin-bottom:6px}
 .canon-card-tx{font-family:monospace;font-size:10px;color:#66d69a;opacity:0.7;text-decoration:none;display:block}
 .canon-card-tx:hover{opacity:1;text-decoration:underline}
