@@ -28,7 +28,24 @@
     .nav-inner { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
     .logo-link { display: inline-flex; align-items: center; gap: 8px; }
     .logo-dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; }
-    .logo-text { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+    .logo-text{
+  font-size:11px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  display:flex;
+  gap:6px;
+}
+
+.logo-main{
+  opacity:1;
+  font-weight:600;
+}
+
+.logo-sub{
+  opacity:0.6;
+  font-weight:400;
+}
+
     .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
     .nav-links a.active-keys { color: var(--keys-accent); }
 
@@ -123,10 +140,15 @@
   <div class="nav-inner">
     <a href="index.html" class="logo-link">
       <div class="logo-dot">Ω</div>
-      <div class="logo-text">Z1N PROTOCOL</div>
+      <div class="logo-text">
+  <span class="logo-main">Z1N</span>
+  <span class="logo-sub">PROTOCOL</span>
+</div>
+
     </a>
     <nav class="nav-links">
       <a href="about.html">About</a>
+      <a href="how-it-works.html">How it Works</a>
       <a href="live-stats.html">Live Stats</a>
       <a href="artefacts.html">Artefacts</a>
       <a href="nbi-artefacts.html">4 NBIs</a>
@@ -208,11 +230,7 @@
   var MINT_PRICE = '0x4a9b6384488000';
   var MINT_PRICE_DISPLAY = '0.021 POL';
 
-  var RPC_URLS = [
-    'https://polygon-bor-rpc.publicnode.com',
-    'https://polygon.blockpi.network/v1/rpc/public',
-    'https://rpc-mainnet.maticvigil.com'
-  ];
+  var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var currentRpcIndex = 0;
 
   var provider = null;
@@ -571,6 +589,9 @@
 
 })();
 </script>
+
+<script src="js/gas-banner.js"></script>
+
 </body>
 </html>
 

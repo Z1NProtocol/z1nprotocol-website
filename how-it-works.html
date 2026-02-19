@@ -1,248 +1,847 @@
-<section class="howit-grid howit-b" aria-label="How it works – Variant B">
-  <article class="panel">
-    <header class="panel-h">
-      <div>
-        <div class="kicker">FIELD RITUAL LOOP</div>
-        <div class="sub">Scrub the phase. See which rail is active.</div>
-      </div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Z1N Protocol – How it Works</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
 
-      <div class="scrub">
-        <span class="scrub-l">t</span>
-        <input id="scrubB" type="range" min="0" max="2" step="1" value="0" aria-label="Scrub epoch phase"/>
-        <span class="scrub-r">t+2</span>
-      </div>
-    </header>
+  <style>
+    :root{
+      --bg:#050812;
+      --card-bg:#020617;
+      --text-main:#ffffff;
+      --text-soft:#8f9ab5;
+      --accent:#66d69a;
+      --accent-soft:#3a9f63;
+      --card-border:rgba(148,163,184,0.25);
 
-    <div class="loop-wrap">
-      <div class="loop-visual">
-        <svg viewBox="0 0 420 420" class="loop-svg" aria-label="Concentric loop scrub">
-          <defs>
-            <filter id="glowYellowB" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3.5" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
+      /* intent colors */
+      --C:#4CAF50;
+      --I:#F44336;
+      --K:#FFEB3B;
+      --S:#2196F3;
 
-          <circle cx="210" cy="210" r="160" class="ring-base"/>
-          <circle cx="210" cy="210" r="128" class="ring-base"/>
-          <circle cx="210" cy="210" r="96"  class="ring-base"/>
+      /* loop colors */
+      --sig:#FFEB3B;
+      --att:#4CAF50;
+      --clm:#2196F3;
 
-          <g id="sigB"><circle cx="210" cy="210" r="160" class="ring-seg ring-sig" filter="url(#glowYellowB)"/></g>
-          <g id="attB"><circle cx="210" cy="210" r="128" class="ring-seg ring-att" filter="url(#glowYellowB)"/></g>
-          <g id="clmB"><circle cx="210" cy="210" r="96" class="ring-seg ring-claimB"/></g>
+      /* motion */
+      --ease: cubic-bezier(.2,.8,.2,1);
+    }
 
-          <circle cx="210" cy="210" r="64" class="core"/>
-          <text x="210" y="222" text-anchor="middle" class="omega">Ω</text>
-          <text x="210" y="252" text-anchor="middle" class="core-label">FIELD</text>
-        </svg>
-      </div>
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    html{ scrollbar-gutter:stable; overflow-y:scroll; scroll-behavior:smooth; }
+    body{
+      background:var(--bg);
+      color:var(--text-main);
+      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    }
 
-      <div class="epoch-row" id="epochRowB">
-        <div class="epoch-card" data-step="0">
-          <div class="epoch-top"><span class="epoch-tag">Epoch t</span><span class="epoch-rail">Signals</span></div>
-          <div class="epoch-body">Intent + timing. Structure only.</div>
-        </div>
-        <div class="epoch-card" data-step="1">
-          <div class="epoch-top"><span class="epoch-tag">Epoch t+1</span><span class="epoch-rail">Attests</span></div>
-          <div class="epoch-body">Attest a closed target (no self-attest).</div>
-        </div>
-        <div class="epoch-card" data-step="2">
-          <div class="epoch-top"><span class="epoch-tag">Epoch t+2</span><span class="epoch-rail">Claims</span></div>
-          <div class="epoch-body">Settlement completes. Claims appear.</div>
-        </div>
-      </div>
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ opacity:0.92; }
+
+    /* HEADER – shared layout */
+    header{
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      margin-bottom:20px;
+    }
+    .nav-inner{
+      width:100%;
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .logo-wrap{ display:flex; align-items:center; gap:8px; }
+    .logo-link{ display:inline-flex; align-items:center; gap:8px; }
+    .logo-dot{
+      width:24px;height:24px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.35);
+      display:flex;align-items:center;justify-content:center;
+      font-size:14px;line-height:1;
+    }
+    .logo-text{
+  font-size:11px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  display:flex;
+  gap:6px;
+}
+
+.logo-main{
+  opacity:1;
+  font-weight:600;
+}
+
+.logo-sub{
+  opacity:0.6;
+  font-weight:400;
+}
+
+    .nav-links{
+      display:flex;
+      gap:22px;
+      font-size:13px;
+      opacity:0.85;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .nav-links a{ position:relative; }
+    .nav-links a.active{ color:var(--accent); }
+    .nav-links a.active::after{
+      content:"";
+      position:absolute;
+      left:0; bottom:-4px;
+      width:100%; height:2px;
+      border-radius:999px;
+      background:linear-gradient(to right,var(--accent),var(--accent-soft));
+    }
+    @media(max-width:900px){
+      .nav-inner{ padding:0 16px; }
+      .nav-links{ font-size:12px; gap:14px; }
+    }
+
+    /* PAGE */
+    .page{
+      max-width:1200px;
+      margin:0 auto;
+      padding:40px 24px 72px;
+    }
+    @media(max-width:900px){
+      .page{ padding:32px 18px 56px; }
+    }
+
+    h1{
+      font-size:44px;
+      font-weight:750;
+      letter-spacing:-0.03em;
+      margin:0 0 10px 0;
+    }
+
+    .lead{
+      font-size:16px;
+      line-height:1.72;
+      color:rgba(255,255,255,0.88);
+      max-width:980px;
+      margin:0 0 22px 0;
+    }
+    .lead strong{ font-weight:800; }
+
+    /* inline color helpers */
+    .t-sig{ color:var(--sig); font-weight:800; }
+    .t-att{ color:var(--att); font-weight:800; }
+    .t-clm{ color:var(--clm); font-weight:800; }
+
+    /* UPDATED: How-it-works emphasis exactly as requested */
+    .t-ep{
+      color: rgba(148,163,184,0.78);  /* grey like card label */
+      font-weight:800;
+    }
+    .t-soft{ font-weight:400; }       /* explicit not bold */
+    .t-intents{ font-weight:800; }    /* bold like "signal and content" */
+
+    /* LAYOUT GRID */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:16px;
+    }
+
+    /* MAIN LOOP CARD */
+    .card{
+      background:var(--card-bg);
+      border:1px solid var(--card-border);
+      border-radius:18px;
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius:18px;
+      pointer-events:none;
+      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 62%);
+      opacity:0.9;
+    }
+    .card > *{ position:relative; }
+
+    .card-kicker{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,0.72);
+      margin-bottom:10px;
+    }
+
+    /* micro “field” motion */
+    @keyframes slowPulse {
+      0%,100% { opacity:0.18; transform:translateY(0); }
+      50%     { opacity:0.28; transform:translateY(-2px); }
+    }
+    .field-mist{
+      position:absolute;
+      inset:-30%;
+      pointer-events:none;
+      background:
+        radial-gradient(240px 140px at 22% 18%, rgba(255,255,255,0.05), rgba(255,255,255,0) 70%),
+        radial-gradient(260px 160px at 78% 22%, rgba(102,214,154,0.06), rgba(102,214,154,0) 72%),
+        radial-gradient(320px 200px at 55% 72%, rgba(33,150,243,0.05), rgba(33,150,243,0) 74%);
+      filter: blur(2px);
+      animation: slowPulse 5.6s var(--ease) infinite;
+      mix-blend-mode: screen;
+    }
+
+    /* EPOCH ROW */
+    .epoch-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .epoch-title{
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+    }
+
+    /* epoch label: grey "Epoch", white number */
+    .epoch-title .epoch-label{
+      font-size:22px;
+      font-weight:850;
+      letter-spacing:-0.02em;
+    }
+    .ep-word{
+      color: rgba(148,163,184,0.78);
+      margin-right:6px;
+    }
+    .ep-num{
+      color:#ffffff;
+      font-weight:850;
+      transition: transform 180ms var(--ease), text-shadow 180ms var(--ease), filter 180ms var(--ease);
+      display:inline-block;
+    }
+    .ep-num.pulse{
+      transform: translateY(-1px);
+      text-shadow: 0 0 16px rgba(255,255,255,0.18);
+      filter: brightness(1.12);
+    }
+    .epoch-title .epoch-note{
+      font-size:13px;
+      color:var(--text-soft);
+      opacity:0.95;
+    }
+
+    /* Slider */
+    .slider-wrap{
+      margin: 10px 0 14px 0;
+    }
+    input[type="range"]{
+      -webkit-appearance:none;
+      width:100%;
+      height:6px;
+      border-radius:999px;
+      background: rgba(255,255,255,0.10);
+      outline:none;
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:18px;height:18px;border-radius:999px;
+      background:#ffffff;
+      border:1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08);
+      cursor:pointer;
+      transition: transform 160ms var(--ease), box-shadow 160ms var(--ease);
+    }
+    input[type="range"]::-webkit-slider-thumb:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.45), 0 0 18px rgba(255,255,255,0.12);
+    }
+    input[type="range"]::-moz-range-thumb{
+      width:18px;height:18px;border-radius:999px;
+      background:#ffffff;
+      border:1px solid rgba(255,255,255,0.55);
+      cursor:pointer;
+    }
+
+    /* LOOP BARS */
+    .loop{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:6px;
+    }
+
+    .lane{
+      border:1px solid rgba(148,163,184,0.22);
+      border-radius:14px;
+      padding:12px 12px 10px;
+      background: rgba(255,255,255,0.02);
+      overflow:hidden;
+      position:relative;
+      transition: border-color 200ms var(--ease), box-shadow 200ms var(--ease), transform 200ms var(--ease);
+    }
+    .lane::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius:14px;
+      pointer-events:none;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.04), rgba(255,255,255,0) 70%);
+      opacity:0.9;
+    }
+    .lane > *{ position:relative; }
+
+    /* border colors depending on slider status */
+    .lane.armed{ box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset; }
+    .lane.sig.armed{
+      border-color: rgba(255,235,59,0.55);
+      box-shadow: 0 0 0 1px rgba(255,235,59,0.10) inset, 0 0 18px rgba(255,235,59,0.06);
+    }
+    .lane.att.armed{
+      border-color: rgba(76,175,80,0.55);
+      box-shadow: 0 0 0 1px rgba(76,175,80,0.10) inset, 0 0 18px rgba(76,175,80,0.06);
+    }
+    .lane.clm.armed{
+      border-color: rgba(33,150,243,0.55);
+      box-shadow: 0 0 0 1px rgba(33,150,243,0.10) inset, 0 0 18px rgba(33,150,243,0.06);
+    }
+
+    /* NEW: "new item" glow pulse when it first becomes available */
+    @keyframes newGlowSig{
+      0%{ box-shadow: 0 0 0 1px rgba(255,235,59,0.10) inset, 0 0 0 rgba(255,235,59,0); }
+      40%{ box-shadow: 0 0 0 1px rgba(255,235,59,0.18) inset, 0 0 26px rgba(255,235,59,0.18); }
+      100%{ box-shadow: 0 0 0 1px rgba(255,235,59,0.10) inset, 0 0 18px rgba(255,235,59,0.06); }
+    }
+    @keyframes newGlowAtt{
+      0%{ box-shadow: 0 0 0 1px rgba(76,175,80,0.10) inset, 0 0 0 rgba(76,175,80,0); }
+      40%{ box-shadow: 0 0 0 1px rgba(76,175,80,0.18) inset, 0 0 26px rgba(76,175,80,0.18); }
+      100%{ box-shadow: 0 0 0 1px rgba(76,175,80,0.10) inset, 0 0 18px rgba(76,175,80,0.06); }
+    }
+    @keyframes newGlowClm{
+      0%{ box-shadow: 0 0 0 1px rgba(33,150,243,0.10) inset, 0 0 0 rgba(33,150,243,0); }
+      40%{ box-shadow: 0 0 0 1px rgba(33,150,243,0.18) inset, 0 0 26px rgba(33,150,243,0.18); }
+      100%{ box-shadow: 0 0 0 1px rgba(33,150,243,0.10) inset, 0 0 18px rgba(33,150,243,0.06); }
+    }
+    .lane.new.sig{ animation: newGlowSig 740ms var(--ease) 1; }
+    .lane.new.att{ animation: newGlowAtt 740ms var(--ease) 1; }
+    .lane.new.clm{ animation: newGlowClm 740ms var(--ease) 1; }
+
+    .lane-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .lane-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 170px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(255,255,255,0.35);
+      border:1px solid rgba(255,255,255,0.25);
+      flex:0 0 auto;
+    }
+    .dot.sig{ background:var(--sig); border-color:rgba(255,255,255,0.18); }
+    .dot.att{ background:var(--att); border-color:rgba(255,255,255,0.18); }
+    .dot.clm{ background:var(--clm); border-color:rgba(255,255,255,0.18); }
+
+    /* titles lower-case */
+    .lane-name{
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:0.02em;
+      text-transform:lowercase;
+      line-height:1;
+    }
+    .lane.sig .lane-name{ color: var(--sig); }
+    .lane.att .lane-name{ color: var(--att); }
+    .lane.clm .lane-name{ color: var(--clm); }
+
+    .lane-right{
+      font-size:12px;
+      color:rgba(255,255,255,0.72);
+      white-space:nowrap;
+    }
+
+    .bar{
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,0.10);
+      overflow:hidden;
+      position:relative;
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      transition: width 260ms var(--ease);
+      position:relative;
+    }
+    .fill.sig{ background: linear-gradient(90deg, rgba(255,235,59,0.20), rgba(255,235,59,0.88)); }
+    .fill.att{ background: linear-gradient(90deg, rgba(76,175,80,0.20), rgba(76,175,80,0.88)); }
+    .fill.clm{ background: linear-gradient(90deg, rgba(33,150,243,0.20), rgba(33,150,243,0.88)); }
+
+    @keyframes shimmer {
+      0%{ transform:translateX(-40%); opacity:0.0; }
+      35%{ opacity:0.28; }
+      100%{ transform:translateX(140%); opacity:0.0; }
+    }
+    .fill::after{
+      content:"";
+      position:absolute;
+      inset:-40% -20%;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.18), rgba(255,255,255,0));
+      transform:translateX(-40%);
+      opacity:0;
+      pointer-events:none;
+    }
+    .lane[data-active="true"] .fill::after{
+      opacity:1;
+      animation: shimmer 2.2s linear infinite;
+    }
+
+    /* THREE EXPLANATION CARDS */
+    .tri{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+    @media(max-width:980px){
+      .tri{ grid-template-columns: 1fr; }
+    }
+
+    .mini{
+      background: rgba(255,255,255,0.02);
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,0.22);
+      padding:14px 14px 14px;
+      position:relative;
+      overflow:hidden;
+      min-height: 152px;
+      transition: transform 220ms var(--ease), box-shadow 220ms var(--ease), border-color 220ms var(--ease), background-color 220ms var(--ease);
+    }
+    .mini::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius:16px;
+      pointer-events:none;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.04), rgba(255,255,255,0) 70%);
+      opacity:0.95;
+    }
+    .mini > *{ position:relative; }
+
+    .mini:hover{
+      transform: translateY(-2px);
+      background-color: rgba(2,6,23,0.92);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    }
+    .mini.sig:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(255,235,59,0.10); }
+    .mini.att:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(76,175,80,0.10); }
+    .mini.clm:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(33,150,243,0.10); }
+
+    /* mini border colors depending on slider status */
+    .mini.armed.sig{
+      border-color: rgba(255,235,59,0.55);
+      box-shadow: 0 0 0 1px rgba(255,235,59,0.10) inset;
+    }
+    .mini.armed.att{
+      border-color: rgba(76,175,80,0.55);
+      box-shadow: 0 0 0 1px rgba(76,175,80,0.10) inset;
+    }
+    .mini.armed.clm{
+      border-color: rgba(33,150,243,0.55);
+      box-shadow: 0 0 0 1px rgba(33,150,243,0.10) inset;
+    }
+
+    /* "new item" glow pulse on minis */
+    .mini.new.sig{ animation: newGlowSig 740ms var(--ease) 1; }
+    .mini.new.att{ animation: newGlowAtt 740ms var(--ease) 1; }
+    .mini.new.clm{ animation: newGlowClm 740ms var(--ease) 1; }
+
+    .mini-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    /* titles lower-case */
+    .mini-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:15px;
+      font-weight:950;
+      letter-spacing:0.02em;
+      text-transform:lowercase;
+      line-height:1;
+    }
+    .mini.sig .mini-title{ color: var(--sig); }
+    .mini.att .mini-title{ color: var(--att); }
+    .mini.clm .mini-title{ color: var(--clm); }
+
+    /* epoch label in minis: "Epoch" grey + bold, number white + pulse */
+    .mini-epoch{
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .mini-epoch .ep-word{
+      color: rgba(148,163,184,0.78);
+      font-weight:850;
+      margin-right:6px;
+    }
+    .mini-body{
+      font-size:13px;
+      line-height:1.6;
+      color:#ffffff;
+      opacity:0.92;
+    }
+    .mini-body .soft{ color:var(--text-soft); opacity:0.98; }
+
+    /* intents layout: 2 columns */
+    .intent-grid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:6px 14px;
+      font-size:12px;
+      line-height:1.55;
+      color:rgba(255,255,255,0.88);
+    }
+    .intent-item b{
+      font-weight:900;
+      color:#ffffff; /* symbol stays white; just bold */
+      margin-right:6px;
+    }
+
+    /* footer */
+    footer{
+      border-top:1px solid rgba(255,255,255,0.05);
+      padding:20px;
+      font-size:12px;
+      text-align:center;
+      opacity:0.85;
+      margin-top:44px;
+    }
+    footer .tagline{ margin-bottom:6px; font-size:13px; }
+    footer .links{ display:flex; justify-content:center; gap:18px; font-size:13px; }
+
+    @media (prefers-reduced-motion: reduce){
+      html{ scroll-behavior:auto; }
+      .field-mist{ animation:none; }
+      .lane[data-active="true"] .fill::after{ animation:none; }
+      .fill{ transition:none; }
+      input[type="range"]::-webkit-slider-thumb{ transition:none; }
+      .lane.new, .mini.new{ animation:none; }
+      .ep-num{ transition:none; }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="nav-inner">
+    <div class="logo-wrap">
+      <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
+        <div class="logo-dot">Ω</div>
+        <div class="logo-text">
+  <span class="logo-main">Z1N</span>
+  <span class="logo-sub">PROTOCOL</span>
+</div>
+
+      </a>
     </div>
-  </article>
 
-  <!-- Personal Presence carousel (reuse exact carousel styles from A if already present) -->
-  <article class="panel">
-    <header class="panel-h">
-      <div>
-        <div class="kicker">PERSONAL PRESENCE</div>
-        <div class="sub">Swipe the objects. Click artefact to open.</div>
+    <nav class="nav-links">
+      <a href="about.html">About</a>
+      <a href="how-it-works.html" class="active">How it works</a>
+      <a href="live-stats.html">Live Stats</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="mint-key.html">Mint your Key</a>
+      <a href="/your-keys.html">Your Keys</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <h1>How it works</h1>
+
+  <!-- UPDATED intro typography exactly as requested -->
+  <p class="lead">
+    The Field moves in a structured heartbeat called
+    <span class="t-ep">Epochs</span>.
+    In each <span class="t-ep">Epoch</span> <span class="t-soft">(21 hours)</span> you can send <span class="t-sig">signals</span> —
+    <span class="t-soft">contain an intent</span>
+    <span class="t-intents">(ΩC, ΩI, ΩK, ΩS)</span>
+    <span class="t-soft"> and content</span> — to test what the Field amplifies into shared awareness.
+    In the next epoch, <span class="t-att">attests</span> are placed on the previous epoch’s signals: a collective act of recognition.
+    Two epochs later, <span class="t-clm">claims</span> settle from the most attested signals — captured, returned to the Field, or gifted to Nexus Epoch.
+  </p>
+
+  <section class="grid" aria-label="How it works – Field Ritual Heartbeat">
+    <article class="card" id="loopCard">
+      <div class="field-mist" aria-hidden="true"></div>
+
+      <div class="card-kicker">FIELD RITUAL HEARTBEAT</div>
+
+      <div class="epoch-row" aria-label="Epoch header">
+        <div class="epoch-title">
+          <div class="epoch-label"><span class="ep-word">Epoch</span><span class="ep-num" id="epochNum">-</span></div>
+          <div class="epoch-note" id="epochNote">Signals begin.</div>
+        </div>
       </div>
-    </header>
 
-    <div class="carousel-controls">
-      <div class="carousel-dots" id="ppDotsB" aria-label="Personal presence navigation"></div>
-    </div>
-
-    <section class="carousel" id="ppCarouselB" aria-label="Personal presence carousel">
-      <div class="carousel-track">
-        <article class="carousel-slide">
-          <div class="slide-inner">
-            <div>
-              <div class="slide-label">Key (Mint)</div>
-              <div class="slide-name">Glyph-name</div>
-              <div class="slide-tag">Permanent sequence</div>
-              <p class="slide-body">Your glyph line is your stable signature.</p>
-            </div>
-            <div class="pp-frame">
-              <div class="pp-glyphline">◇ · ∞ · ☰ · ⟡ · △ · ○</div>
-              <div class="pp-note">soulbound</div>
-            </div>
-          </div>
-        </article>
-
-        <article class="carousel-slide">
-          <div class="slide-inner">
-            <div>
-              <div class="slide-label">Artefacts</div>
-              <div class="slide-name">Mirror preview</div>
-              <div class="slide-tag">Click to open</div>
-              <p class="slide-body">Rendered patterns, not raw text.</p>
-              <a class="cta-link" href="artefacts.html">Open artefacts →</a>
-            </div>
-            <a class="pp-frame pp-click" href="artefacts.html">
-              <svg viewBox="0 0 240 320" class="mini-artefact" role="img" aria-label="Artefact preview">
-                <defs>
-                  <linearGradient id="miniBorderB" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0" stop-color="#66D69A"/>
-                    <stop offset="1" stop-color="#F06292"/>
-                  </linearGradient>
-                </defs>
-                <rect x="10" y="10" width="220" height="300" rx="20" fill="none" stroke="url(#miniBorderB)" stroke-width="10"/>
-                <rect x="18" y="18" width="204" height="284" rx="16" fill="#0f141f"/>
-                <text x="120" y="62" text-anchor="middle" fill="#f8f6ee" font-size="14">Z1N #2100</text>
-                <text x="120" y="92" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">∞ · π · △ · ⊗</text>
-                <circle cx="120" cy="170" r="52" fill="#141b28" stroke="rgba(148,163,184,0.25)"/>
-                <text x="120" y="176" text-anchor="middle" fill="#f5c842" font-size="14" font-weight="700">ΩK 42%</text>
-              </svg>
-            </a>
-          </div>
-        </article>
-
-        <article class="carousel-slide">
-          <div class="slide-inner">
-            <div>
-              <div class="slide-label">Canon Anchors</div>
-              <div class="slide-name">Purple stamp</div>
-              <div class="slide-tag">Permanent on-chain marker</div>
-              <p class="slide-body">A ritual declaration: “this epoch mattered.”</p>
-            </div>
-            <div class="pp-frame canon-frame">
-              <div class="canon-omega">Ω</div>
-              <div class="pp-note" style="color: rgba(168,85,247,0.9);">canon anchor</div>
-            </div>
-          </div>
-        </article>
-
+      <div class="slider-wrap">
+        <input id="epochSlider" type="range" min="0" max="8" step="1" value="0" aria-label="Epoch slider" />
       </div>
-    </section>
-  </article>
-</section>
 
-<style>
-  /* add-on for B only (reuses most styles from A if already loaded) */
-  .scrub{
-    display:flex; align-items:center; gap:10px;
-    padding: 8px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(245,200,66,0.25);
-    background: rgba(245,200,66,0.06);
-  }
-  .scrub-l,.scrub-r{ font-size:12px; color: rgba(255,255,255,0.85); }
-  #scrubB{ width:140px; accent-color: var(--y); }
+      <div class="loop" aria-label="Loop lanes">
+        <div class="lane sig" id="laneSignals" data-active="true" aria-label="Signals lane">
+          <div class="lane-top">
+            <div class="lane-left">
+              <span class="dot sig" aria-hidden="true"></span>
+              <span class="lane-name">signals</span>
+            </div>
+            <div class="lane-right" id="signalsRight">Sending signals · epoch -</div>
+          </div>
+          <div class="bar"><div class="fill sig" id="fillSignals"></div></div>
+        </div>
 
-  .ring-claimB{
-    fill:none;
-    stroke: rgba(245,200,66,0.95);
-    stroke-width: 14;
-    stroke-linecap: round;
-    stroke-dasharray: 96 220;     /* “claim segment” only */
-    stroke-dashoffset: -240;
-    opacity: 0.25;
-  }
-  .canon-omega{
-    font-size:56px;
-    font-weight:900;
-    color: var(--p);
-    text-align:center;
-    text-shadow: 0 0 18px rgba(168,85,247,0.45);
-    line-height: 1;
-    margin-top: 26px;
-  }
-</style>
+        <div class="lane att" id="laneAttests" data-active="false" aria-label="Attests lane">
+          <div class="lane-top">
+            <div class="lane-left">
+              <span class="dot att" aria-hidden="true"></span>
+              <span class="lane-name">attests</span>
+            </div>
+            <div class="lane-right" id="attestsRight">Attesting signals of · epoch -</div>
+          </div>
+          <div class="bar"><div class="fill att" id="fillAttests"></div></div>
+        </div>
+
+        <div class="lane clm" id="laneClaims" data-active="false" aria-label="Claims lane">
+          <div class="lane-top">
+            <div class="lane-left">
+              <span class="dot clm" aria-hidden="true"></span>
+              <span class="lane-name">claims</span>
+            </div>
+            <div class="lane-right" id="claimsRight">Claim rewards signals of · epoch -</div>
+          </div>
+          <div class="bar"><div class="fill clm" id="fillClaims"></div></div>
+        </div>
+      </div>
+
+      <div class="tri" aria-label="Signals / Attests / Claims explanation cards">
+        <div class="mini sig" id="miniSignals">
+          <div class="mini-head">
+            <div class="mini-title"><span class="dot sig" aria-hidden="true"></span>signals</div>
+            <div class="mini-epoch"><span class="ep-word">Epoch</span><span class="ep-num" id="miniSigNum">-</span></div>
+          </div>
+
+          <div class="mini-body">
+            You can send <strong>two signals</strong> per epoch into the field (<strong>intent</strong> &amp; <strong>content</strong>) — as a probe of consciousness.
+            Choose one of four intents and share your thoughts.
+          </div>
+
+          <div class="intent-grid" aria-label="Signal intents">
+            <div class="intent-item"><b>ΩC</b> collective</div>
+            <div class="intent-item"><b>ΩI</b> individual</div>
+            <div class="intent-item"><b>ΩK</b> co-create</div>
+            <div class="intent-item"><b>ΩS</b> silence (intent only)</div>
+          </div>
+        </div>
+
+        <div class="mini att" id="miniAttests">
+          <div class="mini-head">
+            <div class="mini-title"><span class="dot att" aria-hidden="true"></span>attests</div>
+            <div class="mini-epoch"><span class="ep-word">Epoch</span><span class="ep-num" id="miniAttNum">-</span></div>
+          </div>
+
+          <div class="mini-body">
+            Attests are placed on signals from the previous epoch.
+            A ritual of recognition: the Field doesn’t just hear — it learns what held attention after closure.
+            <span class="soft">(No self-attest.)</span>
+          </div>
+        </div>
+
+        <div class="mini clm" id="miniClaims">
+          <div class="mini-head">
+            <div class="mini-title"><span class="dot clm" aria-hidden="true"></span>claims</div>
+            <div class="mini-epoch"><span class="ep-word">Epoch</span><span class="ep-num" id="miniClmNum">-</span></div>
+          </div>
+
+          <div class="mini-body">
+            Claims settle from the most attested signals of two epochs ago.
+            This is the Field's way of distributing the sold Keys in an epoch towards the best signals in the Field.
+            Its the choice of self to capture it, return in to the Field or gift it to Nexus Epoch.
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+</main>
+
+<footer>
+  <div class="tagline">Your presence is real · The Field remembers</div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+  </div>
+</footer>
 
 <script>
-(function(){
-  // Scrub sets phase: 0=t, 1=t+1, 2=t+2
-  const input = document.getElementById("scrubB");
-  const row = document.getElementById("epochRowB");
-  const cards = row ? Array.from(row.querySelectorAll(".epoch-card")) : [];
+  (function(){
+    const slider = document.getElementById("epochSlider");
+    const maxEpoch = Number(slider.max);
 
-  const sig = document.getElementById("sigB");
-  const att = document.getElementById("attB");
-  const clm = document.getElementById("clmB");
+    const epochNum = document.getElementById("epochNum");
+    const epochNote  = document.getElementById("epochNote");
 
-  function setStep(step){
-    cards.forEach(c => c.classList.toggle("active", Number(c.dataset.step) === step));
+    const fillSignals = document.getElementById("fillSignals");
+    const fillAttests = document.getElementById("fillAttests");
+    const fillClaims  = document.getElementById("fillClaims");
 
-    // rotate rings to “point” at the active segment
-    // 3 segments => 0deg, 120deg, 240deg
-    const rot = step * 120;
+    const signalsRight = document.getElementById("signalsRight");
+    const attestsRight = document.getElementById("attestsRight");
+    const claimsRight  = document.getElementById("claimsRight");
 
-    if(sig) sig.setAttribute("transform", `rotate(${rot} 210 210)`);
-    if(att) att.setAttribute("transform", `rotate(${rot-120} 210 210)`); // attest lags one
-    if(clm) clm.setAttribute("transform", `rotate(${rot-240} 210 210)`); // claims lags two
-  }
+    const miniSigNum = document.getElementById("miniSigNum");
+    const miniAttNum = document.getElementById("miniAttNum");
+    const miniClmNum = document.getElementById("miniClmNum");
 
-  if(input){
-    setStep(Number(input.value));
-    input.addEventListener("input", ()=> setStep(Number(input.value)));
-  }
+    const laneSignals = document.getElementById("laneSignals");
+    const laneAttests = document.getElementById("laneAttests");
+    const laneClaims  = document.getElementById("laneClaims");
 
-  // Personal Presence carousel (B)
-  const carousel = document.getElementById("ppCarouselB");
-  if(!carousel) return;
-  const track = carousel.querySelector(".carousel-track");
-  const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
-  const dots = document.getElementById("ppDotsB");
-  let index = 0, total = slides.length;
+    const miniSignals = document.getElementById("miniSignals");
+    const miniAttests = document.getElementById("miniAttests");
+    const miniClaims  = document.getElementById("miniClaims");
 
-  function buildDots(){
-    dots.innerHTML = "";
-    for(let i=0;i<total;i++){
-      const b = document.createElement("button");
-      b.className = "dot" + (i===0 ? " active" : "");
-      b.type = "button";
-      b.addEventListener("click", ()=>{ index=i; snap(); });
-      dots.appendChild(b);
+    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+    function pct(x){ return (x * 100).toFixed(1) + "%"; }
+
+    function fmtEpoch(n){
+      return (n <= 0) ? "-" : String(n);
     }
-  }
-  function setActiveDot(){
-    Array.from(dots.querySelectorAll(".dot")).forEach((d,i)=>d.classList.toggle("active", i===index));
-  }
-  function snap(){
-    track.style.transition = "transform .45s ease";
-    track.style.transform = "translateX(-" + (index*100) + "%)";
-    setActiveDot();
-  }
 
-  // swipe
-  let isDown=false, startX=0, lastX=0, dx=0;
-  function down(x){ isDown=true; startX=x; lastX=x; dx=0; track.style.transition="none"; }
-  function move(x){
-    if(!isDown) return;
-    lastX=x; dx=lastX-startX;
-    const pct=(dx/carousel.clientWidth)*100;
-    track.style.transform="translateX(calc(-"+(index*100)+"% + "+pct+"%))";
-  }
-  function up(){
-    if(!isDown) return;
-    isDown=false;
-    const thr=carousel.clientWidth*0.18;
-    if(dx>thr && index>0) index--;
-    else if(dx<-thr && index<total-1) index++;
-    snap();
-  }
+    function noteForEpoch(e){
+      if (e === 0) return "Signals begin.";
+      if (e === 1) return "Signals continue. Attests awaken.";
+      if (e === 2) return "Breath → Weight → Settlement appears.";
+      return "The loop holds. Let weight do the speaking.";
+    }
 
-  carousel.addEventListener("pointerdown", e=>down(e.clientX));
-  window.addEventListener("pointermove", e=>move(e.clientX));
-  window.addEventListener("pointerup", up);
-  window.addEventListener("pointercancel", up);
-  carousel.addEventListener("dragstart", e=>e.preventDefault());
+    function setActiveLane(e){
+      laneSignals.dataset.active = "true";
+      laneAttests.dataset.active = (e >= 1) ? "true" : "false";
+      laneClaims.dataset.active  = (e >= 2) ? "true" : "false";
+    }
 
-  buildDots(); snap();
-})();
+    function setArmedBorders(e){
+      laneSignals.classList.toggle("armed", e >= 1);
+      laneAttests.classList.toggle("armed", e >= 2);
+      laneClaims.classList.toggle("armed",  e >= 3);
+
+      miniSignals.classList.toggle("armed", e >= 1);
+      miniAttests.classList.toggle("armed", e >= 2);
+      miniClaims.classList.toggle("armed",  e >= 3);
+    }
+
+    function pulse(el){
+      if (!el) return;
+      el.classList.remove("pulse");
+      void el.offsetWidth;
+      el.classList.add("pulse");
+      window.setTimeout(() => el.classList.remove("pulse"), 220);
+    }
+
+    function triggerNewGlow(el){
+      if (!el) return;
+      el.classList.remove("new");
+      void el.offsetWidth;
+      el.classList.add("new");
+      window.setTimeout(() => el.classList.remove("new"), 820);
+    }
+
+    let lastE = Number(slider.value);
+
+    function render(){
+      const e = Number(slider.value);
+
+      // Header epoch: 0 => "-"
+      epochNum.textContent = fmtEpoch(e);
+      epochNote.textContent  = noteForEpoch(e);
+
+      // Fill logic stays the same (epoch 0 = empty)
+      const s = clamp01(e / maxEpoch);
+      const a = clamp01((e - 1) / maxEpoch);
+      const c = clamp01((e - 2) / maxEpoch);
+
+      fillSignals.style.width = pct(s);
+      fillAttests.style.width = pct(a);
+      fillClaims.style.width  = pct(c);
+
+      // Right labels:
+      signalsRight.textContent = `Sending signals · epoch ${fmtEpoch(e)}`;
+      attestsRight.textContent = `Attesting signals of · epoch ${fmtEpoch(e - 1)}`;
+      claimsRight.textContent  = `Claim rewards signals of · epoch ${fmtEpoch(e - 2)}`;
+
+      // Mini epoch numbers with staged availability:
+      // epoch 0 -> all "-"
+      // epoch 1 -> signals 1, attests "-", claims "-"
+      // epoch 2 -> signals 2, attests 1, claims "-"
+      // epoch 3 -> signals 3, attests 2, claims 1, etc.
+      miniSigNum.textContent = fmtEpoch(e);
+      miniAttNum.textContent = (e >= 2) ? String(e - 1) : "-";
+      miniClmNum.textContent = (e >= 3) ? String(e - 2) : "-";
+
+      setActiveLane(e);
+      setArmedBorders(e);
+
+      if (e !== lastE){
+        pulse(epochNum);
+        pulse(miniSigNum);
+        pulse(miniAttNum);
+        pulse(miniClmNum);
+
+        if (e === 1){
+          triggerNewGlow(laneSignals);
+          triggerNewGlow(miniSignals);
+        }
+        if (e === 2){
+          triggerNewGlow(laneAttests);
+          triggerNewGlow(miniAttests);
+        }
+        if (e === 3){
+          triggerNewGlow(laneClaims);
+          triggerNewGlow(miniClaims);
+        }
+
+        lastE = e;
+      }
+    }
+
+    slider.addEventListener("input", render, { passive:true });
+    render();
+  })();
 </script>
+</body>
+</html>

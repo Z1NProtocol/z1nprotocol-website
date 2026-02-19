@@ -57,10 +57,24 @@
       font-size: 14px; line-height: 1;
     }
 
-    .logo-text {
-      font-size: 11px; letter-spacing: 0.18em;
-      text-transform: uppercase; opacity: 0.7;
-    }
+    .logo-text{
+  font-size:11px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  display:flex;
+  gap:6px;
+}
+
+.logo-main{
+  opacity:1;
+  font-weight:600;
+}
+
+.logo-sub{
+  opacity:0.6;
+  font-weight:400;
+}
+
 
     .nav-links {
       display: flex; gap: 22px;
@@ -274,11 +288,16 @@
     <div class="logo-wrap">
       <a href="index.html" class="logo-link">
         <div class="logo-dot">Ω</div>
-        <div class="logo-text">Z1N PROTOCOL</div>
+        <div class="logo-text">
+  <span class="logo-main">Z1N</span>
+  <span class="logo-sub">PROTOCOL</span>
+</div>
+
       </a>
     </div>
     <nav class="nav-links">
       <a href="about.html">About</a>
+      <a href="how-it-works.html">How it Works</a>
       <a href="live-stats.html">Live Stats</a>
       <a href="artefacts.html">Artefacts</a>
       <a href="nbi-artefacts.html" class="active">4 NBIs</a>

@@ -160,29 +160,44 @@ function showSafetyWarning(callback) {
   if (tabId === 'whispers') {
     if (eye) {
       eye.style.display = 'flex';
-      eye.classList.add('whisper-disabled');
       eye.classList.remove('active');
-      eye.style.cursor = 'not-allowed';
-      eye.onclick = function() { showToast('Stealth not available for Whispers', 3000); };
-    }
-    if (tooltip) {
-      tooltip.innerHTML = '<div class="tt-title" style="color:#f87171;">Stealth Not Available</div><div class="tt-body">Whispers are always visible on-chain. Stealth mode only works for Signals and Attests.</div>';
+      eye.classList.remove('whisper-disabled');
+      eye.style.borderColor = 'var(--accent)';
+      eye.style.background = 'rgba(102,214,154,0.15)';
+      eye.style.color = 'var(--accent)';
+      eye.style.cursor = 'default';
+      eye.onclick = null;
+      eye.onmouseenter = function() { if (tooltip) { tooltip.className = 'stealth-tooltip visible'; tooltip.innerHTML = '<div class="tt-title" style="color:var(--accent);">Stealth Messaging</div><div class="tt-body">Stealth messaging is not yet available for whispers. All whispers are currently visible on-chain.<br><br><span style="font-size:11px;opacity:0.7;">This feature is planned for a future update.</span></div>'; } };
+      eye.onmouseleave = function() { if (tooltip) tooltip.classList.remove('visible'); };
     }
   } else if (tabId === 'signals' || tabId === 'attests') {
     if (eye) {
       eye.style.display = 'flex';
       eye.classList.remove('whisper-disabled');
+      eye.style.borderColor = '';
+      eye.style.background = '';
+      eye.style.color = '';
       eye.style.cursor = 'pointer';
       eye.onclick = toggleGlobalStealth;
       eye.classList.toggle('active', globalStealthEnabled);
-    }
-    if (tooltip) {
-      tooltip.innerHTML = '<div class="tt-title">Stealth Mode</div><div class="tt-body">When active (red), your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.</div>';
+      eye.onmouseenter = function() {
+        if (tooltip) {
+          if (globalStealthEnabled) {
+            tooltip.className = 'stealth-tooltip visible active-stealth';
+            tooltip.innerHTML = '<div class="tt-title" style="color:#f87171;">Stealth Mode: Active</div><div class="tt-body">Your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.<br><br><span style="font-size:11px;opacity:0.7;">Click the eye to deactivate stealth.</span></div>';
+          } else {
+            tooltip.className = 'stealth-tooltip visible';
+            tooltip.innerHTML = '<div class="tt-title" style="color:var(--accent);">Stealth Mode: Visible</div><div class="tt-body">Your signals and attestations are submitted directly from your wallet. Your address is visible on-chain.<br><br><span style="font-size:11px;opacity:0.7;">Click the eye to activate stealth.</span></div>';
+          }
+        }
+      };
+      eye.onmouseleave = function() { if (tooltip) tooltip.classList.remove('visible'); };
     }
   } else {
-    // Overview, Artefacts, Canon, Treasury - hide eye
     if (eye) {
       eye.style.display = 'none';
+      eye.onmouseenter = null;
+      eye.onmouseleave = null;
     }
   }
   
@@ -267,24 +282,35 @@ function showSafetyWarning(callback) {
   window.setSignalType = function(t) { signalType = t; document.querySelectorAll('.toggle-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.type === t); }); var rs = document.getElementById('replySection'); if (rs) rs.classList.toggle('active', t === 'reply'); };
 
 var globalStealthEnabled = false;
+try { globalStealthEnabled = localStorage.getItem('z1n_stealth_mode') === 'true'; } catch(e) {}
+
 
 window.toggleGlobalStealth = function() {
   if (!stealthRelayerAvailable) { showToast('Stealth relayer not available', 3000); return; }
   globalStealthEnabled = !globalStealthEnabled;
   pogStealthEnabled = globalStealthEnabled;
   attestStealthEnabled = globalStealthEnabled;
+  try { localStorage.setItem('z1n_stealth_mode', globalStealthEnabled ? 'true' : 'false'); } catch(e) {}
   var toggle = document.getElementById('globalStealthToggle');
   var tooltip = document.getElementById('stealthTooltip');
-  var feeDisplay = document.getElementById('pogFee');
   var submitBtn = document.getElementById('btnSubmitPog');
   if (toggle) toggle.classList.toggle('active', globalStealthEnabled);
-  if (tooltip) tooltip.classList.toggle('active-stealth', globalStealthEnabled);
   if (globalStealthEnabled) {
-    if (submitBtn) submitBtn.textContent = '👁‍🗨 Submit Hidden';
-    showToast('🔴 Stealth ON', 2000);
+    if (submitBtn) submitBtn.textContent = '\u{1F441}\u200D\u{1F5E8} Submit Hidden';
+    showToast('\u{1F534} Stealth ON', 2000);
+    if (tooltip) {
+      tooltip.className = 'stealth-tooltip visible active-stealth';
+      tooltip.innerHTML = '<div class="tt-title" style="color:#f87171;">Stealth Mode: Active</div><div class="tt-body">Your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.<br><br><span style="font-size:11px;opacity:0.7;">Click the eye to deactivate stealth.</span></div>';
+      setTimeout(function(){ tooltip.classList.remove('visible'); }, 4000);
+    }
   } else {
     if (submitBtn) submitBtn.textContent = 'Submit Signal';
-    showToast('🟢 Stealth OFF', 2000);
+    showToast('\u{1F7E2} Stealth OFF', 2000);
+    if (tooltip) {
+      tooltip.className = 'stealth-tooltip visible';
+      tooltip.innerHTML = '<div class="tt-title" style="color:var(--accent);">Stealth Mode: Visible</div><div class="tt-body">Your signals and attestations are submitted directly from your wallet. Your address is visible on-chain.<br><br><span style="font-size:11px;opacity:0.7;">Click the eye to activate stealth.</span></div>';
+      setTimeout(function(){ tooltip.classList.remove('visible'); }, 4000);
+    }
   }
 };
 
@@ -329,7 +355,7 @@ window.toggleGlobalStealth = function() {
 }, 1000);
 
   async function fetchKeyGlyphs(keyIds) { var missing = keyIds.filter(function(id) { return !keyGlyphsCache[id]; }); if (missing.length === 0) return; try { var r = await fetch(API_BASE + '/keys', {cache: 'no-store'}); var d = await r.json(); if (d.keys) d.keys.forEach(function(k) { keyGlyphsCache[k.tokenId] = k.glyphLine || ''; }); } catch (e) {} }
-  function getShortGlyphs(keyId) { var full = keyGlyphsCache[keyId] || ''; if (!full) return ''; return full.split(' · ').slice(0, 4).join('·'); }
+  function getShortGlyphs(keyId) { var full = keyGlyphsCache[keyId] || ''; if (!full) return ''; return full; }
 
   // ═══════════════════════════════════════════════════════════════
   // REPLY MODAL
@@ -678,6 +704,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       updateAttestBtn();
       initActivityFeed();
       initUnreadState();
+      reapplyUnreadGlow();
       
       // Switch to URL tab AFTER data loads
       switchToUrlTab();
@@ -1222,7 +1249,7 @@ if (sentWhispersCountTitleEl) sentWhispersCountTitleEl.textContent = '(' + sent.
         var it = document.createElement('div');
         it.className = 'signal-item';
         it.style.cursor = 'pointer';
-        var sg = getShortGlyphs(w.toKeyId);
+        var sg = (keyGlyphsCache[w.toKeyId] || "");
         var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
         var content = w.cid || w.content || '[Empty]';
         if (content.length > 80) content = content.slice(0, 80) + '...';
@@ -1266,7 +1293,7 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
         var it = document.createElement('div');
         it.className = 'signal-item';
         it.style.cursor = 'pointer';
-        var sg = getShortGlyphs(w.fromKeyId);
+        var sg = (keyGlyphsCache[w.fromKeyId] || "");
         var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
         var content = w.cid || w.content || '[Empty]';
         if (content.length > 100) content = content.slice(0, 100) + '...';
@@ -1277,7 +1304,7 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
         if (isUnread) it.classList.add('unread-glow');
         it.dataset.activityId = activityId;
         
-        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">E' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;background:rgba(102,214,154,0.1);border-radius:4px;border-left:2px solid var(--accent);">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
+        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">E' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;border-radius:4px;border-left:2px solid rgba(148,163,184,0.25);">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
         it.onclick = function(e) { 
           if (!e.target.classList.contains('reply-btn')) {
             markTabItemRead(activityId, it);
@@ -1308,8 +1335,8 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
     history.forEach(function(w) {
       var isMe = w.fromKeyId === currentKeyId;
       var align = isMe ? 'flex-end' : 'flex-start';
-      var bg = isMe ? 'rgba(245,200,66,0.15)' : 'rgba(102,214,154,0.15)';
-      var border = isMe ? 'var(--keys-accent)' : 'var(--accent)';
+      var bg = isMe ? 'rgba(245,200,66,0.15)' : 'rgba(245,200,66,0.08)';
+      var border = isMe ? 'var(--keys-accent)' : 'var(--keys-accent)';
       var label = isMe ? 'You' : 'K#' + w.fromKeyId;
       var epoch = w.epoch || '—';
       var content = w.cid || w.content || '[Empty]';
@@ -1337,7 +1364,7 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
     list.innerHTML = '';
     filtered.forEach(function(w) {
       var it = document.createElement('div'); it.className = 'signal-item'; it.style.cursor = 'pointer';
-      var sg = getShortGlyphs(w.toKeyId);
+      var sg = (keyGlyphsCache[w.toKeyId] || "");
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = w.cid || w.content || '[Empty]';
       if (content.length > 80) content = content.slice(0, 80) + '...';
@@ -1357,12 +1384,12 @@ if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '('
     list.innerHTML = '';
     filtered.forEach(function(w) {
       var it = document.createElement('div'); it.className = 'signal-item'; it.style.cursor = 'pointer';
-      var sg = getShortGlyphs(w.fromKeyId);
+      var sg = (keyGlyphsCache[w.fromKeyId] || "");
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = w.cid || w.content || '[Empty]';
       if (content.length > 100) content = content.slice(0, 100) + '...';
       var epoch = w.epoch || '—';
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">E' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;background:rgba(102,214,154,0.1);border-radius:4px;border-left:2px solid var(--accent);">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">E' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;border-radius:4px;border-left:2px solid rgba(148,163,184,0.25);">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(245,200,66,0.2);color:#f5c842;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
       it.onclick = function() { showWhisperHistory(w.fromKeyId); };
       list.appendChild(it);
     });
@@ -1755,6 +1782,15 @@ window.submitWhisper = async function() {
 await loadKeyData(currentKeyId);
 
       await checkStealthAvailability();
+      // Apply saved stealth state
+      if (globalStealthEnabled && stealthRelayerAvailable) {
+        pogStealthEnabled = true;
+        attestStealthEnabled = true;
+        var toggle = document.getElementById('globalStealthToggle');
+        if (toggle) toggle.classList.add('active');
+        var submitBtn = document.getElementById('btnSubmitPog');
+        if (submitBtn) submitBtn.textContent = '\u{1F441}\u{200D}\u{1F5E8} Submit Hidden';
+      }
       
       if (!provider.__z1nBound) {
         provider.__z1nBound = true;
@@ -2913,6 +2949,19 @@ window.Z1N_DEBUG = {
   getActiveEpoch: function() { return activeEpoch; },
   getCurrentKeyId: function() { return currentKeyId; }
 };
+
+// Re-apply unread glow after ActivityFeed loads (whispers render before ActivityFeed.loaded)
+function reapplyUnreadGlow() {
+  if (!ActivityFeed.loaded || !ActivityFeed.readItems) return;
+  document.querySelectorAll('[data-activity-id]').forEach(function(el) {
+    var aid = el.dataset.activityId;
+    if (aid && !ActivityFeed.readItems.has(aid)) {
+      if (!el.classList.contains('unread-glow')) el.classList.add('unread-glow');
+    } else {
+      el.classList.remove('unread-glow');
+    }
+  });
+}
 
 // Auto-connect on page load
 document.addEventListener('DOMContentLoaded', function() {

@@ -31,7 +31,24 @@
     .nav-inner { width: 100%; max-width: 1200px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
     .logo-link { display: inline-flex; align-items: center; gap: 8px; }
     .logo-dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; }
-    .logo-text { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+    .logo-text{
+  font-size:11px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  display:flex;
+  gap:6px;
+}
+
+.logo-main{
+  opacity:1;
+  font-weight:600;
+}
+
+.logo-sub{
+  opacity:0.6;
+  font-weight:400;
+}
+
     .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
     .nav-links a.active-keys { color: var(--keys-accent); }
 
@@ -128,10 +145,15 @@
   <div class="nav-inner">
     <a href="index.html" class="logo-link">
       <div class="logo-dot">Ω</div>
-      <div class="logo-text">Z1N PROTOCOL</div>
+      <div class="logo-text">
+  <span class="logo-main">Z1N</span>
+  <span class="logo-sub">PROTOCOL</span>
+</div>
+
     </a>
     <nav class="nav-links">
       <a href="about.html">About</a>
+      <a href="how-it-works.html">How it Works</a>
       <a href="live-stats.html">Live Stats</a>
       <a href="artefacts.html">Artefacts</a>
       <a href="mint-key.html">Mint Key</a>
@@ -372,7 +394,7 @@ var walletQuery = walletParam ? '&wallet=' + encodeURIComponent(walletParam) : '
 if (storedReturn) {
   backLink.href = storedReturn;
 } else if (keyId > 0) {
-  backLink.href = 'key-dashboard?key=' + keyId + walletQuery + '&tab=canon';
+  backLink.href = 'key-dashboard.html?key=' + keyId + walletQuery + '&tab=canon';
 } else {
   backLink.href = 'your-keys.html';
 }
@@ -680,7 +702,7 @@ if (storedReturn) {
             window.location.href = returnUrl + separator + 'refresh=' + Date.now();
           } else {
             // Fallback: construct URL from current key
-            window.location.href = 'key-dashboard?key=' + keyId + '&tab=canon&refresh=' + Date.now();
+            window.location.href = 'key-dashboard.html?key=' + keyId + '&tab=canon&refresh=' + Date.now();
           }
         }, 2500);
         
@@ -734,5 +756,8 @@ if (storedReturn) {
 
 })();
 </script>
+
+<script src="js/gas-banner.js"></script>
+
 </body>
 </html>

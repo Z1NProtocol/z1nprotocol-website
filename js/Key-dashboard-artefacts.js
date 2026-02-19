@@ -43,7 +43,31 @@
   var ownedFilter = { status: 'all', search: '' };
   var libraryFilter = { status: 'all', search: '' };
   var keyGlyphsCache = {};
-  var ownedViewMode = 'card';   // 'card' or 'list'
+  var ownedViewMode = 'card';
+
+  // Artefact image load handler — shows spinner until loaded
+  function artImg(url, alt) {
+    var id = 'aimg_' + Math.random().toString(36).slice(2,8);
+    setTimeout(function() {
+      var img = document.getElementById(id);
+      if (!img) return;
+      var real = new Image();
+      real.onload = function() {
+        img.style.backgroundImage = 'url(' + url + ')';
+        img.style.backgroundSize = 'contain';
+        img.style.backgroundPosition = 'center';
+        img.style.backgroundRepeat = 'no-repeat';
+        img.classList.add('loaded');
+      };
+      real.onerror = function() {
+        img.classList.add('load-failed');
+      };
+      real.src = url;
+    }, 50);
+    return '<div class="art-img-loader" id="' + id + '" title="' + alt + '"><div class="art-img-spinner"></div></div>';
+  }
+
+   // 'card' or 'list'
 
   // ═══════════════════════════════════════════════════════════════════════════
   // HELPERS
@@ -231,6 +255,7 @@
       }
       
       console.log('Loaded ' + ownedArtefacts.length + ' owned artefacts');
+      ownedArtefacts.forEach(function(a) { console.log('DEBUG artefact API data #' + a.tokenId + ':', JSON.stringify({status: a.status, boundToKeyId: a.boundToKeyId, viewingActive: a.viewingActive})); });
     } catch (e) {
       console.error('loadOwnedArtefacts error:', e);
     }
@@ -270,6 +295,10 @@
         }
       }
       
+      // Store notifications for yellow border
+      if (data.notifications) {
+        window._artefactNotifications = data.notifications;
+      }
       console.log('Loaded ' + sharedWithMe.length + ' shared artefacts');
     } catch (e) {
       console.error('loadSharedWithMe error:', e);
@@ -319,7 +348,7 @@
         '<div class="filter-pills">' +
           '<button class="filter-pill' + (ownedFilter.status === 'all' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'all\')">All <span class="pill-count">' + ownedArtefacts.length + '</span></button>' +
           '<button class="filter-pill' + (ownedFilter.status === 'in_my_view' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'in_my_view\')">Personal <span class="pill-count">' + countInView + '</span></button>' +
-          '<button class="filter-pill' + (ownedFilter.status === 'shared' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'shared\')">Shared <span class="pill-count">' + countShared + '</span></button>' +
+          '<button class="filter-pill' + (ownedFilter.status === 'shared' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'shared\')">Viewed by <span class="pill-count">' + countShared + '</span></button>' +
           '<button class="filter-pill' + (ownedFilter.status === 'revoked' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'revoked\')">Revoked <span class="pill-count">' + countRevoked + '</span></button>' +
         '</div>' +
         '<input type="text" class="filter-search" id="ownedSearchInput" placeholder="Search ID..." value="' + (ownedFilter.search || '') + '" onkeyup="Z1NArtefacts.filterOwned()">' +
@@ -341,9 +370,9 @@
       filtered.forEach(function(art, idx) {
         var artefactIndex = ownedArtefacts.findIndex(function(a) { return a.tokenId === art.tokenId; }) + 1;
         var statusClass = art.status === 'in_my_view' ? 'status-personal' : 
-                          art.status === 'shared' ? 'status-shared' : 'status-revoked';
+                          art.status === 'shared' ? 'status-viewedby' : 'status-revoked';
         var statusLabel = art.status === 'in_my_view' ? 'Personal' :
-                          art.status === 'shared' ? 'Shared' : 'Revoked';
+                          art.status === 'shared' ? 'Viewed by' : 'Revoked';
         
         var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
           '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
@@ -351,9 +380,7 @@
         
         html += '<div class="artefact-list-card ' + statusClass + '" onclick="Z1NArtefacts.openOwnedModal(' + art.tokenId + ')">' +
           '<div class="list-card-preview">' +
-            (art.status === 'in_my_view' || art.status === 'revoked' ? 
-              '<img src="' + previewUrl + '" alt="Artefact #' + artefactIndex + '" onerror="this.parentElement.innerHTML=\'<div class=list-placeholder>◈</div>\'">' :
-              '<div class="list-placeholder shared">◈</div>') +
+            (art.status === 'in_my_view' ? artImg(previewUrl, 'Artefact #' + artefactIndex) : art.status === 'revoked' ? '<div class="list-placeholder shared" style="color:#f87171;">◈</div>' : '<div class="list-placeholder shared">◈</div>') +
           '</div>' +
           '<div class="list-card-meta">' +
             '<div class="list-card-id">#' + artefactIndex + '</div>' +
@@ -371,9 +398,9 @@
         var artefactIndex = ownedArtefacts.findIndex(function(a) { return a.tokenId === art.tokenId; }) + 1;
         
         var statusClass = art.status === 'in_my_view' ? 'status-personal' : 
-                          art.status === 'shared' ? 'status-shared' : 'status-revoked';
+                          art.status === 'shared' ? 'status-viewedby' : 'status-revoked';
         var statusLabel = art.status === 'in_my_view' ? 'Personal' :
-                          art.status === 'shared' ? 'Shared' : 'Revoked';
+                          art.status === 'shared' ? 'Viewed by' : 'Revoked';
         
         var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
           '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
@@ -381,9 +408,7 @@
         
         html += '<div class="artefact-card ' + statusClass + '" onclick="Z1NArtefacts.openOwnedModal(' + art.tokenId + ')">' +
           '<div class="artefact-preview">' +
-            (art.status === 'in_my_view' || art.status === 'revoked' ? 
-              '<img src="' + previewUrl + '" alt="Artefact #' + artefactIndex + '" onerror="this.parentElement.innerHTML=\'<div class=artefact-placeholder>◈</div>\'">' :
-              '<div class="artefact-placeholder shared">◈</div>') +
+            (art.status === 'in_my_view' ? artImg(previewUrl, 'Artefact #\' + artefactIndex + \'') : art.status === 'revoked' ? '<div class="artefact-placeholder shared" style="color:#f87171;">◈</div>' : '<div class="artefact-placeholder shared" style="color:var(--accent);">◈</div>') +
           '</div>' +
           '<div class="artefact-info-row">' +
             '<span class="info-id">#' + artefactIndex + '</span>' +
@@ -428,7 +453,7 @@
       html += '<div class="artefact-filter-bar">' +
         '<div class="filter-pills">' +
           '<button class="filter-pill' + (libraryFilter.status === 'all' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'all\')">All <span class="pill-count">' + sharedWithMe.length + '</span></button>' +
-          '<button class="filter-pill' + (libraryFilter.status === 'active' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'active\')">Active <span class="pill-count">' + countActive + '</span></button>' +
+          '<button class="filter-pill' + (libraryFilter.status === 'active' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'active\')">Received <span class="pill-count">' + countActive + '</span></button>' +
           '<button class="filter-pill' + (libraryFilter.status === 'revoked' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'revoked\')">Revoked <span class="pill-count">' + countRevoked + '</span></button>' +
         '</div>' +
         '<input type="text" class="filter-search" id="librarySearchInput" placeholder="Search Key ID..." value="' + (libraryFilter.search || '') + '" onkeyup="Z1NArtefacts.filterLibrary()">' +
@@ -448,18 +473,19 @@
       html += '<div class="artefact-grid" id="sharedArtefactGrid">';
       filtered.forEach(function(art) {
         var isRevoked = art.status === 'revoked' || !art.viewingActive;
-        var statusClass = isRevoked ? 'status-revoked' : 'status-shared';
-        var statusLabel = isRevoked ? 'Revoked' : 'Active';
+        var statusClass = isRevoked ? 'status-revoked' : 'status-received';
+        var statusLabel = isRevoked ? 'Revoked' : 'Received';
         
         var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
           '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
           '&artefactTokenId=' + art.tokenId + '&t=' + Date.now();
         
-        html += '<div class="artefact-card library-card ' + statusClass + '" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
+        var hasNotif = hasUnreadNotification(art.tokenId, art.sourceKeyId);
+        html += '<div class="artefact-card library-card ' + statusClass + (hasNotif ? ' has-notification' : '') + '" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
           '<div class="artefact-preview">' +
             (isRevoked ? 
-              '<div class="artefact-placeholder revoked">◈</div>' :
-              '<img src="' + previewUrl + '" alt="From Key #' + art.sourceKeyId + '" onerror="this.parentElement.innerHTML=\'<div class=artefact-placeholder>◈</div>\'">') +
+              '<div class="artefact-placeholder shared" style="color:#f87171;">◈</div>' :
+              artImg(previewUrl, 'From Key #\' + art.sourceKeyId + \'')) +
             '<div class="library-badge">← #' + art.sourceKeyId + '</div>' +
           '</div>' +
           '<div class="artefact-info-row">' +
@@ -490,9 +516,9 @@
     var artefactIndex = ownedArtefacts.findIndex(function(a) { return a.tokenId === artefactId; }) + 1;
     
     var statusLabel = art.status === 'in_my_view' ? 'Personal' :
-                      art.status === 'shared' ? 'Shared' : 'Revoked';
+                      art.status === 'shared' ? 'Viewed by' : 'Revoked';
     var statusClass = art.status === 'in_my_view' ? 'status-personal' : 
-                      art.status === 'shared' ? 'status-shared' : 'status-revoked';
+                      art.status === 'shared' ? 'status-viewedby' : 'status-revoked';
     
     var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
       '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
@@ -504,15 +530,15 @@
       // SHARE MODAL - Two column layout
       contentHtml = '<div class="share-layout">' +
         '<div class="share-column">' +
-          '<div class="share-column-title">Your View (after sharing)</div>' +
-          '<div class="share-preview grayed">' +
-            '<div class="share-preview-placeholder">◈<div class="preview-label">Hidden from you</div></div>' +
+          '<div class="share-column-title">Recipient View After Binding</div>' +
+          '<div class="share-preview">' +
+            artImg(previewUrl, 'Artefact Preview') +
           '</div>' +
         '</div>' +
         '<div class="share-column">' +
-          '<div class="share-column-title">Recipient View</div>' +
-          '<div class="share-preview">' +
-            '<img src="' + previewUrl + '" alt="Artefact Preview" onerror="this.style.display=\'none\'">' +
+          '<div class="share-column-title">Your View After Binding</div>' +
+          '<div class="share-preview grayed">' +
+            '<div class="share-preview-placeholder" style="color:var(--accent);font-size:64px;">◈</div></div>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -520,60 +546,62 @@
         '<label>Share with Key ID:</label>' +
         '<input type="number" id="shareTargetKeyId" placeholder="Enter Key ID" min="0">' +
         '<div id="shareKeyValidation" class="validation-msg"></div>' +
-        '<div class="warning-box">' +
-          '<span class="warning-icon">⚠️</span>' +
+        '<div class="warning-box" style="border-color:rgba(102,214,154,0.4);background:rgba(102,214,154,0.08);">' +
+          '<span class="warning-icon" style="filter:hue-rotate(90deg);">⚠️</span>' +
           '<div>' +
             '<strong>Permanent Binding</strong>' +
             '<p>This artefact will be permanently bound to the recipient Key. You can revoke and restore viewing, but you can never share it with a different Key.</p>' +
           '</div>' +
         '</div>' +
-        '<button class="btn btn-primary" onclick="Z1NArtefacts.grantViewing(' + artefactId + ')">Bind & Share</button>' +
+        '<button class="btn btn-green" onclick="Z1NArtefacts.grantViewing(' + artefactId + ')">Bind & Share</button>' +
       '</div>';
       
     } else if (art.status === 'shared') {
       // SHARED - Show revoke option with two columns
       contentHtml = '<div class="share-layout">' +
         '<div class="share-column">' +
-          '<div class="share-column-title">Your View (currently)</div>' +
-          '<div class="share-preview grayed">' +
-            '<div class="share-preview-placeholder">◈<div class="preview-label">Hidden from you</div></div>' +
+          '<div class="share-column-title">Recipient View Now</div>' +
+          '<div class="share-preview">' +
+            artImg(previewUrl, 'Artefact Preview') +
           '</div>' +
         '</div>' +
         '<div class="share-column">' +
-          '<div class="share-column-title">Key #' + art.boundToKeyId + ' View</div>' +
-          '<div class="share-preview">' +
-            '<img src="' + previewUrl + '" alt="Artefact Preview" onerror="this.style.display=\'none\'">' +
+          '<div class="share-column-title">Recipient View After Revoke</div>' +
+          '<div class="share-preview grayed">' +
+            '<div class="share-preview-placeholder" style="color:#f87171;font-size:64px;">◈</div>' +
           '</div>' +
         '</div>' +
       '</div>' +
       '<div class="modal-info">' +
         '<div class="info-row"><span class="label">Status</span><span class="value ' + statusClass + '">' + statusLabel + '</span></div>' +
         '<div class="info-row"><span class="label">Bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div>' +
+        '<div class="info-row"><span class="label">History</span><span class="value" style="font-size:11px;">' + (art.status === 'shared' ? '<span style="color:var(--accent);">Viewed</span>' : art.status === 'revoked' ? '<span style="color:#f87171;">Revoked</span>' : '<span>Personal</span>') + '</div>' +
       '</div>' +
       '<div class="action-buttons">' +
         '<p>Revoke viewing to hide the artefact from Key #' + art.boundToKeyId + ' and return it to your view.</p>' +
-        '<button class="btn btn-warning" onclick="Z1NArtefacts.revokeViewing(' + artefactId + ')">Revoke Viewing</button>' +
+        '<button class="btn btn-danger" style="background:rgba(248,113,113,0.2);border-color:rgba(248,113,113,0.4);color:#f87171;" onclick="Z1NArtefacts.revokeViewing(' + artefactId + ')">Revoke Viewing</button>' +
       '</div>';
       
     } else if (art.status === 'revoked') {
       // REVOKED - Show restore option with two columns (swapped)
       contentHtml = '<div class="share-layout">' +
         '<div class="share-column">' +
-          '<div class="share-column-title">Your View (currently)</div>' +
-          '<div class="share-preview">' +
-            '<img src="' + previewUrl + '" alt="Artefact Preview" onerror="this.style.display=\'none\'">' +
+          '<div class="share-column-title">Recipient View Now</div>' +
+          '<div class="share-preview grayed">' +
+            '<div class="share-preview-placeholder" style="color:#f87171;font-size:64px;">◈</div>' +
           '</div>' +
         '</div>' +
         '<div class="share-column">' +
-          '<div class="share-column-title">Key #' + art.boundToKeyId + ' View</div>' +
-          '<div class="share-preview grayed">' +
-            '<div class="share-preview-placeholder">◈<div class="preview-label">Hidden from them</div></div>' +
+          '<div class="share-column-title">Recipient View After Restore</div>' +
+          '<div class="share-preview">' +
+            artImg(previewUrl, 'Artefact Preview') +
           '</div>' +
         '</div>' +
       '</div>' +
       '<div class="modal-info">' +
         '<div class="info-row"><span class="label">Status</span><span class="value ' + statusClass + '">' + statusLabel + '</span></div>' +
         '<div class="info-row"><span class="label">Bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div>' +
+        '<div class="info-row"><span class="label">History</span><span class="value" style="font-size:11px;">' + (art.status === 'shared' ? '<span style="color:var(--accent);">Viewed</span>' : art.status === 'revoked' ? '<span style="color:#f87171;">Revoked</span>' : '<span>Personal</span>') + '</div>' +
       '</div>' +
       '<div class="action-buttons">' +
         '<p>Restore viewing to share the artefact with Key #' + art.boundToKeyId + ' again.</p>' +
@@ -601,6 +629,8 @@
   }
 
   function openLibraryModal(artefactId, sourceKeyId) {
+    markNotificationRead(artefactId);
+    renderSharedSection();
     var z = getZ1N();
     var modal = document.getElementById('artefactSharingModal');
     if (!modal) return;
@@ -617,7 +647,7 @@
         '<h2>Shared Artefact</h2>' +
         '<div class="modal-body">' +
           '<div class="modal-preview large">' +
-            '<img src="' + previewUrl + '" alt="Artefact Preview" onerror="this.style.display=\'none\'">' +
+            artImg(previewUrl, 'Artefact Preview') +
           '</div>' +
           '<div class="modal-info">' +
             '<div class="info-row"><span class="label">From</span><span class="value">Key #' + sourceKeyId + '</span></div>' +
@@ -1073,7 +1103,18 @@
     
     // Update tab badge
     var badge = document.getElementById('artefactBadge');
-    if (badge) badge.textContent = ownedArtefacts.length;
+    if (badge) {
+      var unreadCount = getUnreadNotificationCount();
+      if (unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.background = 'var(--accent, #66d69a)';
+        badge.style.color = '#000';
+      } else {
+        badge.textContent = ownedArtefacts.length;
+        badge.style.background = '';
+        badge.style.color = '';
+      }
+    }
     
     renderOwnedSection();
     renderSharedSection();
