@@ -1,26 +1,30 @@
 /**
  * Z1N Protocol — Gas Price Banner
- * v1.0.0
+ * v1.1.0-Ω
  *
  * Self-injecting gas monitor. Add to any page:
  *   <script src="gas-banner.js"></script>
  *
- * Shows a warning banner below the header when Polygon gas > threshold.
- * Auto-hides when gas normalises. Checks every 60s.
+ * Shows estimated transaction cost in POL.
+ * Green (hidden): < 2.5 POL
+ * Orange warning: 2.5 - 7.5 POL
+ * Red danger: > 7.5 POL
+ * Checks every 60s.
  */
 (function () {
   'use strict';
 
   // ── CONFIG ──────────────────────────────────────────────────
-  var GAS_WARN_GWEI   = 100;   // orange warning threshold
-  var GAS_DANGER_GWEI = 500;   // red danger threshold
-  var POLL_INTERVAL    = 60000; // check every 60 seconds
-  var RPC_URL          = 'https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y';
-  var FALLBACK_RPC     = 'https://polygon-rpc.com';
+  var POL_WARN   = 2.5;   // orange warning threshold in POL
+  var POL_DANGER = 7.5;   // red danger threshold in POL
+  var TYPICAL_GAS_LIMIT = 250000; // typical Z1N transaction gas usage
+  var POLL_INTERVAL = 60000;
+  var RPC_URL       = 'https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y';
+  var FALLBACK_RPC  = 'https://polygon-rpc.com';
 
   // ── STATE ──────────────────────────────────────────────────
   var banner      = null;
-  var lastGwei    = 0;
+  var lastCostPol = 0;
   var dismissed   = false;
   var pollTimer   = null;
 
@@ -89,21 +93,18 @@
     el.innerHTML =
       '<span class="gas-icon">⛽</span>' +
       '<span class="gas-value" id="z1nGasValue">—</span>' +
-      '<span class="gas-msg" id="z1nGasMsg">gwei</span>' +
+      '<span class="gas-msg" id="z1nGasMsg"></span>' +
       '<button class="gas-dismiss" id="z1nGasDismiss" title="Dismiss until next check">✕</button>';
 
-    // Insert right after <header>
     var header = document.querySelector('header');
     if (header && header.nextSibling) {
       header.parentNode.insertBefore(el, header.nextSibling);
     } else if (header) {
       header.parentNode.appendChild(el);
     } else {
-      // No header found — prepend to body
       document.body.insertBefore(el, document.body.firstChild);
     }
 
-    // Dismiss handler
     document.getElementById('z1nGasDismiss').onclick = function () {
       dismissed = true;
       el.classList.remove('visible');
@@ -123,36 +124,38 @@
     .then(function (r) { return r.json(); })
     .then(function (d) {
       if (d.error) throw new Error(d.error.message);
-      return Number(BigInt(d.result)) / 1e9; // convert wei → gwei
+      return Number(BigInt(d.result)); // wei
     });
   }
 
   // ── UPDATE BANNER ──────────────────────────────────────────
-  function updateBanner(gwei) {
-    lastGwei = gwei;
+  function updateBanner(gasPriceWei) {
+    // Calculate estimated transaction cost in POL
+    var costWei = gasPriceWei * TYPICAL_GAS_LIMIT;
+    var costPol = costWei / 1e18;
+    lastCostPol = costPol;
 
     var el = createBanner();
     var valueEl = document.getElementById('z1nGasValue');
     var msgEl   = document.getElementById('z1nGasMsg');
 
-    if (gwei < GAS_WARN_GWEI) {
-      // Gas normal — hide banner
+    if (costPol < POL_WARN) {
       el.classList.remove('visible', 'warn', 'danger');
-      dismissed = false; // reset dismiss so it shows again if gas spikes
+      dismissed = false;
       return;
     }
 
-    if (dismissed) return; // user dismissed, wait for next cycle
+    if (dismissed) return;
 
-    var gweiDisplay = gwei >= 1000
-      ? (gwei / 1000).toFixed(1) + 'k'
-      : Math.round(gwei);
+    var costDisplay = costPol < 10
+      ? '~' + costPol.toFixed(2) + ' POL'
+      : '~' + costPol.toFixed(1) + ' POL';
 
-    valueEl.textContent = gweiDisplay + ' gwei';
+    valueEl.textContent = costDisplay;
 
-    if (gwei >= GAS_DANGER_GWEI) {
+    if (costPol >= POL_DANGER) {
       el.className = 'z1n-gas-banner danger visible';
-      msgEl.textContent = '— Network severely congested · Transactions will be very expensive · Wait for lower gas';
+      msgEl.textContent = '— Network severely congested · Transactions very expensive · Wait for lower gas';
     } else {
       el.className = 'z1n-gas-banner warn visible';
       msgEl.textContent = '— Network busy · Transaction costs higher than normal';
@@ -163,12 +166,13 @@
   function checkGas() {
     fetchGasPrice(RPC_URL)
       .catch(function () {
-        // Fallback RPC
         return fetchGasPrice(FALLBACK_RPC);
       })
-      .then(function (gwei) {
-        console.log('⛽ Gas check:', Math.round(gwei), 'gwei');
-        updateBanner(gwei);
+      .then(function (gasPriceWei) {
+        var gwei = gasPriceWei / 1e9;
+        var costPol = (gasPriceWei * TYPICAL_GAS_LIMIT) / 1e18;
+        console.log('⛽ Gas check:', Math.round(gwei), 'gwei · ~' + costPol.toFixed(2), 'POL per tx');
+        updateBanner(gasPriceWei);
       })
       .catch(function (err) {
         console.warn('Gas check failed:', err.message);
@@ -178,26 +182,23 @@
   // ── INIT ───────────────────────────────────────────────────
   function init() {
     injectStyles();
-    // First check after short delay (let page render)
     setTimeout(checkGas, 1500);
-    // Then poll
     pollTimer = setInterval(checkGas, POLL_INTERVAL);
   }
 
-  // Start when DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
 
-  // ── PUBLIC API (optional) ──────────────────────────────────
+  // ── PUBLIC API ─────────────────────────────────────────────
   window.Z1NGas = {
     check: checkGas,
-    getLastGwei: function () { return lastGwei; },
+    getLastCostPol: function () { return lastCostPol; },
     setThresholds: function (warn, danger) {
-      GAS_WARN_GWEI = warn;
-      GAS_DANGER_GWEI = danger;
+      POL_WARN = warn;
+      POL_DANGER = danger;
     }
   };
 
