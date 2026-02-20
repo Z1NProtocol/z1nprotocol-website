@@ -1476,9 +1476,21 @@ window.submitWhisper = async function() {
           document.getElementById('whisperCharCount').textContent = '0 / 500'; 
           st.innerHTML = '<div class="status-msg" style="background:rgba(245,200,66,0.15);border:1px solid #f5c842;color:#f5c842;">✓ Whisper sent to K#' + to + '!</div>'; 
           showToast('✅ Whisper sent!', 4000); 
-          // Reload whisper data to show new whisper
-          await loadWhisperData(); 
-          return; 
+          // v2.5.0: Add pending whisper to UI immediately
+          allWhispers.push({
+            fromKeyId: currentKeyId,
+            toKeyId: to,
+            cid: ct,
+            content: ct,
+            epoch: activeEpoch,
+            blockNumber: 999999999,
+            txHash: tx,
+            timeAgo: 'just now',
+            _pending: true
+          });
+          await Promise.all([loadSentWhispers(), loadReceivedWhispers()]);
+          updateTabBadges();
+          return;
         } 
         if (rc && rc.status === '0x0') { 
           st.innerHTML = '<div class="status-msg error">Transaction failed.</div>'; 
@@ -1518,13 +1530,13 @@ window.submitWhisper = async function() {
       if (signalType === 'reply' && replyHashEl) { var ri = replyHashEl.value.trim(); if (ri && ri.startsWith('0x') && ri.length >= 66) { reply = ri.slice(0, 66); stype = 1; eref = activeEpoch > 0 ? activeEpoch - 1 : 0; } }
       if (pogStealthEnabled && stealthRelayerAvailable) {
         st.innerHTML = '<div class="status-msg pending">🔒 Stealth mode: Sign message...</div>';
-        try { var result = await submitStealthSignal(currentKeyId, hash, intent, sym, eref, reply); signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(245,200,66,0.15);border:1px solid #f5c842;color:#f5c842;">🔒 Stealth signal submitted! <a href="' + EXPLORER + '/tx/' + result.txHash + '" target="_blank">View tx</a></div>'; showToast('🔒 Stealth signal submitted!', 4000); await loadSentSignals(); return; } catch (e) { st.innerHTML = '<div class="status-msg error">Stealth failed: ' + (e.message || 'Unknown error').slice(0, 150) + '</div>'; return; }
+        try { var result = await submitStealthSignal(currentKeyId, hash, intent, sym, eref, reply); signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(245,200,66,0.15);border:1px solid #f5c842;color:#f5c842;">🔒 Stealth signal submitted! <a href="' + EXPLORER + '/tx/' + result.txHash + '" target="_blank">View tx</a></div>'; showToast('🔒 Stealth signal submitted!', 4000); allSentSignals.unshift({ hash: result.txHash || hash, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: ct || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }); await loadSentSignals(); return; } catch (e) { st.innerHTML = '<div class="status-msg error">Stealth failed: ' + (e.message || 'Unknown error').slice(0, 150) + '</div>'; return; }
       }
       var iface = new ethersLib.Interface(['function submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint16 epochRef, bytes32 replyTo)']); var data = iface.encodeFunctionData('submitSignal', [currentKeyId, hash, cid, sym, intent, stype, eref, reply]);
       st.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
       var txParams = { from: currentAccount, to: Z1N_SIGNAL, data: data };
       var tx = await provider.request({method:'eth_sendTransaction', params:[txParams]}); st.innerHTML = '<div class="status-msg pending">Transaction sent...</div>';
-      for (var i = 0; i < 60; i++) { await new Promise(function(r){ setTimeout(r, 2000); }); var rc = await rpc('eth_getTransactionReceipt', [tx]); if (rc && rc.status === '0x1') { signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(245,200,66,0.15);border:1px solid #f5c842;color:#f5c842;">✅ Signal submitted! <a href="' + EXPLORER + '/tx/' + tx + '" target="_blank">View tx</a></div>'; showToast('✅ Signal submitted!', 4000); await loadSentSignals(); return; } if (rc && rc.status === '0x0') { st.innerHTML = '<div class="status-msg error">Transaction reverted.</div>'; return; } }
+      for (var i = 0; i < 60; i++) { await new Promise(function(r){ setTimeout(r, 2000); }); var rc = await rpc('eth_getTransactionReceipt', [tx]); if (rc && rc.status === '0x1') { signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(245,200,66,0.15);border:1px solid #f5c842;color:#f5c842;">✅ Signal submitted! <a href="' + EXPLORER + '/tx/' + tx + '" target="_blank">View tx</a></div>'; showToast('✅ Signal submitted!', 4000); allSentSignals.unshift({ hash: tx, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: ct || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }); await loadSentSignals(); return; } if (rc && rc.status === '0x0') { st.innerHTML = '<div class="status-msg error">Transaction reverted.</div>'; return; } }
       st.innerHTML = '<div class="status-msg error">Timeout waiting for receipt.</div>';
     } catch (e) { st.innerHTML = '<div class="status-msg error">' + (e.message || 'Failed').slice(0, 200) + '</div>'; }
   };
