@@ -2794,7 +2794,7 @@ async function claimSingleReward(epochId, claimType) {
     updateEpochStatus(epochId, 'Confirming...', 'pending');
     var confirmed = await waitForTransaction(txHash, 60);
     if (confirmed) {
-      updateEpochStatus(epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#93c5fd">✓ tx</a>', 'success');
+      updateEpochStatus(epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#7bb8fc">✓ tx</a>', 'success');
       saveClaimedEpoch(epochId, epochData.amountFormatted, claimType);
       claimableEpochsData = claimableEpochsData.filter(function(e) { return e.epochId !== epochId; });
       var claimableCountEl = document.getElementById('treasuryClaimableCount');
@@ -2857,7 +2857,7 @@ async function executeClaimAll(claimType) {
     var txHash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: currentAccount, to: claimData.to, data: claimData.data, gas: estimatedGas }] });
       updateEpochStatus(epoch.epochId, 'Confirming...', 'pending');
       var confirmed = await waitForTransaction(txHash, 60);
-    if (confirmed) { updateEpochStatus(epoch.epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#93c5fd">✓ tx</a>', 'success'); saveClaimedEpoch(epoch.epochId, epoch.amountFormatted, claimType); completed++; }
+    if (confirmed) { updateEpochStatus(epoch.epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#7bb8fc">✓ tx</a>', 'success'); saveClaimedEpoch(epoch.epochId, epoch.amountFormatted, claimType); completed++; }
       else { throw new Error('Not confirmed'); }
     } catch (e) {
       var msg = e.message || 'Failed';

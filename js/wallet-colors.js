@@ -16,7 +16,7 @@
   var WALLET_COLORS = [
     { name: 'gold',   hex: '#ffd556', bg: 'rgba(255, 213, 86, 0.15)',  border: 'rgba(255, 213, 86, 0.4)' },
     { name: 'green',  hex: '#5ee8a0', bg: 'rgba(94, 232, 160, 0.15)', border: 'rgba(94, 232, 160, 0.4)' },
-    { name: 'blue',   hex: '#93c5fd', bg: 'rgba(147, 197, 253, 0.15)',  border: 'rgba(147, 197, 253, 0.4)' },
+    { name: 'blue',   hex: '#7bb8fc', bg: 'rgba(123, 184, 252, 0.15)',  border: 'rgba(123, 184, 252, 0.4)' },
     { name: 'purple', hex: '#a78bfa', bg: 'rgba(167, 139, 250, 0.15)', border: 'rgba(167, 139, 250, 0.4)' },
     { name: 'pink',   hex: '#f472b6', bg: 'rgba(244, 114, 182, 0.15)', border: 'rgba(244, 114, 182, 0.4)' },
     { name: 'orange', hex: '#fb923c', bg: 'rgba(251, 146, 60, 0.15)',  border: 'rgba(251, 146, 60, 0.4)' },

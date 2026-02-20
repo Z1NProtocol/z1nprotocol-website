@@ -20,12 +20,12 @@
       --C:#5ee8a0;
       --I:#f87171;
       --K:#ffd556;
-      --S:#93c5fd;
+      --S:#7bb8fc;
 
       /* loop colors */
       --sig:#ffd556;
       --att:#5ee8a0;
-      --clm:#93c5fd;
+      --clm:#7bb8fc;
 
       /* motion */
       --ease: cubic-bezier(.2,.8,.2,1);
@@ -195,7 +195,7 @@
       background:
         radial-gradient(240px 140px at 22% 18%, rgba(255,255,255,0.05), rgba(255,255,255,0) 70%),
         radial-gradient(260px 160px at 78% 22%, rgba(94,232,160,0.06), rgba(94,232,160,0) 72%),
-        radial-gradient(320px 200px at 55% 72%, rgba(147,197,253,0.05), rgba(147,197,253,0) 74%);
+        radial-gradient(320px 200px at 55% 72%, rgba(123,184,252,0.05), rgba(123,184,252,0) 74%);
       filter: blur(2px);
       animation: slowPulse 5.6s var(--ease) infinite;
       mix-blend-mode: screen;
@@ -313,8 +313,8 @@
       box-shadow: 0 0 0 1px rgba(94,232,160,0.10) inset, 0 0 18px rgba(94,232,160,0.06);
     }
     .lane.clm.armed{
-      border-color: rgba(147,197,253,0.55);
-      box-shadow: 0 0 0 1px rgba(147,197,253,0.10) inset, 0 0 18px rgba(147,197,253,0.06);
+      border-color: rgba(123,184,252,0.55);
+      box-shadow: 0 0 0 1px rgba(123,184,252,0.10) inset, 0 0 18px rgba(123,184,252,0.06);
     }
 
     /* NEW: "new item" glow pulse when it first becomes available */
@@ -329,9 +329,9 @@
       100%{ box-shadow: 0 0 0 1px rgba(94,232,160,0.10) inset, 0 0 18px rgba(94,232,160,0.06); }
     }
     @keyframes newGlowClm{
-      0%{ box-shadow: 0 0 0 1px rgba(147,197,253,0.10) inset, 0 0 0 rgba(147,197,253,0); }
-      40%{ box-shadow: 0 0 0 1px rgba(147,197,253,0.18) inset, 0 0 26px rgba(147,197,253,0.18); }
-      100%{ box-shadow: 0 0 0 1px rgba(147,197,253,0.10) inset, 0 0 18px rgba(147,197,253,0.06); }
+      0%{ box-shadow: 0 0 0 1px rgba(123,184,252,0.10) inset, 0 0 0 rgba(123,184,252,0); }
+      40%{ box-shadow: 0 0 0 1px rgba(123,184,252,0.18) inset, 0 0 26px rgba(123,184,252,0.18); }
+      100%{ box-shadow: 0 0 0 1px rgba(123,184,252,0.10) inset, 0 0 18px rgba(123,184,252,0.06); }
     }
     .lane.new.sig{ animation: newGlowSig 740ms var(--ease) 1; }
     .lane.new.att{ animation: newGlowAtt 740ms var(--ease) 1; }
@@ -394,7 +394,7 @@
     }
     .fill.sig{ background: linear-gradient(90deg, rgba(255,213,86,0.20), rgba(255,213,86,0.88)); }
     .fill.att{ background: linear-gradient(90deg, rgba(94,232,160,0.20), rgba(94,232,160,0.88)); }
-    .fill.clm{ background: linear-gradient(90deg, rgba(147,197,253,0.20), rgba(147,197,253,0.88)); }
+    .fill.clm{ background: linear-gradient(90deg, rgba(123,184,252,0.20), rgba(123,184,252,0.88)); }
 
     @keyframes shimmer {
       0%{ transform:translateX(-40%); opacity:0.0; }
@@ -454,7 +454,7 @@
     }
     .mini.sig:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(255,213,86,0.10); }
     .mini.att:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(94,232,160,0.10); }
-    .mini.clm:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(147,197,253,0.10); }
+    .mini.clm:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(123,184,252,0.10); }
 
     /* mini border colors depending on slider status */
     .mini.armed.sig{
@@ -466,8 +466,8 @@
       box-shadow: 0 0 0 1px rgba(94,232,160,0.10) inset;
     }
     .mini.armed.clm{
-      border-color: rgba(147,197,253,0.55);
-      box-shadow: 0 0 0 1px rgba(147,197,253,0.10) inset;
+      border-color: rgba(123,184,252,0.55);
+      box-shadow: 0 0 0 1px rgba(123,184,252,0.10) inset;
     }
 
     /* "new item" glow pulse on minis */
