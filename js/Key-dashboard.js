@@ -195,7 +195,11 @@ function showSafetyWarning(callback) {
         loadActivityFeed();
       }
     }
-    if (tabId === 'canon') loadCanonData();
+    if (tabId === 'canon') {
+      var canonReturn = sessionStorage.getItem('canonReturnUrl');
+      if (canonReturn) { sessionStorage.removeItem('canonReturnUrl'); }
+      loadCanonData();
+    }
     if (tabId === 'artefacts') loadArtefactData();
     if (tabId === 'treasury') loadTreasuryData();
   }
@@ -1539,8 +1543,9 @@ window.submitWhisper = async function() {
           updateDots(); 
           await loadAttestableSignals(); 
           updateAttestBtn(); 
-          showToast('Stealth attestation submitted!', 4000); 
-          return; 
+           showToast('Stealth attestation submitted!', 4000); 
+          await loadSentAttests(); // v2.5.0
+          return;
         } catch (e) { 
           var errMsg = e.message || 'Unknown error';
           if (errMsg.includes('already attested') || errMsg.includes('Already attested') || errMsg.includes('CALL_EXCEPTION')) {
@@ -1569,7 +1574,8 @@ window.submitWhisper = async function() {
           await loadAttestableSignals(); 
           updateAttestBtn(); 
           showToast('Attestation submitted!', 4000); 
-          btn.textContent = orig; 
+          await loadSentAttests(); // v2.5.0
+          btn.textContent = orig;
           btn.disabled = false;
           return; 
         } 

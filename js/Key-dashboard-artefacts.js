@@ -920,8 +920,14 @@
       if (success) {
         if (statusEl) statusEl.innerHTML = '<div class="status-msg success">✓ Artefact shared with Key #' + targetKeyId + '</div>';
         showToast('✅ Artefact shared!', 3000);
-        pendingViewChanges[artefactId] = 'sharing'; closeModal(); renderOwnedSection();
-        autoRefreshUntil(artefactId, 'shared');
+        pendingViewChanges[artefactId] = 'sharing'; closeModal(); lastOwnedSig = ''; renderOwnedSection();
+        // v2.5.0: On-demand reindex
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          await refresh();
+          delete pendingViewChanges[artefactId];
+          lastOwnedSig = ''; renderOwnedSection();
+        } catch (e) { console.error('Reindex failed:', e); }
       } else { throw new Error('Transaction failed'); }
     } catch (e) {
       var msg = e.message || 'Unknown error';
@@ -944,8 +950,14 @@
       var success = await waitForReceipt(tx);
       if (success) {
         showToast('Viewing revoked', 3000);
-        pendingViewChanges[artefactId] = 'revoking'; closeModal(); renderOwnedSection();
-        autoRefreshUntil(artefactId, 'revoked');
+        pendingViewChanges[artefactId] = 'revoking'; closeModal(); lastOwnedSig = ''; renderOwnedSection();
+        // v2.5.0: On-demand reindex
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          await refresh();
+          delete pendingViewChanges[artefactId];
+          lastOwnedSig = ''; renderOwnedSection();
+        } catch (e) { console.error('Reindex failed:', e); }
       } else { throw new Error('Transaction failed'); }
     } catch (e) {
       var msg = e.message || 'Unknown error';
@@ -968,26 +980,20 @@
       var success = await waitForReceipt(tx);
       if (success) {
         showToast('Viewing restored', 3000);
-        pendingViewChanges[artefactId] = 'restoring'; closeModal(); renderOwnedSection();
-        autoRefreshUntil(artefactId, 'shared');
+         pendingViewChanges[artefactId] = 'restoring'; closeModal(); lastOwnedSig = ''; renderOwnedSection();
+        // v2.5.0: On-demand reindex
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          await refresh();
+          delete pendingViewChanges[artefactId];
+          lastOwnedSig = ''; renderOwnedSection();
+        } catch (e) { console.error('Reindex failed:', e); }
       } else { throw new Error('Transaction failed'); }
     } catch (e) {
       var msg = e.message || 'Unknown error';
       if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
       if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
     }
-  }
-
-  function autoRefreshUntil(artefactId, targetStatus) {
-    var timer = setInterval(async function() {
-      await refresh();
-      var updated = ownedArtefacts.find(function(a) { return a.tokenId === artefactId && a.status === targetStatus; });
-      if (updated || Object.keys(pendingViewChanges).length === 0) {
-        clearInterval(timer);
-        delete pendingViewChanges[artefactId];
-        renderOwnedSection();
-      }
-    }, 10000);
   }
 
   async function waitForReceipt(txHash) {
@@ -1058,27 +1064,44 @@
         // Update overview preview to show pending state
         updateOverviewPreview();
         
-        // Keep mint button disabled but change text
-        if (btn) { btn.disabled = true; btn.textContent = 'Waiting for indexer...'; }
+      // Keep mint button disabled but change text
+        if (btn) { btn.disabled = true; btn.textContent = 'Updating...'; }
         
-        // Auto-refresh until indexer catches up
+        // v2.5.0: On-demand reindex instead of polling
         var prevCount = ownedArtefacts.length;
-        var refreshAttempts = 0;
-        var refreshTimer = setInterval(async function() {
-          refreshAttempts++;
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefacts', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
           await refresh();
-          if (ownedArtefacts.length > prevCount || refreshAttempts >= 12) {
-            clearInterval(refreshTimer);
-            pendingArtefacts = pendingArtefacts.filter(function(p) { return p.type !== 'mint'; });
-            isMinting = false;
-            lastOwnedSig = ''; // Force re-render
-            renderOwnedSection();
-            updateOverviewPreview();
-            if (statusEl) statusEl.innerHTML = '';
-            if (btn) { btn.disabled = false; btn.textContent = '+ Mint Artefact — 21 POL'; }
-            if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = '+ Mint Artefact — 21 POL'; }
-          }
-        }, 10000);
+        } catch (e) { console.error('Reindex failed:', e); }
+        
+        if (ownedArtefacts.length > prevCount) {
+          pendingArtefacts = pendingArtefacts.filter(function(p) { return p.type !== 'mint'; });
+          isMinting = false;
+          lastOwnedSig = '';
+          renderOwnedSection();
+          updateOverviewPreview();
+          if (statusEl) statusEl.innerHTML = '';
+          if (btn) { btn.disabled = false; btn.textContent = '+ Mint Artefact — 21 POL'; }
+          if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = '+ Mint Artefact — 21 POL'; }
+        } else {
+          // Fallback: poll if reindex didn't find it yet
+          var refreshAttempts = 0;
+          var refreshTimer = setInterval(async function() {
+            refreshAttempts++;
+            await refresh();
+            if (ownedArtefacts.length > prevCount || refreshAttempts >= 8) {
+              clearInterval(refreshTimer);
+              pendingArtefacts = pendingArtefacts.filter(function(p) { return p.type !== 'mint'; });
+              isMinting = false;
+              lastOwnedSig = '';
+              renderOwnedSection();
+              updateOverviewPreview();
+              if (statusEl) statusEl.innerHTML = '';
+              if (btn) { btn.disabled = false; btn.textContent = '+ Mint Artefact — 21 POL'; }
+              if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = '+ Mint Artefact — 21 POL'; }
+            }
+          }, 10000);
+        }  
       } else {
         throw new Error('Transaction failed on-chain');
       }
