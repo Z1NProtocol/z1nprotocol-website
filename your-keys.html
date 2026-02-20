@@ -332,7 +332,7 @@
 </header>
 
 <main class="page">
-  <h1 style="display:flex; align-items:center; justify-content:space-between;"><span>Your Keys</span><button id="btnRefresh" style="width:44px; height:44px; border-radius:50%; border:2px solid var(--keys-accent); background:transparent; color:var(--keys-accent); font-size:20px; cursor:pointer; transition:all 0.2s; display:none;" title="Refresh Keys">Ω</button></h1>
+  <h1 style="display:flex; align-items:center; justify-content:space-between;"><span>Your Keys</span><button id="btnRefresh" style="width:44px; height:44px; border-radius:50%; border:none; background:transparent; color:var(--keys-accent); font-size:20px; cursor:pointer; display:none; position:relative; align-items:center; justify-content:center;" title="Refresh Keys"><span id="refreshRing" style="position:absolute;inset:0;border:2px solid var(--keys-accent);border-radius:50%;transition:all 0.2s;"></span><span style="position:relative;z-index:1;">Ω</span></button></h1>
   <p class="lead">Your Keys are soulbound proofs of presence in the Field — each one a unique coordinate in the 21M-Key manifold.</p>
   <p class="lead-small">From here you can manage your signals, attestations, and artefacts. Each Key unlocks its own dashboard.</p>
 
@@ -1191,10 +1191,11 @@
 
   document.getElementById('btnConnect').onclick = connectWallet;
   document.getElementById('btnManageWallets').onclick = addAnotherWallet;
-  document.getElementById('btnRefresh').onclick = async function() { 
-    var btn = this; 
-    btn.style.animation = 'spin 0.8s linear'; 
-    setTimeout(function() { btn.style.animation = ''; }, 800); 
+ document.getElementById('btnRefresh').onclick = async function() { 
+    var ring = document.getElementById('refreshRing'); 
+    ring.style.borderColor = 'transparent'; 
+    ring.style.borderTopColor = 'var(--keys-accent)'; 
+    ring.style.animation = 'spin 0.8s linear infinite'; 
     var eth = getProvider();
     if (eth) {
       try {
@@ -1207,6 +1208,8 @@
       } catch (e) {}
     }
     await loadAllKeys(false); 
+    ring.style.animation = ''; 
+    ring.style.borderColor = 'var(--keys-accent)'; 
   };
 
   (async function() {
