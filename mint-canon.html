@@ -494,7 +494,7 @@ if (storedReturn) {
     minEpoch = keyMintEpoch;
     
     // Ensure valid range - ALWAYS allow from minEpoch to maxEpoch
-    if (minEpoch < 1) minEpoch = 1;
+    minEpoch = 0;
     if (minEpoch > maxEpoch) minEpoch = 1; // Safety: if something went wrong, allow all
     
     // Set slider range
