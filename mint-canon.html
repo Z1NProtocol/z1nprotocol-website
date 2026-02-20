@@ -49,12 +49,12 @@
       --card-bg: #020617;
       --text-main: #ffffff;
       --text-soft: #8f9ab5;
-      --accent: #66d69a;
+      --accent: #5ee8a0;
       --card-border: rgba(148,163,184,0.25);
-      --keys-accent: #f5c842;
-      --keys-accent-soft: #d4a012;
-      --keys-accent-dim: rgba(245,200,66,0.15);
-      --danger: #f44336;
+      --keys-accent: #ffd556;
+      --keys-accent-soft: #bf9f0f;
+      --keys-accent-dim: rgba(255,213,86,0.15);
+      --danger: #f87171;
       /* CANON PURPLE */
   --canon-purple: #a855f7;
   --canon-purple-soft: #9333ea;
@@ -130,8 +130,8 @@
 
     .epoch-status { text-align: center; margin-top: 12px; font-size: 13px; padding: 10px 16px; border-radius: 8px; }
     .epoch-status.available { background: rgba(168,85,247,0.1); color: var(--canon-purple); }
-    .epoch-status.anchored { background: rgba(244,67,54,0.1); color: var(--danger); }
-    .epoch-status.checking { background: rgba(245,200,66,0.1); color: var(--keys-accent); }
+    .epoch-status.anchored { background: rgba(248,113,113,0.1); color: var(--danger); }
+    .epoch-status.checking { background: rgba(255,213,86,0.1); color: var(--keys-accent); }
 
     .commitment-section { margin-bottom: 24px; padding: 16px; background: rgba(15,23,42,0.5); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
     .commitment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -152,12 +152,12 @@
 .mint-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .mint-btn.minting { background: rgba(143,154,181,0.2); border-color: rgba(143,154,181,0.4); color: var(--text-soft); }
 .mint-btn.success { background: linear-gradient(90deg, var(--canon-purple), var(--canon-purple-soft)); border-color: var(--canon-purple); color: #fff; }
-.mint-btn.already-anchored { background: rgba(244,67,54,0.1); border-color: rgba(244,67,54,0.4); color: var(--danger); }
+.mint-btn.already-anchored { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.4); color: var(--danger); }
 
     .status-area { margin-top: 16px; }
     .status-msg { padding: 12px 16px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
     .status-msg.success { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--canon-purple); }
-    .status-msg.error { background: rgba(244,67,54,0.1); border: 1px solid rgba(244,67,54,0.3); color: var(--danger); }
+    .status-msg.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
     .status-msg.pending { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); color: var(--canon-purple); }
 
     .info-notice { display: flex; align-items: flex-start; gap: 10px; background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.15); border-radius: 10px; padding: 14px; margin-top: 20px; font-size: 12px; color: var(--text-soft); line-height: 1.5; }

@@ -15,7 +15,7 @@
 .canon-filter-pill {
   padding: 6px 14px;
   border-radius: 20px;
-  border: 1px solid rgba(245, 200, 66, 0.3);
+  border: 1px solid rgba(255, 213, 86, 0.3);
   background: transparent;
   color: var(--text-soft);
   font-size: 11px;
@@ -29,7 +29,7 @@
 }
 
 .canon-filter-pill.active {
-  background: rgba(245, 200, 66, 0.2);
+  background: rgba(255, 213, 86, 0.2);
   border-color: var(--keys-accent);
   color: var(--keys-accent);
 }
@@ -50,7 +50,7 @@
 /* Canon Card - Original Design */
 .canon-card {
   background: var(--card-bg);
-  border: 1px solid rgba(245, 200, 66, 0.2);
+  border: 1px solid rgba(255, 213, 86, 0.2);
   border-radius: 12px;
   padding: 16px;
   text-align: center;

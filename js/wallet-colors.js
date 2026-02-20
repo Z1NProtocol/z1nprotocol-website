@@ -14,9 +14,9 @@
 
   // Color palette for wallets 1-10
   var WALLET_COLORS = [
-    { name: 'gold',   hex: '#f5c842', bg: 'rgba(245, 200, 66, 0.15)',  border: 'rgba(245, 200, 66, 0.4)' },
-    { name: 'green',  hex: '#66d69a', bg: 'rgba(102, 214, 154, 0.15)', border: 'rgba(102, 214, 154, 0.4)' },
-    { name: 'blue',   hex: '#60a5fa', bg: 'rgba(96, 165, 250, 0.15)',  border: 'rgba(96, 165, 250, 0.4)' },
+    { name: 'gold',   hex: '#ffd556', bg: 'rgba(255, 213, 86, 0.15)',  border: 'rgba(255, 213, 86, 0.4)' },
+    { name: 'green',  hex: '#5ee8a0', bg: 'rgba(94, 232, 160, 0.15)', border: 'rgba(94, 232, 160, 0.4)' },
+    { name: 'blue',   hex: '#93c5fd', bg: 'rgba(147, 197, 253, 0.15)',  border: 'rgba(147, 197, 253, 0.4)' },
     { name: 'purple', hex: '#a78bfa', bg: 'rgba(167, 139, 250, 0.15)', border: 'rgba(167, 139, 250, 0.4)' },
     { name: 'pink',   hex: '#f472b6', bg: 'rgba(244, 114, 182, 0.15)', border: 'rgba(244, 114, 182, 0.4)' },
     { name: 'orange', hex: '#fb923c', bg: 'rgba(251, 146, 60, 0.15)',  border: 'rgba(251, 146, 60, 0.4)' },
@@ -29,9 +29,9 @@
   // Color for disconnected/unknown wallets
   var DISCONNECTED_COLOR = { 
     name: 'red', 
-    hex: '#e05555', 
-    bg: 'rgba(224, 85, 85, 0.15)', 
-    border: 'rgba(224, 85, 85, 0.4)' 
+    hex: '#f87171', 
+    bg: 'rgba(248, 113, 113, 0.15)', 
+    border: 'rgba(248, 113, 113, 0.4)' 
   };
 
   /**

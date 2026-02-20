@@ -37,14 +37,14 @@
       '}',
       '.artefact-loading-skeleton .skeleton-spinner {',
       '  width: 40px; height: 40px;',
-      '  border: 3px solid rgba(102,214,154,0.15);',
-      '  border-top-color: var(--accent, #66d69a);',
+      '  border: 3px solid rgba(94,232,160,0.15);',
+      '  border-top-color: var(--accent, #5ee8a0);',
       '  border-radius: 50%;',
       '  animation: spin 1s linear infinite;',
       '  margin-bottom: 14px;',
       '}',
       '.artefact-loading-skeleton .skeleton-text {',
-      '  color: var(--accent, #66d69a); font-size: 12px; opacity: 0.8;',
+      '  color: var(--accent, #5ee8a0); font-size: 12px; opacity: 0.8;',
       '}',
       '',
       '/* Skeleton cards that pulse while loading */',
@@ -52,17 +52,17 @@
       '  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;',
       '}',
       '.artefact-skeleton-card {',
-      '  background: rgba(102,214,154,0.05);',
-      '  border: 1px solid rgba(102,214,154,0.15);',
+      '  background: rgba(94,232,160,0.05);',
+      '  border: 1px solid rgba(94,232,160,0.15);',
       '  border-radius: 10px; padding: 12px;',
       '  animation: skeleton-pulse 1.5s ease-in-out infinite;',
       '}',
       '.artefact-skeleton-card .skel-img {',
       '  width: 100%; aspect-ratio: 500/760; border-radius: 8px;',
-      '  background: rgba(102,214,154,0.08); margin-bottom: 8px;',
+      '  background: rgba(94,232,160,0.08); margin-bottom: 8px;',
       '}',
       '.artefact-skeleton-card .skel-line {',
-      '  height: 10px; border-radius: 4px; background: rgba(102,214,154,0.1);',
+      '  height: 10px; border-radius: 4px; background: rgba(94,232,160,0.1);',
       '  margin-bottom: 4px;',
       '}',
       '.artefact-skeleton-card .skel-line.short { width: 60%; }',
@@ -70,8 +70,8 @@
       '/* Pending mint card */',
       '.artefact-card.pending-mint {',
       '  opacity: 0.7; pointer-events: none; position: relative;',
-      '  border: 1px dashed rgba(102,214,154,0.4) !important;',
-      '  background: rgba(102,214,154,0.04) !important;',
+      '  border: 1px dashed rgba(94,232,160,0.4) !important;',
+      '  background: rgba(94,232,160,0.04) !important;',
       '}',
       '.pending-mint-overlay {',
       '  display: flex; flex-direction: column; align-items: center; justify-content: center;',
@@ -79,13 +79,13 @@
       '}',
       '.pending-mint-spinner {',
       '  width: 32px; height: 32px;',
-      '  border: 3px solid rgba(102,214,154,0.2);',
-      '  border-top-color: var(--accent, #66d69a);',
+      '  border: 3px solid rgba(94,232,160,0.2);',
+      '  border-top-color: var(--accent, #5ee8a0);',
       '  border-radius: 50%;',
       '  animation: spin 1s linear infinite;',
       '}',
       '.pending-mint-label {',
-      '  color: var(--accent, #66d69a); font-size: 11px; font-weight: 600;',
+      '  color: var(--accent, #5ee8a0); font-size: 11px; font-weight: 600;',
       '  text-transform: uppercase; letter-spacing: 0.05em;',
       '}',
       '.pending-mint-sub {',
@@ -101,8 +101,8 @@
       '}',
       '.pending-change-spinner {',
       '  width: 28px; height: 28px;',
-      '  border: 3px solid rgba(102,214,154,0.2);',
-      '  border-top-color: var(--accent, #66d69a);',
+      '  border: 3px solid rgba(94,232,160,0.2);',
+      '  border-top-color: var(--accent, #5ee8a0);',
       '  border-radius: 50%;',
       '  animation: spin 1s linear infinite;',
       '}',
@@ -114,13 +114,13 @@
       '}',
       '.artefact-preview-loading .preview-spinner {',
       '  width: 28px; height: 28px;',
-      '  border: 2px solid rgba(102,214,154,0.15);',
-      '  border-top-color: var(--accent, #66d69a);',
+      '  border: 2px solid rgba(94,232,160,0.15);',
+      '  border-top-color: var(--accent, #5ee8a0);',
       '  border-radius: 50%;',
       '  animation: spin 1s linear infinite;',
       '}',
       '.artefact-preview-loading .preview-text {',
-      '  color: var(--accent, #66d69a); font-size: 10px;',
+      '  color: var(--accent, #5ee8a0); font-size: 10px;',
       '}',
       '',
       '/* Shared/Viewed-by artefact cards: no special border */',
@@ -138,13 +138,13 @@
       '',
       '/* v2.5.0: Unseen notification: green glow border */',
       '.artefact-card.unseen-artefact {',
-      '  border-color: rgba(102,214,154,0.7) !important;',
-      '  box-shadow: 0 0 8px rgba(102,214,154,0.3);',
+      '  border-color: rgba(94,232,160,0.7) !important;',
+      '  box-shadow: 0 0 8px rgba(94,232,160,0.3);',
       '}',
       '.artefact-card.unseen-artefact::after {',
       '  content: "NEW"; position: absolute; top: 6px; right: 6px;',
       '  font-size: 8px; font-weight: 700; letter-spacing: 0.05em;',
-      '  color: #000; background: var(--accent, #66d69a);',
+      '  color: #000; background: var(--accent, #5ee8a0);',
       '  padding: 2px 6px; border-radius: 4px;',
       '}'
     ].join('\n');
@@ -502,9 +502,9 @@
         this.style.display = 'none';
         if (placeholder) {
           if (ownedArtefacts.length === 0) {
-            placeholder.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;"><span style="font-size:48px;color:rgba(102,214,154,0.2);">\u25C8</span><span style="font-size:10px;color:var(--text-soft);">No artefact yet</span></div>';
+            placeholder.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;"><span style="font-size:48px;color:rgba(94,232,160,0.2);">\u25C8</span><span style="font-size:10px;color:var(--text-soft);">No artefact yet</span></div>';
           } else {
-            placeholder.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;"><span style="font-size:48px;color:rgba(102,214,154,0.2);">\u25C8</span><span style="font-size:10px;color:var(--text-soft);">Preview unavailable</span></div>';
+            placeholder.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;"><span style="font-size:48px;color:rgba(94,232,160,0.2);">\u25C8</span><span style="font-size:10px;color:var(--text-soft);">Preview unavailable</span></div>';
           }
           placeholder.style.display = 'flex';
         }
@@ -814,7 +814,7 @@
         '<label>Share with Key ID:</label>' +
         '<input type="number" id="shareTargetKeyId" placeholder="Enter Key ID" min="0">' +
         '<div id="shareKeyValidation" class="validation-msg"></div>' +
-        '<div class="warning-box" style="border-color:rgba(102,214,154,0.4);background:rgba(102,214,154,0.08);">' +
+        '<div class="warning-box" style="border-color:rgba(94,232,160,0.4);background:rgba(94,232,160,0.08);">' +
           '<span class="warning-icon" style="filter:hue-rotate(90deg);">\u26A0\uFE0F</span><div><strong>Permanent Binding</strong><p>This artefact will be permanently bound to the recipient Key. You can revoke and restore viewing, but you can never share it with a different Key.</p></div>' +
         '</div>' +
         '<button class="btn btn-green" onclick="Z1NArtefacts.grantViewing(' + artefactId + ')">Bind & Share</button>' +
@@ -883,7 +883,7 @@
       var unreadCount = getUnreadNotificationCount();
       if (unreadCount > 0) {
         badge.textContent = unreadCount;
-        badge.style.background = 'var(--accent, #66d69a)';
+        badge.style.background = 'var(--accent, #5ee8a0)';
         badge.style.color = '#000';
       } else {
         badge.textContent = ownedArtefacts.length;
@@ -942,14 +942,14 @@
     if (targetKeyId === z.keyId) { if (statusEl) statusEl.innerHTML = '<div class="status-msg error">Cannot share with yourself</div>'; return; }
     var exists = await keyExists(targetKeyId);
     if (!exists) { if (statusEl) statusEl.innerHTML = '<div class="status-msg error">Key #' + targetKeyId + ' does not exist</div>'; return; }
-    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Preparing transaction...</div>';
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
     try {
       await loadEthersLib();
       var iface = new ethers.Interface(['function grantViewing(uint256 artefactId, uint256 viewerKeyId)']);
       var data = iface.encodeFunctionData('grantViewing', [BigInt(artefactId), BigInt(targetKeyId)]);
-      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Confirm in wallet...</div>';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
       var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
-      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Waiting for confirmation...</div>';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
       var success = await waitForReceipt(tx);
       if (success) {
         if (statusEl) statusEl.innerHTML = '<div class="status-msg success">\u2713 Artefact shared with Key #' + targetKeyId + '</div>';
@@ -972,14 +972,14 @@
   async function revokeViewing(artefactId) {
     var statusEl = document.getElementById('sharingStatus');
     var z = getZ1N();
-    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Preparing transaction...</div>';
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
     try {
       await loadEthersLib();
       var iface = new ethers.Interface(['function revokeViewing(uint256 artefactId)']);
       var data = iface.encodeFunctionData('revokeViewing', [BigInt(artefactId)]);
-      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Confirm in wallet...</div>';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
       var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
-      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Waiting for confirmation...</div>';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
       var success = await waitForReceipt(tx);
       if (success) {
         showToast('Viewing revoked', 3000);
@@ -1001,14 +1001,14 @@
   async function restoreViewing(artefactId) {
     var statusEl = document.getElementById('sharingStatus');
     var z = getZ1N();
-    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Preparing transaction...</div>';
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
     try {
       await loadEthersLib();
       var iface = new ethers.Interface(['function restoreViewing(uint256 artefactId)']);
       var data = iface.encodeFunctionData('restoreViewing', [BigInt(artefactId)]);
-      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Confirm in wallet...</div>';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
       var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
-      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Waiting for confirmation...</div>';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
       var success = await waitForReceipt(tx);
       if (success) {
         showToast('Viewing restored', 3000);
@@ -1058,7 +1058,7 @@
     
     if (btn) { btn.disabled = true; btn.textContent = 'Preparing...'; }
     if (overviewBtn) { overviewBtn.disabled = true; overviewBtn.textContent = 'Minting...'; }
-    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Preparing transaction...</div>';
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
 
     try {
       await loadEthersLib();
@@ -1068,7 +1068,7 @@
       var iface = new ethers.Interface(['function mintFirstArtefact(uint256 keyId)', 'function mintExtraArtefact(uint256 keyId) payable']);
       var encodedData = iface.encodeFunctionData(functionName, [BigInt(z.keyId)]);
 
-      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Confirm in wallet...</div>';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
       if (btn) btn.textContent = 'Confirm in wallet...';
 
       var txParams = { from: z.wallet, to: Z1N_ARTEFACT, data: encodedData };
@@ -1076,7 +1076,7 @@
 
       var txHash = await z.provider.request({ method: 'eth_sendTransaction', params: [txParams] });
 
-      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(102,214,154,0.15);color:#66d69a;">Transaction sent... waiting for confirmation</div>';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Transaction sent... waiting for confirmation</div>';
       if (btn) btn.textContent = 'Confirming...';
 
       var success = await waitForReceipt(txHash);
@@ -1246,7 +1246,7 @@
     
     if (unreadCount > 0) {
       badge.textContent = String(unreadCount);
-      badge.style.cssText = 'background:rgba(102,214,154,0.5); color:#fff;';
+      badge.style.cssText = 'background:rgba(94,232,160,0.5); color:#fff;';
     } else if (ownedArtefacts.length > 0) {
       badge.textContent = String(ownedArtefacts.length);
       badge.style.cssText = '';
@@ -1266,7 +1266,7 @@
     var observer = new MutationObserver(function() {
       if (_lastBadgeUnread > 0 && badge.textContent !== String(_lastBadgeUnread)) {
         badge.textContent = String(_lastBadgeUnread);
-        badge.style.cssText = 'background:rgba(102,214,154,0.5); color:#fff;';
+        badge.style.cssText = 'background:rgba(94,232,160,0.5); color:#fff;';
       }
     });
     observer.observe(badge, { childList: true, characterData: true, subtree: true });

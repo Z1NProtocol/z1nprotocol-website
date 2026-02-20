@@ -12,20 +12,20 @@
       --card-bg:#020617;
       --text-main:#ffffff;
       --text-soft:#8f9ab5;
-      --accent:#66d69a;
-      --accent-soft:#3a9f63;
+      --accent:#5ee8a0;
+      --accent-soft:#3ab876;
       --card-border:rgba(148,163,184,0.25);
 
       /* intent colors */
-      --C:#4CAF50;
-      --I:#F44336;
-      --K:#FFEB3B;
-      --S:#2196F3;
+      --C:#5ee8a0;
+      --I:#f87171;
+      --K:#ffd556;
+      --S:#93c5fd;
 
       /* loop colors */
-      --sig:#FFEB3B;
-      --att:#4CAF50;
-      --clm:#2196F3;
+      --sig:#ffd556;
+      --att:#5ee8a0;
+      --clm:#93c5fd;
 
       /* motion */
       --ease: cubic-bezier(.2,.8,.2,1);
@@ -170,7 +170,7 @@
       inset:-1px;
       border-radius:18px;
       pointer-events:none;
-      background: radial-gradient(circle at top, rgba(102,214,154,0.10), rgba(2,6,23,0) 62%);
+      background: radial-gradient(circle at top, rgba(94,232,160,0.10), rgba(2,6,23,0) 62%);
       opacity:0.9;
     }
     .card > *{ position:relative; }
@@ -194,8 +194,8 @@
       pointer-events:none;
       background:
         radial-gradient(240px 140px at 22% 18%, rgba(255,255,255,0.05), rgba(255,255,255,0) 70%),
-        radial-gradient(260px 160px at 78% 22%, rgba(102,214,154,0.06), rgba(102,214,154,0) 72%),
-        radial-gradient(320px 200px at 55% 72%, rgba(33,150,243,0.05), rgba(33,150,243,0) 74%);
+        radial-gradient(260px 160px at 78% 22%, rgba(94,232,160,0.06), rgba(94,232,160,0) 72%),
+        radial-gradient(320px 200px at 55% 72%, rgba(147,197,253,0.05), rgba(147,197,253,0) 74%);
       filter: blur(2px);
       animation: slowPulse 5.6s var(--ease) infinite;
       mix-blend-mode: screen;
@@ -305,33 +305,33 @@
     /* border colors depending on slider status */
     .lane.armed{ box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset; }
     .lane.sig.armed{
-      border-color: rgba(255,235,59,0.55);
-      box-shadow: 0 0 0 1px rgba(255,235,59,0.10) inset, 0 0 18px rgba(255,235,59,0.06);
+      border-color: rgba(255,213,86,0.55);
+      box-shadow: 0 0 0 1px rgba(255,213,86,0.10) inset, 0 0 18px rgba(255,213,86,0.06);
     }
     .lane.att.armed{
-      border-color: rgba(76,175,80,0.55);
-      box-shadow: 0 0 0 1px rgba(76,175,80,0.10) inset, 0 0 18px rgba(76,175,80,0.06);
+      border-color: rgba(94,232,160,0.55);
+      box-shadow: 0 0 0 1px rgba(94,232,160,0.10) inset, 0 0 18px rgba(94,232,160,0.06);
     }
     .lane.clm.armed{
-      border-color: rgba(33,150,243,0.55);
-      box-shadow: 0 0 0 1px rgba(33,150,243,0.10) inset, 0 0 18px rgba(33,150,243,0.06);
+      border-color: rgba(147,197,253,0.55);
+      box-shadow: 0 0 0 1px rgba(147,197,253,0.10) inset, 0 0 18px rgba(147,197,253,0.06);
     }
 
     /* NEW: "new item" glow pulse when it first becomes available */
     @keyframes newGlowSig{
-      0%{ box-shadow: 0 0 0 1px rgba(255,235,59,0.10) inset, 0 0 0 rgba(255,235,59,0); }
-      40%{ box-shadow: 0 0 0 1px rgba(255,235,59,0.18) inset, 0 0 26px rgba(255,235,59,0.18); }
-      100%{ box-shadow: 0 0 0 1px rgba(255,235,59,0.10) inset, 0 0 18px rgba(255,235,59,0.06); }
+      0%{ box-shadow: 0 0 0 1px rgba(255,213,86,0.10) inset, 0 0 0 rgba(255,213,86,0); }
+      40%{ box-shadow: 0 0 0 1px rgba(255,213,86,0.18) inset, 0 0 26px rgba(255,213,86,0.18); }
+      100%{ box-shadow: 0 0 0 1px rgba(255,213,86,0.10) inset, 0 0 18px rgba(255,213,86,0.06); }
     }
     @keyframes newGlowAtt{
-      0%{ box-shadow: 0 0 0 1px rgba(76,175,80,0.10) inset, 0 0 0 rgba(76,175,80,0); }
-      40%{ box-shadow: 0 0 0 1px rgba(76,175,80,0.18) inset, 0 0 26px rgba(76,175,80,0.18); }
-      100%{ box-shadow: 0 0 0 1px rgba(76,175,80,0.10) inset, 0 0 18px rgba(76,175,80,0.06); }
+      0%{ box-shadow: 0 0 0 1px rgba(94,232,160,0.10) inset, 0 0 0 rgba(94,232,160,0); }
+      40%{ box-shadow: 0 0 0 1px rgba(94,232,160,0.18) inset, 0 0 26px rgba(94,232,160,0.18); }
+      100%{ box-shadow: 0 0 0 1px rgba(94,232,160,0.10) inset, 0 0 18px rgba(94,232,160,0.06); }
     }
     @keyframes newGlowClm{
-      0%{ box-shadow: 0 0 0 1px rgba(33,150,243,0.10) inset, 0 0 0 rgba(33,150,243,0); }
-      40%{ box-shadow: 0 0 0 1px rgba(33,150,243,0.18) inset, 0 0 26px rgba(33,150,243,0.18); }
-      100%{ box-shadow: 0 0 0 1px rgba(33,150,243,0.10) inset, 0 0 18px rgba(33,150,243,0.06); }
+      0%{ box-shadow: 0 0 0 1px rgba(147,197,253,0.10) inset, 0 0 0 rgba(147,197,253,0); }
+      40%{ box-shadow: 0 0 0 1px rgba(147,197,253,0.18) inset, 0 0 26px rgba(147,197,253,0.18); }
+      100%{ box-shadow: 0 0 0 1px rgba(147,197,253,0.10) inset, 0 0 18px rgba(147,197,253,0.06); }
     }
     .lane.new.sig{ animation: newGlowSig 740ms var(--ease) 1; }
     .lane.new.att{ animation: newGlowAtt 740ms var(--ease) 1; }
@@ -392,9 +392,9 @@
       transition: width 260ms var(--ease);
       position:relative;
     }
-    .fill.sig{ background: linear-gradient(90deg, rgba(255,235,59,0.20), rgba(255,235,59,0.88)); }
-    .fill.att{ background: linear-gradient(90deg, rgba(76,175,80,0.20), rgba(76,175,80,0.88)); }
-    .fill.clm{ background: linear-gradient(90deg, rgba(33,150,243,0.20), rgba(33,150,243,0.88)); }
+    .fill.sig{ background: linear-gradient(90deg, rgba(255,213,86,0.20), rgba(255,213,86,0.88)); }
+    .fill.att{ background: linear-gradient(90deg, rgba(94,232,160,0.20), rgba(94,232,160,0.88)); }
+    .fill.clm{ background: linear-gradient(90deg, rgba(147,197,253,0.20), rgba(147,197,253,0.88)); }
 
     @keyframes shimmer {
       0%{ transform:translateX(-40%); opacity:0.0; }
@@ -452,22 +452,22 @@
       background-color: rgba(2,6,23,0.92);
       box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 0 1px rgba(255,255,255,0.05) inset;
     }
-    .mini.sig:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(255,235,59,0.10); }
-    .mini.att:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(76,175,80,0.10); }
-    .mini.clm:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(33,150,243,0.10); }
+    .mini.sig:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(255,213,86,0.10); }
+    .mini.att:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(94,232,160,0.10); }
+    .mini.clm:hover{ box-shadow: 0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(147,197,253,0.10); }
 
     /* mini border colors depending on slider status */
     .mini.armed.sig{
-      border-color: rgba(255,235,59,0.55);
-      box-shadow: 0 0 0 1px rgba(255,235,59,0.10) inset;
+      border-color: rgba(255,213,86,0.55);
+      box-shadow: 0 0 0 1px rgba(255,213,86,0.10) inset;
     }
     .mini.armed.att{
-      border-color: rgba(76,175,80,0.55);
-      box-shadow: 0 0 0 1px rgba(76,175,80,0.10) inset;
+      border-color: rgba(94,232,160,0.55);
+      box-shadow: 0 0 0 1px rgba(94,232,160,0.10) inset;
     }
     .mini.armed.clm{
-      border-color: rgba(33,150,243,0.55);
-      box-shadow: 0 0 0 1px rgba(33,150,243,0.10) inset;
+      border-color: rgba(147,197,253,0.55);
+      box-shadow: 0 0 0 1px rgba(147,197,253,0.10) inset;
     }
 
     /* "new item" glow pulse on minis */
