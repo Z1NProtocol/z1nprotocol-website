@@ -159,6 +159,7 @@
 
     .key-card{ background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 18px; position: relative; overflow: hidden; transition: all 220ms ease; cursor: pointer; }
     .key-card:hover{ transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.25); border-color: var(--keys-accent); }
+    .key-card.active-wallet{ border-color: var(--keys-accent); box-shadow: 0 0 0 1px var(--keys-accent); }
 
     .key-header{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .key-id{ font-size: 18px; font-weight: 600; color: var(--keys-accent); }
@@ -331,7 +332,7 @@
 </header>
 
 <main class="page">
-  <h1>Your Keys</h1>
+  <h1 style="display:flex; align-items:center; justify-content:space-between;"><span>Your Keys</span><button id="btnRefresh" style="width:44px; height:44px; border-radius:50%; border:2px solid var(--keys-accent); background:transparent; color:var(--keys-accent); font-size:20px; cursor:pointer; transition:all 0.2s; display:none;" title="Refresh Keys">Ω</button></h1>
   <p class="lead">Your Keys are soulbound proofs of presence in the Field — each one a unique coordinate in the 21M-Key manifold.</p>
   <p class="lead-small">From here you can manage your signals, attestations, and artefacts. Each Key unlocks its own dashboard.</p>
 
@@ -896,7 +897,7 @@
     }
 
     var card = document.createElement('div');
-    card.className = 'key-card';
+     card.className = 'key-card' + (isPrimary ? ' active-wallet' : '');
     
     var hasClaimable = key.claimableEpochs && key.claimableEpochs.length > 0;
     var claimableAmount = hasClaimable ? key.claimableEpochs.reduce(function(sum, e) { return sum + parseFloat(e.amount || 0); }, 0) : 0;
@@ -1080,6 +1081,9 @@
       document.getElementById('keysToolbar').style.display = 'block';
       document.getElementById('filterToolbar').style.display = allKeys.length >= 5 ? 'flex' : 'none';
       document.getElementById('keysContainer').style.display = 'grid';
+      document.getElementById('btnRefresh').style.display = 'flex';
+      document.getElementById('btnRefresh').style.alignItems = 'center';
+      document.getElementById('btnRefresh').style.justifyContent = 'center';
       document.getElementById('mintMoreSection').style.display = 'block';
 
       renderKeys();
@@ -1187,6 +1191,12 @@
 
   document.getElementById('btnConnect').onclick = connectWallet;
   document.getElementById('btnManageWallets').onclick = addAnotherWallet;
+  document.getElementById('btnRefresh').onclick = function() { 
+    var btn = this; 
+    btn.style.animation = 'spin 0.8s linear'; 
+    setTimeout(function() { btn.style.animation = ''; }, 800); 
+    loadAllKeys(false); 
+  };
 
   (async function() {
     var eth = getProvider();
