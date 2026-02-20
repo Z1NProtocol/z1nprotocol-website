@@ -123,23 +123,17 @@
       '  color: var(--accent, #66d69a); font-size: 10px;',
       '}',
       '',
-      '/* Shared/Viewed-by artefact cards: soft yellow border */',
-      '.artefact-card.status-viewedby {',
-      '  border-color: rgba(255,214,102,0.4) !important;',
-      '}',
-      '.artefact-card.status-viewedby:hover {',
-      '  border-color: rgba(255,214,102,0.6) !important;',
-      '}',
+      '/* Shared/Viewed-by artefact cards: no special border */',
+      '.artefact-card.status-viewedby,',
+      '.artefact-card.status-viewedby:hover,',
       '.artefact-list-card.status-viewedby {',
-      '  border-color: rgba(255,214,102,0.4) !important;',
+      '  border-color: var(--card-border, rgba(148,163,184,0.25)) !important;',
       '}',
       '',
-      '/* Received artefact cards: soft cyan/teal border */',
-      '.artefact-card.status-received {',
-      '  border-color: rgba(102,214,214,0.4) !important;',
-      '}',
+      '/* Received artefact cards: no special border */',
+      '.artefact-card.status-received,',
       '.artefact-card.status-received:hover {',
-      '  border-color: rgba(102,214,214,0.6) !important;',
+      '  border-color: var(--card-border, rgba(148,163,184,0.25)) !important;',
       '}',
       '',
       '/* v2.5.0: Unseen notification: green glow border */',
@@ -1242,22 +1236,51 @@
     updateBadgesAndFeed();
   }
 
+  // v2.5.0: Badge helper — applies and protects badge from main JS overwriting
+  var _lastBadgeUnread = 0;
+  
+  function applyBadge(unreadCount) {
+    _lastBadgeUnread = unreadCount;
+    var badge = document.getElementById('artefactBadge');
+    if (!badge) return;
+    
+    if (unreadCount > 0) {
+      badge.textContent = String(unreadCount);
+      badge.style.cssText = 'background:rgba(102,214,154,0.5); color:#fff;';
+    } else if (ownedArtefacts.length > 0) {
+      badge.textContent = String(ownedArtefacts.length);
+      badge.style.cssText = '';
+    } else {
+      badge.textContent = '';
+      badge.style.cssText = '';
+    }
+  }
+  
+  // Watch for external overwrites of badge (e.g. main Key-dashboard.js)
+  function watchBadge() {
+    var badge = document.getElementById('artefactBadge');
+    if (!badge) {
+      setTimeout(watchBadge, 1000);
+      return;
+    }
+    var observer = new MutationObserver(function() {
+      if (_lastBadgeUnread > 0 && badge.textContent !== String(_lastBadgeUnread)) {
+        badge.textContent = String(_lastBadgeUnread);
+        badge.style.cssText = 'background:rgba(102,214,154,0.5); color:#fff;';
+      }
+    });
+    observer.observe(badge, { childList: true, characterData: true, subtree: true });
+  }
+  watchBadge();
+
   // v2.5.0: Standalone function to update badges + overview feed
   // Can be called from refresh() AND from tab switches
   function updateBadgesAndFeed() {
     var unreadCount = getUnreadNotificationCount();
+    console.log('Z1NArtefacts: updateBadgesAndFeed — unreadCount=' + unreadCount + ', unseenIds=' + JSON.stringify(unseenArtefactIds));
 
     // Update tab-nav badge
-    var badge = document.getElementById('artefactBadge');
-    if (badge) {
-      if (unreadCount > 0) {
-        badge.textContent = unreadCount;
-        badge.style.cssText = '';
-      } else {
-        badge.textContent = ownedArtefacts.length || '';
-        badge.style.cssText = '';
-      }
-    }
+    applyBadge(unreadCount);
     
     // Inject unseen artefact items into overview activity feed
     var feed = document.getElementById('activityFeed');
