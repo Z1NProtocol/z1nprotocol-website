@@ -1245,12 +1245,61 @@
       var unreadCount = getUnreadNotificationCount();
       if (unreadCount > 0) {
         badge.textContent = unreadCount;
+        badge.style.display = '';
         badge.style.background = 'var(--accent, #66d69a)';
         badge.style.color = '#000';
       } else {
         badge.textContent = ownedArtefacts.length;
+        badge.style.display = '';
         badge.style.background = '';
         badge.style.color = '';
+      }
+    }
+    
+    // v2.5.0: Inject unseen artefact items into overview activity feed
+    var feed = document.getElementById('activityFeed');
+    if (feed) {
+      // Remove old artefact notifications first
+      feed.querySelectorAll('.activity-item.artefact-notif').forEach(function(el) { el.remove(); });
+      
+      if (Object.keys(unseenArtefactIds).length > 0) {
+        sharedWithMe.forEach(function(art) {
+          if (!unseenArtefactIds[art.tokenId]) return;
+          var type = unseenArtefactIds[art.tokenId];
+          var glyphs = keyGlyphsCache[art.sourceKeyId] || '';
+          var shortGlyph = glyphs ? ' (' + glyphs.split(' \u00b7 ').slice(0,2).join('\u00b7') + ')' : '';
+          var msg = type === 'new' 
+            ? 'Key #' + art.sourceKeyId + shortGlyph + ' shared an artefact with you'
+            : 'Key #' + art.sourceKeyId + shortGlyph + ' changed viewing access';
+          
+          var item = document.createElement('div');
+          item.className = 'activity-item unread artefact-notif';
+          item.style.cursor = 'pointer';
+          item.style.borderLeft = '3px solid var(--accent)';
+          item.onclick = function() { if (typeof switchTab === 'function') switchTab('artefacts'); };
+          item.innerHTML = '<div class="activity-icon artefact">\u25C8</div>' +
+            '<div class="activity-content">' +
+              '<div class="activity-title" style="color:var(--accent);">' + msg + '</div>' +
+            '</div>';
+          
+          if (feed.firstChild) {
+            feed.insertBefore(item, feed.firstChild);
+          } else {
+            feed.appendChild(item);
+          }
+        });
+      }
+      
+      // Update overview artefacts presence badge
+      var badgeArtefacts = document.getElementById('badgeArtefacts');
+      if (badgeArtefacts) {
+        var uc = Object.keys(unseenArtefactIds).length;
+        badgeArtefacts.textContent = uc;
+        if (uc > 0) {
+          badgeArtefacts.classList.add('has-items');
+        } else {
+          badgeArtefacts.classList.remove('has-items');
+        }
       }
     }
   }
