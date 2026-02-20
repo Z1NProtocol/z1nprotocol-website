@@ -1289,14 +1289,14 @@
       feed.querySelectorAll('.activity-item.artefact-notif').forEach(function(el) { el.remove(); });
       
       if (unreadCount > 0) {
+        var z = getZ1N();
+        var currentEpoch = z.epoch || '—';
         sharedWithMe.forEach(function(art) {
           if (!unseenArtefactIds[art.tokenId]) return;
           var type = unseenArtefactIds[art.tokenId];
-          var glyphs = keyGlyphsCache[art.sourceKeyId] || '';
-          var shortGlyph = glyphs ? ' (' + glyphs + ')' : '';
           var msg = type === 'new' 
-            ? 'Key #' + art.sourceKeyId + shortGlyph + ' shared an artefact with you'
-            : 'Key #' + art.sourceKeyId + shortGlyph + ' changed viewing access';
+            ? 'shared an artefact with you'
+            : 'changed viewing access';
           
           var item = document.createElement('div');
           item.className = 'activity-item unread artefact-notif';
@@ -1305,7 +1305,7 @@
           item.onclick = function() { if (typeof switchTab === 'function') switchTab('artefacts'); };
           item.innerHTML = '<div class="activity-icon artefact">\u25C8</div>' +
             '<div class="activity-content">' +
-              '<div class="activity-title" style="color:var(--accent);">' + msg + '</div>' +
+              '<div class="activity-title" style="color:var(--accent);"><strong style="color:var(--accent);">K#' + art.sourceKeyId + '</strong> ' + msg + ' <span style="color:var(--text-soft);font-size:11px;">\u00b7 Epoch ' + currentEpoch + '</span></div>' +
             '</div>';
           
           if (feed.firstChild) {
