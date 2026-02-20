@@ -1239,30 +1239,33 @@
     if (isLoadingOwned) { isLoadingOwned = false; lastOwnedSig = ''; renderOwnedSection(); }
     if (isLoadingShared) { isLoadingShared = false; lastSharedSig = ''; renderSharedSection(); }
     
-    // Update tab badge
+    updateBadgesAndFeed();
+  }
+
+  // v2.5.0: Standalone function to update badges + overview feed
+  // Can be called from refresh() AND from tab switches
+  function updateBadgesAndFeed() {
+    var unreadCount = getUnreadNotificationCount();
+
+    // Update tab-nav badge
     var badge = document.getElementById('artefactBadge');
     if (badge) {
-      var unreadCount = getUnreadNotificationCount();
       if (unreadCount > 0) {
         badge.textContent = unreadCount;
-        badge.style.display = '';
-        badge.style.background = 'var(--accent, #66d69a)';
-        badge.style.color = '#000';
+        badge.style.cssText = 'display:inline-block !important; background:var(--accent, #66d69a) !important; color:#000 !important; font-weight:700;';
       } else {
-        badge.textContent = ownedArtefacts.length;
-        badge.style.display = '';
-        badge.style.background = '';
-        badge.style.color = '';
+        badge.textContent = ownedArtefacts.length || '';
+        badge.style.cssText = '';
       }
     }
     
-    // v2.5.0: Inject unseen artefact items into overview activity feed
+    // Inject unseen artefact items into overview activity feed
     var feed = document.getElementById('activityFeed');
     if (feed) {
       // Remove old artefact notifications first
       feed.querySelectorAll('.activity-item.artefact-notif').forEach(function(el) { el.remove(); });
       
-      if (Object.keys(unseenArtefactIds).length > 0) {
+      if (unreadCount > 0) {
         sharedWithMe.forEach(function(art) {
           if (!unseenArtefactIds[art.tokenId]) return;
           var type = unseenArtefactIds[art.tokenId];
@@ -1293,9 +1296,8 @@
       // Update overview artefacts presence badge
       var badgeArtefacts = document.getElementById('badgeArtefacts');
       if (badgeArtefacts) {
-        var uc = Object.keys(unseenArtefactIds).length;
-        badgeArtefacts.textContent = uc;
-        if (uc > 0) {
+        badgeArtefacts.textContent = unreadCount;
+        if (unreadCount > 0) {
           badgeArtefacts.classList.add('has-items');
         } else {
           badgeArtefacts.classList.remove('has-items');
@@ -1323,8 +1325,38 @@
     grantViewing: grantViewing,
     revokeViewing: revokeViewing,
     restoreViewing: restoreViewing,
-    updateOverviewPreview: updateOverviewPreview
+    updateOverviewPreview: updateOverviewPreview,
+    updateBadgesAndFeed: updateBadgesAndFeed
   };
+
+  // v2.5.0: Re-inject feed items whenever overview tab becomes visible
+  // The main JS may rebuild the activity feed on tab switch, wiping our items
+  var _origSwitchTab = window.switchTab;
+  if (typeof _origSwitchTab === 'function') {
+    window.switchTab = function(tab) {
+      _origSwitchTab(tab);
+      if (tab === 'overview') {
+        setTimeout(updateBadgesAndFeed, 300);
+      }
+    };
+  } else {
+    // switchTab not yet defined — wait and patch
+    var _patchInterval = setInterval(function() {
+      if (typeof window.switchTab === 'function' && !window._z1nArtefactPatched) {
+        window._z1nArtefactPatched = true;
+        var orig = window.switchTab;
+        window.switchTab = function(tab) {
+          orig(tab);
+          if (tab === 'overview') {
+            setTimeout(updateBadgesAndFeed, 300);
+          }
+        };
+        clearInterval(_patchInterval);
+      }
+    }, 500);
+    // Stop trying after 30s
+    setTimeout(function() { clearInterval(_patchInterval); }, 30000);
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 500); });
