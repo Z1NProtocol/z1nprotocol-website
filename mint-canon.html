@@ -89,7 +89,15 @@
 }
 
     .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
-    .nav-links a.active-keys { color: var(--keys-accent); }
+    .nav-links a.active-keys{ color:var(--keys-accent); }
+.nav-links a.active-keys::after{
+  content:"";
+  position:absolute;
+  left:0; bottom:-4px;
+  width:100%; height:2px;
+  border-radius:999px;
+  background:linear-gradient(to right, var(--keys-accent), rgba(255,213,86,0.4));
+}
 
     .page { max-width: 1000px; margin: 0 auto; padding: 32px 24px 72px; }
     .back-link { color: var(--text-soft); font-size: 13px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 20px; }
@@ -195,6 +203,7 @@
       <a href="how-it-works.html">How it Works</a>
       <a href="live-stats.html">Live Stats</a>
       <a href="artefacts.html">Artefacts</a>
+      <a href="nbi-artefacts.html">4 NBIs</a>
       <a href="mint-key.html">Mint Key</a>
       <a href="your-keys.html" class="active-keys">Your Keys</a>
     </nav>

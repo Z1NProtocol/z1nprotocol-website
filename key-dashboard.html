@@ -71,7 +71,15 @@
   opacity:0.6;
   font-weight:400;
 }
-.nav-links{display:flex;gap:22px;font-size:13px;opacity:0.85}.nav-links a.active{color:var(--keys-accent)}
+.nav-links{display:flex;gap:22px;font-size:13px;opacity:0.85}.nav-links a.active-keys{ color:var(--keys-accent); }
+.nav-links a.active-keys::after{
+  content:"";
+  position:absolute;
+  left:0; bottom:-4px;
+  width:100%; height:2px;
+  border-radius:999px;
+  background:linear-gradient(to right, var(--keys-accent), rgba(255,213,86,0.4));
+}
     .page{max-width:1200px;margin:0 auto;padding:24px 24px 80px}.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-soft);font-size:13px;margin-bottom:20px;transition:color 0.2s}.back-link:hover{color:var(--keys-accent)}
     .connect-prompt{text-align:center;padding:80px 20px}.connect-prompt p{color:var(--text-soft);margin-bottom:20px;font-size:15px}.btn-connect{padding:14px 32px;border-radius:999px;border:1px solid var(--keys-accent);background:transparent;color:var(--keys-accent);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s}.btn-connect:hover{background:rgba(255,213,86,0.1)}
     .key-header-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}.key-identity{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.key-id{font-size:28px;font-weight:700;color:var(--keys-accent)}.genesis-badge{background:linear-gradient(90deg,var(--keys-accent),#bf9f0f);color:#000;font-size:9px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;display:none}.key-glyphs{font-size:15px;letter-spacing:2px;color:var(--text-soft);font-family:"Segoe UI Symbol",sans-serif}.key-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-soft)}.key-meta a{color:var(--accent)}.wallet-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:11px;background:rgba(255,213,86,0.15);border:1px solid rgba(255,213,86,0.3)}.wallet-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--keys-accent)}
