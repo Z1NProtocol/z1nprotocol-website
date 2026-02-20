@@ -1252,7 +1252,7 @@
     if (badge) {
       if (unreadCount > 0) {
         badge.textContent = unreadCount;
-        badge.style.cssText = 'display:inline-block !important; background:var(--accent, #66d69a) !important; color:#000 !important; font-weight:700;';
+        badge.style.cssText = '';
       } else {
         badge.textContent = ownedArtefacts.length || '';
         badge.style.cssText = '';
@@ -1270,7 +1270,7 @@
           if (!unseenArtefactIds[art.tokenId]) return;
           var type = unseenArtefactIds[art.tokenId];
           var glyphs = keyGlyphsCache[art.sourceKeyId] || '';
-          var shortGlyph = glyphs ? ' (' + glyphs.split(' \u00b7 ').slice(0,2).join('\u00b7') + ')' : '';
+          var shortGlyph = glyphs ? ' (' + glyphs + ')' : '';
           var msg = type === 'new' 
             ? 'Key #' + art.sourceKeyId + shortGlyph + ' shared an artefact with you'
             : 'Key #' + art.sourceKeyId + shortGlyph + ' changed viewing access';
