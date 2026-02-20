@@ -1191,11 +1191,22 @@
 
   document.getElementById('btnConnect').onclick = connectWallet;
   document.getElementById('btnManageWallets').onclick = addAnotherWallet;
-  document.getElementById('btnRefresh').onclick = function() { 
+  document.getElementById('btnRefresh').onclick = async function() { 
     var btn = this; 
     btn.style.animation = 'spin 0.8s linear'; 
     setTimeout(function() { btn.style.animation = ''; }, 800); 
-    loadAllKeys(false); 
+    var eth = getProvider();
+    if (eth) {
+      try {
+        var accounts = await eth.request({ method: 'eth_accounts' });
+        if (accounts && accounts.length) {
+          primaryWallet = accounts[0].toLowerCase();
+          accounts.forEach(function(a) { Z1NWallets.register(a); });
+          allConnectedAccounts = accounts;
+        }
+      } catch (e) {}
+    }
+    await loadAllKeys(false); 
   };
 
   (async function() {
