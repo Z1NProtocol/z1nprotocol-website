@@ -252,7 +252,7 @@
     gap: 10px;
     margin-top: 12px;
   }
-  @media(max-width: 600px) { .unlocks-grid { grid-template-columns: 1fr; } }
+  @media(max-width: 600px) { .unlocks-grid { grid-template-columns: 1fr 1fr !important; } }
 
   .unlock-item {
     padding: 12px 14px;
@@ -481,29 +481,6 @@
         </div>
       </div>
 
-      <!-- WHAT YOUR KEY UNLOCKS -->
-      <div class="divider"></div>
-      <div style="margin-top: 4px;">
-        <div class="step-label">What your Key unlocks</div>
-        <div class="unlocks-grid">
-          <div class="unlock-item signals">
-            <div class="unlock-label">Signals</div>
-            <div class="unlock-desc">Send up to 2 signals per epoch with one of 4 intents (ΩC, ΩI, ΩK, ΩS)</div>
-          </div>
-          <div class="unlock-item attests">
-            <div class="unlock-label">Attestations</div>
-            <div class="unlock-desc">Attest other Keys' signals to amplify meaning and boost rewards</div>
-          </div>
-          <div class="unlock-item artefacts">
-            <div class="unlock-label">Artefacts</div>
-            <div class="unlock-desc">A live visual mirror rendering your participation patterns across epochs</div>
-          </div>
-          <div class="unlock-item treasury">
-            <div class="unlock-label">Claims</div>
-            <div class="unlock-desc">Settle epoch claims from attested signals — capture, return to the Field, or gift to Nexus</div>
-          </div>
-        </div>
-      </div>
     </article>
 
     <!-- NBI CARD -->
@@ -551,6 +528,29 @@ flow := {
         </p>
       </div>
     </article>
+  </section>
+
+  <!-- WHAT A KEY UNLOCKS — universal, BI + NBI -->
+  <section style="margin-top: 32px;">
+    <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 12px;">What every Key unlocks</div>
+    <div class="unlocks-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="unlock-item signals">
+        <div class="unlock-label">Signals</div>
+        <div class="unlock-desc">Send up to 2 signals per epoch with one of 4 intents (ΩC, ΩI, ΩK, ΩS)</div>
+      </div>
+      <div class="unlock-item attests">
+        <div class="unlock-label">Attestations</div>
+        <div class="unlock-desc">Attest other Keys' signals to amplify meaning in the Field</div>
+      </div>
+      <div class="unlock-item artefacts">
+        <div class="unlock-label">Artefacts</div>
+        <div class="unlock-desc">A live visual mirror rendering your participation patterns across epochs</div>
+      </div>
+      <div class="unlock-item treasury">
+        <div class="unlock-label">Claims</div>
+        <div class="unlock-desc">Settle epoch claims from attested signals — capture, return to the Field, or gift to Nexus</div>
+      </div>
+    </div>
   </section>
 </main>
 
