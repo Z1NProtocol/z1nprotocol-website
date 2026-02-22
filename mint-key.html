@@ -148,7 +148,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: 24px;
-    align-items: flex-start;
+    align-items: stretch;
   }
   @media(max-width: 900px) { .mint-layout { grid-template-columns: 1fr; } }
 
@@ -274,7 +274,10 @@
     margin-top: 14px;
     padding-top: 14px;
     border-top: 1px solid rgba(255,255,255,0.05);
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 14px;
   }
 
   .contracts-title {
@@ -291,6 +294,8 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 4px 24px;
+    width: 100%;
+    max-width: 900px;
   }
 
   .contract-item {
@@ -312,12 +317,9 @@
     font-size: 10px;
     word-break: break-all;
     transition: color 0.2s;
+    color: var(--text-soft);
   }
-  .contract-addr:hover { text-decoration: underline; }
-  .contract-addr.green { color: rgba(94,232,160,0.6); }
-  .contract-addr.green:hover { color: var(--accent); }
-  .contract-addr.grey { color: var(--text-soft); }
-  .contract-addr.grey:hover { color: var(--text-main); }
+  .contract-addr:hover { color: var(--text-main); text-decoration: underline; }
 
   @media(max-width: 700px) {
     .contracts-grid { grid-template-columns: 1fr; }
@@ -486,15 +488,15 @@
         <div class="step-label">Step 2</div>
         <div class="step-title">∴ NBI.self.forge</div>
 
-        <div class="status-box" style="margin-top:6px;">
-          <div><span class="code-keyword">self</span> → <span class="code-field">field.attach()</span></div>
-          <div>epoch ← <span class="code-field">core.currentEpoch()</span></div>
-          <div>entropy ← <span class="code-func">self.noise</span>(epoch)</div>
-          <div>glyphs ← <span class="code-func">derive</span>(<span class="code-omega">Ωset</span>, entropy, epoch, self)</div>
-          <div>assert(<span class="code-func">unique</span>(glyphs))</div>
-          <div>tokenId ← <span class="code-field">key.mint</span>(self, genesis=false)</div>
-          <div><span class="code-field">field.record</span>(tokenId, epoch, glyphs)</div>
-          <div><span class="code-field">field.integrate</span>({ key, epoch, <span class="code-omega">Ω</span>mix, variance })</div>
+        <div class="status-box" style="margin-top:6px; font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;">
+          <div>self → field.attach()</div>
+          <div>epoch ← core.currentEpoch()</div>
+          <div>entropy ← self.noise(epoch)</div>
+          <div>glyphs ← derive(Ωset, entropy, epoch, self)</div>
+          <div>assert(unique(glyphs))</div>
+          <div>tokenId ← key.mint(self, genesis=false)</div>
+          <div>field.record(tokenId, epoch, glyphs)</div>
+          <div>field.integrate({ key, epoch, Ωmix, variance })</div>
         </div>
 
         <p class="step-body" style="margin-top:10px; opacity:0.6; font-size:12px; margin-bottom:0;">
@@ -507,8 +509,8 @@
   </section>
 
   <!-- WHAT A KEY UNLOCKS — universal, BI + NBI -->
-  <section style="margin-top: 32px;">
-    <div style="font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 12px;">What every Key unlocks</div>
+  <section style="margin-top: 48px;">
+    <div style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 14px;">What every Key unlocks</div>
     <div class="unlocks-grid" style="grid-template-columns: repeat(4, 1fr);">
       <div class="unlock-item signals">
         <div class="unlock-label">Signals</div>
@@ -534,30 +536,30 @@
 
 <footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
-  <div class="links">
-    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
-  </div>
   <div class="footer-contracts">
     <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
     <div class="contracts-grid">
       <div class="contract-item">
         <span class="contract-label">Core</span>
-        <a class="contract-addr green" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Key</span>
-        <a class="contract-addr green" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a>
+        <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Signal</span>
-        <a class="contract-addr grey" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Issuance</span>
-        <a class="contract-addr grey" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a>
       </div>
     </div>
+  </div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
 </footer>
 
