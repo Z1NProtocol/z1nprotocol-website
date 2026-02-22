@@ -270,11 +270,11 @@
   .unlock-item.artefacts .unlock-label { color: var(--mint); }
   .unlock-item.treasury .unlock-label { color: var(--aether); }
 
-  /* CONTRACTS IN FOOTER */
   .footer-contracts {
     margin-top: 14px;
     padding-top: 14px;
     border-top: 1px solid rgba(255,255,255,0.05);
+    text-align: left;
   }
 
   .contracts-title {
@@ -308,13 +308,16 @@
   }
 
   .contract-addr {
-    color: var(--text-soft);
     font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
     font-size: 10px;
     word-break: break-all;
     transition: color 0.2s;
   }
-  .contract-addr:hover { color: var(--accent); text-decoration: underline; }
+  .contract-addr:hover { text-decoration: underline; }
+  .contract-addr.green { color: rgba(94,232,160,0.6); }
+  .contract-addr.green:hover { color: var(--accent); }
+  .contract-addr.grey { color: var(--text-soft); }
+  .contract-addr.grey:hover { color: var(--text-main); }
 
   @media(max-width: 700px) {
     .contracts-grid { grid-template-columns: 1fr; }
@@ -352,9 +355,14 @@
   /* FOOTER */
   footer {
     border-top: 1px solid rgba(255,255,255,0.05);
-    padding: 18px 20px; font-size: 12px;
-    text-align: center; opacity: 0.85;
+    padding: 18px 24px;
+    font-size: 12px;
+    text-align: center;
+    opacity: 0.85;
     margin-top: 44px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
   }
   footer .tagline { margin-bottom: 6px; font-size: 13px; }
   footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
@@ -535,19 +543,19 @@
     <div class="contracts-grid">
       <div class="contract-item">
         <span class="contract-label">Core</span>
-        <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a>
+        <a class="contract-addr green" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Key</span>
-        <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a>
+        <a class="contract-addr green" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Signal</span>
-        <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a>
+        <a class="contract-addr grey" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Issuance</span>
-        <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a>
+        <a class="contract-addr grey" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a>
       </div>
     </div>
   </div>
