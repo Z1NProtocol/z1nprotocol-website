@@ -730,11 +730,26 @@ flow := {
   function finishConnect(walletName, networkName) {
     setBtnPrimary(btnConnect, true);
     btnConnect.textContent = walletName + ' ✓';
-    if (btnMint) btnMint.disabled = false;
     if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected via ' + walletName + '</span>';
     if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
-    if (statusNet) statusNet.textContent = 'Network: ' + networkName;
-    if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
+
+    // Check actual chain after connect
+    selectedProvider.request({ method: 'eth_chainId' }).then(function(chainId) {
+      if (chainId === EXPECTED_CHAIN_ID) {
+        if (statusNet) statusNet.innerHTML = 'Network: <span class="highlight">' + CHAIN_NAME + '</span>';
+        if (btnMint) btnMint.disabled = false;
+        if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
+      } else {
+        var chainName = {
+          '0x1': 'Ethereum', '0xa4b1': 'Arbitrum', '0xa': 'Optimism',
+          '0x38': 'BNB Chain', '0x2105': 'Base', '0xaa36a7': 'Sepolia'
+        }[chainId] || ('Chain ' + parseInt(chainId, 16));
+        if (statusNet) statusNet.innerHTML = 'Network: <span style="color:var(--danger);">' + chainName + '</span> <span style="font-size:10px;opacity:0.7;">(switch to Polygon)</span>';
+        if (btnMint) btnMint.disabled = true;
+        if (mintStatus) { mintStatus.textContent = "Please switch to Polygon to mint."; mintStatus.className = "status-text status-error"; }
+      }
+    });
+
     loadEpochAndPrice();
 
     if (selectedProvider && selectedProvider.on) {
@@ -743,7 +758,21 @@ flow := {
         else {
           currentAccount = accounts[0];
           if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
-          if (mintStatus) { mintStatus.textContent = "Account changed. Ready to mint."; mintStatus.className = "status-text"; }
+        }
+      });
+      selectedProvider.on('chainChanged', function(chainId) {
+        if (chainId === EXPECTED_CHAIN_ID) {
+          if (statusNet) statusNet.innerHTML = 'Network: <span class="highlight">' + CHAIN_NAME + '</span>';
+          if (btnMint) btnMint.disabled = false;
+          if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
+        } else {
+          var chainName = {
+            '0x1': 'Ethereum', '0xa4b1': 'Arbitrum', '0xa': 'Optimism',
+            '0x38': 'BNB Chain', '0x2105': 'Base', '0xaa36a7': 'Sepolia'
+          }[chainId] || ('Chain ' + parseInt(chainId, 16));
+          if (statusNet) statusNet.innerHTML = 'Network: <span style="color:var(--danger);">' + chainName + '</span> <span style="font-size:10px;opacity:0.7;">(switch to Polygon)</span>';
+          if (btnMint) btnMint.disabled = true;
+          if (mintStatus) { mintStatus.textContent = "Please switch to Polygon to mint."; mintStatus.className = "status-text status-error"; }
         }
       });
     }
