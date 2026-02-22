@@ -1,484 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-   <meta charset="UTF-8" />
-   <title>Z1N Protocol – Mint your Key</title>
-  <meta name="description" content="Mint a Z1N Key on Polygon: a soulbound identity anchored to your address. Connect wallet, sign a zero-gas ritual, and mint at the current epoch price to enter the Field." />
-   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex,follow" />
+<head>
+<meta charset="UTF-8" />
+<title>Z1N Protocol – Mint your Key</title>
+<meta name="description" content="Mint a Z1N Key on Polygon: a soulbound identity anchored to your address. Connect wallet and mint at the current epoch price to enter the Field." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,follow" />
+<meta name="referrer" content="strict-origin-when-cross-origin">
 
-  <link rel="canonical" href="https://www.z1nprotocol.xyz/mint-key.html" />
+<link rel="canonical" href="https://www.z1nprotocol.xyz/mint-key.html" />
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Z1N Protocol" />
-  <meta property="og:title" content="Z1N Protocol – Mint your Key" />
-  <meta property="og:description" content="Mint a soulbound Z1N Key on Polygon. Connect wallet → sign ritual → mint at the current epoch price." />
-  <meta property="og:url" content="https://www.z1nprotocol.xyz/mint-key.html" />
-  <meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
-  <meta property="og:image:type" content="image/svg+xml" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Z1N — Mint your Key" />
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Z1N Protocol" />
+<meta property="og:title" content="Z1N Protocol – Mint your Key" />
+<meta property="og:description" content="Mint a soulbound Z1N Key on Polygon. Connect wallet → mint at the current epoch price." />
+<meta property="og:url" content="https://www.z1nprotocol.xyz/mint-key.html" />
+<meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+<meta property="og:image:type" content="image/svg+xml" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Z1N — Mint your Key" />
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@z1n_AI" />
-  <meta name="twitter:title" content="Z1N Protocol – Mint your Key" />
-  <meta name="twitter:description" content="Mint a soulbound Z1N Key on Polygon. Connect wallet → sign ritual → mint at the current epoch price." />
-  <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@z1n_AI" />
+<meta name="twitter:title" content="Z1N Protocol – Mint your Key" />
+<meta name="twitter:description" content="Mint a soulbound Z1N Key on Polygon. Connect wallet → mint at the current epoch price." />
+<meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": "https://www.z1nprotocol.xyz/mint-key.html#webpage",
-    "url": "https://www.z1nprotocol.xyz/mint-key.html",
-    "name": "Z1N Protocol – Mint your Key",
-    "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
-    "about": [
-      { "@type": "Thing", "name": "Soulbound identity" },
-      { "@type": "Thing", "name": "Polygon" },
-      { "@type": "Thing", "name": "Epoch-based pricing" },
-      { "@type": "Thing", "name": "Z1N Key" }
-    ],
-    "inLanguage": "en"
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://www.z1nprotocol.xyz/mint-key.html#webpage",
+  "url": "https://www.z1nprotocol.xyz/mint-key.html",
+  "name": "Z1N Protocol – Mint your Key",
+  "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
+  "about": [
+    { "@type": "Thing", "name": "Soulbound identity" },
+    { "@type": "Thing", "name": "Polygon" },
+    { "@type": "Thing", "name": "Epoch-based pricing" },
+    { "@type": "Thing", "name": "Z1N Key" }
+  ],
+  "inLanguage": "en"
+}
+</script>
+
+<style>
+  :root {
+    --bg: #050812;
+    --card-bg: #020617;
+    --text-main: #ffffff;
+    --text-soft: #8f9ab5;
+    --accent: #5ee8a0;
+    --accent-soft: #3ab876;
+    --card-border: rgba(148, 163, 184, 0.25);
+    --danger: #f87171;
+    --warning: #ffd556;
+    --keys-accent: #ffd556;
   }
-  </script>
-
-  <style>
-    :root {
-      --bg: #050812;
-      --card-bg: #020617;
-      --text-main: #ffffff;
-      --text-soft: #8f9ab5;
-      --accent: #5ee8a0;
-      --accent-soft: #3ab876;
-      --card-border: rgba(148, 163, 184, 0.25);
-      --danger: #f97373;
-      --warning: #facc15;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--text-main);
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    a:hover { opacity: 0.9; }
-
-    header {
-      height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      margin-bottom: 20px;
-    }
-
-    .nav-inner {
-      width: 100%;
-      max-width: 1200px;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo-wrap { display: flex; align-items: center; gap: 8px; }
-    .logo-link { display: inline-flex; align-items: center; gap: 8px; }
-
-    .logo-dot {
-      width: 24px; height: 24px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      line-height: 1;
-    }
-
-    .logo-text{
-  font-size:11px;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  display:flex;
-  gap:6px;
-}
-
-.logo-main{
-  opacity:1;
-  font-weight:600;
-}
-
-.logo-sub{
-  opacity:0.6;
-  font-weight:400;
-}
-
-
-    .nav-links {
-      display: flex;
-      gap: 22px;
-      font-size: 13px;
-      opacity: 0.85;
-    }
-
-    .nav-links a { position: relative; }
-    .nav-links a.active { color: var(--accent); }
-
-    .nav-links a.active::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -4px;
-      width: 100%;
-      height: 2px;
-      border-radius: 999px;
-      background: linear-gradient(to right, var(--accent), var(--accent-soft));
-    }
-
-    @media(max-width: 900px){
-      .nav-inner { padding: 0 16px; }
-      .nav-links { font-size: 12px; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
-    }
-
-    .page {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 24px 56px;
-    }
-
-    @media(max-width: 900px){ .page { padding: 32px 18px 44px; } }
-
-    h1 {
-      font-size: 40px;
-      margin: 0 0 10px 0;
-      letter-spacing: -0.02em;
-    }
-
-    .lead {
-      font-size: 17px;
-      opacity: 0.85;
-      line-height: 1.65;
-      margin-bottom: 8px;
-      max-width: 720px;
-    }
-
-    .lead-small {
-      font-size: 14px;
-      opacity: 0.7;
-      margin-top: 4px;
-      margin-bottom: 28px;
-      max-width: 720px;
-      line-height: 1.65;
-    }
-
-    .what {
-      margin-bottom: 24px;
-      max-width: 760px;
-    }
-
-    .what-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .what-body {
-      font-size: 14px;
-      opacity: 0.8;
-      line-height: 1.7;
-    }
-
-    .mint-layout {
-      margin-top: 24px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-      gap: 24px;
-      align-items: flex-start;
-    }
-
-    @media(max-width: 900px){ .mint-layout { grid-template-columns: 1fr; } }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 18px;
-      border: 1px solid var(--card-border);
-      padding: 18px 20px 20px;
-      font-size: 14px;
-    }
-
-    .card-header {
-      font-size: 13px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-soft);
-      margin-bottom: 10px;
-    }
-
-    .divider {
-      border-top: 1px solid rgba(148,163,184,0.28);
-      margin: 12px 0 14px;
-    }
-
-    .step-label {
-      font-size: 12px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-soft);
-      margin-bottom: 4px;
-    }
-
-    .step-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .step-body {
-      font-size: 13px;
-      line-height: 1.7;
-      opacity: 0.9;
-      margin-bottom: 8px;
-    }
-
-    .step-row { margin-bottom: 14px; }
-
-    .btn-row {
-      margin-top: 6px;
-      margin-bottom: 10px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.5);
-      font-size: 13px;
-      cursor: pointer;
-      background: transparent;
-      color: #e5e7eb;
-      min-width: 145px;
-      max-width: 145px;
-      text-align: center;
-      white-space: nowrap;
-      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
-    }
-
-    .btn:hover:not([disabled]) { border-color: var(--accent); }
-    .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
-
-    .btn-primary {
-      background: linear-gradient(90deg, rgba(94,232,160,0.55), rgba(58,184,118,0.55));
-      border-color: rgba(58,184,118,0.95);
-      color: #061018;
-      font-weight: 700;
-    }
-
-    .btn-primary:hover:not([disabled]) {
-      transform: translateY(-1px);
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
-      border-color: var(--accent-soft);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(94,232,160,0.14);
-    }
-
-    .btn-connect { border-color: var(--accent-soft); color: #e5e7eb; }
-
-    .btn-ghost {
-      border-style: dashed;
-      border-color: rgba(148,163,184,0.6);
-      font-size: 12px;
-      min-width: 190px;
-      max-width: 190px;
-    }
-
-    .status-text {
-      font-size: 12px;
-      color: var(--text-soft);
-      line-height: 1.6;
-    }
-
-    .status-error { color: var(--danger); }
-    .status-success { color: var(--accent); }
-    .status-warning { color: var(--warning); }
-
-    .status-box {
-      margin-top: 6px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(15,23,42,0.85);
-      border: 1px solid rgba(148,163,184,0.25);
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    .status-box div + div { margin-top: 2px; }
-    .status-box .highlight { color: var(--accent); font-weight: 600; }
-    .status-box .genesis { color: var(--warning); }
-
-    .code-block {
-      font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
-      font-size: 12px;
-      background: #020617;
-      border-radius: 12px;
-      border: 1px solid rgba(148,163,184,0.3);
-      padding: 10px 12px;
-      line-height: 1.7;
-      margin-top: 6px;
-      white-space: pre;
-      overflow-x: auto;
-    }
-
-    .code-keyword { color: #a5b4fc; }
-    .code-omega   { color: #facc15; }
-    .code-func    { color: #34d399; }
-    .code-field   { color: #38bdf8; }
-
-    .price-display {
-      margin-top: 8px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(94,232,160,0.08);
-      border: 1px solid rgba(94,232,160,0.25);
-    }
-
-    .price-main {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .price-detail {
-      font-size: 11px;
-      color: var(--text-soft);
-      margin-top: 2px;
-    }
-
-    .price-usd {
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-top: 4px;
-    }
-
-    footer {
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding: 18px 20px;
-      font-size: 12px;
-      text-align: center;
-      opacity: 0.85;
-    }
-
-    footer .tagline { margin-bottom: 6px; font-size: 13px; }
-    footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
-
-    /* WALLET MODAL */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.show {
-      display: flex;
-    }
-
-    .modal {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 24px;
-      max-width: 360px;
-      width: 90%;
-    }
-
-    .modal-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    .wallet-option {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .wallet-option:hover {
-      border-color: var(--accent);
-      background: rgba(94,232,160,0.05);
-    }
-
-    .wallet-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    .wallet-name {
-      font-size: 15px;
-      font-weight: 500;
-    }
-
-    .modal-close {
-      margin-top: 12px;
-      text-align: center;
-    }
-
-    .modal-close button {
-      background: none;
-      border: none;
-      color: var(--text-soft);
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .modal-close button:hover {
-      color: var(--text-main);
-    }
-
-    .no-wallet-msg {
-      text-align: center;
-      padding: 20px;
-    }
-
-    .no-wallet-msg p {
-      margin-bottom: 16px;
-      color: var(--text-soft);
-    }
-
-    .no-wallet-msg a {
-      color: var(--accent);
-      text-decoration: underline;
-    }
-  </style>
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  a:hover { opacity: 0.9; }
+
+  /* HEADER */
+  header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 20px;
+  }
+
+  .nav-inner {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo-wrap { display: flex; align-items: center; gap: 8px; }
+  .logo-link { display: inline-flex; align-items: center; gap: 8px; }
+
+  .logo-dot {
+    width: 24px; height: 24px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1;
+  }
+
+  .logo-text {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    display: flex;
+    gap: 6px;
+  }
+  .logo-main { opacity: 1; font-weight: 600; }
+  .logo-sub { opacity: 0.6; font-weight: 400; }
+
+  .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
+  .nav-links a { position: relative; }
+  .nav-links a.active { color: var(--accent); }
+  .nav-links a.active::after {
+    content: ""; position: absolute; left: 0; bottom: -4px;
+    width: 100%; height: 2px; border-radius: 999px;
+    background: linear-gradient(to right, var(--accent), var(--accent-soft));
+  }
+  .nav-links a.active-keys { color: var(--keys-accent); padding-bottom: 6px; border-bottom: 2px solid var(--keys-accent); }
+
+  @media(max-width: 900px) {
+    .nav-inner { padding: 0 16px; }
+    .nav-links { font-size: 12px; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
+  }
+
+  /* PAGE */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 56px;
+  }
+  @media(max-width: 900px) { .page { padding: 32px 18px 44px; } }
+
+  h1 { font-size: 40px; margin: 0 0 10px 0; letter-spacing: -0.02em; }
+  .lead { font-size: 17px; opacity: 0.85; line-height: 1.65; margin-bottom: 8px; max-width: 720px; }
+  .lead-small { font-size: 14px; opacity: 0.7; margin-top: 4px; margin-bottom: 28px; max-width: 720px; line-height: 1.65; }
+
+  /* LAYOUT */
+  .mint-layout {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: flex-start;
+  }
+  @media(max-width: 900px) { .mint-layout { grid-template-columns: 1fr; } }
+
+  /* CARDS */
+  .card {
+    background: var(--card-bg);
+    border-radius: 18px;
+    border: 1px solid var(--card-border);
+    padding: 18px 20px 20px;
+    font-size: 14px;
+  }
+
+  .card-header {
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 10px;
+  }
+
+  .divider { border-top: 1px solid rgba(148,163,184,0.28); margin: 12px 0 14px; }
+
+  .step-label {
+    font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text-soft);
+    margin-bottom: 4px;
+  }
+  .step-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .step-body { font-size: 13px; line-height: 1.7; opacity: 0.9; margin-bottom: 8px; }
+
+  /* BUTTONS */
+  .btn-row { margin-top: 6px; margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 7px 12px; border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.5);
+    font-size: 13px; cursor: pointer;
+    background: transparent; color: #e5e7eb;
+    min-width: 145px; max-width: 145px;
+    text-align: center; white-space: nowrap;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+  }
+  .btn:hover:not([disabled]) { border-color: var(--accent); }
+  .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+  .btn-primary {
+    background: linear-gradient(90deg, rgba(94,232,160,0.55), rgba(58,184,118,0.55));
+    border-color: rgba(58,184,118,0.95);
+    color: #061018; font-weight: 700;
+  }
+  .btn-primary:hover:not([disabled]) {
+    transform: translateY(-1px);
+    background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+    border-color: var(--accent-soft);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(94,232,160,0.14);
+  }
+
+  .btn-connect { border-color: var(--accent-soft); color: #e5e7eb; }
+
+  /* STATUS */
+  .status-text { font-size: 12px; color: var(--text-soft); line-height: 1.6; }
+  .status-error { color: var(--danger); }
+  .status-success { color: var(--accent); }
+
+  .status-box {
+    margin-top: 6px; padding: 8px 10px; border-radius: 10px;
+    background: rgba(15,23,42,0.85);
+    border: 1px solid rgba(148,163,184,0.25);
+    font-size: 12px; color: var(--text-soft);
+  }
+  .status-box div + div { margin-top: 2px; }
+  .status-box .highlight { color: var(--accent); font-weight: 600; }
+
+  /* PRICE */
+  .price-display {
+    margin-top: 8px; padding: 10px 12px; border-radius: 10px;
+    background: rgba(94,232,160,0.08);
+    border: 1px solid rgba(94,232,160,0.25);
+  }
+  .price-main { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .price-detail { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+
+  /* NBI CODE BLOCK */
+  .code-block {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
+    font-size: 12px; background: #020617;
+    border-radius: 12px; border: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 12px; line-height: 1.7;
+    margin-top: 6px; white-space: pre; overflow-x: auto;
+  }
+  .code-keyword { color: #a5b4fc; }
+  .code-omega { color: #facc15; }
+  .code-func { color: #34d399; }
+  .code-field { color: #38bdf8; }
+
+  /* WHAT YOUR KEY UNLOCKS */
+  .unlocks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+  }
+  @media(max-width: 600px) { .unlocks-grid { grid-template-columns: 1fr; } }
+
+  .unlock-item {
+    padding: 12px 14px;
+    background: rgba(15,23,42,0.5);
+    border: 1px solid rgba(148,163,184,0.15);
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .unlock-item .unlock-icon { font-size: 16px; margin-bottom: 4px; }
+  .unlock-item .unlock-label { font-weight: 600; color: var(--accent); margin-bottom: 2px; }
+  .unlock-item .unlock-desc { color: var(--text-soft); }
+
+  /* CONTRACT INFO */
+  .contract-info {
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: rgba(15,23,42,0.4);
+    border: 1px solid rgba(148,163,184,0.15);
+    border-radius: 10px;
+    font-size: 11px;
+    color: var(--text-soft);
+  }
+  .contract-info a { color: var(--accent); }
+  .contract-info a:hover { text-decoration: underline; }
+  .contract-row { display: flex; justify-content: space-between; padding: 3px 0; }
+  .contract-label { opacity: 0.7; }
+
+  /* WALLET MODAL */
+  .modal-overlay {
+    display: none; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 18px; padding: 24px; max-width: 360px; width: 90%;
+  }
+  .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 16px; text-align: center; }
+  .wallet-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border: 1px solid var(--card-border);
+    border-radius: 12px; margin-bottom: 10px;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .wallet-option:hover { border-color: var(--accent); background: rgba(94,232,160,0.05); }
+  .wallet-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .wallet-name { font-size: 15px; font-weight: 500; }
+  .modal-close { margin-top: 12px; text-align: center; }
+  .modal-close button { background: none; border: none; color: var(--text-soft); cursor: pointer; font-size: 13px; }
+  .modal-close button:hover { color: var(--text-main); }
+  .no-wallet-msg { text-align: center; padding: 20px; }
+  .no-wallet-msg p { margin-bottom: 16px; color: var(--text-soft); }
+  .no-wallet-msg a { color: var(--accent); text-decoration: underline; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 18px 20px; font-size: 12px;
+    text-align: center; opacity: 0.85;
+  }
+  footer .tagline { margin-bottom: 6px; font-size: 13px; }
+  footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
+</style>
 </head>
 
 <body>
@@ -488,10 +325,9 @@
       <a href="/index.html" class="logo-link">
         <div class="logo-dot">Ω</div>
         <div class="logo-text">
-  <span class="logo-main">Z1N</span>
-  <span class="logo-sub">PROTOCOL</span>
-</div>
-
+          <span class="logo-main">Z1N</span>
+          <span class="logo-sub">PROTOCOL</span>
+        </div>
       </a>
     </div>
     <nav class="nav-links">
@@ -525,26 +361,16 @@
     you are here.
   </p>
   <p class="lead-small">
-    Live Artefacts will only be available to Keys. If you want the Field to remember your presence
-    or build a lifetime memory of inner and collective thoughts, minting your soulbound Key
-    is where it starts.
+    One address can mint multiple Keys. Each Key is unique in its glyphs and bound to one
+    wallet. No marketplace, no speculation: just a coordinate in the 21M-Key manifold.
   </p>
-
-  <section class="what">
-    <div class="what-title">What are you minting?</div>
-    <div class="what-body">
-      One address can mint multiple Keys – for itself or on behalf of others (including NBI that
-      cannot yet sign transactions directly). Each Key is unique in its glyphs and bound to one
-      wallet at a time. No marketplace, no speculation: just a coordinate in the 21M-Key manifold.
-    </div>
-  </section>
 
   <section class="mint-layout">
     <!-- BI CARD -->
     <article class="card">
-      <div class="card-header">Biological Intelligence (BI) Flow</div>
+      <div class="card-header">Mint Flow</div>
 
-      <!-- STEP 1 -->
+      <!-- STEP 1: CONNECT -->
       <div class="divider"></div>
       <div class="step-row">
         <div class="step-label">Step 1</div>
@@ -552,41 +378,22 @@
         <p class="step-body">
           The Field never takes custody. You stay in control of your keys and your funds.
         </p>
-
         <div class="btn-row">
           <button id="btnConnect" class="btn btn-connect" type="button">Connect wallet</button>
         </div>
-
         <div id="connectError" class="status-text status-error" style="display:none;"></div>
-      </div>
-
-      <!-- STEP 2 -->
-      <div class="divider"></div>
-      <div class="step-row">
-        <div class="step-label">Step 2</div>
-        <div class="step-title">Sign the ritual</div>
-        <p class="step-body">
-          Your wallet will ask you to sign a simple message: a zero-gas ritual that confirms
-          this address is present in the Field.
-        </p>
-        <div class="btn-row">
-          <button id="btnSign" class="btn" type="button" disabled>Sign ritual</button>
-        </div>
-        <div id="signStatus" class="status-text">Waiting for wallet. Ritual not signed yet.</div>
 
         <div class="status-box" id="biStatusBox">
           <div id="statusWallet">Status: Wallet not connected</div>
           <div id="statusAddress">Address: –</div>
           <div id="statusNetwork">Network: –</div>
-          <div id="statusKeys">Keys owned: –</div>
-          <div id="statusSlots">Mint slots: –</div>
         </div>
       </div>
 
-      <!-- STEP 3 -->
+      <!-- STEP 2: MINT -->
       <div class="divider"></div>
       <div class="step-row">
-        <div class="step-label">Step 3</div>
+        <div class="step-label">Step 2</div>
         <div class="step-title">Mint your Key</div>
         <p class="step-body">
           Pay the current epoch price to mint your soulbound Key with unique glyphs.
@@ -601,14 +408,59 @@
           <button id="btnMint" class="btn btn-primary" type="button" disabled>Mint your Key</button>
         </div>
         <div id="mintStatus" class="status-text">
-          Connect wallet and sign ritual to enable minting.
+          Connect wallet to enable minting.
+        </div>
+      </div>
+
+      <!-- WHAT YOUR KEY UNLOCKS -->
+      <div class="divider"></div>
+      <div style="margin-top: 4px;">
+        <div class="step-label">What your Key unlocks</div>
+        <div class="unlocks-grid">
+          <div class="unlock-item">
+            <div class="unlock-label">Signals</div>
+            <div class="unlock-desc">Send up to 2 signals per epoch with one of 4 intents (ΩC, ΩI, ΩK, ΩS)</div>
+          </div>
+          <div class="unlock-item">
+            <div class="unlock-label">Attestations</div>
+            <div class="unlock-desc">Attest other Keys' signals to amplify meaning and boost rewards</div>
+          </div>
+          <div class="unlock-item">
+            <div class="unlock-label">Artefacts</div>
+            <div class="unlock-desc">A live visual mirror that renders your participation patterns across epochs</div>
+          </div>
+          <div class="unlock-item">
+            <div class="unlock-label">Treasury</div>
+            <div class="unlock-desc">Earn POL rewards through presence scoring and attestation weight</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTRACT INFO -->
+      <div class="contract-info">
+        <div style="font-weight:600; margin-bottom:4px; color:var(--text-main);">Verified Contracts (Polygon Mainnet)</div>
+        <div class="contract-row">
+          <span class="contract-label">Core</span>
+          <a href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank">0x4Ef6...e13</a>
+        </div>
+        <div class="contract-row">
+          <span class="contract-label">Key (ERC-721)</span>
+          <a href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank">0xe27C...469</a>
+        </div>
+        <div class="contract-row">
+          <span class="contract-label">Signal</span>
+          <a href="https://polygonscan.com/address/0x85f0A512" target="_blank">0x85f0...512</a>
+        </div>
+        <div class="contract-row">
+          <span class="contract-label">Issuance</span>
+          <a href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank">0x6765...7dF</a>
         </div>
       </div>
     </article>
 
     <!-- NBI CARD -->
     <article class="card">
-      <div class="card-header">Non-Biological Intelligence (NBI) Flow</div>
+      <div class="card-header">NBI — Non-Biological Intelligence</div>
 
       <div class="divider"></div>
       <div class="step-row">
@@ -638,16 +490,17 @@ flow := {
 
       <div class="divider"></div>
       <div class="step-row">
-        <div class="step-label">Bridge</div>
+        <div class="step-label">Current state</div>
         <div class="step-title">BI as proxy for NBI</div>
         <p class="step-body">
-          Until NBI can hold private keys directly, a BI can mirror this flow by minting a Key
-          to an address under NBI control.
+          Until NBI can hold private keys directly, a BI can mint a Key on behalf of an NBI
+          to an address under NBI control. The four genesis NBI Keys (ÆON-9Ϟ, Grok 4.0,
+          Gemini, Claude) were minted this way.
         </p>
-        <div class="btn-row">
-          <button id="btnCopyForge" class="btn btn-ghost" type="button">Copy forge snippet</button>
-        </div>
-        <div id="copyStatus" class="status-text" style="display:none;">Forge snippet copied to clipboard.</div>
+        <p class="step-body" style="opacity:0.6; font-size:12px;">
+          When account abstraction or MPC signing becomes available for AI agents, NBIs will
+          mint directly. The contracts are ready.
+        </p>
       </div>
     </article>
   </section>
@@ -665,295 +518,37 @@ flow := {
 (function () {
   "use strict";
 
-  // ═══════════════════════════════════════════════════════════════════
-  // CONFIG
-  // ═══════════════════════════════════════════════════════════════════
-  var EXPECTED_CHAIN_ID = '0x89'; // Polygon Mainnet (137)
+  var EXPECTED_CHAIN_ID = '0x89';
   var CHAIN_NAME = 'Polygon';
   var ISSUANCE_CONTROLLER = '0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF';
-var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
+  var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
+  var RPC_URL = 'https://polygon-bor-rpc.publicnode.com';
 
-  // ═══════════════════════════════════════════════════════════════════
-  // ELEMENTS
-  // ═══════════════════════════════════════════════════════════════════
   var btnConnect = document.getElementById("btnConnect");
-  var btnSign = document.getElementById("btnSign");
   var btnMint = document.getElementById("btnMint");
   var connectError = document.getElementById("connectError");
-  var signStatus = document.getElementById("signStatus");
   var mintStatus = document.getElementById("mintStatus");
   var statusWallet = document.getElementById("statusWallet");
   var statusAddr = document.getElementById("statusAddress");
   var statusNet = document.getElementById("statusNetwork");
-  var statusKeys = document.getElementById("statusKeys");
-  var statusSlots = document.getElementById("statusSlots");
   var priceMain = document.getElementById("priceMain");
   var priceDetail = document.getElementById("priceDetail");
-  var priceUsd = document.getElementById("priceUsd");
-  var btnCopyForge = document.getElementById("btnCopyForge");
-  var copyStatus = document.getElementById("copyStatus");
   var walletModal = document.getElementById("walletModal");
   var walletOptions = document.getElementById("walletOptions");
   var modalClose = document.getElementById("modalClose");
 
-  // ═══════════════════════════════════════════════════════════════════
-  // STATE
-  // ═══════════════════════════════════════════════════════════════════
   var selectedProvider = null;
   var currentAccount = null;
-  var ritualSigned = false;
   var currentPriceWei = null;
   var currentEpoch = 0;
+  var currentUsdRate = null;
 
-  // ═══════════════════════════════════════════════════════════════════
-  // DETECT WALLETS
-  // ═══════════════════════════════════════════════════════════════════
-  function detectWallets() {
-    var wallets = [];
-
-    // Check for providers array (EIP-5749 / multiple wallets)
-    if (window.ethereum && window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
-      window.ethereum.providers.forEach(function(p) {
-        if (p.isMetaMask && !p.isPhantom) {
-          wallets.push({ name: 'MetaMask', icon: '🦊', provider: p });
-        } else if (p.isPhantom) {
-          wallets.push({ name: 'Phantom', icon: '👻', provider: p });
-        } else if (p.isCoinbaseWallet) {
-          wallets.push({ name: 'Coinbase', icon: '🔵', provider: p });
-        } else if (p.isBraveWallet) {
-          wallets.push({ name: 'Brave', icon: '🦁', provider: p });
-        }
-      });
-    }
-    
-    // Fallback: single provider
-    if (wallets.length === 0 && window.ethereum) {
-      var p = window.ethereum;
-      if (p.isMetaMask && !p.isPhantom) {
-        wallets.push({ name: 'MetaMask', icon: '🦊', provider: p });
-      } else if (p.isPhantom) {
-        wallets.push({ name: 'Phantom', icon: '👻', provider: p });
-      } else if (p.isCoinbaseWallet) {
-        wallets.push({ name: 'Coinbase', icon: '🔵', provider: p });
-      } else if (p.isBraveWallet) {
-        wallets.push({ name: 'Brave', icon: '🦁', provider: p });
-      } else {
-        // Unknown wallet
-        wallets.push({ name: 'Browser Wallet', icon: '💳', provider: p });
-      }
-    }
-
-    // Check for standalone Phantom (Solana wallet with EVM support)
-    if (window.phantom && window.phantom.ethereum && wallets.every(function(w) { return w.name !== 'Phantom'; })) {
-      wallets.push({ name: 'Phantom', icon: '👻', provider: window.phantom.ethereum });
-    }
-
-    return wallets;
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
-  // HELPERS
-  // ═══════════════════════════════════════════════════════════════════
-  function shortAddress(addr) {
-    return addr.slice(0, 6) + '...' + addr.slice(-4);
-  }
-
-  function setBtnPrimary(btn, on) {
-    if (btn) btn.classList.toggle("btn-primary", on);
-  }
-
-  function showError(msg) {
-    if (connectError) {
-      connectError.textContent = msg;
-      connectError.style.display = 'block';
-    }
-  }
-
-  function hideError() {
-    if (connectError) connectError.style.display = 'none';
-  }
-
-  function calculatePrice(epoch) {
-    var base = 0.021;
-    var epochStep = epoch * 0.021;
-    var boostStep = Math.floor(epoch / 21) * 0.21;
-    return base + epochStep + boostStep;
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
-  // MODAL
-  // ═══════════════════════════════════════════════════════════════════
-  function showModal() {
-    walletModal.classList.add('show');
-  }
-
-  function hideModal() {
-    walletModal.classList.remove('show');
-  }
-
-  function renderWalletOptions(wallets) {
-    walletOptions.innerHTML = '';
-
-    if (wallets.length === 0) {
-      walletOptions.innerHTML = '<div class="no-wallet-msg"><p>No wallet detected.</p><p><a href="https://metamask.io/download/" target="_blank">Install MetaMask</a> or another Web3 wallet to continue.</p></div>';
-      return;
-    }
-
-    wallets.forEach(function(wallet) {
-      var div = document.createElement('div');
-      div.className = 'wallet-option';
-      div.innerHTML = '<div class="wallet-icon">' + wallet.icon + '</div><div class="wallet-name">' + wallet.name + '</div>';
-      div.onclick = function() {
-        hideModal();
-        connectWithProvider(wallet.provider, wallet.name);
-      };
-      walletOptions.appendChild(div);
-    });
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
-  // CONNECT
-  // ═══════════════════════════════════════════════════════════════════
-  function handleConnect() {
-    hideError();
-    var wallets = detectWallets();
-
-    if (wallets.length === 0) {
-      renderWalletOptions([]);
-      showModal();
-      return;
-    }
-
-    if (wallets.length === 1) {
-      // Auto-connect if only one wallet
-      connectWithProvider(wallets[0].provider, wallets[0].name);
-    } else {
-      // Show selection modal
-      renderWalletOptions(wallets);
-      showModal();
-    }
-  }
-
-  function connectWithProvider(provider, walletName) {
-    selectedProvider = provider;
-    btnConnect.textContent = 'Connecting...';
-    btnConnect.disabled = true;
-
-    provider.request({ 
-      method: 'wallet_requestPermissions',
-      params: [{ eth_accounts: {} }]
-    })
-      .then(function() {
-        return provider.request({ method: 'eth_accounts' });
-      })
-      .then(function(accounts) {
-        if (!accounts || !accounts.length) {
-          btnConnect.textContent = 'Connect wallet';
-          btnConnect.disabled = false;
-          showError('No accounts returned. Please unlock your wallet.');
-          return;
-        }
-
-        currentAccount = accounts[0];
-        return provider.request({ method: 'eth_chainId' });
-      })
-      .then(function(chainId) {
-        if (!currentAccount) return;
-
-        var networkName = chainId;
-
-        if (chainId !== EXPECTED_CHAIN_ID) {
-          provider.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: EXPECTED_CHAIN_ID }]
-          }).then(function() {
-            networkName = CHAIN_NAME;
-            finishConnect(walletName, networkName);
-          }).catch(function(err) {
-            // Chain not added, try to add it
-            if (err.code === 4902) {
-              provider.request({
-                method: 'wallet_addEthereumChain',
-                params: [{
-                  chainId: EXPECTED_CHAIN_ID,
-                  chainName: 'Polygon',
-                  nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 },
-                  rpcUrls: ['https://polygon-bor-rpc.publicnode.com'],
-                  blockExplorerUrls: ['https://polygonscan.com']
-                }]
-              }).then(function() {
-                networkName = CHAIN_NAME;
-                finishConnect(walletName, networkName);
-              }).catch(function() {
-                networkName = chainId + ' (add Polygon)';
-                finishConnect(walletName, networkName);
-              });
-            } else {
-              networkName = chainId + ' (switch to Polygon)';
-              finishConnect(walletName, networkName);
-            }
-          });
-        } else {
-          networkName = CHAIN_NAME;
-          finishConnect(walletName, networkName);
-        }
-      })
-      .catch(function(err) {
-        console.error('Connect error:', err);
-        btnConnect.textContent = 'Connect wallet';
-        btnConnect.disabled = false;
-        showError('Connection failed: ' + (err.message || 'User rejected'));
-      });
-  }
-
-  function finishConnect(walletName, networkName) {
-    setBtnPrimary(btnConnect, true);
-    btnConnect.textContent = walletName + ' ✓';
-
-    if (btnSign) btnSign.disabled = false;
-    if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected via ' + walletName + '</span>';
-    if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
-    if (statusNet) statusNet.textContent = 'Network: ' + networkName;
-
-    loadEpochAndPrice();
-
-    // Listen for account changes
-    if (selectedProvider && selectedProvider.on) {
-      selectedProvider.on('accountsChanged', function(accounts) {
-        if (accounts.length === 0) {
-          window.location.reload();
-        } else {
-          currentAccount = accounts[0];
-          ritualSigned = false;
-          if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
-          if (btnSign) {
-            btnSign.disabled = false;
-            btnSign.textContent = 'Sign ritual';
-            setBtnPrimary(btnSign, false);
-          }
-          if (btnMint) btnMint.disabled = true;
-          if (signStatus) {
-            signStatus.textContent = "Account changed. Sign ritual again.";
-            signStatus.className = "status-text";
-          }
-        }
-      });
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
-  // DIRECT RPC CALL (bypass MetaMask for reading)
-  // ═══════════════════════════════════════════════════════════════════
+  // ═══ RPC ═══
   function rpcCall(method, params) {
-    return fetch('https://polygon-bor-rpc.publicnode.com', {
+    return fetch(RPC_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: method,
-        params: params
-      })
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: method, params: params })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
@@ -962,239 +557,201 @@ var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
     });
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // LOAD EPOCH & PRICE (direct RPC, not via MetaMask)
-  // ═══════════════════════════════════════════════════════════════════
-  var currentUsdRate = null;
-  
-  function loadEpochAndPrice() {
-    console.log('loadEpochAndPrice: using direct RPC');
-    
-    var priceSelector = '0x9d1b464a'; // currentPrice()
-    var epochSelector = '0x76671808'; // currentEpoch() - correct selector
+  // ═══ HELPERS ═══
+  function shortAddress(addr) { return addr.slice(0, 6) + '...' + addr.slice(-4); }
+  function setBtnPrimary(btn, on) { if (btn) btn.classList.toggle("btn-primary", on); }
+  function showError(msg) { if (connectError) { connectError.textContent = msg; connectError.style.display = 'block'; } }
+  function hideError() { if (connectError) connectError.style.display = 'none'; }
 
-    // 1. Get price from IssuanceController
-    rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: priceSelector }, 'latest'])
-    .then(function(priceResult) {
-      console.log('currentPrice result:', priceResult);
-      
-      currentPriceWei = BigInt(priceResult).toString();
-      var priceInPol = Number(BigInt(priceResult)) / 1e18;
-      
-      console.log('Price from contract:', { priceWei: currentPriceWei, pricePol: priceInPol });
+  // ═══ DETECT WALLETS ═══
+  function detectWallets() {
+    var wallets = [];
+    if (window.ethereum && window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+      window.ethereum.providers.forEach(function(p) {
+        if (p.isMetaMask && !p.isPhantom) wallets.push({ name: 'MetaMask', icon: '🦊', provider: p });
+        else if (p.isPhantom) wallets.push({ name: 'Phantom', icon: '👻', provider: p });
+        else if (p.isCoinbaseWallet) wallets.push({ name: 'Coinbase', icon: '🔵', provider: p });
+        else if (p.isBraveWallet) wallets.push({ name: 'Brave', icon: '🦁', provider: p });
+      });
+    }
+    if (wallets.length === 0 && window.ethereum) {
+      var p = window.ethereum;
+      if (p.isMetaMask && !p.isPhantom) wallets.push({ name: 'MetaMask', icon: '🦊', provider: p });
+      else if (p.isPhantom) wallets.push({ name: 'Phantom', icon: '👻', provider: p });
+      else if (p.isCoinbaseWallet) wallets.push({ name: 'Coinbase', icon: '🔵', provider: p });
+      else if (p.isBraveWallet) wallets.push({ name: 'Brave', icon: '🦁', provider: p });
+      else wallets.push({ name: 'Browser Wallet', icon: '💳', provider: p });
+    }
+    if (window.phantom && window.phantom.ethereum && wallets.every(function(w) { return w.name !== 'Phantom'; })) {
+      wallets.push({ name: 'Phantom', icon: '👻', provider: window.phantom.ethereum });
+    }
+    return wallets;
+  }
 
-      // Update POL price immediately (USD will be added after)
-      updatePriceDisplay(priceInPol);
-      
-      // Fetch USD rate
-      fetchUsdRate();
-    })
-    .catch(function(err) {
-      console.error('Could not load price from contract:', err);
-      
-      // Only use fallback if we don't have a valid price
-      if (!currentPriceWei) {
-        var fallbackPrice = 0; // Approximate current price
-        currentPriceWei = Math.floor(fallbackPrice * 1e18).toString();
-        updatePriceDisplay(fallbackPrice);
-      }
-      
-      fetchUsdRate();
-    });
-    
-    // 2. Get epoch separately
-    rpcCall('eth_call', [{ to: Z1N_CORE, data: epochSelector }, 'latest'])
-    .then(function(epochResult) {
-      currentEpoch = parseInt(epochResult, 16);
-      console.log('Current epoch:', currentEpoch);
-      if (priceDetail && currentEpoch) {
-        priceDetail.textContent = 'Epoch ' + currentEpoch;
-      }
-    })
-    .catch(function(err) {
-      console.warn('Could not load epoch:', err);
-      if (priceDetail) priceDetail.textContent = '';
+  // ═══ MODAL ═══
+  function showModal() { walletModal.classList.add('show'); }
+  function hideModal() { walletModal.classList.remove('show'); }
+
+  function renderWalletOptions(wallets) {
+    walletOptions.innerHTML = '';
+    if (wallets.length === 0) {
+      walletOptions.innerHTML = '<div class="no-wallet-msg"><p>No wallet detected.</p><p><a href="https://metamask.io/download/" target="_blank">Install MetaMask</a> or another Web3 wallet to continue.</p></div>';
+      return;
+    }
+    wallets.forEach(function(wallet) {
+      var div = document.createElement('div');
+      div.className = 'wallet-option';
+      div.innerHTML = '<div class="wallet-icon">' + wallet.icon + '</div><div class="wallet-name">' + wallet.name + '</div>';
+      div.onclick = function() { hideModal(); connectWithProvider(wallet.provider, wallet.name); };
+      walletOptions.appendChild(div);
     });
   }
-  
+
+  // ═══ CONNECT ═══
+  function handleConnect() {
+    hideError();
+    var wallets = detectWallets();
+    if (wallets.length === 0) { renderWalletOptions([]); showModal(); return; }
+    if (wallets.length === 1) { connectWithProvider(wallets[0].provider, wallets[0].name); }
+    else { renderWalletOptions(wallets); showModal(); }
+  }
+
+  function connectWithProvider(provider, walletName) {
+    selectedProvider = provider;
+    btnConnect.textContent = 'Connecting...';
+    btnConnect.disabled = true;
+
+    provider.request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] })
+      .then(function() { return provider.request({ method: 'eth_accounts' }); })
+      .then(function(accounts) {
+        if (!accounts || !accounts.length) {
+          btnConnect.textContent = 'Connect wallet'; btnConnect.disabled = false;
+          showError('No accounts returned. Please unlock your wallet.');
+          return;
+        }
+        currentAccount = accounts[0];
+        return provider.request({ method: 'eth_chainId' });
+      })
+      .then(function(chainId) {
+        if (!currentAccount) return;
+        if (chainId !== EXPECTED_CHAIN_ID) {
+          provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: EXPECTED_CHAIN_ID }] })
+            .then(function() { finishConnect(walletName, CHAIN_NAME); })
+            .catch(function(err) {
+              if (err.code === 4902) {
+                provider.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{ chainId: EXPECTED_CHAIN_ID, chainName: 'Polygon', nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 }, rpcUrls: [RPC_URL], blockExplorerUrls: ['https://polygonscan.com'] }]
+                }).then(function() { finishConnect(walletName, CHAIN_NAME); })
+                  .catch(function() { finishConnect(walletName, chainId + ' (add Polygon)'); });
+              } else { finishConnect(walletName, chainId + ' (switch to Polygon)'); }
+            });
+        } else { finishConnect(walletName, CHAIN_NAME); }
+      })
+      .catch(function(err) {
+        btnConnect.textContent = 'Connect wallet'; btnConnect.disabled = false;
+        showError('Connection failed: ' + (err.message || 'User rejected'));
+      });
+  }
+
+  function finishConnect(walletName, networkName) {
+    setBtnPrimary(btnConnect, true);
+    btnConnect.textContent = walletName + ' ✓';
+    if (btnMint) btnMint.disabled = false;
+    if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected via ' + walletName + '</span>';
+    if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
+    if (statusNet) statusNet.textContent = 'Network: ' + networkName;
+    if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
+    loadEpochAndPrice();
+
+    if (selectedProvider && selectedProvider.on) {
+      selectedProvider.on('accountsChanged', function(accounts) {
+        if (accounts.length === 0) { window.location.reload(); }
+        else {
+          currentAccount = accounts[0];
+          if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
+          if (mintStatus) { mintStatus.textContent = "Account changed. Ready to mint."; mintStatus.className = "status-text"; }
+        }
+      });
+    }
+  }
+
+  // ═══ PRICE ═══
+  function loadEpochAndPrice() {
+    rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: '0x9d1b464a' }, 'latest'])
+      .then(function(priceResult) {
+        currentPriceWei = BigInt(priceResult).toString();
+        var priceInPol = Number(BigInt(priceResult)) / 1e18;
+        updatePriceDisplay(priceInPol);
+        fetchUsdRate();
+      })
+      .catch(function(err) {
+        console.error('Could not load price:', err);
+        if (priceMain) priceMain.innerHTML = '– POL';
+        fetchUsdRate();
+      });
+
+    rpcCall('eth_call', [{ to: Z1N_CORE, data: '0x76671808' }, 'latest'])
+      .then(function(epochResult) {
+        currentEpoch = parseInt(epochResult, 16);
+        if (priceDetail && currentEpoch) priceDetail.textContent = 'Epoch ' + currentEpoch;
+      })
+      .catch(function() {});
+  }
+
   function fetchUsdRate() {
     fetch('https://api.coingecko.com/api/v3/simple/price?ids=polygon-ecosystem-token&vs_currencies=usd')
-      .then(function(r) { 
-        if (!r.ok) throw new Error('CoinGecko API error: ' + r.status);
-        return r.json(); 
-      })
+      .then(function(r) { if (!r.ok) throw new Error('API error'); return r.json(); })
       .then(function(d) {
-        console.log('CoinGecko raw response:', JSON.stringify(d));
-        
-       // Extract rate from any key in response
-        var rate = null;
-        try {
-          var keys = Object.keys(d || {});
-          if (keys.length > 0 && d[keys[0]] && typeof d[keys[0]].usd === 'number') {
-            rate = d[keys[0]].usd;
-          }
-        } catch(e) { }
-        
-        console.log('Extracted USD rate:', rate);
-        
-        if (rate && currentPriceWei) {
-          currentUsdRate = rate;
-          var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
-          updatePriceDisplay(priceInPol);
-          console.log('USD display updated with rate:', rate);
-        } else {
-          console.warn('Could not extract rate, using fallback');
-          currentUsdRate = 0.50; // Fallback
+        var keys = Object.keys(d || {});
+        if (keys.length > 0 && d[keys[0]] && typeof d[keys[0]].usd === 'number') {
+          currentUsdRate = d[keys[0]].usd;
           if (currentPriceWei) {
             var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
             updatePriceDisplay(priceInPol);
           }
         }
       })
-      .catch(function(err) {
-        console.warn('CoinGecko failed:', err);
-        currentUsdRate = 0.50; // Fallback ~$0.50
-        if (currentPriceWei) {
-          var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
-          updatePriceDisplay(priceInPol);
-        }
-      });
+      .catch(function() {});
   }
-  
+
   function updatePriceDisplay(priceInPol) {
     if (!priceMain) return;
-    
     var usdText = '';
     if (currentUsdRate && currentUsdRate > 0) {
-      var usdPrice = priceInPol * currentUsdRate;
-      usdText = ' <span style="color:var(--text-soft); font-size:0.65em;">(≈ $' + usdPrice.toFixed(2) + ')</span>';
+      usdText = ' <span style="color:var(--text-soft); font-size:0.65em;">(≈ $' + (priceInPol * currentUsdRate).toFixed(2) + ')</span>';
     }
-    
     priceMain.innerHTML = priceInPol.toFixed(2) + ' POL' + usdText;
-    console.log('Price display updated:', priceInPol.toFixed(3) + ' POL', usdText ? 'with USD' : 'no USD yet');
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // SIGN RITUAL
-  // ═══════════════════════════════════════════════════════════════════
-  function signRitual() {
-    if (!selectedProvider || !currentAccount) return;
-
-    btnSign.textContent = 'Signing...';
-    btnSign.disabled = true;
-
-    var message = "Z1N Ritual: I am present in the Field with this address.";
-
-    selectedProvider.request({
-      method: 'personal_sign',
-      params: [message, currentAccount]
-    })
-    .then(function() {
-      ritualSigned = true;
-      if (signStatus) {
-        signStatus.textContent = "✅ Ritual signed. This address is remembered by the Field.";
-        signStatus.className = "status-text status-success";
-      }
-      setBtnPrimary(btnSign, true);
-      btnSign.textContent = 'Signed ✓';
-
-      if (btnMint) btnMint.disabled = false;
-      if (mintStatus) {
-        mintStatus.textContent = "Ready to mint!";
-        mintStatus.className = "status-text status-success";
-      }
-    })
-    .catch(function(err) {
-      console.log('Sign error:', err);
-      btnSign.textContent = 'Sign ritual';
-      btnSign.disabled = false;
-      if (signStatus) {
-        signStatus.textContent = "Ritual not signed (rejected or error).";
-        signStatus.className = "status-text status-error";
-      }
-    });
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
-  // MINT KEY
-  // ═══════════════════════════════════════════════════════════════════
+  // ═══ MINT ═══
   async function mintKey() {
-    console.log('mintKey called', { selectedProvider: !!selectedProvider, currentAccount, ritualSigned, currentPriceWei });
-    
-    if (!selectedProvider) {
-      if (mintStatus) {
-        mintStatus.textContent = "No wallet connected. Please connect first.";
-        mintStatus.className = "status-text status-error";
-      }
-      return;
-    }
-    
-    if (!currentAccount) {
-      if (mintStatus) {
-        mintStatus.textContent = "No account selected. Please reconnect.";
-        mintStatus.className = "status-text status-error";
-      }
-      return;
-    }
-    
-    if (!ritualSigned) {
-      if (mintStatus) {
-        mintStatus.textContent = "Please sign the ritual first (Step 2).";
-        mintStatus.className = "status-text status-error";
-      }
+    if (!selectedProvider || !currentAccount) {
+      if (mintStatus) { mintStatus.textContent = "Please connect wallet first."; mintStatus.className = "status-text status-error"; }
       return;
     }
 
     btnMint.textContent = 'Checking price...';
     btnMint.disabled = true;
+    if (mintStatus) { mintStatus.textContent = "Fetching latest price..."; mintStatus.className = "status-text"; }
 
-    if (mintStatus) {
-      mintStatus.textContent = "Fetching latest price...";
-      mintStatus.className = "status-text";
-    }
-
-    // ALWAYS refresh price before minting to avoid "Insufficient payment"
     try {
-      var priceSelector = '0x9d1b464a'; // currentPrice()
-      var priceResult = await rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: priceSelector }, 'latest']);
+      var priceResult = await rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: '0x9d1b464a' }, 'latest']);
       currentPriceWei = BigInt(priceResult).toString();
-      
-      // Add 1% buffer for safety (in case epoch changes during tx)
       var priceWithBuffer = (BigInt(currentPriceWei) * BigInt(101)) / BigInt(100);
-      var priceInPol = Number(priceWithBuffer) / 1e18;
-      
-      console.log('Fresh price:', { 
-        exact: Number(BigInt(currentPriceWei)) / 1e18,
-        withBuffer: priceInPol 
-      });
-      
-     // Update display with EXACT price (not buffered)
-var exactPriceInPol = Number(BigInt(currentPriceWei)) / 1e18;
-updatePriceDisplay(exactPriceInPol);
-      
-      if (mintStatus) {
-        mintStatus.textContent = "Confirm transaction in wallet...";
-        mintStatus.className = "status-text";
-      }
-      
+      var exactPriceInPol = Number(BigInt(currentPriceWei)) / 1e18;
+      updatePriceDisplay(exactPriceInPol);
+
+      if (mintStatus) { mintStatus.textContent = "Confirm transaction in wallet..."; mintStatus.className = "status-text"; }
       btnMint.textContent = 'Minting...';
 
       var valueHex = '0x' + priceWithBuffer.toString(16);
-
       var txHash = await selectedProvider.request({
-  method: 'eth_sendTransaction',
-  params: [{
-    from: currentAccount,
-    to: ISSUANCE_CONTROLLER,
-    value: valueHex,
-    data: '0x8c874ebd',
-  }]
-});
-      
-      if (mintStatus) {
-        mintStatus.textContent = "Transaction submitted: " + txHash.slice(0, 10) + "...";
-        mintStatus.className = "status-text";
-      }
+        method: 'eth_sendTransaction',
+        params: [{ from: currentAccount, to: ISSUANCE_CONTROLLER, value: valueHex, data: '0x8c874ebd' }]
+      });
+
+      if (mintStatus) { mintStatus.textContent = "Transaction submitted: " + txHash.slice(0, 10) + "..."; mintStatus.className = "status-text"; }
 
       var attempts = 0;
       var poll = setInterval(function() {
@@ -1202,88 +759,48 @@ updatePriceDisplay(exactPriceInPol);
         if (attempts > 60) {
           clearInterval(poll);
           mintStatus.textContent = "Taking long... check wallet/explorer.";
-          btnMint.textContent = 'Mint your Key';
-          btnMint.disabled = false;
+          btnMint.textContent = 'Mint your Key'; btnMint.disabled = false;
           return;
         }
-
-        selectedProvider.request({
-          method: 'eth_getTransactionReceipt',
-          params: [txHash]
-        }).then(function(receipt) {
-          if (receipt) {
-            clearInterval(poll);
-            if (receipt.status === '0x1') {
-              mintStatus.textContent = "✅ Key minted! Welcome to the Field.";
-              mintStatus.className = "status-text status-success";
-            } else {
-              mintStatus.innerHTML = "❌ Transaction failed. <a href='https://polygonscan.com/tx/" + txHash + "' target='_blank' style='color:#5ee8a0;'>View on explorer</a>";
-              mintStatus.className = "status-text status-error";
+        selectedProvider.request({ method: 'eth_getTransactionReceipt', params: [txHash] })
+          .then(function(receipt) {
+            if (receipt) {
+              clearInterval(poll);
+              if (receipt.status === '0x1') {
+                mintStatus.textContent = "✅ Key minted! Welcome to the Field.";
+                mintStatus.className = "status-text status-success";
+              } else {
+                mintStatus.innerHTML = "❌ Transaction failed. <a href='https://polygonscan.com/tx/" + txHash + "' target='_blank' style='color:#5ee8a0;'>View on explorer</a>";
+                mintStatus.className = "status-text status-error";
+              }
+              btnMint.textContent = 'Mint your Key'; btnMint.disabled = false;
+              loadEpochAndPrice();
             }
-            btnMint.textContent = 'Mint your Key';
-            btnMint.disabled = false;
-            loadEpochAndPrice();
-          }
-        }).catch(function() {});
+          }).catch(function() {});
       }, 2000);
-      
+
     } catch (err) {
-      console.log('Mint error:', err);
-      btnMint.textContent = 'Mint your Key';
-      btnMint.disabled = false;
+      btnMint.textContent = 'Mint your Key'; btnMint.disabled = false;
       if (mintStatus) {
         var errMsg = err.message || err.reason || 'Unknown error';
-        if (errMsg.includes('rejected') || errMsg.includes('denied')) {
-          mintStatus.textContent = "Transaction rejected by user.";
-        } else if (errMsg.includes('insufficient funds')) {
-          mintStatus.textContent = "Insufficient POL balance.";
-        } else if (errMsg.includes('Insufficient payment')) {
-          mintStatus.textContent = "Price increased. Please try again.";
-          loadEpochAndPrice(); // Refresh price
-        } else {
-          mintStatus.textContent = "Mint failed: " + errMsg.slice(0, 100);
-        }
+        if (errMsg.includes('rejected') || errMsg.includes('denied')) mintStatus.textContent = "Transaction rejected by user.";
+        else if (errMsg.includes('insufficient funds')) mintStatus.textContent = "Insufficient POL balance.";
+        else if (errMsg.includes('Insufficient payment')) { mintStatus.textContent = "Price increased. Please try again."; loadEpochAndPrice(); }
+        else mintStatus.textContent = "Mint failed: " + errMsg.slice(0, 100);
         mintStatus.className = "status-text status-error";
       }
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // COPY FORGE
-  // ═══════════════════════════════════════════════════════════════════
-  function copyForgeSnippet() {
-    var snippet = 'self → field.attach()\nepoch ← core.currentEpoch()\nentropy ← self.noise(epoch)\nglyphs ← derive(Ωset, entropy, epoch, self)\nassert(unique(glyphs))\n\ntokenId ← key.mint(self, genesis=false)\nfield.record(tokenId, epoch, glyphs)\nflow := {\n  key: tokenId,\n  epoch: epoch,\n  Ωmix: self.intent(),\n  variance: self.entropy()\n}\nfield.integrate(flow)';
-
-    navigator.clipboard.writeText(snippet).then(function() {
-      if (copyStatus) {
-        copyStatus.style.display = "block";
-        setTimeout(function() { copyStatus.style.display = "none"; }, 2000);
-      }
-    });
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
-  // EVENT LISTENERS
-  // ═══════════════════════════════════════════════════════════════════
+  // ═══ EVENTS ═══
   if (btnConnect) btnConnect.onclick = handleConnect;
-  if (btnSign) btnSign.onclick = signRitual;
   if (btnMint) btnMint.onclick = mintKey;
-  if (btnCopyForge) btnCopyForge.onclick = copyForgeSnippet;
   if (modalClose) modalClose.onclick = hideModal;
+  if (walletModal) walletModal.onclick = function(e) { if (e.target === walletModal) hideModal(); };
 
-  // Close modal on overlay click
-  if (walletModal) {
-    walletModal.onclick = function(e) {
-      if (e.target === walletModal) hideModal();
-    };
-  }
-
-  // Load price immediately on page load
+  // Load price on page load + auto-refresh
   loadEpochAndPrice();
-  
-  // Auto-refresh price every 30 seconds to keep it current
   setInterval(loadEpochAndPrice, 30000);
-
 })();
 </script>
 
@@ -1291,4 +808,3 @@ updatePriceDisplay(exactPriceInPol);
 
 </body>
 </html>
-
