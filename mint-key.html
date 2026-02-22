@@ -878,7 +878,7 @@ var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
                   chainId: EXPECTED_CHAIN_ID,
                   chainName: 'Polygon',
                   nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 },
-                  rpcUrls: ['https://polygon-rpc.com'],
+                  rpcUrls: ['https://polygon-bor-rpc.publicnode.com'],
                   blockExplorerUrls: ['https://polygonscan.com']
                 }]
               }).then(function() {
@@ -945,7 +945,7 @@ var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
   // DIRECT RPC CALL (bypass MetaMask for reading)
   // ═══════════════════════════════════════════════════════════════════
   function rpcCall(method, params) {
-    return fetch('https://polygon-rpc.com', {
+    return fetch('https://polygon-bor-rpc.publicnode.com', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -994,7 +994,7 @@ var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
       
       // Only use fallback if we don't have a valid price
       if (!currentPriceWei) {
-        var fallbackPrice = 8.8; // Approximate current price
+        var fallbackPrice = 0; // Approximate current price
         currentPriceWei = Math.floor(fallbackPrice * 1e18).toString();
         updatePriceDisplay(fallbackPrice);
       }
