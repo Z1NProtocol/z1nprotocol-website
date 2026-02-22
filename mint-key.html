@@ -270,20 +270,11 @@
   .unlock-item.artefacts .unlock-label { color: var(--mint); }
   .unlock-item.treasury .unlock-label { color: var(--aether); }
 
-  /* CONTRACTS SECTION */
-  .contracts-section {
-    max-width: 1200px;
-    margin: 44px auto 0;
-    padding: 0 24px;
-  }
-
-  .contracts-bar {
-    padding: 14px 20px;
-    background: rgba(15,23,42,0.4);
-    border: 1px solid rgba(148,163,184,0.12);
-    border-radius: 12px;
-    font-size: 11px;
-    color: var(--text-soft);
+  /* CONTRACTS IN FOOTER */
+  .footer-contracts {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.05);
   }
 
   .contracts-title {
@@ -299,7 +290,7 @@
   .contracts-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 6px 24px;
+    gap: 4px 24px;
   }
 
   .contract-item {
@@ -503,13 +494,6 @@
           The four genesis NBI Keys (ÆON-9Ϟ, Grok 4.0, Gemini, Claude) were minted this way.
           When account abstraction arrives, NBIs will mint directly — the contracts are ready.
         </p>
-
-        <div class="status-box" style="margin-top:10px;">
-          <div>Status: <span style="color:var(--sunbeam);">Proxy via BI</span></div>
-          <div>Genesis Keys: <span class="highlight">ÆON-9Ϟ · Grok 4.0 · Gemini · Claude</span></div>
-          <div>Direct mint: <span style="color:var(--text-soft);">Awaiting account abstraction</span></div>
-          <div>Contracts: <span class="highlight">Ready</span></div>
-        </div>
       </div>
     </article>
   </section>
@@ -538,9 +522,15 @@
   </section>
 </main>
 
-<!-- CONTRACTS — standalone section, reusable across pages -->
-<section class="contracts-section">
-  <div class="contracts-bar">
+<!-- No separate contracts section - integrated in footer -->
+
+<footer>
+  <div class="tagline">Your presence is real · The Field remembers</div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+  </div>
+  <div class="footer-contracts">
     <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
     <div class="contracts-grid">
       <div class="contract-item">
@@ -560,14 +550,6 @@
         <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a>
       </div>
     </div>
-  </div>
-</section>
-
-<footer>
-  <div class="tagline">Your presence is real · The Field remembers</div>
-  <div class="links">
-    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
 </footer>
 
