@@ -277,7 +277,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 14px;
   }
 
   .contracts-title {
@@ -291,11 +290,9 @@
   }
 
   .contracts-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px 24px;
-    width: 100%;
-    max-width: 900px;
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    gap: 4px 40px;
   }
 
   .contract-item {
@@ -536,6 +533,10 @@
 
 <footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
+  <div class="links">
+    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+  </div>
   <div class="footer-contracts">
     <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
     <div class="contracts-grid">
@@ -556,10 +557,6 @@
         <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a>
       </div>
     </div>
-  </div>
-  <div class="links">
-    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
 </footer>
 
