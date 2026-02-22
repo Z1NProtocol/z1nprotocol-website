@@ -315,8 +315,10 @@
   }
   .contract-addr:hover { color: var(--text-main); text-decoration: underline; }
 
-  @media(max-width: 700px) {
-    .contract-addr { font-size: 9px; }
+  .contract-sep {
+    color: var(--text-soft);
+    opacity: 0.3;
+    margin: 0 4px;
   }
 
   /* WALLET MODAL */
@@ -537,10 +539,10 @@
   <div class="footer-contracts">
     <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
     <div class="contracts-grid">
-      <div class="contract-item"><span class="contract-label">Core</span> — <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a></div>
-      <div class="contract-item"><span class="contract-label">Key</span> — <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a></div>
-      <div class="contract-item"><span class="contract-label">Signal</span> — <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a></div>
-      <div class="contract-item"><span class="contract-label">Issuance</span> — <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a></div>
+      <div class="contract-item"><span class="contract-label">Core</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a></div>
+      <div class="contract-item"><span class="contract-label">Key</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a></div>
+      <div class="contract-item"><span class="contract-label">Signal</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a></div>
+      <div class="contract-item"><span class="contract-label">Issuance</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a></div>
     </div>
   </div>
 </footer>
