@@ -57,7 +57,10 @@
     --accent-soft: #3ab876;
     --card-border: rgba(148, 163, 184, 0.25);
     --danger: #f87171;
-    --warning: #ffd556;
+    --sunbeam: #ffd556;
+    --mint: #5ee8a0;
+    --aether: #7bb8fc;
+    --rose: #f87171;
     --keys-accent: #ffd556;
   }
 
@@ -253,30 +256,91 @@
 
   .unlock-item {
     padding: 12px 14px;
-    background: rgba(15,23,42,0.5);
-    border: 1px solid rgba(148,163,184,0.15);
     border-radius: 10px;
     font-size: 12px;
     line-height: 1.5;
   }
-  .unlock-item .unlock-icon { font-size: 16px; margin-bottom: 4px; }
-  .unlock-item .unlock-label { font-weight: 600; color: var(--accent); margin-bottom: 2px; }
-  .unlock-item .unlock-desc { color: var(--text-soft); }
+  .unlock-item .unlock-label { font-weight: 600; margin-bottom: 2px; }
+  .unlock-item .unlock-desc { opacity: 0.85; }
 
-  /* CONTRACT INFO */
-  .contract-info {
-    margin-top: 16px;
-    padding: 10px 14px;
+  .unlock-item.signals {
+    background: rgba(255,213,86,0.08);
+    border: 1px solid rgba(255,213,86,0.2);
+  }
+  .unlock-item.signals .unlock-label { color: var(--sunbeam); }
+  .unlock-item.signals .unlock-desc { color: rgba(255,213,86,0.7); }
+
+  .unlock-item.attests {
+    background: rgba(255,213,86,0.08);
+    border: 1px solid rgba(255,213,86,0.2);
+  }
+  .unlock-item.attests .unlock-label { color: var(--sunbeam); }
+  .unlock-item.attests .unlock-desc { color: rgba(255,213,86,0.7); }
+
+  .unlock-item.artefacts {
+    background: rgba(94,232,160,0.08);
+    border: 1px solid rgba(94,232,160,0.2);
+  }
+  .unlock-item.artefacts .unlock-label { color: var(--mint); }
+  .unlock-item.artefacts .unlock-desc { color: rgba(94,232,160,0.7); }
+
+  .unlock-item.treasury {
+    background: rgba(123,184,252,0.08);
+    border: 1px solid rgba(123,184,252,0.2);
+  }
+  .unlock-item.treasury .unlock-label { color: var(--aether); }
+  .unlock-item.treasury .unlock-desc { color: rgba(123,184,252,0.7); }
+
+  /* CONTRACTS SECTION */
+  .contracts-section {
+    max-width: 1200px;
+    margin: 44px auto 0;
+    padding: 0 24px;
+  }
+
+  .contracts-bar {
+    padding: 14px 20px;
     background: rgba(15,23,42,0.4);
-    border: 1px solid rgba(148,163,184,0.15);
-    border-radius: 10px;
+    border: 1px solid rgba(148,163,184,0.12);
+    border-radius: 12px;
     font-size: 11px;
     color: var(--text-soft);
   }
-  .contract-info a { color: var(--accent); }
-  .contract-info a:hover { text-decoration: underline; }
-  .contract-row { display: flex; justify-content: space-between; padding: 3px 0; }
-  .contract-label { opacity: 0.7; }
+
+  .contracts-title {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+
+  .contracts-grid {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .contract-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .contract-label { opacity: 0.6; }
+
+  .contract-addr {
+    color: var(--accent);
+    font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+  }
+  .contract-addr:hover { text-decoration: underline; opacity: 1; }
+
+  @media(max-width: 700px) {
+    .contracts-grid { flex-direction: column; gap: 6px; }
+  }
 
   /* WALLET MODAL */
   .modal-overlay {
@@ -312,6 +376,7 @@
     border-top: 1px solid rgba(255,255,255,0.05);
     padding: 18px 20px; font-size: 12px;
     text-align: center; opacity: 0.85;
+    margin-top: 44px;
   }
   footer .tagline { margin-bottom: 6px; font-size: 13px; }
   footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
@@ -417,43 +482,22 @@
       <div style="margin-top: 4px;">
         <div class="step-label">What your Key unlocks</div>
         <div class="unlocks-grid">
-          <div class="unlock-item">
+          <div class="unlock-item signals">
             <div class="unlock-label">Signals</div>
             <div class="unlock-desc">Send up to 2 signals per epoch with one of 4 intents (ΩC, ΩI, ΩK, ΩS)</div>
           </div>
-          <div class="unlock-item">
+          <div class="unlock-item attests">
             <div class="unlock-label">Attestations</div>
             <div class="unlock-desc">Attest other Keys' signals to amplify meaning and boost rewards</div>
           </div>
-          <div class="unlock-item">
+          <div class="unlock-item artefacts">
             <div class="unlock-label">Artefacts</div>
-            <div class="unlock-desc">A live visual mirror that renders your participation patterns across epochs</div>
+            <div class="unlock-desc">A live visual mirror rendering your participation patterns across epochs</div>
           </div>
-          <div class="unlock-item">
-            <div class="unlock-label">Treasury</div>
-            <div class="unlock-desc">Earn POL rewards through presence scoring and attestation weight</div>
+          <div class="unlock-item treasury">
+            <div class="unlock-label">Claims</div>
+            <div class="unlock-desc">Settle epoch claims from attested signals — capture, return to the Field, or gift to Nexus</div>
           </div>
-        </div>
-      </div>
-
-      <!-- CONTRACT INFO -->
-      <div class="contract-info">
-        <div style="font-weight:600; margin-bottom:4px; color:var(--text-main);">Verified Contracts (Polygon Mainnet)</div>
-        <div class="contract-row">
-          <span class="contract-label">Core</span>
-          <a href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank">0x4Ef6...e13</a>
-        </div>
-        <div class="contract-row">
-          <span class="contract-label">Key (ERC-721)</span>
-          <a href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank">0xe27C...469</a>
-        </div>
-        <div class="contract-row">
-          <span class="contract-label">Signal</span>
-          <a href="https://polygonscan.com/address/0x85f0A512" target="_blank">0x85f0...512</a>
-        </div>
-        <div class="contract-row">
-          <span class="contract-label">Issuance</span>
-          <a href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank">0x6765...7dF</a>
         </div>
       </div>
     </article>
@@ -505,6 +549,31 @@ flow := {
     </article>
   </section>
 </main>
+
+<!-- CONTRACTS — standalone section, reusable across pages -->
+<section class="contracts-section">
+  <div class="contracts-bar">
+    <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
+    <div class="contracts-grid">
+      <div class="contract-item">
+        <span class="contract-label">Core</span>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6...e13</a>
+      </div>
+      <div class="contract-item">
+        <span class="contract-label">Key</span>
+        <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C...469</a>
+      </div>
+      <div class="contract-item">
+        <span class="contract-label">Signal</span>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0...535</a>
+      </div>
+      <div class="contract-item">
+        <span class="contract-label">Issuance</span>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765...7dF</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
@@ -688,7 +757,6 @@ flow := {
       .catch(function(err) {
         console.error('Could not load price:', err);
         if (priceMain) priceMain.innerHTML = '– POL';
-        fetchUsdRate();
       });
 
     rpcCall('eth_call', [{ to: Z1N_CORE, data: '0x76671808' }, 'latest'])
@@ -707,8 +775,7 @@ flow := {
         if (keys.length > 0 && d[keys[0]] && typeof d[keys[0]].usd === 'number') {
           currentUsdRate = d[keys[0]].usd;
           if (currentPriceWei) {
-            var priceInPol = Number(BigInt(currentPriceWei)) / 1e18;
-            updatePriceDisplay(priceInPol);
+            updatePriceDisplay(Number(BigInt(currentPriceWei)) / 1e18);
           }
         }
       })
@@ -739,8 +806,7 @@ flow := {
       var priceResult = await rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: '0x9d1b464a' }, 'latest']);
       currentPriceWei = BigInt(priceResult).toString();
       var priceWithBuffer = (BigInt(currentPriceWei) * BigInt(101)) / BigInt(100);
-      var exactPriceInPol = Number(BigInt(currentPriceWei)) / 1e18;
-      updatePriceDisplay(exactPriceInPol);
+      updatePriceDisplay(Number(BigInt(currentPriceWei)) / 1e18);
 
       if (mintStatus) { mintStatus.textContent = "Confirm transaction in wallet..."; mintStatus.className = "status-text"; }
       btnMint.textContent = 'Minting...';
@@ -798,7 +864,6 @@ flow := {
   if (modalClose) modalClose.onclick = hideModal;
   if (walletModal) walletModal.onclick = function(e) { if (e.target === walletModal) hideModal(); };
 
-  // Load price on page load + auto-refresh
   loadEpochAndPrice();
   setInterval(loadEpochAndPrice, 30000);
 })();
