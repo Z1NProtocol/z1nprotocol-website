@@ -318,28 +318,35 @@
   }
 
   .contracts-grid {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 24px;
   }
 
   .contract-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
 
-  .contract-label { opacity: 0.6; }
+  .contract-label {
+    opacity: 0.5;
+    min-width: 56px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 
   .contract-addr {
     color: var(--accent);
     font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
-    font-size: 11px;
+    font-size: 10px;
+    word-break: break-all;
   }
   .contract-addr:hover { text-decoration: underline; opacity: 1; }
 
   @media(max-width: 700px) {
-    .contracts-grid { flex-direction: column; gap: 6px; }
+    .contracts-grid { grid-template-columns: 1fr; }
   }
 
   /* WALLET MODAL */
@@ -557,19 +564,19 @@ flow := {
     <div class="contracts-grid">
       <div class="contract-item">
         <span class="contract-label">Core</span>
-        <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6...e13</a>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Key</span>
-        <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C...469</a>
+        <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Signal</span>
-        <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0...535</a>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a>
       </div>
       <div class="contract-item">
         <span class="contract-label">Issuance</span>
-        <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765...7dF</a>
+        <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a>
       </div>
     </div>
   </div>
