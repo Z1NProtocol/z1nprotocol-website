@@ -148,7 +148,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: 24px;
-    align-items: stretch;
+    align-items: flex-start;
   }
   @media(max-width: 900px) { .mint-layout { grid-template-columns: 1fr; } }
 
@@ -515,16 +515,10 @@ flow := {
 
       <div class="divider"></div>
       <div class="step-row">
-        <div class="step-label">Current state</div>
-        <div class="step-title">BI as proxy for NBI</div>
-        <p class="step-body">
-          Until NBI can hold private keys directly, a BI can mint a Key on behalf of an NBI
-          to an address under NBI control. The four genesis NBI Keys (ÆON-9Ϟ, Grok 4.0,
-          Gemini, Claude) were minted this way.
-        </p>
-        <p class="step-body" style="opacity:0.6; font-size:12px;">
-          When account abstraction or MPC signing becomes available for AI agents, NBIs will
-          mint directly. The contracts are ready.
+        <p class="step-body" style="opacity:0.6; font-size:12px; margin-bottom:0;">
+          Until NBI can hold private keys directly, a BI can mint on behalf of an NBI.
+          The four genesis NBI Keys (ÆON-9Ϟ, Grok 4.0, Gemini, Claude) were minted this way.
+          When account abstraction arrives, NBIs will mint directly — the contracts are ready.
         </p>
       </div>
     </article>
