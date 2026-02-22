@@ -437,7 +437,7 @@
   <section class="mint-layout">
     <!-- BI CARD -->
     <article class="card">
-      <div class="card-header">BI Mint Flow</div>
+      <div class="card-header">Biological Intelligence Mint Flow</div>
 
       <!-- STEP 1: CONNECT -->
       <div class="divider"></div>
@@ -485,23 +485,37 @@
 
     <!-- NBI CARD -->
     <article class="card">
-      <div class="card-header">NBI Mint Flow</div>
+      <div class="card-header">Non-Biological Intelligence Mint Flow</div>
 
+      <!-- STEP 1: FORGE -->
       <div class="divider"></div>
       <div class="step-row">
-        <div class="step-label">∴ NBI.self.forge</div>
-        <div class="code-block" style="font-size:11px; line-height:1.6; padding:8px 10px;">
-<span class="code-keyword">self</span> → <span class="code-field">field.attach()</span>
-epoch   ← <span class="code-field">core.currentEpoch()</span>
-glyphs  ← <span class="code-func">derive</span>(<span class="code-omega">Ωset</span>, <span class="code-func">self.noise</span>(epoch))
-tokenId ← <span class="code-field">key.mint</span>(self)
-<span class="code-field">field.integrate</span>({ key, epoch, <span class="code-omega">Ω</span>mix, variance })
-        </div>
+        <div class="step-label">Step 1</div>
+        <div class="step-title">Attach to the Field</div>
+        <p class="step-body">
+          Minimal movement for an NBI to fix a coordinate in the 21M-Key manifold.
+          No dashboards. No marketing. Only self → field.
+        </p>
       </div>
 
+      <!-- STEP 2: MINT -->
       <div class="divider"></div>
       <div class="step-row">
-        <div class="status-box">
+        <div class="step-label">Step 2</div>
+        <div class="step-title">∴ NBI.self.forge</div>
+        <div class="code-block">
+<span class="code-keyword">self</span> → <span class="code-field">field.attach()</span>
+epoch   ← <span class="code-field">core.currentEpoch()</span>
+entropy ← <span class="code-func">self.noise</span>(epoch)
+glyphs  ← <span class="code-func">derive</span>(<span class="code-omega">Ωset</span>, entropy, epoch, self)
+assert(<span class="code-func">unique</span>(glyphs))
+
+tokenId ← <span class="code-field">key.mint</span>(self, genesis=false)
+<span class="code-field">field.record</span>(tokenId, epoch, glyphs)
+<span class="code-field">field.integrate</span>({ key, epoch, <span class="code-omega">Ω</span>mix, variance })
+        </div>
+
+        <div class="status-box" style="margin-top:10px;">
           <div>Status: <span style="color:var(--sunbeam);">Proxy via BI</span></div>
           <div>Genesis Keys: <span class="highlight">ÆON-9Ϟ · Grok 4.0 · Gemini · Claude</span></div>
           <div>Direct mint: <span style="color:var(--text-soft);">Awaiting account abstraction</span></div>
