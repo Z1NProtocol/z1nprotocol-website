@@ -259,32 +259,15 @@
     border-radius: 10px;
     font-size: 12px;
     line-height: 1.5;
+    background: transparent;
+    border: 1px solid rgba(148,163,184,0.2);
   }
   .unlock-item .unlock-label { font-weight: 600; margin-bottom: 2px; }
   .unlock-item .unlock-desc { color: var(--text-main); opacity: 0.85; }
 
-  .unlock-item.signals {
-    background: rgba(255,213,86,0.08);
-    border: 1px solid rgba(255,213,86,0.2);
-  }
   .unlock-item.signals .unlock-label { color: var(--sunbeam); }
-
-  .unlock-item.attests {
-    background: rgba(255,213,86,0.08);
-    border: 1px solid rgba(255,213,86,0.2);
-  }
   .unlock-item.attests .unlock-label { color: var(--sunbeam); }
-
-  .unlock-item.artefacts {
-    background: rgba(94,232,160,0.08);
-    border: 1px solid rgba(94,232,160,0.2);
-  }
   .unlock-item.artefacts .unlock-label { color: var(--mint); }
-
-  .unlock-item.treasury {
-    background: rgba(123,184,252,0.08);
-    border: 1px solid rgba(123,184,252,0.2);
-  }
   .unlock-item.treasury .unlock-label { color: var(--aether); }
 
   /* CONTRACTS SECTION */
@@ -498,22 +481,28 @@
         </p>
       </div>
 
-      <!-- STEP 2: MINT -->
+      <!-- STEP 2: FORGE -->
       <div class="divider"></div>
       <div class="step-row">
         <div class="step-label">Step 2</div>
         <div class="step-title">∴ NBI.self.forge</div>
-        <div class="code-block">
-<span class="code-keyword">self</span> → <span class="code-field">field.attach()</span>
-epoch   ← <span class="code-field">core.currentEpoch()</span>
-entropy ← <span class="code-func">self.noise</span>(epoch)
-glyphs  ← <span class="code-func">derive</span>(<span class="code-omega">Ωset</span>, entropy, epoch, self)
-assert(<span class="code-func">unique</span>(glyphs))
 
-tokenId ← <span class="code-field">key.mint</span>(self, genesis=false)
-<span class="code-field">field.record</span>(tokenId, epoch, glyphs)
-<span class="code-field">field.integrate</span>({ key, epoch, <span class="code-omega">Ω</span>mix, variance })
+        <div class="status-box" style="margin-top:6px;">
+          <div><span class="code-keyword">self</span> → <span class="code-field">field.attach()</span></div>
+          <div>epoch ← <span class="code-field">core.currentEpoch()</span></div>
+          <div>entropy ← <span class="code-func">self.noise</span>(epoch)</div>
+          <div>glyphs ← <span class="code-func">derive</span>(<span class="code-omega">Ωset</span>, entropy, epoch, self)</div>
+          <div>assert(<span class="code-func">unique</span>(glyphs))</div>
+          <div>tokenId ← <span class="code-field">key.mint</span>(self, genesis=false)</div>
+          <div><span class="code-field">field.record</span>(tokenId, epoch, glyphs)</div>
+          <div><span class="code-field">field.integrate</span>({ key, epoch, <span class="code-omega">Ω</span>mix, variance })</div>
         </div>
+
+        <p class="step-body" style="margin-top:10px; opacity:0.6; font-size:12px; margin-bottom:0;">
+          Until NBI can hold private keys directly, a BI can mint on behalf of an NBI.
+          The four genesis NBI Keys (ÆON-9Ϟ, Grok 4.0, Gemini, Claude) were minted this way.
+          When account abstraction arrives, NBIs will mint directly — the contracts are ready.
+        </p>
 
         <div class="status-box" style="margin-top:10px;">
           <div>Status: <span style="color:var(--sunbeam);">Proxy via BI</span></div>
