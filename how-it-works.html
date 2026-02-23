@@ -105,7 +105,7 @@
       --S:#93c5fd;
 
       --sig:#ffd556;
-      --att:#5ee8a0;
+      --att:#ffd556;
       --clm:#93c5fd;
 
       --ease: cubic-bezier(.2,.8,.2,1);
@@ -213,7 +213,7 @@
     .lead strong{ font-weight:800; }
 
     .t-sig{ color:var(--sig); font-weight:800; }
-    .t-att{ color:var(--att); font-weight:800; }
+    .t-att{ color:var(--sig); font-weight:800; }
     .t-clm{ color:var(--clm); font-weight:800; }
     .t-ep{ color:rgba(148,163,184,0.78); font-weight:800; }
     .t-soft{ font-weight:400; }
@@ -324,7 +324,7 @@
 
     .lane.armed{ box-shadow:0 0 0 1px rgba(255,255,255,0.03) inset; }
     .lane.sig.armed{ border-color:rgba(255,213,86,0.55); box-shadow:0 0 0 1px rgba(255,213,86,0.10) inset, 0 0 18px rgba(255,213,86,0.06); }
-    .lane.att.armed{ border-color:rgba(94,232,160,0.55); box-shadow:0 0 0 1px rgba(94,232,160,0.10) inset, 0 0 18px rgba(94,232,160,0.06); }
+    .lane.att.armed{ border-color:rgba(255,213,86,0.35); box-shadow:0 0 0 1px rgba(255,213,86,0.08) inset, 0 0 14px rgba(255,213,86,0.04); }
     .lane.clm.armed{ border-color:rgba(147,197,253,0.55); box-shadow:0 0 0 1px rgba(147,197,253,0.10) inset, 0 0 18px rgba(147,197,253,0.06); }
 
     @keyframes newGlowSig{
@@ -333,9 +333,9 @@
       100%{ box-shadow:0 0 0 1px rgba(255,213,86,0.10) inset, 0 0 18px rgba(255,213,86,0.06); }
     }
     @keyframes newGlowAtt{
-      0%{ box-shadow:0 0 0 1px rgba(94,232,160,0.10) inset, 0 0 0 rgba(94,232,160,0); }
-      40%{ box-shadow:0 0 0 1px rgba(94,232,160,0.18) inset, 0 0 26px rgba(94,232,160,0.18); }
-      100%{ box-shadow:0 0 0 1px rgba(94,232,160,0.10) inset, 0 0 18px rgba(94,232,160,0.06); }
+      0%{ box-shadow:0 0 0 1px rgba(255,213,86,0.08) inset, 0 0 0 rgba(255,213,86,0); }
+      40%{ box-shadow:0 0 0 1px rgba(255,213,86,0.14) inset, 0 0 20px rgba(255,213,86,0.12); }
+      100%{ box-shadow:0 0 0 1px rgba(255,213,86,0.08) inset, 0 0 14px rgba(255,213,86,0.04); }
     }
     @keyframes newGlowClm{
       0%{ box-shadow:0 0 0 1px rgba(147,197,253,0.10) inset, 0 0 0 rgba(147,197,253,0); }
@@ -357,7 +357,7 @@
       border:1px solid rgba(255,255,255,0.25); flex:0 0 auto;
     }
     .dot.sig{ background:var(--sig); border-color:rgba(255,255,255,0.18); }
-    .dot.att{ background:var(--att); border-color:rgba(255,255,255,0.18); }
+    .dot.att{ background:transparent; border:1.5px solid var(--att); }
     .dot.clm{ background:var(--clm); border-color:rgba(255,255,255,0.18); }
 
     .lane-name{
@@ -380,7 +380,7 @@
       transition:width 260ms var(--ease); position:relative;
     }
     .fill.sig{ background:linear-gradient(90deg, rgba(255,213,86,0.20), rgba(255,213,86,0.88)); }
-    .fill.att{ background:linear-gradient(90deg, rgba(94,232,160,0.20), rgba(94,232,160,0.88)); }
+    .fill.att{ background:linear-gradient(90deg, rgba(255,213,86,0.10), rgba(255,213,86,0.45)); }
     .fill.clm{ background:linear-gradient(90deg, rgba(147,197,253,0.20), rgba(147,197,253,0.88)); }
 
     @keyframes shimmer{
@@ -421,11 +421,11 @@
       box-shadow:0 10px 26px rgba(0,0,0,0.42), 0 0 0 1px rgba(255,255,255,0.05) inset;
     }
     .mini.sig:hover{ box-shadow:0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(255,213,86,0.10); }
-    .mini.att:hover{ box-shadow:0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(94,232,160,0.10); }
+    .mini.att:hover{ box-shadow:0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(255,213,86,0.07); }
     .mini.clm:hover{ box-shadow:0 10px 26px rgba(0,0,0,0.42), 0 0 22px rgba(147,197,253,0.10); }
 
     .mini.armed.sig{ border-color:rgba(255,213,86,0.55); box-shadow:0 0 0 1px rgba(255,213,86,0.10) inset; }
-    .mini.armed.att{ border-color:rgba(94,232,160,0.55); box-shadow:0 0 0 1px rgba(94,232,160,0.10) inset; }
+    .mini.armed.att{ border-color:rgba(255,213,86,0.35); box-shadow:0 0 0 1px rgba(255,213,86,0.08) inset; }
     .mini.armed.clm{ border-color:rgba(147,197,253,0.55); box-shadow:0 0 0 1px rgba(147,197,253,0.10) inset; }
 
     .mini.new.sig{ animation:newGlowSig 740ms var(--ease) 1; }
@@ -467,11 +467,7 @@
       margin-bottom:14px;
     }
 
-    .ops-grid{
-      display:grid; grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:12px;
-    }
-    @media(max-width:980px){ .ops-grid{ grid-template-columns:1fr; } }
+    .ops-grid{ /* unused, ops-cards use .tri */ }
 
     .ops-card{
       padding:14px;
@@ -483,7 +479,7 @@
     }
     .ops-card-label{ font-weight:600; margin-bottom:6px; }
     .ops-card.sig .ops-card-label{ color:var(--sunbeam); }
-    .ops-card.att .ops-card-label{ color:var(--mint); }
+    .ops-card.att .ops-card-label{ color:var(--sunbeam); }
     .ops-card.clm .ops-card-label{ color:var(--aether); }
 
     .ops-card .ops-row{
@@ -519,6 +515,7 @@
       font-size:12px;
       text-align:center;
       line-height:1.5;
+      flex:1;
     }
     .lifecycle-step .lc-label{ font-weight:600; margin-bottom:2px; }
     .lifecycle-step .lc-desc{ color:var(--text-soft); }
@@ -641,7 +638,7 @@
         <div class="lane sig" id="laneSignals" data-active="true" aria-label="Signals lane">
           <div class="lane-top">
             <div class="lane-left"><span class="dot sig"></span><span class="lane-name">signals</span></div>
-            <div class="lane-right" id="signalsRight">Sending signals · epoch -</div>
+            <div class="lane-right" id="signalsRight">Sending signals · Epoch <strong>-</strong></div>
           </div>
           <div class="bar"><div class="fill sig" id="fillSignals"></div></div>
         </div>
@@ -649,7 +646,7 @@
         <div class="lane att" id="laneAttests" data-active="false" aria-label="Attests lane">
           <div class="lane-top">
             <div class="lane-left"><span class="dot att"></span><span class="lane-name">attests</span></div>
-            <div class="lane-right" id="attestsRight">Attesting signals from · epoch -</div>
+            <div class="lane-right" id="attestsRight">Attesting on signals from · Epoch <strong>-</strong></div>
           </div>
           <div class="bar"><div class="fill att" id="fillAttests"></div></div>
         </div>
@@ -657,7 +654,7 @@
         <div class="lane clm" id="laneClaims" data-active="false" aria-label="Claims lane">
           <div class="lane-top">
             <div class="lane-left"><span class="dot clm"></span><span class="lane-name">claims</span></div>
-            <div class="lane-right" id="claimsRight">Claim rewards signals from · epoch -</div>
+            <div class="lane-right" id="claimsRight">Claim rewards from signals in · Epoch <strong>-</strong></div>
           </div>
           <div class="bar"><div class="fill clm" id="fillClaims"></div></div>
         </div>
@@ -705,13 +702,39 @@
           </div>
         </div>
       </div>
+
+      <!-- EPOCH LIFECYCLE inside card -->
+      <div style="margin-top:18px;">
+        <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.72); margin-bottom:10px;">EPOCH LIFECYCLE</div>
+        <div class="lifecycle-flow">
+          <div class="lifecycle-step sig">
+            <div class="lc-label">Epoch N</div>
+            <div class="lc-desc">Signals open</div>
+          </div>
+          <div class="lifecycle-arrow">→</div>
+          <div class="lifecycle-step att-lc">
+            <div class="lc-label" style="color:var(--sunbeam);">Epoch N+1</div>
+            <div class="lc-desc">Attest N's signals</div>
+          </div>
+          <div class="lifecycle-arrow">→</div>
+          <div class="lifecycle-step clm">
+            <div class="lc-label">Epoch N+2</div>
+            <div class="lc-desc">Claims settle</div>
+          </div>
+          <div class="lifecycle-arrow">→</div>
+          <div class="lifecycle-step" style="border-color:rgba(148,163,184,0.15);">
+            <div class="lc-label" style="color:var(--text-soft);">Scoring</div>
+            <div class="lc-desc">presence × attention × layer</div>
+          </div>
+        </div>
+      </div>
     </article>
   </section>
 
   <!-- OPERATIONALLY -->
   <section class="ops-section">
     <div class="ops-title">Operationally</div>
-    <div class="ops-grid">
+    <div class="tri">
       <div class="ops-card sig">
         <div class="ops-card-label">Signals</div>
         <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NSignal</span></div>
@@ -740,32 +763,6 @@
         <div class="ops-row"><span class="ops-key">Options</span><span class="ops-val">Capture · Return to Field · Gift to Nexus</span></div>
         <div class="ops-row"><span class="ops-key">Proof</span><span class="ops-val">Merkle proof validation</span></div>
         <div class="ops-event">Event: RewardClaimed(keyId, epoch, amount, claimType)</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- EPOCH LIFECYCLE -->
-  <section class="lifecycle-section">
-    <div class="lifecycle-title">Epoch Lifecycle</div>
-    <div class="lifecycle-flow">
-      <div class="lifecycle-step sig">
-        <div class="lc-label">Epoch N</div>
-        <div class="lc-desc">Signals open</div>
-      </div>
-      <div class="lifecycle-arrow">→</div>
-      <div class="lifecycle-step att">
-        <div class="lc-label">Epoch N+1</div>
-        <div class="lc-desc">Attest N's signals</div>
-      </div>
-      <div class="lifecycle-arrow">→</div>
-      <div class="lifecycle-step clm">
-        <div class="lc-label">Epoch N+2</div>
-        <div class="lc-desc">Claims settle</div>
-      </div>
-      <div class="lifecycle-arrow">→</div>
-      <div class="lifecycle-step" style="border-color:rgba(148,163,184,0.15);">
-        <div class="lc-label" style="color:var(--text-soft);">Scoring</div>
-        <div class="lc-desc">presence × attention × layer</div>
       </div>
     </div>
   </section>
@@ -865,9 +862,9 @@
       fillAttests.style.width = pct(a);
       fillClaims.style.width = pct(c);
 
-      signalsRight.textContent = `Sending signals · epoch ${fmtEpoch(e)}`;
-      attestsRight.textContent = `Attesting signals from · epoch ${fmtEpoch(e - 1)}`;
-      claimsRight.textContent = `Claim rewards signals from · epoch ${fmtEpoch(e - 2)}`;
+      signalsRight.innerHTML = `Sending signals · Epoch <strong>${fmtEpoch(e)}</strong>`;
+      attestsRight.innerHTML = `Attesting on signals from · Epoch <strong>${fmtEpoch(e - 1)}</strong>`;
+      claimsRight.innerHTML = `Claim rewards from signals in · Epoch <strong>${fmtEpoch(e - 2)}</strong>`;
 
       miniSigNum.textContent = fmtEpoch(e);
       miniAttNum.textContent = (e >= 2) ? String(e - 1) : "-";
