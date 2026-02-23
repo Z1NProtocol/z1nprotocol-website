@@ -149,7 +149,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
 .fs-intent{font-weight:700;margin-left:6px;}
 .fs-epoch{font-size:12px;color:rgba(255,255,255,0.75);opacity:0.9;border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;}
-.fs-body{font-size:15px;line-height:1.65;opacity:0.92;max-width:980px;}
+.fs-body{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:13px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;}
 .fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
 
 /* FOOTER */
@@ -459,9 +459,16 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   }
 
   // ═══ RENDER ═══
+  var lastRenderedKey = null;
+
   function render(){
-    var dur=hasRenderedFirst?0:2000;
     var d=LENS_DATA[activeKey]||LENS_DATA.total;
+
+    // Count-up: 2s on first load, 500ms on lens switch, 0 on same-lens refresh
+    var dur = 0;
+    if(!hasRenderedFirst) dur = 2000;
+    else if(activeKey !== lastRenderedKey) dur = 500;
+    lastRenderedKey = activeKey;
 
     // Cards with count-up
     countUp(document.getElementById("vKeys"),d.cards.keys,dur);
@@ -492,7 +499,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       var parts = [];
       if(d.signal.weight>0) parts.push("Attestation weight: "+d.signal.weight);
       if(d.signal.tokenId) parts.push("Key #"+d.signal.tokenId);
-      if(d.signal.cid) parts.push("IPFS: "+d.signal.cid.slice(0,20)+"…");
+      if(d.signal.epoch && typeof d.signal.epoch === "number") parts.push("Signal epoch: "+d.signal.epoch);
       fsMeta.textContent = parts.join(" · ");
     }
 
