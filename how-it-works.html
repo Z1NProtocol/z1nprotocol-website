@@ -238,6 +238,7 @@
       opacity:0.9;
     }
     .card > *{ position:relative; }
+    .card.no-glow::before{ display:none; }
 
     .card-kicker{
       font-size:11px; letter-spacing:0.16em;
@@ -484,6 +485,7 @@
       display:flex;
       flex-direction:column;
     }
+    .ops-card .ops-code > div{ margin:0; padding:0; line-height:1.7; }
     .ops-card .ops-code .ops-emit{
       margin-top:auto;
       padding-top:8px;
@@ -503,34 +505,17 @@
 
     /* old ops-row/event replaced by ops-code */
 
-    /* LIFECYCLE (inside card) */
-    .lifecycle-flow{
-      display:flex; align-items:center; gap:0;
-      flex-wrap:wrap; justify-content:center;
-    }
-    .lifecycle-step{
-      padding:10px 16px;
+    /* LIFECYCLE (inside card, uses .tri grid) */
+    .lifecycle-card{
+      padding:10px 14px;
       background:transparent;
       border:1px solid rgba(148,163,184,0.2);
       border-radius:10px;
-      font-size:12px;
       text-align:center;
-      line-height:1.5;
-      flex:1;
     }
-    .lifecycle-step .lc-label{ font-weight:850; margin-bottom:2px; color:#fff; }
-    .lifecycle-step .lc-desc{ color:var(--text-soft); }
-    .lifecycle-step.sig .lc-label{ color:var(--sunbeam); }
-    .lifecycle-step.att .lc-label{ color:var(--mint); }
-    .lifecycle-step.clm .lc-label{ color:var(--aether); }
-    .lifecycle-arrow{
-      font-size:16px; color:var(--text-soft); opacity:0.4;
-      padding:0 8px;
-    }
-    @media(max-width:600px){
-      .lifecycle-flow{ flex-direction:column; gap:0; }
-      .lifecycle-arrow{ transform:rotate(90deg); padding:4px 0; }
-    }
+    .lifecycle-card .lc-label{ font-weight:850; margin-bottom:2px; font-size:13px; }
+    .lifecycle-card .lc-desc{ font-size:12px; }
+    .lifecycle-card .lc-sub{ font-size:10px; color:var(--text-soft); opacity:0.6; margin-top:2px; }
 
     /* FOOTER */
     footer{
@@ -707,25 +692,19 @@
       <!-- EPOCH LIFECYCLE inside card -->
       <div style="margin-top:18px;">
         <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.72); margin-bottom:10px;">EPOCH LIFECYCLE</div>
-        <div class="lifecycle-flow">
-          <div class="lifecycle-step sig">
-            <div class="lc-label"><span class="ep-word">Epoch</span> N</div>
-            <div class="lc-desc">Signals open</div>
+        <div class="tri">
+          <div class="lifecycle-card">
+            <div class="lc-label" style="color:#fff;">N</div>
+            <div class="lc-desc" style="color:var(--sunbeam);">Signals open</div>
           </div>
-          <div class="lifecycle-arrow">→</div>
-          <div class="lifecycle-step att-lc">
-            <div class="lc-label"><span class="ep-word">Epoch</span> N+1</div>
-            <div class="lc-desc">Attest N's signals</div>
+          <div class="lifecycle-card">
+            <div class="lc-label" style="color:#fff;">N+1</div>
+            <div class="lc-desc" style="color:var(--sunbeam);">Attest N's signals</div>
           </div>
-          <div class="lifecycle-arrow">→</div>
-          <div class="lifecycle-step clm">
-            <div class="lc-label"><span class="ep-word">Epoch</span> N+2</div>
-            <div class="lc-desc">Claims settle</div>
-          </div>
-          <div class="lifecycle-arrow">→</div>
-          <div class="lifecycle-step" style="border-color:rgba(148,163,184,0.15);">
-            <div class="lc-label" style="color:var(--text-soft);">Scoring</div>
-            <div class="lc-desc">presence × attention × layer</div>
+          <div class="lifecycle-card">
+            <div class="lc-label" style="color:#fff;">N+2</div>
+            <div class="lc-desc" style="color:var(--aether);">Claims settle</div>
+            <div class="lc-sub">presence × attention × layer</div>
           </div>
         </div>
       </div>
@@ -734,7 +713,7 @@
 
   <!-- OPERATIONALLY -->
   <section class="grid" style="margin-top:16px;">
-    <article class="card">
+    <article class="card no-glow" style="background:transparent; border-color:transparent; padding:18px 0;">
       <div class="card-kicker">OPERATIONALLY</div>
       <div class="tri">
         <div class="ops-card sig">
@@ -748,7 +727,7 @@
             <div>SignalType signalType</div>
             <div>uint16 epochRef</div>
             <div>bytes32 replyTo</div>
-            <div style="margin-top:6px;">require(key.ownerOf(tokenId) == msg.sender)</div>
+            <div>require(key.ownerOf(tokenId) == msg.sender)</div>
             <div>limit: 2 per tokenId per epoch</div>
             <div>cost: gas only (fee = 0)</div>
             <div class="ops-emit">emit SignalSubmitted(sender, tokenId, signalHash, cid, symbolIndex, intent, 0)</div>
@@ -759,7 +738,7 @@
           <div class="ops-card-label">Z1NSignal.attestSignal()</div>
           <div class="ops-code">
             <div>bytes32 signalHash</div>
-            <div style="margin-top:6px;">window: currentEpoch == signal.epoch + 1</div>
+            <div>window: currentEpoch == signal.epoch + 1</div>
             <div>require(submitter ≠ msg.sender) <span style="opacity:0.45">// no self</span></div>
             <div>require(!hasAttested[hash][sender])</div>
             <div>weight: Key holder = 100, non-Key = 1</div>
@@ -773,10 +752,10 @@
         <div class="ops-card clm">
           <div class="ops-card-label">Z1NTreasury · 3 claim paths</div>
           <div class="ops-code">
-            <div style="color:#fff;">claim(epochId, index, account, amount, proof)</div>
-            <div style="color:#fff;">donateReward(…) <span style="opacity:0.45">// → Nexus wallet</span></div>
-            <div style="color:#fff;">recycleReward(…) <span style="opacity:0.45">// → stays in Treasury</span></div>
-            <div style="margin-top:6px;">require(msg.sender == account)</div>
+            <div>claim(epochId, index, account, amount, proof)</div>
+            <div>donateReward(…) <span style="opacity:0.45">// → Nexus wallet</span></div>
+            <div>recycleReward(…) <span style="opacity:0.45">// → stays in Treasury</span></div>
+            <div>require(msg.sender == account)</div>
             <div>window: epoch + CLAIM_WINDOW ≤ current</div>
             <div>leaf = keccak256(index, account, amount)</div>
             <div>verify: MerkleProof.verify(proof, root, leaf)</div>
