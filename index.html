@@ -501,7 +501,7 @@
       <div class="glance-card">
         <div class="glance-label">Signals total</div>
         <div class="glance-value loading" id="glanceSignals">–</div>
-        <div class="glance-sub">Proof of Gestalt signals across all epochs.</div>
+        <div class="glance-sub">Proof of Glyph signals across all epochs.</div>
       </div>
 
       <div class="glance-card">
@@ -623,35 +623,31 @@
     var progress = currentEpoch > 0 ? ((currentEpoch / TOTAL_EPOCHS) * 100).toFixed(2) : "0.00";
     elEpochSub.textContent = progress + "% of protocol completed";
 
-    // Intent: reveal after count-up finishes
-    var intentDelay = hasRendered ? 0 : dur + 100;
-    setTimeout(function() {
-      var dist = data.intentDistribution?.lastEpoch;
-      stopLoading(elIntent);
+    // Intent: render immediately alongside numbers
+    var dist = data.intentDistribution?.lastEpoch;
+    stopLoading(elIntent);
 
-      if (dist) {
-        var maxKey = null;
-        var maxVal = -1;
-        Object.keys(dist).forEach(function(k) {
-          if (dist[k] > maxVal) { maxVal = dist[k]; maxKey = k; }
-        });
+    if (dist) {
+      var maxKey = null;
+      var maxVal = -1;
+      Object.keys(dist).forEach(function(k) {
+        if (dist[k] > maxVal) { maxVal = dist[k]; maxKey = k; }
+      });
 
-        if (maxKey && maxVal > 0) {
-          var info = INTENTS[maxKey] || { name: maxKey, desc: "", color: "#8f9ab5" };
-          elIntent.textContent = maxKey;
-          elIntent.style.color = info.color;
-          elIntent.classList.add("intent-reveal");
-          elIntentSub.textContent = info.desc;
-        } else {
-          elIntent.textContent = "–";
-          elIntent.style.color = "";
-          elIntentSub.textContent = "No signals in last epoch.";
-        }
+      if (maxKey && maxVal > 0) {
+        var info = INTENTS[maxKey] || { name: maxKey, desc: "", color: "#8f9ab5" };
+        elIntent.textContent = maxKey;
+        elIntent.style.color = info.color;
+        elIntentSub.textContent = info.desc;
       } else {
         elIntent.textContent = "–";
-        elIntentSub.textContent = "No distribution data.";
+        elIntent.style.color = "";
+        elIntentSub.textContent = "No signals in last epoch.";
       }
-    }, intentDelay);
+    } else {
+      elIntent.textContent = "–";
+      elIntentSub.textContent = "No distribution data.";
+    }
 
     hasRendered = true;
   }
