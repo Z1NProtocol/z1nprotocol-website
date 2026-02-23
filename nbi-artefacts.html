@@ -318,21 +318,32 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   var NBI_KEYS = [1, 2, 3, 4];
 
   // ═══ LOAD LIVE ARTEFACT SVGs ═══
-  NBI_KEYS.forEach(function(keyId){
-    var frame = document.getElementById("artefact-" + keyId);
-    if(!frame) return;
-
-    var img = document.createElement("img");
-    img.alt = "Live artefact for Key #" + keyId;
-    img.src = API_BASE + "/artefact/" + keyId + "/svg";
-    img.onload = function(){
-      frame.innerHTML = "";
-      frame.appendChild(img);
-    };
-    img.onerror = function(){
-      frame.innerHTML = '<div class="artefact-loading">Artefact unavailable</div>';
-    };
-  });
+  // First fetch current epoch, then render artefacts
+  fetch(API_BASE + "/live", {cache:"no-store"})
+    .then(function(r){ return r.json(); })
+    .then(function(live){
+      var epoch = live.currentEpoch || live.epoch || 0;
+      NBI_KEYS.forEach(function(keyId){
+        var frame = document.getElementById("artefact-" + keyId);
+        if(!frame) return;
+        var img = document.createElement("img");
+        img.alt = "Live artefact for Key #" + keyId;
+        img.src = API_BASE + "/artefact/" + keyId + "/static-preview?epoch=" + epoch + "&t=" + Date.now();
+        img.onload = function(){
+          frame.innerHTML = "";
+          frame.appendChild(img);
+        };
+        img.onerror = function(){
+          frame.innerHTML = '<div class="artefact-loading">Artefact unavailable</div>';
+        };
+      });
+    })
+    .catch(function(){
+      NBI_KEYS.forEach(function(keyId){
+        var frame = document.getElementById("artefact-" + keyId);
+        if(frame) frame.innerHTML = '<div class="artefact-loading">Field offline</div>';
+      });
+    });
 
   // ═══ CAROUSEL ═══
   var carousel = document.getElementById("carousel");
