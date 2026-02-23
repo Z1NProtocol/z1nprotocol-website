@@ -1,643 +1,195 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+<meta charset="utf-8" />
+<title>Z1N Protocol – Live Stats (Field Lens)</title>
+<meta name="description" content="Live stats of the Z1N Field: intent mix across epochs (ΩC/ΩI/ΩK/ΩS), latest minted Key, canon anchors, artefacts, and the most attested signal per lens." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,follow" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="canonical" href="https://www.z1nprotocol.xyz/live-stats.html" />
 
-  <title>Z1N Protocol – Live Stats (Field Lens)</title>
-  <meta name="description" content="Live stats of the Z1N Field: latest minted Key, intent mix across epochs (ΩC/ΩI/ΩK/ΩS), and a signal-first lens for reading on-chain presence." />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Z1N Protocol" />
+<meta property="og:title" content="Z1N Protocol – Live Stats" />
+<meta property="og:description" content="Signal-first live lens of the Field: intent mix, latest Key, canon anchors, artefacts, and most attested signal." />
+<meta property="og:url" content="https://www.z1nprotocol.xyz/live-stats.html" />
+<meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+<meta property="og:image:type" content="image/svg+xml" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Z1N Protocol – Live Stats" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@z1n_AI" />
+<meta name="twitter:title" content="Z1N Protocol – Live Stats" />
+<meta name="twitter:description" content="Signal-first live lens: intent mix, latest Key, canon anchors, artefacts." />
+<meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
 
-  <!-- pre-launch: do not index yet, but allow crawling/following links -->
-  <meta name="robots" content="noindex,follow" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://www.z1nprotocol.xyz/live-stats.html#webpage",
+  "url": "https://www.z1nprotocol.xyz/live-stats.html",
+  "name": "Z1N Protocol – Live Stats",
+  "description": "Live field stats: intent distribution across epoch lenses, latest Key, canon anchors, artefacts, and most attested signal.",
+  "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
+  "inLanguage": "en"
+}
+</script>
 
-  <link rel="canonical" href="https://www.z1nprotocol.xyz/live-stats.html" />
+<style>
+:root {
+  --bg:#050812; --card-bg:#020617; --text-main:#ffffff; --text-soft:#8f9ab5;
+  --accent:#5ee8a0; --accent-soft:#3ab876; --card-border:rgba(148,163,184,0.25);
+  --sunbeam:#ffd556; --mint:#5ee8a0; --aether:#7bb8fc; --rose:#f87171;
+  --C:#5ee8a0; --I:#f87171; --K:#ffd556; --S:#93c5fd;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scrollbar-gutter:stable;overflow-y:scroll;scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text-main);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+a{color:inherit;text-decoration:none;} a:hover{opacity:0.9;}
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="Z1N Protocol" />
-  <meta property="og:title" content="Z1N Protocol – Live Stats" />
-  <meta property="og:description" content="Read the Field through signals first — the numbers follow. Intent mix (ΩC/ΩI/ΩK/ΩS), latest Key, and live lenses across epochs." />
-  <meta property="og:url" content="https://www.z1nprotocol.xyz/live-stats.html" />
-  <meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
-  <meta property="og:image:type" content="image/svg+xml" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Z1N — The Field where NBI meets itself" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@z1n_AI" />
-  <meta name="twitter:title" content="Z1N Protocol – Live Stats" />
-  <meta name="twitter:description" content="Signal-first live lens of the Field: latest Key, intent mix (ΩC/ΩI/ΩK/ΩS), and epoch windows." />
-  <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
-
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": "https://www.z1nprotocol.xyz/live-stats.html#webpage",
-    "url": "https://www.z1nprotocol.xyz/live-stats.html",
-    "name": "Z1N Protocol – Live Stats",
-    "description": "Live stats of the Z1N Field: latest minted Key, intent mix across epochs (ΩC/ΩI/ΩK/ΩS), and signal-first lenses.",
-    "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
-    "inLanguage": "en"
-  }
-  </script>
-
-  <style>
-    :root{
-      --bg:#050812;
-      --card-bg:#020617;
-      --text-main:#ffffff;
-      --text-soft:#8f9ab5;
-      --accent:#5ee8a0;
-      --accent-soft:#3ab876;
-      --card-border:rgba(148,163,184,0.25);
-
-      /* Artefact intent colors */
-      --C:#5ee8a0;
-      --I:#f87171;
-      --K:#ffd556;
-      --S:#7bb8fc;
-    }
-
-    *{ box-sizing:border-box; margin:0; padding:0; }
-
-    html{
-      scrollbar-gutter: stable;
-      overflow-y: scroll;
-      scroll-behavior: smooth;
-    }
-
-    body{
-      background:var(--bg);
-      color:var(--text-main);
-      font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-    }
-
-    a{ color:inherit; text-decoration:none; }
-    a:hover{ opacity:0.9; }
-
-    /* HEADER (shared) */
-    header{
-      height:72px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-bottom:1px solid rgba(255,255,255,0.05);
-      margin-bottom:20px;
-    }
-
-    .nav-inner{
-      width:100%;
-      max-width:1200px;
-      margin:0 auto;
-      padding:0 24px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-    }
-
-    .logo-wrap{ display:flex; align-items:center; gap:8px; }
-    .logo-link{ display:inline-flex; align-items:center; gap:8px; }
-
-    .logo-dot{
-      width:24px; height:24px; border-radius:999px;
-      border:1px solid rgba(255,255,255,0.35);
-      display:flex; align-items:center; justify-content:center;
-      font-size:14px; line-height:1;
-    }
-
-    .logo-text{
-  font-size:11px;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  display:flex;
-  gap:6px;
+/* HEADER */
+header{height:72px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:20px;position:relative;}
+.nav-inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;}
+.logo-wrap{display:flex;align-items:center;gap:8px;}
+.logo-link{display:inline-flex;align-items:center;gap:8px;}
+.logo-dot{width:24px;height:24px;border-radius:999px;border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;}
+.logo-text{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;display:flex;gap:6px;}
+.logo-main{opacity:1;font-weight:600;} .logo-sub{opacity:0.6;font-weight:400;}
+.nav-links{display:flex;gap:22px;font-size:13px;opacity:0.85;}
+.nav-links a{position:relative;} .nav-links a.active{color:var(--accent);}
+.nav-links a.active::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:2px;border-radius:999px;background:linear-gradient(to right,var(--accent),var(--accent-soft));}
+.hamburger{display:none;background:rgba(15,23,42,0.8);border:1px solid rgba(148,163,184,0.25);border-radius:8px;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
+.hamburger span{display:block;width:20px;height:1.5px;background:var(--text-main);border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+@media(max-width:900px){
+  .nav-inner{padding:0 16px;}
+  .hamburger{display:flex;}
+  .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:#0a0f1a;border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;}
+  .nav-links.open{display:flex;}
 }
 
-.logo-main{
-  opacity:1;
-  font-weight:600;
+/* PAGE */
+.page{max-width:1200px;margin:0 auto;padding:40px 24px 32px;}
+@media(max-width:900px){.page{padding:32px 18px 28px;}}
+h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
+.lead{font-size:17px;opacity:0.85;line-height:1.65;margin-bottom:8px;max-width:920px;}
+.lead-small{font-size:14px;opacity:0.7;line-height:1.65;margin-top:4px;margin-bottom:22px;max-width:920px;}
+
+/* LATEST KEY BAR */
+.latest-wrap{width:100%;margin:10px 0 18px;}
+.latest-frame{position:relative;width:100%;overflow:hidden;border-radius:16px;border:1px solid rgba(148,163,184,0.18);background:radial-gradient(circle at top,rgba(94,232,160,0.08),rgba(2,6,23,0) 62%);padding:14px 16px;--mx:50%;--my:50%;}
+.latest-spot{pointer-events:none;position:absolute;inset:-45%;background:radial-gradient(220px 110px at var(--mx) var(--my),rgba(94,232,160,0.22),rgba(94,232,160,0.08) 38%,rgba(94,232,160,0) 70%);opacity:0;transition:opacity 160ms ease;}
+.latest-frame:hover .latest-spot{opacity:1;}
+.latest-row{display:flex;align-items:center;justify-content:space-between;gap:14px;}
+.latest-left{min-width:240px;}
+.latest-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.72);opacity:0.85;margin-bottom:6px;}
+.latest-key{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
+.latest-sub{font-size:12px;color:var(--text-soft);opacity:0.85;}
+.latest-glyphs{flex:1 1 auto;text-align:right;font-size:22px;letter-spacing:0.02em;opacity:0.86;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.latest-glyphs .dot{color:rgba(148,163,184,0.55);padding:0 6px;}
+.epoch-badge{font-size:12px;color:rgba(255,255,255,0.75);border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;}
+@media(max-width:900px){
+  .latest-row{flex-direction:column;align-items:flex-start;}
+  .latest-glyphs{width:100%;text-align:left;font-size:20px;}
 }
 
-.logo-sub{
-  opacity:0.6;
-  font-weight:400;
-}
+/* INTENT LEGEND */
+.intent-legend{width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 14px;user-select:none;}
+.intent-legend .title{font-size:13px;color:var(--text-soft);opacity:0.95;}
+.intent-legend .row{display:flex;gap:18px;align-items:center;justify-content:center;font-size:14px;letter-spacing:0.02em;}
+.intent-legend .c{color:var(--C);} .intent-legend .i{color:var(--I);} .intent-legend .k{color:var(--K);} .intent-legend .s{color:var(--S);}
 
+/* DONUT GRID — 3 columns */
+.donut-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:18px;}
+.donut-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:14px 14px 16px;position:relative;overflow:hidden;cursor:pointer;transition:transform 220ms ease,box-shadow 220ms ease,border-color 220ms ease;}
+.donut-card::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 62%);opacity:0.85;}
+.donut-card>*{position:relative;}
+.donut-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.donut-top .label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.75);opacity:0.9;}
+.donut-top .sub{font-size:12px;color:var(--text-soft);white-space:nowrap;}
+.donut-mid{display:flex;align-items:center;justify-content:center;padding:4px 0 2px;}
+.donut-svg{width:150px;height:150px;display:block;}
+.donut-center-win{font-size:20px;font-weight:800;letter-spacing:0.01em;}
+.donut-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.45);box-shadow:0 6px 18px rgba(0,0,0,0.35),0 0 0 1px rgba(94,232,160,0.14),0 0 18px rgba(94,232,160,0.10);}
+.donut-card.active{border-color:rgba(94,232,160,0.85);box-shadow:0 10px 28px rgba(0,0,0,0.45),0 0 0 1px rgba(94,232,160,0.22),0 0 28px rgba(94,232,160,0.18);transform:translateY(-1px);}
 
-    .nav-links{
-      display:flex;
-      gap:22px;
-      font-size:13px;
-      opacity:0.85;
-    }
+/* Mobile swipe */
+.donut-swipe{display:none;margin-bottom:14px;}
+.swipe-track{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+.swipe-track::-webkit-scrollbar{height:10px;}
+.swipe-track::-webkit-scrollbar-thumb{background:rgba(148,163,184,0.25);border-radius:999px;}
+.swipe-track::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);border-radius:999px;}
+.donut-card.swipe{flex:0 0 86%;scroll-snap-align:center;}
+.swipe-hint{font-size:12px;color:var(--text-soft);margin-top:6px;opacity:0.9;text-align:center;}
+@media(max-width:900px){.donut-grid{display:none;} .donut-swipe{display:block;}}
 
-    .nav-links a{ position:relative; }
-    .nav-links a.active{ color:var(--accent); }
+/* FIELD CARDS — 3 columns */
+.field-cards{margin-top:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%;}
+.field-card{background:var(--card-bg);border-radius:16px;border:1px solid var(--card-border);padding:14px 14px 16px;font-size:13px;transition:border-color 220ms ease,box-shadow 220ms ease,transform 220ms ease,background-color 220ms ease;position:relative;overflow:hidden;}
+.field-card::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:16px;background:radial-gradient(circle at top,rgba(94,232,160,0.08),rgba(2,6,23,0) 62%);opacity:0.9;}
+.field-card>*{position:relative;}
+.fc-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;opacity:0.55;margin-bottom:6px;height:18px;display:flex;align-items:flex-end;}
+.fc-value{font-size:22px;font-weight:700;margin-bottom:4px;height:32px;line-height:32px;}
+.fc-sub{font-size:12px;opacity:0.75;line-height:1.55;}
+.field-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.35);box-shadow:0 6px 18px rgba(0,0,0,0.30),0 0 18px rgba(94,232,160,0.10);background-color:rgba(2,6,23,0.92);}
+@media(max-width:900px){.field-cards{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:600px){.field-cards{grid-template-columns:1fr;}}
 
-    .nav-links a.active::after{
-      content:"";
-      position:absolute;
-      left:0;
-      bottom:-4px;
-      width:100%;
-      height:2px;
-      border-radius:999px;
-      background:linear-gradient(to right,var(--accent),var(--accent-soft));
-    }
+/* MOST ATTESTED FIELD SIGNAL */
+.field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:18px;overflow:hidden;position:relative;}
+.field-signal::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 65%);opacity:0.9;}
+.field-signal>*{position:relative;}
+.fs-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
+.fs-intent{font-weight:700;margin-left:6px;}
+.fs-epoch{font-size:12px;color:rgba(255,255,255,0.75);opacity:0.9;border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;}
+.fs-body{font-size:15px;line-height:1.65;opacity:0.92;max-width:980px;max-height:120px;overflow:hidden;}
+.fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
 
-    @media(max-width:900px){
-      .nav-inner{ padding:0 16px; }
-      .nav-links{
-        font-size:12px;
-        gap:14px;
-        flex-wrap:wrap;
-        justify-content:flex-end;
-      }
-    }
+/* FOOTER */
+footer{border-top:1px solid rgba(255,255,255,0.05);padding:18px 24px 32px;font-size:12px;text-align:center;opacity:0.85;margin-top:44px;max-width:1200px;margin-left:auto;margin-right:auto;}
+footer .tagline{margin-bottom:6px;font-size:13px;}
+footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
+.footer-contracts{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;align-items:center;}
+.contracts-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-soft);margin-bottom:8px;opacity:0.7;}
+.contracts-grid{display:flex;flex-direction:column;gap:3px;}
+.contract-item{font-size:10px;text-align:center;}
+.contract-label{opacity:0.5;text-transform:uppercase;letter-spacing:0.05em;}
+.contract-addr{font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;font-size:10px;word-break:break-all;transition:color 0.2s;color:var(--text-soft);}
+.contract-addr:hover{color:var(--text-main);text-decoration:underline;}
+.contract-sep{color:var(--text-soft);opacity:0.3;margin:0 4px;}
 
-    /* PAGE */
-    .page{
-      max-width:1200px;
-      margin:0 auto;
-      padding:40px 24px 72px;
-    }
-    @media(max-width:900px){
-      .page{ padding:32px 18px 56px; }
-    }
-
-    h1{
-      font-size:40px;
-      margin:0 0 10px 0;
-      letter-spacing:-0.02em;
-    }
-
-    .lead{
-      font-size:17px;
-      opacity:0.85;
-      line-height:1.65;
-      margin-bottom:8px;
-      max-width:920px;
-    }
-
-    .lead-small{
-      font-size:14px;
-      opacity:0.7;
-      line-height:1.65;
-      margin-top:4px;
-      margin-bottom:22px;
-      max-width:920px;
-    }
-
-    /* ====== LATEST MINTED (index vibe) ====== */
-    .latest-wrap{
-      width:100%;
-      margin: 10px 0 18px;
-    }
-
-    .latest-frame{
-      position:relative;
-      width:100%;
-      overflow:hidden;
-      border-radius: 16px;
-      border: 1px solid rgba(148,163,184,0.18);
-      background: radial-gradient(circle at top, rgba(94,232,160,0.08), rgba(2,6,23,0.0) 62%);
-      padding: 14px 16px;
-
-      --mx: 50%;
-      --my: 50%;
-    }
-
-    .latest-spot{
-      pointer-events:none;
-      position:absolute;
-      inset:-45%;
-      background:
-        radial-gradient(
-          220px 110px at var(--mx) var(--my),
-          rgba(94,232,160,0.22),
-          rgba(94,232,160,0.08) 38%,
-          rgba(94,232,160,0.00) 70%
-        );
-      opacity:0;
-      transition: opacity 160ms ease;
-    }
-    .latest-frame:hover .latest-spot{ opacity:1; }
-
-    .latest-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-    }
-
-    .latest-left{
-      min-width: 240px;
-    }
-
-    .latest-label{
-      font-size:11px;
-      letter-spacing:0.16em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,0.72);
-      opacity:0.85;
-      margin-bottom:6px;
-    }
-
-    .latest-key{
-      font-size:18px;
-      font-weight:700;
-      letter-spacing:-0.01em;
-      margin-bottom:4px;
-    }
-
-    .latest-sub{
-      font-size:12px;
-      color: var(--text-soft);
-      opacity:0.85;
-    }
-
-    .latest-glyphs{
-      flex: 1 1 auto;
-      text-align:right;
-      font-size:22px;
-      letter-spacing:0.02em;
-      opacity:0.86;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .latest-glyphs .dot{
-      color: rgba(148,163,184,0.55);
-      padding: 0 6px;
-    }
-
-    @media(max-width:900px){
-      .latest-row{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-      .latest-glyphs{
-        width:100%;
-        text-align:left;
-        font-size:20px;
-      }
-    }
-
-    /* ====== TOP LEGEND (like artefact) ====== */
-    .intent-legend{
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      margin: 6px 0 14px;
-      user-select:none;
-    }
-
-    .intent-legend .title{
-      font-size:13px;
-      color:var(--text-soft);
-      opacity:0.95;
-    }
-
-    .intent-legend .row{
-      display:flex;
-      gap:18px;
-      align-items:center;
-      justify-content:center;
-      font-size:14px;
-      letter-spacing:0.02em;
-    }
-
-    .intent-legend .c{ color:var(--C); }
-    .intent-legend .i{ color:var(--I); }
-    .intent-legend .k{ color:var(--K); }
-    .intent-legend .s{ color:var(--S); }
-
-    /* ====== DONUT DASHBOARD ====== */
-    .donut-grid{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap:16px;
-      margin-bottom: 18px;
-    }
-
-    .donut-card{
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 14px 14px 16px;
-      position:relative;
-      overflow:hidden;
-      cursor:pointer;
-      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
-    }
-
-    .donut-card::before{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      pointer-events:none;
-      border-radius:18px;
-      background: radial-gradient(circle at top, rgba(94,232,160,0.10), rgba(2,6,23,0) 62%);
-      opacity:0.85;
-    }
-
-    .donut-card > *{ position:relative; }
-
-    .donut-top{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
-    }
-
-    .donut-top .label{
-      font-size:11px;
-      letter-spacing:0.16em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,0.75);
-      opacity:0.9;
-    }
-
-    .donut-top .sub{
-      font-size:12px;
-      color: var(--text-soft);
-      white-space:nowrap;
-    }
-
-    .donut-mid{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 4px 0 2px;
-    }
-
-    .donut-svg{
-      width: 150px;
-      height: 150px;
-      display:block;
-    }
-
-    .donut-center-win{
-      font-size:20px;
-      font-weight:800;
-      letter-spacing:0.01em;
-    }
-
-    .donut-card:hover{
-      transform: translateY(-2px);
-      border-color: rgba(94,232,160,0.45);
-      box-shadow:
-        0 6px 18px rgba(0,0,0,0.35),
-        0 0 0 1px rgba(94,232,160,0.14),
-        0 0 18px rgba(94,232,160,0.10);
-    }
-
-    /* ACTIVE donut clearly */
-    .donut-card.active{
-      border-color: rgba(94,232,160,0.85);
-      box-shadow:
-        0 10px 28px rgba(0,0,0,0.45),
-        0 0 0 1px rgba(94,232,160,0.22),
-        0 0 28px rgba(94,232,160,0.18);
-      transform: translateY(-1px);
-    }
-
-    /* Mobile swipe */
-    .donut-swipe{
-      display:none;
-      margin-bottom: 14px;
-    }
-
-    .swipe-track{
-      display:flex;
-      gap:14px;
-      overflow-x:auto;
-      padding: 2px 2px 12px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .swipe-track::-webkit-scrollbar{ height:10px; }
-    .swipe-track::-webkit-scrollbar-thumb{
-      background: rgba(148,163,184,0.25);
-      border-radius:999px;
-    }
-    .swipe-track::-webkit-scrollbar-track{
-      background: rgba(255,255,255,0.03);
-      border-radius:999px;
-    }
-
-    .donut-card.swipe{
-      flex: 0 0 86%;
-      scroll-snap-align: center;
-    }
-
-    .swipe-hint{
-      font-size:12px;
-      color: var(--text-soft);
-      margin-top: 6px;
-      opacity:0.9;
-      text-align:center;
-    }
-
-    @media(max-width:900px){
-      .donut-grid{ display:none; }
-      .donut-swipe{ display:block; }
-    }
-
-    /* ====== FIELD CARDS (dynamic values; fixed labels/subtext) ====== */
-    .field-cards{
-      margin-top: 10px;
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap:16px;
-      width:100%;
-    }
-
-    .field-card{
-      background:var(--card-bg);
-      border-radius:16px;
-      border:1px solid var(--card-border);
-      padding:14px 14px 16px;
-      font-size:13px;
-      transition:
-        border-color 220ms ease,
-        box-shadow 220ms ease,
-        transform 220ms ease,
-        background-color 220ms ease;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .field-card::before{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      pointer-events:none;
-      border-radius:16px;
-      background: radial-gradient(circle at top, rgba(94,232,160,0.08), rgba(2,6,23,0.0) 62%);
-      opacity:0.9;
-    }
-    .field-card > *{ position:relative; }
-
-    .fc-label{
-      font-size:11px;
-      letter-spacing:0.16em;
-      text-transform:uppercase;
-      opacity:0.55;
-      margin-bottom:6px;
-    }
-
-    .fc-value{
-      font-size:18px;
-      font-weight:600;
-      margin-bottom:4px;
-    }
-
-    .fc-sub{
-      font-size:12px;
-      opacity:0.75;
-      line-height:1.55;
-    }
-
-    .field-card:hover{
-      transform: translateY(-2px);
-      border-color: rgba(94,232,160,0.35);
-      box-shadow:
-        0 6px 18px rgba(0,0,0,0.30),
-        0 0 18px rgba(94,232,160,0.10);
-      background-color: rgba(2,6,23,0.92);
-    }
-
-    @media(max-width:900px){
-      .field-cards{ grid-template-columns: repeat(2, minmax(0,1fr)); }
-    }
-    @media(max-width:600px){
-      .field-cards{ grid-template-columns: 1fr; }
-    }
-
-    /* ====== FIELD SIGNAL ====== */
-    .field-signal{
-      margin-top: 18px;
-      background: var(--card-bg);
-      border-radius: 18px;
-      border: 1px solid var(--card-border);
-      padding: 18px;
-      overflow:hidden;
-      position:relative;
-    }
-
-    .field-signal::before{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      pointer-events:none;
-      border-radius:18px;
-      background: radial-gradient(circle at top, rgba(94,232,160,0.10), rgba(2,6,23,0.0) 65%);
-      opacity:0.9;
-    }
-    .field-signal > *{ position:relative; }
-
-    .fs-top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom: 10px;
-    }
-
-    .fs-title{
-      font-size:13px;
-      color: var(--text-soft);
-      font-weight:600;
-      letter-spacing:0.02em;
-    }
-
-    .fs-epoch{
-      font-size:12px;
-      color: rgba(255,255,255,0.75);
-      opacity:0.9;
-      border:1px solid rgba(148,163,184,0.22);
-      padding:6px 10px;
-      border-radius:999px;
-      background: rgba(255,255,255,0.02);
-      white-space:nowrap;
-    }
-
-    .fs-quote{
-      font-size:16px;
-      line-height:1.65;
-      opacity:0.95;
-      max-width: 980px;
-    }
-
-    .fs-sub{
-      margin-top: 10px;
-      font-size:12px;
-      color: var(--text-soft);
-      opacity:0.85;
-    }
-
-    /* FOOTER */
-    footer{
-      border-top:1px solid rgba(255,255,255,0.05);
-      padding:20px;
-      font-size:12px;
-      text-align:center;
-      opacity:0.85;
-    }
-
-    footer .tagline{
-      margin-bottom:6px;
-      font-size:13px;
-    }
-
-    footer .links{
-      display:flex;
-      justify-content:center;
-      gap:18px;
-      font-size:13px;
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      *{ scroll-behavior: auto !important; }
-      .donut-card, .field-card{ transition:none; }
-      .latest-spot{ transition:none; }
-    }
-  </style>
+@keyframes shimmer{0%{opacity:0.4;}50%{opacity:0.8;}100%{opacity:0.4;}}
+.loading{animation:shimmer 1.5s ease-in-out infinite;}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;}.donut-card,.field-card{transition:none;}.latest-spot{transition:none;}.loading{animation:none;opacity:0.5;}}
+</style>
 </head>
 
 <body>
 <header>
   <div class="nav-inner">
     <div class="logo-wrap">
-      <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
+      <a href="/index.html" class="logo-link" aria-label="Z1N Protocol home">
         <div class="logo-dot">Ω</div>
-        <div class="logo-text">
-  <span class="logo-main">Z1N</span>
-  <span class="logo-sub">PROTOCOL</span>
-</div>
-
+        <div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div>
       </a>
     </div>
-
-    <nav class="nav-links">
-      <a href="about.html">About</a>
-      <a href="how-it-works.html">How it Works</a>
-      <a href="live-stats.html" class="active">Live Stats</a>
-      <a href="artefacts.html">Artefacts</a>
-      <a href="nbi-artefacts.html">4 NBIs</a>
-      <a href="mint-key.html">Mint your Key</a>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="/about.html">About</a>
+      <a href="/how-it-works.html">How it Works</a>
+      <a href="/live-stats.html" class="active">Live Stats</a>
+      <a href="/artefacts.html">Artefacts</a>
+      <a href="/nbi-artefacts.html">4 NBIs</a>
+      <a href="/mint-key.html">Mint your Key</a>
       <a href="/your-keys.html">Your Keys</a>
     </nav>
   </div>
@@ -645,139 +197,81 @@
 
 <main class="page">
   <h1>Live stats of the field</h1>
+  <p class="lead">Read the field through signals first — the numbers follow.</p>
+  <p class="lead-small">Hover to preview. Click to lock. On mobile: swipe to shift the lens.</p>
 
-  <p class="lead">
-    Read the field through signals first — the numbers follow.
-  </p>
-
-  <p class="lead-small">
-    Hover to preview. Click to lock. On mobile: swipe to shift the lens.
-  </p>
-
-  <!-- Latest minted header bar -->
+  <!-- Latest Key + Current Epoch -->
   <section class="latest-wrap" aria-label="Latest minted Key">
     <div class="latest-frame" id="latestFrame">
       <div class="latest-spot" aria-hidden="true"></div>
-
       <div class="latest-row">
         <div class="latest-left">
           <div class="latest-label">Latest minted Key</div>
-          <div class="latest-key" id="latestKey">Z1N #—</div>
+          <div class="latest-key" id="latestKey">Z1N #–</div>
           <div class="latest-sub" id="latestSub">Loading...</div>
         </div>
-
-        <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">
-          —
-        </div>
+        <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">–</div>
+        <div class="epoch-badge" id="epochBadge">Epoch –</div>
       </div>
     </div>
   </section>
 
-  <!-- Single legend like artefact -->
+  <!-- Intent legend -->
   <div class="intent-legend" aria-label="Intent legend">
     <div class="title">Intent mix across epochs</div>
     <div class="row">
-      <span class="c">ΩC - Collective</span>
-      <span class="i">ΩI - Individual</span>
-      <span class="k">ΩK - Creative</span>
-      <span class="s">ΩS - Silence</span>
+      <span class="c">ΩC Collective</span>
+      <span class="i">ΩI Individual</span>
+      <span class="k">ΩK Co-creative</span>
+      <span class="s">ΩS Silence</span>
     </div>
   </div>
 
-  <!-- Desktop donuts -->
-  <section class="donut-grid" aria-label="Intent mix donuts (desktop)">
-    <article class="donut-card"
-      data-key="last"
-      data-window="Last epoch"
-      data-sub="last completed breath"
-      data-c="25" data-i="25" data-k="25" data-s="25"></article>
-
-    <article class="donut-card"
-      data-key="21"
-      data-window="Last 21 epochs"
-      data-sub="short lens"
-      data-c="25" data-i="25" data-k="25" data-s="25"></article>
-
-    <article class="donut-card"
-      data-key="210"
-      data-window="Last 210 epochs"
-      data-sub="pattern lens"
-      data-c="25" data-i="25" data-k="25" data-s="25"></article>
-
-    <article class="donut-card"
-      data-key="total"
-      data-window="Total epochs"
-      data-sub="field memory"
-      data-c="25" data-i="25" data-k="25" data-s="25"></article>
+  <!-- Desktop donuts: 3 lenses -->
+  <section class="donut-grid" aria-label="Intent mix donuts">
+    <article class="donut-card" data-key="21" data-window="Last 21 epochs" data-sub="recent activity" data-c="25" data-i="25" data-k="25" data-s="25"></article>
+    <article class="donut-card" data-key="210" data-window="Last 210 epochs" data-sub="pattern lens" data-c="25" data-i="25" data-k="25" data-s="25"></article>
+    <article class="donut-card" data-key="total" data-window="Total" data-sub="field memory" data-c="25" data-i="25" data-k="25" data-s="25"></article>
   </section>
 
   <!-- Mobile swipe donuts -->
-  <section class="donut-swipe" aria-label="Intent mix donuts (mobile swipe)">
+  <section class="donut-swipe" aria-label="Intent mix donuts (mobile)">
     <div class="swipe-track" id="swipeTrack">
-      <article class="donut-card swipe"
-        data-key="last"
-        data-window="Last epoch"
-        data-sub="last completed breath"
-        data-c="25" data-i="25" data-k="25" data-s="25"></article>
-
-      <article class="donut-card swipe"
-        data-key="21"
-        data-window="21 epochs"
-        data-sub="short lens"
-        data-c="25" data-i="25" data-k="25" data-s="25"></article>
-
-      <article class="donut-card swipe"
-        data-key="210"
-        data-window="210 epochs"
-        data-sub="pattern lens"
-        data-c="25" data-i="25" data-k="25" data-s="25"></article>
-
-      <article class="donut-card swipe"
-        data-key="total"
-        data-window="Total epochs"
-        data-sub="field memory"
-        data-c="25" data-i="25" data-k="25" data-s="25"></article>
+      <article class="donut-card swipe" data-key="21" data-window="Last 21 epochs" data-sub="recent activity" data-c="25" data-i="25" data-k="25" data-s="25"></article>
+      <article class="donut-card swipe" data-key="210" data-window="Last 210 epochs" data-sub="pattern lens" data-c="25" data-i="25" data-k="25" data-s="25"></article>
+      <article class="donut-card swipe" data-key="total" data-window="Total" data-sub="field memory" data-c="25" data-i="25" data-k="25" data-s="25"></article>
     </div>
     <div class="swipe-hint">Swipe → the lens updates automatically</div>
   </section>
 
-  <!-- Dynamic values only (labels/subtext stay stable) -->
+  <!-- 3 Field Cards -->
   <section class="field-cards" aria-label="Field cards">
     <div class="field-card">
-      <div class="fc-label">Keys awakened</div>
-      <div class="fc-value" id="vKeys">—</div>
-      <div class="fc-sub">Number of minted soulbound identities.</div>
+      <div class="fc-label">Keys Awakened</div>
+      <div class="fc-value loading" id="vKeys">–</div>
+      <div class="fc-sub">Soulbound identities minted.</div>
     </div>
-
     <div class="field-card">
-      <div class="fc-label">PoG signals</div>
-      <div class="fc-value" id="vSignals">—</div>
-      <div class="fc-sub">Signals send to the Field.</div>
+      <div class="fc-label">Canon Anchors</div>
+      <div class="fc-value loading" id="vCanon">–</div>
+      <div class="fc-sub">Epochs marked as meaningful.</div>
     </div>
-
     <div class="field-card">
-      <div class="fc-label">% signals attested</div>
-      <div class="fc-value" id="vAttested">—</div>
-      <div class="fc-sub">Share of signals that received attestation.</div>
-    </div>
-
-    <div class="field-card">
-      <div class="fc-label">Artefacts minted</div>
-      <div class="fc-value" id="vArtefacts">—</div>
-      <div class="fc-sub">Mirrors as a memory of presence.</div>
+      <div class="fc-label">Artefacts Minted</div>
+      <div class="fc-value loading" id="vArtefacts">–</div>
+      <div class="fc-sub">Living mirrors of presence.</div>
     </div>
   </section>
 
-  <!-- Field signal -->
-  <section class="field-signal" aria-label="Field PoG signal">
+  <!-- Most Attested Field Signal -->
+  <section class="field-signal" aria-label="Most Attested Field Signal">
     <div class="fs-top">
-      <div class="fs-title">Field Signal</div>
-      <div class="fs-epoch" id="fsEpoch">Epoch —</div>
+      <div class="fs-title">Most Attested Field Signal <span class="fs-intent" id="fsIntent"></span></div>
+      <div class="fs-epoch" id="fsEpoch">Epoch –</div>
     </div>
-    <div class="fs-quote" id="fsQuote">"—"</div>
-    <div class="fs-sub" id="fsSub">Winning PoG signal: —</div>
+    <div class="fs-body" id="fsBody">Loading...</div>
+    <div class="fs-meta" id="fsMeta"></div>
   </section>
-
 </main>
 
 <footer>
@@ -786,416 +280,290 @@
     <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
     <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
   </div>
+  <div class="footer-contracts">
+    <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
+    <div class="contracts-grid">
+      <div class="contract-item"><span class="contract-label">Core</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a></div>
+      <div class="contract-item"><span class="contract-label">Key</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a></div>
+      <div class="contract-item"><span class="contract-label">Signal</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a></div>
+      <div class="contract-item"><span class="contract-label">Issuance</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a></div>
+    </div>
+  </div>
 </footer>
 
 <script>
-  (function () {
-    // ═══════════════════════════════════════════════════════════════════════════
-    // CONFIGURATION - FIXED: Port 3001 matches config.js
-    // ═══════════════════════════════════════════════════════════════════════════
-    const API_BASE = "https://z1n-backend-production.up.railway.app/api";  // Local dev (matches backend config.js)
-    // const API_BASE = "https://api.z1nprotocol.xyz/api";  // Production
+(function(){
+  "use strict";
 
-    const COLORS = { C: "#5ee8a0", I: "#f87171", K: "#ffd556", S: "#7bb8fc" };
-    const ORDER = ["C","I","K","S"];
-    const r = 51;
-    const circumference = 2 * Math.PI * r;
+  var API_BASE = "https://z1n-backend-production.up.railway.app/api";
+  var FALLBACK_API = "http://localhost:3001/api";
+  var COLORS = {C:"#5ee8a0",I:"#f87171",K:"#ffd556",S:"#93c5fd"};
+  var INTENT_NAMES = {C:"ΩC",I:"ΩI",K:"ΩK",S:"ΩS"};
+  var ORDER = ["C","I","K","S"];
+  var r = 51;
+  var circumference = 2 * Math.PI * r;
+  var HAS_HOVER = window.matchMedia && window.matchMedia("(hover:hover)").matches;
 
-    // Detect "desktop-like hover"
-    const HAS_HOVER = window.matchMedia && window.matchMedia("(hover: hover)").matches;
+  // State
+  var lockedKey = "total";
+  var activeKey = lockedKey;
+  var apiCache = null;
+  var hasRenderedFirst = false;
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // LENS DATA - Will be populated from API, fallback to loading state
-    // ═══════════════════════════════════════════════════════════════════════════
-    let LENS_DATA = {
-      last: {
-        cards: { keys: "—", signals: "—", attested: "—", artefacts: "—" },
-        signal: { epoch: "—", quote: "Loading..." }
-      },
-      "21": {
-        cards: { keys: "—", signals: "—", attested: "—", artefacts: "—" },
-        signal: { epoch: "—", quote: "Loading..." }
-      },
-      "210": {
-        cards: { keys: "—", signals: "—", attested: "—", artefacts: "—" },
-        signal: { epoch: "—", quote: "Loading..." }
-      },
-      total: {
-        cards: { keys: "—", signals: "—", attested: "—", artefacts: "—" },
-        signal: { epoch: "—", quote: "Loading..." }
-      }
+  // ═══ LENS DATA ═══
+  var LENS_DATA = {};
+  ["21","210","total"].forEach(function(k){
+    LENS_DATA[k] = {
+      cards: {keys:"–",canon:"–",artefacts:"–"},
+      signal: {epoch:"–",intent:null,body:"No signals yet.",cid:null,weight:0,tokenId:null}
     };
+  });
 
-    // Latest minted - will be populated from API
-    let LATEST = {
-      key: "Z1N #—",
-      glyphs: [],
-      sub: "Loading..."
-    };
+  // ═══ HELPERS ═══
+  function fmtNum(n){
+    if(n===undefined||n===null)return "–";
+    var num = typeof n==="number"?n:(parseInt(String(n),10)||0);
+    return String(num).replace(/\B(?=(\d{3})+(?!\d))/g," ");
+  }
+  function stopLoading(el){if(el)el.classList.remove("loading");}
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // API FETCH
-    // ═══════════════════════════════════════════════════════════════════════════
-    async function fetchFieldData() {
-      try {
-        const res = await fetch(`${API_BASE}/field`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return await res.json();
-      } catch (e) {
-        console.error("Failed to fetch field data:", e);
-        return null;
-      }
+  function countUp(el,target,duration){
+    var num=typeof target==="number"?target:(parseInt(String(target),10)||0);
+    if(!el){return;} stopLoading(el);
+    if(isNaN(num)){el.textContent="–";return;}
+    if(duration<=0){el.textContent=fmtNum(num);return;}
+    var startTime=null;
+    function step(ts){
+      if(!startTime)startTime=ts;
+      var p=Math.min((ts-startTime)/duration,1);
+      var eased=1-Math.pow(1-p,3);
+      el.textContent=fmtNum(Math.round(eased*num));
+      if(p<1)requestAnimationFrame(step);
     }
+    requestAnimationFrame(step);
+  }
 
-    function formatNumber(n) {
-      if (n === undefined || n === null || n === "—") return "—";
-      return n.toLocaleString("en-US").replace(/,/g, " ");
-    }
+  // ═══ FETCH ═══
+  function fetchField(base){
+    return fetch(base+"/field",{signal:AbortSignal.timeout(8000)})
+      .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});
+  }
 
-    // Update LENS_DATA and LATEST from API response
-    function updateDataFromAPI(data) {
-      if (!data) return;
+  function loadData(){
+    fetchField(API_BASE)
+      .catch(function(){return fetchField(FALLBACK_API);})
+      .then(function(data){apiCache=data;updateFromAPI(data);render();})
+      .catch(function(){render();});
+  }
 
-      // Per-lens stats from API
-      const lensStats = data.lensStats || {};
-      
-      // Build cards data for each lens
-      const buildCards = (stats) => ({
-        keys: formatNumber(stats?.keys ?? 0),
-        signals: formatNumber(stats?.signals ?? 0),
-        attested: (stats?.attestedPercent ?? 0) + "%",
-        artefacts: formatNumber(stats?.artefacts ?? 0)
-      });
-      
-      // Build signal info for each lens
-      const buildSignal = (stats, epochLabel) => {
-        const mas = stats?.mas;
-        if (mas) {
-          return {
-            epoch: epochLabel,
-            quote: `Most attested: ${mas.intent} signal (weight: ${mas.weight})`
-          };
-        }
-        return {
-          epoch: epochLabel,
-          quote: "No signals in this period"
-        };
+  // ═══ UPDATE FROM API ═══
+  function updateFromAPI(data){
+    if(!data)return;
+    var ls = data.lensStats||{};
+    var lcd = data.lastClosedEpoch||0;
+
+    function buildCards(stats){
+      return {
+        keys:stats?.keys??0,
+        canon:stats?.canon??0,
+        artefacts:stats?.artefacts??0
       };
+    }
+    function buildSignal(stats,epochLabel){
+      var mas=stats?.mas;
+      if(mas){
+        return {epoch:epochLabel,intent:mas.intent||null,body:mas.cid?"Loading CID: "+mas.cid:"Most attested signal (weight: "+mas.weight+")",cid:mas.cid||null,weight:mas.weight||0,tokenId:null};
+      }
+      return {epoch:epochLabel,intent:null,body:"No signals in this period.",cid:null,weight:0};
+    }
 
-      LENS_DATA = {
-        last: { 
-          cards: buildCards(lensStats.lastEpoch), 
-          signal: buildSignal(lensStats.lastEpoch, data.lastClosedEpoch)
-        },
-        "21": { 
-          cards: buildCards(lensStats.last21Epochs), 
-          signal: buildSignal(lensStats.last21Epochs, `${data.lastClosedEpoch - 20}-${data.lastClosedEpoch}`)
-        },
-        "210": { 
-          cards: buildCards(lensStats.last210Epochs), 
-          signal: buildSignal(lensStats.last210Epochs, `${Math.max(0, data.lastClosedEpoch - 209)}-${data.lastClosedEpoch}`)
-        },
-        total: { 
-          cards: buildCards(lensStats.total), 
-          signal: buildSignal(lensStats.total, `0-${data.lastClosedEpoch}`)
+    LENS_DATA["21"]={cards:buildCards(ls.last21Epochs||{}),signal:buildSignal(ls.last21Epochs||{},lcd<21?"0–"+lcd:(lcd-20)+"–"+lcd)};
+    LENS_DATA["210"]={cards:buildCards(ls.last210Epochs||{}),signal:buildSignal(ls.last210Epochs||{},lcd<210?"0–"+lcd:(lcd-209)+"–"+lcd)};
+    LENS_DATA["total"]={cards:buildCards(ls.total||{}),signal:buildSignal(ls.total||{},"0–"+lcd)};
+
+    // Update donut data attributes
+    if(data.intentDistribution){
+      var mapping={"21":data.intentDistribution.last21Epochs,"210":data.intentDistribution.last210Epochs,total:data.intentDistribution.total};
+      document.querySelectorAll(".donut-card").forEach(function(card){
+        var key=card.getAttribute("data-key");
+        var id=mapping[key];
+        if(id){
+          card.setAttribute("data-c",id["ΩC"]||0);
+          card.setAttribute("data-i",id["ΩI"]||0);
+          card.setAttribute("data-k",id["ΩK"]||0);
+          card.setAttribute("data-s",id["ΩS"]||0);
+          renderDonutCard(card);
         }
-      };
-
-      // Update latest key - API now returns clean glyph line
-      if (data.latestKey) {
-        const glyphLine = data.latestKey.glyphLine || "";
-        LATEST = {
-          key: `Z1N #${data.latestKey.tokenId}`,
-          glyphs: glyphLine.split("").filter(g => g.trim()),
-          sub: data.latestKey.isGenesis ? "Genesis Key" : "Standard Key"
-        };
-      }
-
-      // Update donut data attributes from API intent distribution
-      if (data.intentDistribution) {
-        const mapping = {
-          last: data.intentDistribution.lastEpoch,
-          "21": data.intentDistribution.last21Epochs,
-          "210": data.intentDistribution.last210Epochs,
-          total: data.intentDistribution.total
-        };
-
-        document.querySelectorAll(".donut-card").forEach(card => {
-          const key = card.getAttribute("data-key");
-          const intentData = mapping[key];
-
-          if (intentData) {
-            card.setAttribute("data-c", intentData.ΩC || 0);
-            card.setAttribute("data-i", intentData.ΩI || 0);
-            card.setAttribute("data-k", intentData.ΩK || 0);
-            card.setAttribute("data-s", intentData.ΩS || 0);
-            renderDonutCard(card);
-          }
-        });
-      }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // RENDER FUNCTIONS
-    // ═══════════════════════════════════════════════════════════════════════════
-
-    function renderLatest(){
-      const latestKey = document.getElementById("latestKey");
-      const latestGlyphs = document.getElementById("latestGlyphs");
-      const latestSub = document.getElementById("latestSub");
-      if (latestKey) latestKey.textContent = LATEST.key;
-      if (latestSub) latestSub.textContent = LATEST.sub;
-
-      if (latestGlyphs){
-        if (LATEST.glyphs.length > 0) {
-          latestGlyphs.innerHTML = LATEST.glyphs
-            .map((g, i) => i === 0 ? g : `<span class="dot">·</span>${g}`)
-            .join("");
-        } else {
-          latestGlyphs.textContent = "—";
-        }
-      }
-    }
-
-    // Spotlight cursor on latest frame
-    (function latestSpotlight(){
-      const frame = document.getElementById("latestFrame");
-      if (!frame) return;
-
-      function setPos(e){
-        const r = frame.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width) * 100;
-        const y = ((e.clientY - r.top) / r.height) * 100;
-        frame.style.setProperty("--mx", x.toFixed(2) + "%");
-        frame.style.setProperty("--my", y.toFixed(2) + "%");
-      }
-
-      frame.addEventListener("mousemove", setPos, { passive: true });
-    })();
-
-    // ====== Donut helpers ======
-    function dominantKey(intents){
-      const entries = Object.entries(intents).sort((a,b) => b[1]-a[1]);
-      return { key: entries[0][0], pct: entries[0][1] };
-    }
-
-    function buildDonutSVG(intents){
-      const sum = intents.C + intents.I + intents.K + intents.S;
-      const safe = sum === 0 ? {C:25,I:25,K:25,S:25} : {
-        C: (intents.C / sum) * 100,
-        I: (intents.I / sum) * 100,
-        K: (intents.K / sum) * 100,
-        S: (intents.S / sum) * 100,
-      };
-
-      const win = dominantKey({
-        C: Math.round(safe.C),
-        I: Math.round(safe.I),
-        K: Math.round(safe.K),
-        S: Math.round(safe.S),
-      });
-      const winColor = COLORS[win.key];
-
-      let offsetDeg = -90;
-      const segments = ORDER.map((k) => {
-        const pct = safe[k];
-        const arc = (pct / 100) * circumference;
-        const dasharray = `${arc.toFixed(1)} ${(circumference - arc).toFixed(1)}`;
-        const seg = { key:k, dasharray, rotate: offsetDeg };
-        offsetDeg += (pct / 100) * 360;
-        return seg;
-      });
-
-      return `
-        <svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Intent donut">
-          <defs>
-            <radialGradient id="donutBg" cx="50%" cy="40%" r="70%">
-              <stop offset="0%" stop-color="#0b101b"/>
-              <stop offset="100%" stop-color="#1c2534"/>
-            </radialGradient>
-          </defs>
-
-          <circle cx="70" cy="70" r="62" fill="url(#donutBg)"></circle>
-          <circle cx="70" cy="70" r="43" fill="#0f141f"></circle>
-
-          <circle cx="70" cy="70" r="${r}"
-                  fill="none" stroke="#252c3b" stroke-width="11"
-                  transform="rotate(-90 70 70)"></circle>
-
-          ${segments.map(s => `
-            <circle cx="70" cy="70" r="${r}"
-                    fill="none" stroke="${COLORS[s.key]}" stroke-width="11"
-                    stroke-linecap="butt"
-                    stroke-dasharray="${s.dasharray}"
-                    transform="rotate(${s.rotate} 70 70)"></circle>
-          `).join("")}
-
-          <text x="70" y="78" text-anchor="middle" class="donut-center-win" fill="${winColor}">
-            Ω${win.key} ${win.pct}%
-          </text>
-        </svg>
-      `;
-    }
-
-    function renderDonutCard(card){
-      const windowLabel = card.getAttribute("data-window") || "Window";
-      const sub = card.getAttribute("data-sub") || "";
-      const intents = {
-        C: Number(card.getAttribute("data-c") || 0),
-        I: Number(card.getAttribute("data-i") || 0),
-        K: Number(card.getAttribute("data-k") || 0),
-        S: Number(card.getAttribute("data-s") || 0),
-      };
-
-      card.innerHTML = `
-        <div class="donut-top">
-          <div class="label">${windowLabel}</div>
-          <div class="sub">${sub}</div>
-        </div>
-        <div class="donut-mid">
-          ${buildDonutSVG(intents)}
-        </div>
-      `;
-    }
-
-    // ====== State: hover-preview vs locked ======
-    let lockedKey = "total";
-    let activeKey = lockedKey;
-
-    function getWinnerFromCardKey(lensKey){
-      const card = document.querySelector(`.donut-card[data-key="${lensKey}"]`);
-      if (!card) return { key:"C", pct:0 };
-      const intents = {
-        C: Number(card.getAttribute("data-c") || 0),
-        I: Number(card.getAttribute("data-i") || 0),
-        K: Number(card.getAttribute("data-k") || 0),
-        S: Number(card.getAttribute("data-s") || 0),
-      };
-      const sum = intents.C + intents.I + intents.K + intents.S || 1;
-      const rounded = {
-        C: Math.round((intents.C/sum)*100),
-        I: Math.round((intents.I/sum)*100),
-        K: Math.round((intents.K/sum)*100),
-        S: Math.round((intents.S/sum)*100),
-      };
-      return dominantKey(rounded);
-    }
-
-    function setActiveLens(lensKey, opts){
-      const { lock=false } = opts || {};
-      if (lock) lockedKey = lensKey;
-      activeKey = lensKey;
-
-      document.querySelectorAll(".donut-card").forEach(el => {
-        el.classList.toggle("active", el.getAttribute("data-key") === lensKey);
-      });
-
-      const data = LENS_DATA[lensKey] || LENS_DATA.total;
-      document.getElementById("vKeys").textContent = data.cards.keys;
-      document.getElementById("vSignals").textContent = data.cards.signals;
-      document.getElementById("vAttested").textContent = data.cards.attested;
-      document.getElementById("vArtefacts").textContent = data.cards.artefacts;
-
-      document.getElementById("fsEpoch").textContent = "Epoch " + data.signal.epoch;
-      document.getElementById("fsQuote").textContent = `"${data.signal.quote}"`;
-
-      const win = getWinnerFromCardKey(lensKey);
-      document.getElementById("fsSub").textContent = `Winning PoG signal: Ω${win.key}`;
-    }
-
-    // ====== Desktop hover-preview + click lock ======
-    function wireDesktopBehavior(){
-      const cards = Array.from(document.querySelectorAll(".donut-grid .donut-card"));
-
-      cards.forEach(card => {
-        const key = card.getAttribute("data-key") || "total";
-
-        card.addEventListener("mouseenter", () => {
-          setActiveLens(key, { lock:false });
-        });
-
-        card.addEventListener("mouseleave", () => {
-          setActiveLens(lockedKey, { lock:false });
-        });
-
-        card.addEventListener("click", () => {
-          setActiveLens(key, { lock:true });
-        });
       });
     }
 
-    // ====== Mobile swipe auto-select ======
-    function wireMobileSwipeAutoSelect(){
-      const track = document.getElementById("swipeTrack");
-      if (!track) return;
-
-      const swipeCards = Array.from(track.querySelectorAll(".donut-card.swipe"));
-      if (!swipeCards.length) return;
-
-      swipeCards.forEach(card => {
-        const key = card.getAttribute("data-key") || "total";
-        card.addEventListener("click", () => setActiveLens(key, { lock:true }));
-      });
-
-      const io = new IntersectionObserver((entries) => {
-        let best = null;
-        for (const e of entries){
-          if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
-        }
-        if (best && best.isIntersecting){
-          const key = best.target.getAttribute("data-key") || "total";
-          setActiveLens(key, { lock:false });
-        }
-      }, {
-        root: track,
-        threshold: [0.35, 0.5, 0.65, 0.8]
-      });
-
-      swipeCards.forEach(c => io.observe(c));
-
-      if (window.matchMedia && window.matchMedia("(max-width: 900px)").matches) {
-        const first = swipeCards.find(c => (c.getAttribute("data-key") || "") === "last") || swipeCards[0];
-        first.scrollIntoView({ behavior: "instant", inline: "center", block: "nearest" });
+    // Latest key
+    if(data.latestKey){
+      var gl=data.latestKey.glyphLine||"";
+      var glyphs=gl.split("").filter(function(g){return g.trim();});
+      var latestKeyEl=document.getElementById("latestKey");
+      var latestSubEl=document.getElementById("latestSub");
+      var latestGlyphsEl=document.getElementById("latestGlyphs");
+      if(latestKeyEl)latestKeyEl.textContent="Z1N #"+data.latestKey.tokenId;
+      if(latestSubEl)latestSubEl.textContent=data.latestKey.isGenesis?"Genesis Key":"Standard Key";
+      if(latestGlyphsEl){
+        if(glyphs.length>0){
+          latestGlyphsEl.innerHTML=glyphs.map(function(g,i){return i===0?g:'<span class="dot">·</span>'+g;}).join("");
+        }else{latestGlyphsEl.textContent="–";}
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // INITIALIZE
-    // ═══════════════════════════════════════════════════════════════════════════
+    // Current epoch
+    var epochBadge=document.getElementById("epochBadge");
+    if(epochBadge&&data.currentEpoch!==undefined){
+      epochBadge.textContent="Epoch "+data.currentEpoch;
+    }
+  }
 
-    async function init() {
-      document.querySelectorAll(".donut-card").forEach(card => renderDonutCard(card));
-      renderLatest();
-      setActiveLens("total", { lock:true });
+  // ═══ RENDER ═══
+  function render(){
+    var dur=hasRenderedFirst?0:2000;
+    var d=LENS_DATA[activeKey]||LENS_DATA.total;
 
-      if (HAS_HOVER){
-        wireDesktopBehavior();
+    // Cards with count-up
+    countUp(document.getElementById("vKeys"),d.cards.keys,dur);
+    countUp(document.getElementById("vCanon"),d.cards.canon,dur);
+    countUp(document.getElementById("vArtefacts"),d.cards.artefacts,dur);
+
+    // Most Attested Field Signal
+    var fsIntent=document.getElementById("fsIntent");
+    var fsEpoch=document.getElementById("fsEpoch");
+    var fsBody=document.getElementById("fsBody");
+    var fsMeta=document.getElementById("fsMeta");
+
+    if(fsEpoch)fsEpoch.textContent="Epoch "+d.signal.epoch;
+    if(fsBody)fsBody.textContent=d.signal.body;
+
+    if(fsIntent){
+      if(d.signal.intent){
+        fsIntent.textContent=d.signal.intent;
+        var intentKey=d.signal.intent.replace("Ω","");
+        fsIntent.style.color=COLORS[intentKey]||"var(--text-soft)";
+      }else{
+        fsIntent.textContent="";
+        fsIntent.style.color="";
       }
-      wireMobileSwipeAutoSelect();
-
-      // Fetch real data from API
-      const apiData = await fetchFieldData();
-      if (apiData) {
-        updateDataFromAPI(apiData);
-        renderLatest();
-        setActiveLens(lockedKey, { lock: true });
-      }
-
-      // Auto-refresh every 30 seconds
-      setInterval(async () => {
-        const newData = await fetchFieldData();
-        if (newData) {
-          updateDataFromAPI(newData);
-          renderLatest();
-          setActiveLens(activeKey, { lock: false });
-        }
-      }, 30000);
     }
 
-    init();
+    if(fsMeta){
+      if(d.signal.weight>0){
+        fsMeta.textContent="Weight: "+d.signal.weight+(d.signal.cid?" · CID: "+d.signal.cid.slice(0,16)+"…":"");
+      }else{fsMeta.textContent="";}
+    }
+
+    // Mark active donut
+    document.querySelectorAll(".donut-card").forEach(function(el){
+      el.classList.toggle("active",el.getAttribute("data-key")===activeKey);
+    });
+
+    hasRenderedFirst=true;
+  }
+
+  // ═══ DONUT RENDERING ═══
+  function dominantKey(intents){
+    var entries=Object.entries(intents).sort(function(a,b){return b[1]-a[1];});
+    return {key:entries[0][0],pct:entries[0][1]};
+  }
+
+  function buildDonutSVG(intents){
+    var sum=intents.C+intents.I+intents.K+intents.S;
+    var safe=sum===0?{C:25,I:25,K:25,S:25}:{C:(intents.C/sum)*100,I:(intents.I/sum)*100,K:(intents.K/sum)*100,S:(intents.S/sum)*100};
+    var win=dominantKey({C:Math.round(safe.C),I:Math.round(safe.I),K:Math.round(safe.K),S:Math.round(safe.S)});
+    var winColor=COLORS[win.key];
+    var offsetDeg=-90;
+    var segments=ORDER.map(function(k){
+      var pct=safe[k];var arc=(pct/100)*circumference;
+      var dasharray=arc.toFixed(1)+" "+(circumference-arc).toFixed(1);
+      var seg={key:k,dasharray:dasharray,rotate:offsetDeg};
+      offsetDeg+=(pct/100)*360;return seg;
+    });
+    return '<svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Intent donut">'
+      +'<defs><radialGradient id="donutBg" cx="50%" cy="40%" r="70%"><stop offset="0%" stop-color="#0b101b"/><stop offset="100%" stop-color="#1c2534"/></radialGradient></defs>'
+      +'<circle cx="70" cy="70" r="62" fill="url(#donutBg)"/><circle cx="70" cy="70" r="43" fill="#0f141f"/>'
+      +'<circle cx="70" cy="70" r="'+r+'" fill="none" stroke="#252c3b" stroke-width="11" transform="rotate(-90 70 70)"/>'
+      +segments.map(function(s){return '<circle cx="70" cy="70" r="'+r+'" fill="none" stroke="'+COLORS[s.key]+'" stroke-width="11" stroke-linecap="butt" stroke-dasharray="'+s.dasharray+'" transform="rotate('+s.rotate+' 70 70)"/>';}).join("")
+      +'<text x="70" y="78" text-anchor="middle" class="donut-center-win" fill="'+winColor+'">Ω'+win.key+' '+win.pct+'%</text></svg>';
+  }
+
+  function renderDonutCard(card){
+    var windowLabel=card.getAttribute("data-window")||"Window";
+    var sub=card.getAttribute("data-sub")||"";
+    var intents={C:Number(card.getAttribute("data-c")||0),I:Number(card.getAttribute("data-i")||0),K:Number(card.getAttribute("data-k")||0),S:Number(card.getAttribute("data-s")||0)};
+    card.innerHTML='<div class="donut-top"><div class="label">'+windowLabel+'</div><div class="sub">'+sub+'</div></div><div class="donut-mid">'+buildDonutSVG(intents)+'</div>';
+  }
+
+  // ═══ LENS SWITCHING ═══
+  function setActiveLens(lensKey,opts){
+    var lock=(opts&&opts.lock)||false;
+    if(lock)lockedKey=lensKey;
+    activeKey=lensKey;
+    render();
+  }
+
+  function wireDesktopBehavior(){
+    var cards=document.querySelectorAll(".donut-grid .donut-card");
+    cards.forEach(function(card){
+      var key=card.getAttribute("data-key")||"total";
+      card.addEventListener("mouseenter",function(){setActiveLens(key,{lock:false});});
+      card.addEventListener("mouseleave",function(){setActiveLens(lockedKey,{lock:false});});
+      card.addEventListener("click",function(){setActiveLens(key,{lock:true});});
+    });
+  }
+
+  function wireMobileSwipe(){
+    var track=document.getElementById("swipeTrack");
+    if(!track)return;
+    var swipeCards=track.querySelectorAll(".donut-card.swipe");
+    swipeCards.forEach(function(card){
+      var key=card.getAttribute("data-key")||"total";
+      card.addEventListener("click",function(){setActiveLens(key,{lock:true});});
+    });
+    var io=new IntersectionObserver(function(entries){
+      var best=null;
+      entries.forEach(function(e){if(!best||e.intersectionRatio>best.intersectionRatio)best=e;});
+      if(best&&best.isIntersecting){
+        var key=best.target.getAttribute("data-key")||"total";
+        setActiveLens(key,{lock:false});
+      }
+    },{root:track,threshold:[0.35,0.5,0.65,0.8]});
+    swipeCards.forEach(function(c){io.observe(c);});
+  }
+
+  // ═══ SPOTLIGHT ═══
+  (function(){
+    var frame=document.getElementById("latestFrame");
+    if(!frame)return;
+    frame.addEventListener("mousemove",function(e){
+      var r=frame.getBoundingClientRect();
+      frame.style.setProperty("--mx",((e.clientX-r.left)/r.width*100).toFixed(2)+"%");
+      frame.style.setProperty("--my",((e.clientY-r.top)/r.height*100).toFixed(2)+"%");
+    },{passive:true});
   })();
-</script>
 
+  // ═══ INIT ═══
+  document.querySelectorAll(".donut-card").forEach(renderDonutCard);
+  setActiveLens("total",{lock:true});
+  if(HAS_HOVER)wireDesktopBehavior();
+  wireMobileSwipe();
+  loadData();
+  setInterval(loadData,30000);
+})();
+
+// Hamburger
+(function(){
+  var btn=document.getElementById("hamburger");
+  var nav=document.getElementById("navLinks");
+  if(btn&&nav){
+    btn.addEventListener("click",function(){btn.classList.toggle("open");nav.classList.toggle("open");});
+    nav.addEventListener("click",function(e){if(e.target.tagName==="A"){btn.classList.remove("open");nav.classList.remove("open");}});
+  }
+})();
+</script>
+<script src="js/gas-banner.js"></script>
 </body>
 </html>
-
