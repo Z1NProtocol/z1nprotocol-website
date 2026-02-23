@@ -457,17 +457,8 @@
     }
     .intent-item b{ font-weight:900; color:#ffffff; margin-right:6px; }
 
-    /* OPERATIONALLY SECTION */
-    .ops-section{
-      margin-top:48px;
-    }
-    .ops-title{
-      font-size:13px; letter-spacing:0.16em;
-      text-transform:uppercase; color:var(--text-soft);
-      margin-bottom:14px;
-    }
-
-    .ops-grid{ /* unused, ops-cards use .tri */ }
+    /* OPERATIONALLY CARDS */
+    .ops-grid{ /* unused */ }
 
     .ops-card{
       padding:14px;
@@ -496,13 +487,7 @@
       font-size:10px; color:var(--text-soft);
     }
 
-    /* EPOCH LIFECYCLE */
-    .lifecycle-section{ margin-top:36px; }
-    .lifecycle-title{
-      font-size:13px; letter-spacing:0.16em;
-      text-transform:uppercase; color:var(--text-soft);
-      margin-bottom:14px;
-    }
+    /* LIFECYCLE (inside card) */
     .lifecycle-flow{
       display:flex; align-items:center; gap:0;
       flex-wrap:wrap; justify-content:center;
@@ -638,7 +623,7 @@
         <div class="lane sig" id="laneSignals" data-active="true" aria-label="Signals lane">
           <div class="lane-top">
             <div class="lane-left"><span class="dot sig"></span><span class="lane-name">signals</span></div>
-            <div class="lane-right" id="signalsRight">Sending signals · Epoch <strong>-</strong></div>
+            <div class="lane-right" id="signalsRight">Sending signals · Epoch <strong style="color:#fff">-</strong></div>
           </div>
           <div class="bar"><div class="fill sig" id="fillSignals"></div></div>
         </div>
@@ -646,7 +631,7 @@
         <div class="lane att" id="laneAttests" data-active="false" aria-label="Attests lane">
           <div class="lane-top">
             <div class="lane-left"><span class="dot att"></span><span class="lane-name">attests</span></div>
-            <div class="lane-right" id="attestsRight">Attesting on signals from · Epoch <strong>-</strong></div>
+            <div class="lane-right" id="attestsRight">Attesting on signals from Epoch <strong style="color:#fff">-</strong></div>
           </div>
           <div class="bar"><div class="fill att" id="fillAttests"></div></div>
         </div>
@@ -654,7 +639,7 @@
         <div class="lane clm" id="laneClaims" data-active="false" aria-label="Claims lane">
           <div class="lane-top">
             <div class="lane-left"><span class="dot clm"></span><span class="lane-name">claims</span></div>
-            <div class="lane-right" id="claimsRight">Claim rewards from signals in · Epoch <strong>-</strong></div>
+            <div class="lane-right" id="claimsRight">Claim rewards of signals from Epoch <strong style="color:#fff">-</strong></div>
           </div>
           <div class="bar"><div class="fill clm" id="fillClaims"></div></div>
         </div>
@@ -708,17 +693,17 @@
         <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.72); margin-bottom:10px;">EPOCH LIFECYCLE</div>
         <div class="lifecycle-flow">
           <div class="lifecycle-step sig">
-            <div class="lc-label">Epoch N</div>
+            <div class="lc-label" style="color:#fff;">Epoch N</div>
             <div class="lc-desc">Signals open</div>
           </div>
           <div class="lifecycle-arrow">→</div>
           <div class="lifecycle-step att-lc">
-            <div class="lc-label" style="color:var(--sunbeam);">Epoch N+1</div>
+            <div class="lc-label" style="color:#fff;">Epoch N+1</div>
             <div class="lc-desc">Attest N's signals</div>
           </div>
           <div class="lifecycle-arrow">→</div>
           <div class="lifecycle-step clm">
-            <div class="lc-label">Epoch N+2</div>
+            <div class="lc-label" style="color:#fff;">Epoch N+2</div>
             <div class="lc-desc">Claims settle</div>
           </div>
           <div class="lifecycle-arrow">→</div>
@@ -732,39 +717,41 @@
   </section>
 
   <!-- OPERATIONALLY -->
-  <section class="ops-section">
-    <div class="ops-title">Operationally</div>
-    <div class="tri">
-      <div class="ops-card sig">
-        <div class="ops-card-label">Signals</div>
-        <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NSignal</span></div>
-        <div class="ops-row"><span class="ops-key">Writes</span><span class="ops-val">Signal struct (keyId, epoch, intent, contentHash)</span></div>
-        <div class="ops-row"><span class="ops-key">Limit</span><span class="ops-val">2 per Key per epoch</span></div>
-        <div class="ops-row"><span class="ops-key">Cost</span><span class="ops-val">Gas only</span></div>
-        <div class="ops-row"><span class="ops-key">Renders</span><span class="ops-val">Appears on Artefact donut</span></div>
-        <div class="ops-event">Event: SignalSubmitted(keyId, epoch, intent, contentHash)</div>
-      </div>
+  <section class="grid" style="margin-top:16px;">
+    <article class="card">
+      <div class="card-kicker">OPERATIONALLY</div>
+      <div class="tri">
+        <div class="ops-card sig">
+          <div class="ops-card-label">Signals</div>
+          <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NSignal</span></div>
+          <div class="ops-row"><span class="ops-key">Writes</span><span class="ops-val">Signal struct (keyId, epoch, intent, contentHash)</span></div>
+          <div class="ops-row"><span class="ops-key">Limit</span><span class="ops-val">2 per Key per epoch</span></div>
+          <div class="ops-row"><span class="ops-key">Cost</span><span class="ops-val">Gas only</span></div>
+          <div class="ops-row"><span class="ops-key">Renders</span><span class="ops-val">Appears on Artefact donut</span></div>
+          <div class="ops-event">Event: SignalSubmitted(keyId, epoch, intent, contentHash)</div>
+        </div>
 
-      <div class="ops-card att">
-        <div class="ops-card-label">Attestations</div>
-        <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NSignal.attest()</span></div>
-        <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">Next epoch only</span></div>
-        <div class="ops-row"><span class="ops-key">Rule</span><span class="ops-val">No self-attestation</span></div>
-        <div class="ops-row"><span class="ops-key">Cost</span><span class="ops-val">Gas only</span></div>
-        <div class="ops-row"><span class="ops-key">Effect</span><span class="ops-val">Boosts signal's epoch score</span></div>
-        <div class="ops-event">Event: SignalAttested(attestorKeyId, signalId, epoch)</div>
-      </div>
+        <div class="ops-card att">
+          <div class="ops-card-label">Attestations</div>
+          <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NSignal.attest()</span></div>
+          <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">Next epoch only</span></div>
+          <div class="ops-row"><span class="ops-key">Rule</span><span class="ops-val">No self-attestation</span></div>
+          <div class="ops-row"><span class="ops-key">Cost</span><span class="ops-val">Gas only</span></div>
+          <div class="ops-row"><span class="ops-key">Effect</span><span class="ops-val">Boosts signal's epoch score</span></div>
+          <div class="ops-event">Event: SignalAttested(attestorKeyId, signalId, epoch)</div>
+        </div>
 
-      <div class="ops-card clm">
-        <div class="ops-card-label">Claims</div>
-        <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NTreasury.claim()</span></div>
-        <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">Two epochs later, 21-epoch window</span></div>
-        <div class="ops-row"><span class="ops-key">Source</span><span class="ops-val">Epoch Key mint revenue</span></div>
-        <div class="ops-row"><span class="ops-key">Options</span><span class="ops-val">Capture · Return to Field · Gift to Nexus</span></div>
-        <div class="ops-row"><span class="ops-key">Proof</span><span class="ops-val">Merkle proof validation</span></div>
-        <div class="ops-event">Event: RewardClaimed(keyId, epoch, amount, claimType)</div>
+        <div class="ops-card clm">
+          <div class="ops-card-label">Claims</div>
+          <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NTreasury.claim()</span></div>
+          <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">Two epochs later, 21-epoch window</span></div>
+          <div class="ops-row"><span class="ops-key">Source</span><span class="ops-val">Epoch Key mint revenue</span></div>
+          <div class="ops-row"><span class="ops-key">Options</span><span class="ops-val">Capture · Return to Field · Gift to Nexus</span></div>
+          <div class="ops-row"><span class="ops-key">Proof</span><span class="ops-val">Merkle proof validation</span></div>
+          <div class="ops-event">Event: RewardClaimed(keyId, epoch, amount, claimType)</div>
+        </div>
       </div>
-    </div>
+    </article>
   </section>
 </main>
 
@@ -862,9 +849,9 @@
       fillAttests.style.width = pct(a);
       fillClaims.style.width = pct(c);
 
-      signalsRight.innerHTML = `Sending signals · Epoch <strong>${fmtEpoch(e)}</strong>`;
-      attestsRight.innerHTML = `Attesting on signals from · Epoch <strong>${fmtEpoch(e - 1)}</strong>`;
-      claimsRight.innerHTML = `Claim rewards from signals in · Epoch <strong>${fmtEpoch(e - 2)}</strong>`;
+      signalsRight.innerHTML = `Sending signals · Epoch <strong style="color:#fff">${fmtEpoch(e)}</strong>`;
+      attestsRight.innerHTML = `Attesting on signals from Epoch <strong style="color:#fff">${fmtEpoch(e - 1)}</strong>`;
+      claimsRight.innerHTML = `Claim rewards of signals from Epoch <strong style="color:#fff">${fmtEpoch(e - 2)}</strong>`;
 
       miniSigNum.textContent = fmtEpoch(e);
       miniAttNum.textContent = (e >= 2) ? String(e - 1) : "-";
