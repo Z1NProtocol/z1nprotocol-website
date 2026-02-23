@@ -467,9 +467,33 @@
       border-radius:12px;
       font-size:12px;
       line-height:1.65;
+      display:flex;
+      flex-direction:column;
+    }
+    .ops-card .ops-code{
+      flex:1;
+      margin-top:6px;
+      padding:8px 10px;
+      border-radius:10px;
+      background:rgba(15,23,42,0.85);
+      border:1px solid rgba(148,163,184,0.25);
+      font-family:"SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size:11px;
+      line-height:1.7;
+      color:var(--text-soft);
+      display:flex;
+      flex-direction:column;
+    }
+    .ops-card .ops-code .ops-emit{
+      margin-top:auto;
+      padding-top:8px;
+      border-top:1px solid rgba(148,163,184,0.12);
+      font-size:10px;
+      color:var(--text-soft);
+      opacity:0.7;
     }
     .ops-card-label{
-      font-weight:600; margin-bottom:8px;
+      font-weight:600; margin-bottom:0;
       font-family:"SF Mono", Menlo, Monaco, Consolas, monospace;
       font-size:11px;
     }
@@ -477,19 +501,7 @@
     .ops-card.att .ops-card-label{ color:var(--sunbeam); }
     .ops-card.clm .ops-card-label{ color:var(--aether); }
 
-    .ops-card .ops-row{
-      display:flex; gap:6px;
-      color:var(--text-soft); margin-bottom:2px;
-    }
-    .ops-card .ops-key{ opacity:0.6; min-width:60px; }
-    .ops-card .ops-val{ color:var(--text-main); opacity:0.85; }
-
-    .ops-card .ops-event{
-      margin-top:8px; padding-top:8px;
-      border-top:1px solid rgba(148,163,184,0.12);
-      font-family:"SF Mono", Menlo, Monaco, Consolas, monospace;
-      font-size:10px; color:var(--text-soft);
-    }
+    /* old ops-row/event replaced by ops-code */
 
     /* LIFECYCLE (inside card) */
     .lifecycle-flow{
@@ -727,32 +739,49 @@
       <div class="tri">
         <div class="ops-card sig">
           <div class="ops-card-label">Z1NSignal.submitSignal()</div>
-          <div class="ops-row"><span class="ops-key">Params</span><span class="ops-val">uint256 keyId, uint8 intent, bytes32 contentHash</span></div>
-          <div class="ops-row"><span class="ops-key">Constraint</span><span class="ops-val">2 per keyId per epoch</span></div>
-          <div class="ops-row"><span class="ops-key">Requires</span><span class="ops-val">msg.sender == key.ownerOf(keyId)</span></div>
-          <div class="ops-row"><span class="ops-key">Intents</span><span class="ops-val">0=ΩC · 1=ΩI · 2=ΩK · 3=ΩS</span></div>
-          <div class="ops-row"><span class="ops-key">Gas</span><span class="ops-val">~45k</span></div>
-          <div class="ops-event">emit SignalSubmitted(keyId, epoch, intent, contentHash)</div>
+          <div class="ops-code">
+            <div>uint256 tokenId</div>
+            <div>bytes32 signalHash</div>
+            <div>string cid</div>
+            <div>uint8 symbolIndex <span style="opacity:0.45">// 0–20</span></div>
+            <div>uint8 intent <span style="opacity:0.45">// 0=ΩC 1=ΩI 2=ΩK 3=ΩS</span></div>
+            <div>SignalType signalType</div>
+            <div>uint16 epochRef</div>
+            <div>bytes32 replyTo</div>
+            <div style="margin-top:6px;">require(key.ownerOf(tokenId) == msg.sender)</div>
+            <div>limit: 2 per tokenId per epoch</div>
+            <div>cost: gas only (fee = 0)</div>
+            <div class="ops-emit">emit SignalSubmitted(sender, tokenId, signalHash, cid, symbolIndex, intent, 0)</div>
+          </div>
         </div>
 
         <div class="ops-card att">
-          <div class="ops-card-label">Z1NSignal.attest()</div>
-          <div class="ops-row"><span class="ops-key">Params</span><span class="ops-val">uint256 attestorKeyId, uint256 signalId</span></div>
-          <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">currentEpoch == signal.epoch + 1</span></div>
-          <div class="ops-row"><span class="ops-key">Invariant</span><span class="ops-val">attestorKeyId ≠ signal.keyId</span></div>
-          <div class="ops-row"><span class="ops-key">Effect</span><span class="ops-val">signal.attestCount++ → epoch score weight</span></div>
-          <div class="ops-row"><span class="ops-key">Gas</span><span class="ops-val">~35k</span></div>
-          <div class="ops-event">emit SignalAttested(attestorKeyId, signalId, epoch)</div>
+          <div class="ops-card-label">Z1NSignal.attestSignal()</div>
+          <div class="ops-code">
+            <div>bytes32 signalHash</div>
+            <div style="margin-top:6px;">window: currentEpoch == signal.epoch + 1</div>
+            <div>require(submitter ≠ msg.sender) <span style="opacity:0.45">// no self</span></div>
+            <div>require(!hasAttested[hash][sender])</div>
+            <div>weight: Key holder = 100, non-Key = 1</div>
+            <div>limit: 2 per tokenId per epoch</div>
+            <div>cost: gas only (fee = 0)</div>
+            <div>updates: mostAttestedSignal[epoch]</div>
+            <div class="ops-emit">emit Attested(signalHash, sender, hasNFT, weight)</div>
+          </div>
         </div>
 
         <div class="ops-card clm">
-          <div class="ops-card-label">Z1NTreasury.claim()</div>
-          <div class="ops-row"><span class="ops-key">Params</span><span class="ops-val">uint256 keyId, uint256 epoch, bytes32[] proof, uint8 claimType</span></div>
-          <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">epoch + 2 ≤ current ≤ epoch + 23</span></div>
-          <div class="ops-row"><span class="ops-key">Source</span><span class="ops-val">merkleRoot[epoch] via off-chain scoring</span></div>
-          <div class="ops-row"><span class="ops-key">Types</span><span class="ops-val">0=Capture · 1=Return · 2=Nexus</span></div>
-          <div class="ops-row"><span class="ops-key">Verify</span><span class="ops-val">MerkleProof.verify(proof, root, leaf)</span></div>
-          <div class="ops-event">emit RewardClaimed(keyId, epoch, amount, claimType)</div>
+          <div class="ops-card-label">Z1NTreasury · 3 claim paths</div>
+          <div class="ops-code">
+            <div style="color:#fff;">claim(epochId, index, account, amount, proof)</div>
+            <div style="color:#fff;">donateReward(…) <span style="opacity:0.45">// → Nexus wallet</span></div>
+            <div style="color:#fff;">recycleReward(…) <span style="opacity:0.45">// → stays in Treasury</span></div>
+            <div style="margin-top:6px;">require(msg.sender == account)</div>
+            <div>window: epoch + CLAIM_WINDOW ≤ current</div>
+            <div>leaf = keccak256(index, account, amount)</div>
+            <div>verify: MerkleProof.verify(proof, root, leaf)</div>
+            <div class="ops-emit">emit Claimed · RewardDonated · RewardRecycled</div>
+          </div>
         </div>
       </div>
     </article>
