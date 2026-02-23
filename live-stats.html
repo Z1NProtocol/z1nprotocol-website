@@ -91,12 +91,12 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .latest-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.72);opacity:0.85;margin-bottom:6px;}
 .latest-key{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
 .latest-sub{font-size:12px;color:var(--text-soft);opacity:0.85;}
-.latest-glyphs{flex:1 1 auto;text-align:right;font-size:22px;letter-spacing:0.02em;opacity:0.86;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.latest-glyphs .dot{color:rgba(148,163,184,0.55);padding:0 6px;}
-.epoch-badge{font-size:12px;color:rgba(255,255,255,0.75);border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;}
+.latest-glyphs{font-size:20px;letter-spacing:0.02em;opacity:0.75;margin-top:4px;margin-bottom:4px;}
+.latest-glyphs .dot{color:rgba(148,163,184,0.55);padding:0 5px;}
+.epoch-badge{font-size:12px;color:rgba(255,255,255,0.75);border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;display:inline-block;}
+.epoch-row{margin:10px 0 10px;}
 @media(max-width:900px){
   .latest-row{flex-direction:column;align-items:flex-start;}
-  .latest-glyphs{width:100%;text-align:left;font-size:20px;}
 }
 
 /* INTENT LEGEND */
@@ -149,7 +149,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
 .fs-intent{font-weight:700;margin-left:6px;}
 .fs-epoch{font-size:12px;color:rgba(255,255,255,0.75);opacity:0.9;border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;}
-.fs-body{font-size:15px;line-height:1.65;opacity:0.92;max-width:980px;max-height:120px;overflow:hidden;}
+.fs-body{font-size:15px;line-height:1.65;opacity:0.92;max-width:980px;}
 .fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
 
 /* FOOTER */
@@ -200,7 +200,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <p class="lead">Read the field through signals first — the numbers follow.</p>
   <p class="lead-small">Hover to preview. Click to lock. On mobile: swipe to shift the lens.</p>
 
-  <!-- Latest Key + Current Epoch -->
+  <!-- Latest Key -->
   <section class="latest-wrap" aria-label="Latest minted Key">
     <div class="latest-frame" id="latestFrame">
       <div class="latest-spot" aria-hidden="true"></div>
@@ -208,10 +208,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         <div class="latest-left">
           <div class="latest-label">Latest minted Key</div>
           <div class="latest-key" id="latestKey">Z1N #–</div>
+          <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">–</div>
           <div class="latest-sub" id="latestSub">Loading...</div>
         </div>
-        <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">–</div>
-        <div class="epoch-badge" id="epochBadge">Epoch –</div>
       </div>
     </div>
   </section>
@@ -244,7 +243,10 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     <div class="swipe-hint">Swipe → the lens updates automatically</div>
   </section>
 
-  <!-- 3 Field Cards -->
+  <!-- Current Epoch + 3 Field Cards -->
+  <div class="epoch-row">
+    <div class="epoch-badge" id="epochBadge">Epoch –</div>
+  </div>
   <section class="field-cards" aria-label="Field cards">
     <div class="field-card">
       <div class="fc-label">Keys Awakened</div>
@@ -372,7 +374,18 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     function buildSignal(stats,epochLabel){
       var mas=stats?.mas;
       if(mas){
-        return {epoch:epochLabel,intent:mas.intent||null,body:mas.cid?"Loading CID: "+mas.cid:"Most attested signal (weight: "+mas.weight+")",cid:mas.cid||null,weight:mas.weight||0,tokenId:null};
+        // mas.text = signal body from indexer, mas.cid = IPFS CID, mas.intent = ΩC/ΩI/ΩK/ΩS
+        // mas.epoch = epoch the signal was sent in
+        var body = mas.text || mas.body || "Signal stored on-chain.";
+        var sigEpoch = mas.epoch !== undefined ? "Epoch " + mas.epoch : epochLabel;
+        return {
+          epoch: sigEpoch,
+          intent: mas.intent || null,
+          body: body,
+          cid: mas.cid || null,
+          weight: mas.weight || 0,
+          tokenId: mas.tokenId || null
+        };
       }
       return {epoch:epochLabel,intent:null,body:"No signals in this period.",cid:null,weight:0};
     }
@@ -451,9 +464,11 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     }
 
     if(fsMeta){
-      if(d.signal.weight>0){
-        fsMeta.textContent="Weight: "+d.signal.weight+(d.signal.cid?" · CID: "+d.signal.cid.slice(0,16)+"…":"");
-      }else{fsMeta.textContent="";}
+      var parts = [];
+      if(d.signal.weight>0) parts.push("Attestation weight: "+d.signal.weight);
+      if(d.signal.tokenId) parts.push("Key #"+d.signal.tokenId);
+      if(d.signal.cid) parts.push("IPFS: "+d.signal.cid.slice(0,20)+"…");
+      fsMeta.textContent = parts.join(" · ");
     }
 
     // Mark active donut
