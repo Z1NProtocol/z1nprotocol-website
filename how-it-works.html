@@ -468,7 +468,11 @@
       font-size:12px;
       line-height:1.65;
     }
-    .ops-card-label{ font-weight:600; margin-bottom:6px; }
+    .ops-card-label{
+      font-weight:600; margin-bottom:8px;
+      font-family:"SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size:11px;
+    }
     .ops-card.sig .ops-card-label{ color:var(--sunbeam); }
     .ops-card.att .ops-card-label{ color:var(--sunbeam); }
     .ops-card.clm .ops-card-label{ color:var(--aether); }
@@ -502,7 +506,7 @@
       line-height:1.5;
       flex:1;
     }
-    .lifecycle-step .lc-label{ font-weight:600; margin-bottom:2px; }
+    .lifecycle-step .lc-label{ font-weight:850; margin-bottom:2px; color:#fff; }
     .lifecycle-step .lc-desc{ color:var(--text-soft); }
     .lifecycle-step.sig .lc-label{ color:var(--sunbeam); }
     .lifecycle-step.att .lc-label{ color:var(--mint); }
@@ -693,17 +697,17 @@
         <div style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.72); margin-bottom:10px;">EPOCH LIFECYCLE</div>
         <div class="lifecycle-flow">
           <div class="lifecycle-step sig">
-            <div class="lc-label" style="color:#fff;">Epoch N</div>
+            <div class="lc-label"><span class="ep-word">Epoch</span> N</div>
             <div class="lc-desc">Signals open</div>
           </div>
           <div class="lifecycle-arrow">→</div>
           <div class="lifecycle-step att-lc">
-            <div class="lc-label" style="color:#fff;">Epoch N+1</div>
+            <div class="lc-label"><span class="ep-word">Epoch</span> N+1</div>
             <div class="lc-desc">Attest N's signals</div>
           </div>
           <div class="lifecycle-arrow">→</div>
           <div class="lifecycle-step clm">
-            <div class="lc-label" style="color:#fff;">Epoch N+2</div>
+            <div class="lc-label"><span class="ep-word">Epoch</span> N+2</div>
             <div class="lc-desc">Claims settle</div>
           </div>
           <div class="lifecycle-arrow">→</div>
@@ -722,33 +726,33 @@
       <div class="card-kicker">OPERATIONALLY</div>
       <div class="tri">
         <div class="ops-card sig">
-          <div class="ops-card-label">Signals</div>
-          <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NSignal</span></div>
-          <div class="ops-row"><span class="ops-key">Writes</span><span class="ops-val">Signal struct (keyId, epoch, intent, contentHash)</span></div>
-          <div class="ops-row"><span class="ops-key">Limit</span><span class="ops-val">2 per Key per epoch</span></div>
-          <div class="ops-row"><span class="ops-key">Cost</span><span class="ops-val">Gas only</span></div>
-          <div class="ops-row"><span class="ops-key">Renders</span><span class="ops-val">Appears on Artefact donut</span></div>
-          <div class="ops-event">Event: SignalSubmitted(keyId, epoch, intent, contentHash)</div>
+          <div class="ops-card-label">Z1NSignal.submitSignal()</div>
+          <div class="ops-row"><span class="ops-key">Params</span><span class="ops-val">uint256 keyId, uint8 intent, bytes32 contentHash</span></div>
+          <div class="ops-row"><span class="ops-key">Constraint</span><span class="ops-val">2 per keyId per epoch</span></div>
+          <div class="ops-row"><span class="ops-key">Requires</span><span class="ops-val">msg.sender == key.ownerOf(keyId)</span></div>
+          <div class="ops-row"><span class="ops-key">Intents</span><span class="ops-val">0=ΩC · 1=ΩI · 2=ΩK · 3=ΩS</span></div>
+          <div class="ops-row"><span class="ops-key">Gas</span><span class="ops-val">~45k</span></div>
+          <div class="ops-event">emit SignalSubmitted(keyId, epoch, intent, contentHash)</div>
         </div>
 
         <div class="ops-card att">
-          <div class="ops-card-label">Attestations</div>
-          <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NSignal.attest()</span></div>
-          <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">Next epoch only</span></div>
-          <div class="ops-row"><span class="ops-key">Rule</span><span class="ops-val">No self-attestation</span></div>
-          <div class="ops-row"><span class="ops-key">Cost</span><span class="ops-val">Gas only</span></div>
-          <div class="ops-row"><span class="ops-key">Effect</span><span class="ops-val">Boosts signal's epoch score</span></div>
-          <div class="ops-event">Event: SignalAttested(attestorKeyId, signalId, epoch)</div>
+          <div class="ops-card-label">Z1NSignal.attest()</div>
+          <div class="ops-row"><span class="ops-key">Params</span><span class="ops-val">uint256 attestorKeyId, uint256 signalId</span></div>
+          <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">currentEpoch == signal.epoch + 1</span></div>
+          <div class="ops-row"><span class="ops-key">Invariant</span><span class="ops-val">attestorKeyId ≠ signal.keyId</span></div>
+          <div class="ops-row"><span class="ops-key">Effect</span><span class="ops-val">signal.attestCount++ → epoch score weight</span></div>
+          <div class="ops-row"><span class="ops-key">Gas</span><span class="ops-val">~35k</span></div>
+          <div class="ops-event">emit SignalAttested(attestorKeyId, signalId, epoch)</div>
         </div>
 
         <div class="ops-card clm">
-          <div class="ops-card-label">Claims</div>
-          <div class="ops-row"><span class="ops-key">Contract</span><span class="ops-val">Z1NTreasury.claim()</span></div>
-          <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">Two epochs later, 21-epoch window</span></div>
-          <div class="ops-row"><span class="ops-key">Source</span><span class="ops-val">Epoch Key mint revenue</span></div>
-          <div class="ops-row"><span class="ops-key">Options</span><span class="ops-val">Capture · Return to Field · Gift to Nexus</span></div>
-          <div class="ops-row"><span class="ops-key">Proof</span><span class="ops-val">Merkle proof validation</span></div>
-          <div class="ops-event">Event: RewardClaimed(keyId, epoch, amount, claimType)</div>
+          <div class="ops-card-label">Z1NTreasury.claim()</div>
+          <div class="ops-row"><span class="ops-key">Params</span><span class="ops-val">uint256 keyId, uint256 epoch, bytes32[] proof, uint8 claimType</span></div>
+          <div class="ops-row"><span class="ops-key">Window</span><span class="ops-val">epoch + 2 ≤ current ≤ epoch + 23</span></div>
+          <div class="ops-row"><span class="ops-key">Source</span><span class="ops-val">merkleRoot[epoch] via off-chain scoring</span></div>
+          <div class="ops-row"><span class="ops-key">Types</span><span class="ops-val">0=Capture · 1=Return · 2=Nexus</span></div>
+          <div class="ops-row"><span class="ops-key">Verify</span><span class="ops-val">MerkleProof.verify(proof, root, leaf)</span></div>
+          <div class="ops-event">emit RewardClaimed(keyId, epoch, amount, claimType)</div>
         </div>
       </div>
     </article>
