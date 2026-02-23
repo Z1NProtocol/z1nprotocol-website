@@ -329,7 +329,10 @@
 
   .glance-label {
     font-size: 11px; letter-spacing: 0.16em;
-    text-transform: uppercase; opacity: 0.55; margin-bottom: 6px;
+    text-transform: uppercase; opacity: 0.55;
+    margin-bottom: 6px;
+    min-height: 28px;
+    display: flex; align-items: flex-end;
   }
 
   .glance-value {
@@ -566,12 +569,11 @@
   // Count-up animation
   function countUp(el, target, duration) {
     var num = parseInt(target, 10);
-    if (!el || isNaN(num) || num <= 0) { 
-      el.textContent = (isNaN(num) || num === 0) ? "0" : fmtNum(num); 
-      stopLoading(el); 
-      return; 
-    }
+    if (!el) return;
+    if (isNaN(num)) { el.textContent = "–"; stopLoading(el); return; }
     stopLoading(el);
+    // Instant render if duration is 0
+    if (duration <= 0) { el.textContent = fmtNum(num); return; }
     var startTime = null;
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
@@ -606,9 +608,16 @@
   function render(data) {
     if (!data) { renderFallback(); return; }
 
-    var totalKeys = data.lensStats?.total?.keys ?? data.totalKeys ?? 0;
-    var totalSignals = data.lensStats?.total?.signals ?? data.totalSignals ?? 0;
-    var currentEpoch = data.currentEpoch ?? 0;
+    var rawKeys = data.lensStats?.total?.keys ?? data.totalKeys ?? 0;
+    var rawSignals = data.lensStats?.total?.signals ?? data.totalSignals ?? 0;
+    var rawEpoch = data.currentEpoch ?? 0;
+
+    var totalKeys = typeof rawKeys === 'number' ? rawKeys : (parseInt(String(rawKeys), 10) || 0);
+    var totalSignals = typeof rawSignals === 'number' ? rawSignals : (parseInt(String(rawSignals), 10) || 0);
+    var currentEpoch = typeof rawEpoch === 'number' ? rawEpoch : (parseInt(String(rawEpoch), 10) || 0);
+
+    // Remove all loading states at once
+    [elKeys, elEpoch, elSignals, elIntent].forEach(stopLoading);
 
     // Count-up only on first load
     var dur = hasRendered ? 0 : 700;
@@ -617,16 +626,13 @@
     countUp(elEpoch, currentEpoch, dur);
     countUp(elSignals, totalSignals, dur);
 
-    // Epoch - show protocol progress %
-    // Protocol: 21 years, each epoch 21 hours = 8766 epochs total
-    var TOTAL_EPOCHS = Math.floor((21 * 365.25 * 24) / 21); // 8766
+    // Epoch sub: protocol progress %
+    var TOTAL_EPOCHS = Math.floor((21 * 365.25 * 24) / 21);
     var progress = currentEpoch > 0 ? ((currentEpoch / TOTAL_EPOCHS) * 100).toFixed(2) : "0.00";
     elEpochSub.textContent = progress + "% of protocol completed";
 
-    // Intent: render immediately alongside numbers
+    // Intent: render immediately — same moment as numbers
     var dist = data.intentDistribution?.lastEpoch;
-    stopLoading(elIntent);
-
     if (dist) {
       var maxKey = null;
       var maxVal = -1;
