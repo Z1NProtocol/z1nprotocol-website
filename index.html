@@ -334,7 +334,7 @@
 
   .glance-value {
     font-size: 22px; font-weight: 700; margin-bottom: 4px;
-    height: 32px; display: flex; align-items: center;
+    height: 32px; line-height: 32px;
   }
 
   .glance-sub {
@@ -495,7 +495,7 @@
       <div class="glance-card">
         <div class="glance-label">Epoch</div>
         <div class="glance-value loading" id="glanceEpoch">–</div>
-        <div class="glance-sub" id="glanceEpochSub">Current 21-hour heartbeat.</div>
+        <div class="glance-sub" id="glanceEpochSub">21 years · 21 hours per epoch.</div>
       </div>
 
       <div class="glance-card">
@@ -565,16 +565,19 @@
 
   // Count-up animation
   function countUp(el, target, duration) {
-    if (!el || target <= 0) { el.textContent = fmtNum(target); stopLoading(el); return; }
+    var num = parseInt(target, 10);
+    if (!el || isNaN(num) || num <= 0) { 
+      el.textContent = (isNaN(num) || num === 0) ? "0" : fmtNum(num); 
+      stopLoading(el); 
+      return; 
+    }
     stopLoading(el);
-    var start = 0;
     var startTime = null;
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
       var progress = Math.min((timestamp - startTime) / duration, 1);
-      // Ease out
       var eased = 1 - Math.pow(1 - progress, 3);
-      var current = Math.round(eased * target);
+      var current = Math.round(eased * num);
       el.textContent = fmtNum(current);
       if (progress < 1) requestAnimationFrame(step);
     }
@@ -614,9 +617,11 @@
     countUp(elEpoch, currentEpoch, dur);
     countUp(elSignals, totalSignals, dur);
 
-    if (data.lastClosedEpoch) {
-      elEpochSub.textContent = "Last closed: " + data.lastClosedEpoch;
-    }
+    // Epoch - show protocol progress %
+    // Protocol: 21 years, each epoch 21 hours = 8766 epochs total
+    var TOTAL_EPOCHS = Math.floor((21 * 365.25 * 24) / 21); // 8766
+    var progress = currentEpoch > 0 ? ((currentEpoch / TOTAL_EPOCHS) * 100).toFixed(2) : "0.00";
+    elEpochSub.textContent = progress + "% of protocol completed";
 
     // Intent: reveal after count-up finishes
     var intentDelay = hasRendered ? 0 : dur + 100;
