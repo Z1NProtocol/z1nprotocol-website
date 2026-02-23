@@ -363,23 +363,25 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     if(!data)return;
     var ls = data.lensStats||{};
     var lcd = data.lastClosedEpoch||0;
+    var ce = data.currentEpoch||0;
 
-    function buildCards(stats){
+    // Cards: use totals from lensStats if available, fall back to live totals
+    function getCards(stats,fallbackKeys,fallbackCanon,fallbackArtefacts){
       return {
-        keys:stats?.keys??0,
-        canon:stats?.canon??0,
-        artefacts:stats?.artefacts??0
+        keys: stats?.keys ?? fallbackKeys ?? 0,
+        canon: stats?.canon ?? fallbackCanon ?? 0,
+        artefacts: stats?.artefacts ?? fallbackArtefacts ?? 0
       };
     }
-    function buildSignal(stats,epochLabel){
-      var mas=stats?.mas;
+
+    // Signal: find most attested signal for this lens
+    function buildSignal(stats, epochLabel){
+      var mas = stats?.mas;
       if(mas){
-        // mas.text = signal body from indexer, mas.cid = IPFS CID, mas.intent = ΩC/ΩI/ΩK/ΩS
-        // mas.epoch = epoch the signal was sent in
-        var body = mas.text || mas.body || "Signal stored on-chain.";
-        var sigEpoch = mas.epoch !== undefined ? "Epoch " + mas.epoch : epochLabel;
+        var body = mas.text || mas.body || mas.cid || "Signal stored on-chain.";
+        var sigEpoch = mas.epoch !== undefined ? mas.epoch : "";
         return {
-          epoch: sigEpoch,
+          epoch: epochLabel,
           intent: mas.intent || null,
           body: body,
           cid: mas.cid || null,
@@ -390,21 +392,44 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       return {epoch:epochLabel,intent:null,body:"No signals in this period.",cid:null,weight:0};
     }
 
-    LENS_DATA["21"]={cards:buildCards(ls.last21Epochs||{}),signal:buildSignal(ls.last21Epochs||{},lcd<21?"0–"+lcd:(lcd-20)+"–"+lcd)};
-    LENS_DATA["210"]={cards:buildCards(ls.last210Epochs||{}),signal:buildSignal(ls.last210Epochs||{},lcd<210?"0–"+lcd:(lcd-209)+"–"+lcd)};
-    LENS_DATA["total"]={cards:buildCards(ls.total||{}),signal:buildSignal(ls.total||{},"0–"+lcd)};
+    // Fallback totals from data.live or top-level
+    var totalKeys = data.totalKeys || data.live?.totalKeys || 0;
+    var totalCanon = data.totalCanonMarkers || data.live?.totalCanonMarkers || 0;
+    var totalArtefacts = data.totalArtefacts || data.live?.totalArtefacts || 0;
+
+    // Build per-lens data
+    var epochLabel21 = lcd < 21 ? "Epoch 0–" + lcd : "Epoch " + (lcd-20) + "–" + lcd;
+    var epochLabel210 = lcd < 210 ? "Epoch 0–" + lcd : "Epoch " + (lcd-209) + "–" + lcd;
+    var epochLabelTotal = "Epoch 0–" + lcd;
+
+    LENS_DATA["21"] = {
+      cards: getCards(ls.last21Epochs, totalKeys, totalCanon, totalArtefacts),
+      signal: buildSignal(ls.last21Epochs || {}, epochLabel21)
+    };
+    LENS_DATA["210"] = {
+      cards: getCards(ls.last210Epochs, totalKeys, totalCanon, totalArtefacts),
+      signal: buildSignal(ls.last210Epochs || {}, epochLabel210)
+    };
+    LENS_DATA["total"] = {
+      cards: getCards(ls.total, totalKeys, totalCanon, totalArtefacts),
+      signal: buildSignal(ls.total || {}, epochLabelTotal)
+    };
 
     // Update donut data attributes
     if(data.intentDistribution){
-      var mapping={"21":data.intentDistribution.last21Epochs,"210":data.intentDistribution.last210Epochs,total:data.intentDistribution.total};
+      var mapping = {
+        "21": data.intentDistribution.last21Epochs,
+        "210": data.intentDistribution.last210Epochs,
+        total: data.intentDistribution.total
+      };
       document.querySelectorAll(".donut-card").forEach(function(card){
-        var key=card.getAttribute("data-key");
-        var id=mapping[key];
+        var key = card.getAttribute("data-key");
+        var id = mapping[key];
         if(id){
-          card.setAttribute("data-c",id["ΩC"]||0);
-          card.setAttribute("data-i",id["ΩI"]||0);
-          card.setAttribute("data-k",id["ΩK"]||0);
-          card.setAttribute("data-s",id["ΩS"]||0);
+          card.setAttribute("data-c", id["ΩC"] || 0);
+          card.setAttribute("data-i", id["ΩI"] || 0);
+          card.setAttribute("data-k", id["ΩK"] || 0);
+          card.setAttribute("data-s", id["ΩS"] || 0);
           renderDonutCard(card);
         }
       });
@@ -412,24 +437,24 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
     // Latest key
     if(data.latestKey){
-      var gl=data.latestKey.glyphLine||"";
-      var glyphs=gl.split("").filter(function(g){return g.trim();});
-      var latestKeyEl=document.getElementById("latestKey");
-      var latestSubEl=document.getElementById("latestSub");
-      var latestGlyphsEl=document.getElementById("latestGlyphs");
-      if(latestKeyEl)latestKeyEl.textContent="Z1N #"+data.latestKey.tokenId;
-      if(latestSubEl)latestSubEl.textContent=data.latestKey.isGenesis?"Genesis Key":"Standard Key";
+      var gl = data.latestKey.glyphLine || "";
+      var glyphs = gl.split("").filter(function(g){return g.trim();});
+      var latestKeyEl = document.getElementById("latestKey");
+      var latestSubEl = document.getElementById("latestSub");
+      var latestGlyphsEl = document.getElementById("latestGlyphs");
+      if(latestKeyEl) latestKeyEl.textContent = "Z1N #" + data.latestKey.tokenId;
+      if(latestSubEl) latestSubEl.textContent = data.latestKey.isGenesis ? "Genesis Key" : "Standard Key";
       if(latestGlyphsEl){
-        if(glyphs.length>0){
-          latestGlyphsEl.innerHTML=glyphs.map(function(g,i){return i===0?g:'<span class="dot">·</span>'+g;}).join("");
-        }else{latestGlyphsEl.textContent="–";}
+        if(glyphs.length > 0){
+          latestGlyphsEl.innerHTML = glyphs.map(function(g,i){return i===0?g:'<span class="dot">·</span>'+g;}).join("");
+        } else { latestGlyphsEl.textContent = "–"; }
       }
     }
 
     // Current epoch
-    var epochBadge=document.getElementById("epochBadge");
-    if(epochBadge&&data.currentEpoch!==undefined){
-      epochBadge.textContent="Epoch "+data.currentEpoch;
+    var epochBadge = document.getElementById("epochBadge");
+    if(epochBadge && ce !== undefined){
+      epochBadge.textContent = "Epoch " + ce;
     }
   }
 
@@ -449,7 +474,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     var fsBody=document.getElementById("fsBody");
     var fsMeta=document.getElementById("fsMeta");
 
-    if(fsEpoch)fsEpoch.textContent="Epoch "+d.signal.epoch;
+    if(fsEpoch)fsEpoch.textContent=d.signal.epoch;
     if(fsBody)fsBody.textContent=d.signal.body;
 
     if(fsIntent){
@@ -579,6 +604,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   }
 })();
 </script>
-<script src="js/gas-banner.js"></script>
+
 </body>
 </html>
