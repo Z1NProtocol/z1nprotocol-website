@@ -142,7 +142,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 @media(max-width:600px){.field-cards{grid-template-columns:1fr;}}
 
 /* MOST ATTESTED FIELD SIGNAL */
-.field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:14px 14px 16px;overflow:hidden;position:relative;}
+.field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:14px 14px 16px;overflow:visible;position:relative;}
 .field-signal::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 65%);opacity:0.9;}
 .field-signal>*{position:relative;}
 .fs-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
@@ -206,7 +206,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="latest-spot" aria-hidden="true"></div>
       <div class="latest-row">
         <div class="latest-left" style="width:100%;">
-          <div class="latest-label" style="display:flex;align-items:center;width:100%;">Latest minted Key<span class="fs-epoch" id="epochBadge" style="margin-left:auto;">Epoch –</span></div>
+          <div class="latest-label" style="display:flex;align-items:center;width:100%;">Latest minted Key<span class="fs-epoch" id="epochBadge" style="margin-left:auto;text-transform:none;letter-spacing:normal;">Epoch –</span></div>
           <div class="latest-key" id="latestKey">Z1N #–</div>
           <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">–</div>
           <div class="latest-sub" id="latestSub">Loading...</div>
