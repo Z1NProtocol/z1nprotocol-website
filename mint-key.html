@@ -1029,11 +1029,8 @@
   if (modalClose) modalClose.onclick = hideModal;
   if (walletModal) walletModal.onclick = function(e) { if (e.target === walletModal) hideModal(); };
 
-  // ═══ EVENTS ═══
+ // ═══ EVENTS ═══
   if (btnConnect) btnConnect.onclick = handleConnect;
-  if (btnMint) btnMint.onclick = mintKey;
-  if (modalClose) modalClose.onclick = hideModal;
-  if (walletModal) walletModal.onclick = function(e) { if (e.target === walletModal) hideModal(); };
 
   // ═══ MINT TOOLTIP ═══
   var mintBtnWrap = document.getElementById('mintBtnWrap');
