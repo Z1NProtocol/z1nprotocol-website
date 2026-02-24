@@ -84,7 +84,8 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 /* LATEST KEY BAR */
 .latest-wrap{width:100%;margin:10px 0 18px;}
 .latest-frame{position:relative;width:100%;overflow:hidden;border-radius:0;border:none;border-top:1px solid rgba(148,163,184,0.12);border-bottom:1px solid rgba(148,163,184,0.12);background:none;padding:18px 16px;--mx:50%;--my:50%;}
-.latest-spot{display:none;}
+.latest-spot{pointer-events:none;position:absolute;inset:-45%;background:radial-gradient(220px 110px at var(--mx) var(--my),rgba(94,232,160,0.22),rgba(94,232,160,0.08) 38%,rgba(94,232,160,0) 70%);opacity:0;transition:opacity 160ms ease;}
+.latest-frame:hover .latest-spot{opacity:1;}
 .latest-row{display:flex;align-items:center;justify-content:center;gap:14px;}
 .latest-left{min-width:240px;text-align:center;width:100%;}
 .latest-headline{font-size:13px;margin-bottom:8px;}
@@ -158,6 +159,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
 .fs-body{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
 .fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
+.epoch-tooltip{position:fixed;display:none;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text-soft);max-width:280px;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:1000;pointer-events:none;}
 
 /* FOOTER */
 footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px 40px;font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
@@ -270,9 +272,10 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   </section>
 
   <!-- Most Attested Field Signal -->
+  <div class="epoch-tooltip" id="epochTooltip">The most attested signal is always from 2 epochs prior — attestation requires one full epoch window.</div>
   <section class="field-signal" aria-label="Most Attested Field Signal">
     <div class="fs-top">
-      <div class="fs-headline" id="fsEpoch" style="cursor:help;" title="The most attested signal is always from 2 epochs prior — attestation requires one full epoch window."><span class="ep-label">Epoch </span><span class="ep-value">–</span><span class="hl-sep">  —  </span><span class="hl-title">Most Attested Field Signal</span></div>
+      <div class="fs-headline" id="fsEpoch" style="cursor:help;"><span class="ep-label">Epoch </span><span class="ep-value">–</span><span class="hl-sep">  —  </span><span class="hl-title">Most Attested Field Signal</span></div>
     </div>
     <div class="fs-body" id="fsBody">Loading...</div>
     <div class="fs-meta" id="fsMeta"></div>
@@ -446,7 +449,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       var latestGlyphsEl = document.getElementById("latestGlyphs");
       if(latestKeyEl) latestKeyEl.textContent = "Z1N #" + data.latestKey.tokenId;
       if(latestGlyphsEl){
-        if(glyphs.length > 0){
+        if(glyphs.length > 0 && !latestGlyphsEl.dataset.rendered){
+          latestGlyphsEl.dataset.rendered = "1";
           latestGlyphsEl.textContent = "";
           glyphs.forEach(function(g, i){
             setTimeout(function(){
@@ -467,6 +471,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
               requestAnimationFrame(function(){ span.style.opacity = "1"; });
             }, i * 180);
           });
+        } else if(glyphs.length > 0 && latestGlyphsEl.dataset.rendered){
+          // skip re-render on refresh
         } else { latestGlyphsEl.textContent = "–"; }
       }
     }
@@ -606,6 +612,20 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   wireMobileSwipe();
   loadData();
   setInterval(loadData,30000);
+})();
+
+// Epoch tooltip
+(function(){
+  var trigger = document.getElementById("fsEpoch");
+  var tip = document.getElementById("epochTooltip");
+  if(!trigger || !tip) return;
+  trigger.addEventListener("mouseenter", function(){
+    var rect = trigger.getBoundingClientRect();
+    tip.style.left = rect.left + "px";
+    tip.style.top = (rect.bottom + 8) + "px";
+    tip.style.display = "block";
+  });
+  trigger.addEventListener("mouseleave", function(){ tip.style.display = "none"; });
 })();
 
 // Hamburger
