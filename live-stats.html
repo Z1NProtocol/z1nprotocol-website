@@ -448,7 +448,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       var latestSubEl = document.getElementById("latestSub");
       var latestGlyphsEl = document.getElementById("latestGlyphs");
       if(latestKeyEl) latestKeyEl.textContent = "Z1N #" + data.latestKey.tokenId;
-      if(latestSubEl) latestSubEl.textContent = data.latestKey.isGenesis ? "Genesis Key" : "Standard Key";
       if(latestGlyphsEl){
         if(glyphs.length > 0){
           latestGlyphsEl.innerHTML = glyphs.map(function(g,i){return i===0?g:'<span class="dot">·</span>'+g;}).join("");
