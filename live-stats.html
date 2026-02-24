@@ -14,8 +14,8 @@
 <meta property="og:title" content="Z1N Protocol – Live Stats" />
 <meta property="og:description" content="Signal-first live lens of the Field: intent mix, latest Key, canon anchors, artefacts, and most attested signal." />
 <meta property="og:url" content="https://www.z1nprotocol.xyz/live-stats.html" />
-<meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
-<meta property="og:image:type" content="image/svg+xml" />
+<meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.png" />
+<meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Z1N Protocol – Live Stats" />
@@ -24,7 +24,7 @@
 <meta name="twitter:site" content="@z1n_AI" />
 <meta name="twitter:title" content="Z1N Protocol – Live Stats" />
 <meta name="twitter:description" content="Signal-first live lens: intent mix, latest Key, canon anchors, artefacts." />
-<meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+<meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
 
 <script type="application/ld+json">
 {
@@ -70,7 +70,7 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 @media(max-width:900px){
   .nav-inner{padding:0 16px;}
   .hamburger{display:flex;}
-  .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:#0a0f1a;border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;}
+  .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:#0a0f1a;border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;opacity:1;}
   .nav-links.open{display:flex;}
 }
 
@@ -136,13 +136,13 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .field-card>*{position:relative;}
 .fc-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;margin-bottom:6px;height:18px;display:flex;align-items:flex-end;}
 .fc-value{font-size:22px;font-weight:700;margin-bottom:4px;height:32px;line-height:32px;}
-.fc-sub{font-size:12px;opacity:0.75;line-height:1.55;}
+.fc-sub{font-size:12px;color:var(--text-soft);opacity:1;line-height:1.55;}
 .field-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.35);box-shadow:0 6px 18px rgba(0,0,0,0.30),0 0 18px rgba(94,232,160,0.10);background-color:rgba(2,6,23,0.92);}
 @media(max-width:900px){.field-cards{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(max-width:600px){.field-cards{grid-template-columns:1fr;}}
 
 /* MOST ATTESTED FIELD SIGNAL */
-.field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:18px;overflow:hidden;position:relative;}
+.field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:14px 14px 16px;overflow:hidden;position:relative;}
 .field-signal::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 65%);opacity:0.9;}
 .field-signal>*{position:relative;}
 .fs-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
@@ -175,7 +175,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 <header>
   <div class="nav-inner">
     <div class="logo-wrap">
-      <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
+      <a href="/index.html" class="logo-link" aria-label="Z1N Protocol home">
         <div class="logo-dot">Ω</div>
         <div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div>
       </a>
@@ -184,13 +184,13 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <span></span><span></span><span></span>
     </button>
     <nav class="nav-links" id="navLinks">
-      <a href="about.html">About</a>
-      <a href="how-it-works.html">How it Works</a>
-      <a href="live-stats.html" class="active">Live Stats</a>
-      <a href="artefacts.html">Artefacts</a>
-      <a href="nbi-artefacts.html">4 NBIs</a>
-      <a href="mint-key.html">Mint your Key</a>
-      <a href="your-keys.html">Your Keys</a>
+      <a href="/about.html">About</a>
+      <a href="/how-it-works.html">How it Works</a>
+      <a href="/live-stats.html" class="active">Live Stats</a>
+      <a href="/artefacts.html">Artefacts</a>
+      <a href="/nbi-artefacts.html">4 NBIs</a>
+      <a href="/mint-key.html">Mint your Key</a>
+      <a href="/your-keys.html">Your Keys</a>
     </nav>
   </div>
 </header>
@@ -215,6 +215,10 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     </div>
   </section>
 
+  <div class="epoch-row">
+    <div class="epoch-badge" id="epochBadge">Epoch –</div>
+  </div>
+  
   <!-- Intent legend -->
   <div class="intent-legend" aria-label="Intent legend">
     <div class="title">Intent mix across epochs</div>
@@ -244,9 +248,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   </section>
 
   <!-- Current Epoch + 3 Field Cards -->
-  <div class="epoch-row">
-    <div class="epoch-badge" id="epochBadge">Epoch –</div>
-  </div>
+  
   <section class="field-cards" aria-label="Field cards">
     <div class="field-card">
       <div class="fc-label">Keys Awakened</div>
