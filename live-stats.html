@@ -272,7 +272,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <section class="field-signal" aria-label="Most Attested Field Signal">
     <div class="fs-top">
       <div class="fs-title">Most Attested Field Signal <span class="fs-intent" id="fsIntent"></span></div>
-      <div class="fs-epoch" id="fsEpoch">Epoch –</div>
+      <div class="fs-epoch" id="fsEpoch" title="The most attested signal is always from 2 epochs prior — attestation requires a full epoch window.">Epoch –</div>
     </div>
     <div class="fs-body" id="fsBody">Loading...</div>
     <div class="fs-meta" id="fsMeta"></div>
@@ -357,8 +357,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   function loadData(){
     fetchField(API_BASE)
       .catch(function(){return fetchField(FALLBACK_API);})
-      .then(function(data){apiCache=data;updateFromAPI(data);render();})
-      .catch(function(){render();});
+     .then(function(data){apiCache=data;updateFromAPI(data);setActiveLens("total",{lock:true});})
+      .catch(function(){setActiveLens("total",{lock:true});});
   }
 
   // ═══ UPDATE FROM API ═══
@@ -593,7 +593,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
   // ═══ INIT ═══
   document.querySelectorAll(".donut-card").forEach(renderDonutCard);
-  setActiveLens("total",{lock:true});
   if(HAS_HOVER)wireDesktopBehavior();
   wireMobileSwipe();
   loadData();
