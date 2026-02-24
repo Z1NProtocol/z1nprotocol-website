@@ -206,7 +206,10 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="latest-spot" aria-hidden="true"></div>
       <div class="latest-row">
         <div class="latest-left">
-          <div class="latest-label">Latest minted Key</div>
+          <div class="latest-label" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+            Latest minted Key
+            <span class="epoch-badge" id="epochBadge" style="margin-left:auto;">Epoch –</span>
+          </div>
           <div class="latest-key" id="latestKey">Z1N #–</div>
           <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">–</div>
           <div class="latest-sub" id="latestSub">Loading...</div>
@@ -223,8 +226,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <span class="i">ΩI Individual</span>
       <span class="k">ΩK Co-creative</span>
       <span class="s">ΩS Silence</span>
-    <div class="epoch-row">
-    <div class="epoch-badge" id="epochBadge">Epoch –</div>
   </div>
     
     </div>
