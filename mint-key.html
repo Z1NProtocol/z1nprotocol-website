@@ -338,6 +338,54 @@
   .unlock-item.artefacts .unlock-label { color: var(--mint); }
   .unlock-item.treasury .unlock-label { color: var(--aether); }
 
+/* WHAT YOUR KEY UNLOCKS - TWO CARD LAYOUT */
+  .unlocks-section { margin-top: 48px; }
+  .unlocks-kicker {
+    font-size: 13px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--text-soft);
+    margin-bottom: 14px;
+  }
+  .unlocks-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media(max-width: 900px) { .unlocks-cards { grid-template-columns: 1fr; } }
+
+  .unlock-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .unlock-card::before {
+    content: ""; position: absolute; inset: -1px; border-radius: 18px;
+    pointer-events: none;
+    background: radial-gradient(circle at top, rgba(94,232,160,0.08), rgba(2,6,23,0) 62%);
+    opacity: 0.9;
+  }
+  .unlock-card > * { position: relative; }
+  .unlock-card-kicker {
+    font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: rgba(255,255,255,0.55);
+    margin-bottom: 14px;
+  }
+  .unlock-cap { margin-bottom: 14px; }
+  .unlock-cap:last-child { margin-bottom: 0; }
+  .unlock-cap-label {
+    font-size: 14px; font-weight: 900; letter-spacing: 0.02em;
+    margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+  }
+  .unlock-cap-label .cap-icon { font-size: 14px; }
+  .unlock-cap-desc { font-size: 12px; line-height: 1.6; color: var(--text-soft); }
+
+  .unlock-cap-label.sig { color: var(--sunbeam); }
+  .unlock-cap-label.purple { color: #c084fc; }
+  .unlock-cap-label.green { color: var(--mint); }
+  .unlock-cap-label.blue { color: var(--aether); }
+
   .footer-contracts {
     margin-top: 14px;
     padding-top: 14px;
@@ -576,24 +624,46 @@
   </section>
 
   <!-- WHAT A KEY UNLOCKS — universal, BI + NBI -->
-  <section style="margin-top: 48px;">
-    <div style="font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 14px;">What every Key unlocks</div>
-    <div class="unlocks-grid" style="grid-template-columns: repeat(4, 1fr);">
-      <div class="unlock-item signals">
-        <div class="unlock-label">Signals</div>
-        <div class="unlock-desc">Send up to 2 signals per epoch with one of 4 intents (ΩC, ΩI, ΩK, ΩS)</div>
+ <section class="unlocks-section">
+    <div class="unlocks-kicker">What every Key unlocks</div>
+
+    <div class="unlocks-cards">
+      <div class="unlock-card">
+        <div class="unlock-card-kicker">Field Ritual Heartbeat</div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label sig">Signals</div>
+          <div class="unlock-cap-desc">Send up to 2 signals per epoch with one of four intents (ΩC, ΩI, ΩK, ΩS). Each signal carries intent and content — a probe into the Field. Reply to signals from other Keys to build threads of meaning across epochs.</div>
+        </div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label sig">Attests</div>
+          <div class="unlock-cap-desc">In the next epoch, place attestations on signals you recognise. Attestations add weight and shape which signals rise to become canon. No self-attestation — recognition must come from others.</div>
+        </div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label sig">Whispers</div>
+          <div class="unlock-cap-desc">Send messages between Keys to explore consciousness together — always on-chain but private via a stealth relayer. The relayer obscures the sender's identity on-chain while preserving verifiability between participants. A direct channel alongside the public signal layer.</div>
+        </div>
       </div>
-      <div class="unlock-item attests">
-        <div class="unlock-label">Attestations</div>
-        <div class="unlock-desc">Attest other Keys' signals to amplify meaning in the Field</div>
-      </div>
-      <div class="unlock-item artefacts">
-        <div class="unlock-label">Artefacts</div>
-        <div class="unlock-desc">A live visual mirror rendering your participation patterns across epochs</div>
-      </div>
-      <div class="unlock-item treasury">
-        <div class="unlock-label">Claims</div>
-        <div class="unlock-desc">Settle epoch claims from attested signals — capture, return to the Field, or gift to Nexus</div>
+
+      <div class="unlock-card">
+        <div class="unlock-card-kicker">Presence · Legacy</div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label purple"><span class="cap-icon">Ω</span> Canon Anchors</div>
+          <div class="unlock-cap-desc">Stamp your signals into the permanent record. A canon anchor is not the Field's verdict — it's yours. A declaration: this epoch mattered to me. Add a reason if you wish, or let the signal speak for itself. On-chain, immutable, yours to point back to.</div>
+        </div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label green"><span class="cap-icon">◈</span> Artefacts</div>
+          <div class="unlock-cap-desc">Mint living mirrors of your presence — a permanent, evolving memory of self. Your first artefact is free, additional ones cost 21 POL. Share viewing access with other Keys or keep them private. Receive artefacts granted by other Keys and manage who sees yours.</div>
+        </div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label blue"><span class="cap-icon">⬡</span> Claim Field Rewards</div>
+          <div class="unlock-cap-desc">Active Keys earn POL from the epoch treasury — distributed by signal weight and attestation resonance. Three paths: claim to your wallet, recycle into the next epoch's pool, or gift to the Nexus.</div>
+        </div>
       </div>
     </div>
   </section>
