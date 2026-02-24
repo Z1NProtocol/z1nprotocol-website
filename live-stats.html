@@ -146,8 +146,8 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 @media(max-width:600px){.field-cards{grid-template-columns:1fr;}}
 
 /* MOST ATTESTED FIELD SIGNAL */
-.field-signal{margin-top:18px;background:none;border-radius:0;border:none;padding:14px 0 16px;overflow:visible;position:relative;}
-.field-signal::before{display:none;}
+.field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:14px 14px 16px;overflow:visible;position:relative;}
+.field-signal::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 65%);opacity:0.9;}
 .field-signal>*{position:relative;}
 .fs-top{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:10px;}
 .fs-headline{font-size:13px;margin-bottom:2px;}
@@ -156,7 +156,6 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-headline .hl-sep{color:var(--text-soft);opacity:0.4;}
 .fs-headline .hl-title{color:var(--text-soft);font-weight:600;font-size:13px;letter-spacing:0.02em;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
-.fs-intent-big{font-size:20px;font-weight:800;margin:4px 0;}
 .fs-body{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
 .fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
 
@@ -274,7 +273,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <section class="field-signal" aria-label="Most Attested Field Signal">
     <div class="fs-top">
       <div class="fs-headline" id="fsEpoch" style="cursor:help;" title="The most attested signal is always from 2 epochs prior — attestation requires one full epoch window."><span class="ep-label">Epoch </span><span class="ep-value">–</span><span class="hl-sep">  —  </span><span class="hl-title">Most Attested Field Signal</span></div>
-      <div class="fs-intent-big" id="fsIntent"></div>
     </div>
     <div class="fs-body" id="fsBody">Loading...</div>
     <div class="fs-meta" id="fsMeta"></div>
@@ -480,7 +478,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     countUp(document.getElementById("vArtefacts"),d.cards.artefacts,dur);
 
     // Most Attested Field Signal
-    var fsIntent=document.getElementById("fsIntent");
     var fsEpoch=document.getElementById("fsEpoch");
     var fsBody=document.getElementById("fsBody");
     var fsMeta=document.getElementById("fsMeta");
@@ -490,17 +487,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       if(epVal) epVal.textContent=d.signal.epoch.replace("Epoch ","");
     }
     if(fsBody)fsBody.textContent=d.signal.body;
-
-    if(fsIntent){
-      if(d.signal.intent){
-        var intentKey=d.signal.intent.replace("Ω","");
-        fsIntent.textContent="Ω"+intentKey;
-        fsIntent.style.color=COLORS[intentKey]||"var(--text-soft)";
-      }else{
-        fsIntent.textContent="";
-        fsIntent.style.color="";
-      }
-    }
 
     if(fsMeta){
       fsMeta.textContent = "";
