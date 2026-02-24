@@ -206,10 +206,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="latest-spot" aria-hidden="true"></div>
       <div class="latest-row">
         <div class="latest-left">
-          <div class="latest-label" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-            Latest minted Key
-            <span class="epoch-badge" id="epochBadge" style="margin-left:auto;">Epoch –</span>
-          </div>
+          <div class="latest-label" style="display:flex;align-items:center;width:100%;">Latest minted Key<span class="fs-epoch" id="epochBadge" style="margin-left:auto;">Epoch –</span></div>
           <div class="latest-key" id="latestKey">Z1N #–</div>
           <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">–</div>
           <div class="latest-sub" id="latestSub">Loading...</div>
@@ -226,8 +223,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <span class="i">ΩI Individual</span>
       <span class="k">ΩK Co-creative</span>
       <span class="s">ΩS Silence</span>
-  </div>
-    
     </div>
   </div>
 
@@ -272,7 +267,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <section class="field-signal" aria-label="Most Attested Field Signal">
     <div class="fs-top">
       <div class="fs-title">Most Attested Field Signal <span class="fs-intent" id="fsIntent"></span></div>
-      <div class="fs-epoch" id="fsEpoch" title="The most attested signal is always from 2 epochs prior — attestation requires a full epoch window.">Epoch –</div>
+      <div class="fs-epoch" id="fsEpoch" style="position:relative;cursor:help;">Epoch –<div class="fs-tip" style="display:none;position:absolute;top:calc(100% + 8px);right:0;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text-soft);max-width:280px;white-space:normal;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:100;">The most attested signal is always from 2 epochs prior — attestation requires one full epoch window before closure.</div></div>
     </div>
     <div class="fs-body" id="fsBody">Loading...</div>
     <div class="fs-meta" id="fsMeta"></div>
@@ -597,6 +592,16 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   wireMobileSwipe();
   loadData();
   setInterval(loadData,30000);
+})();
+
+// Tooltip for epoch in field signal
+(function(){
+  var el = document.getElementById("fsEpoch");
+  if(!el) return;
+  var tip = el.querySelector(".fs-tip");
+  if(!tip) return;
+  el.addEventListener("mouseenter", function(){ tip.style.display = "block"; });
+  el.addEventListener("mouseleave", function(){ tip.style.display = "none"; });
 })();
 
 // Hamburger
