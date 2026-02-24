@@ -276,6 +276,32 @@
     box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(94,232,160,0.14);
   }
 
+  .mint-btn-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+  .mint-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(5,8,18,0.97);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--text-soft);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 10;
+  }
+  .mint-tooltip.visible {
+    opacity: 1;
+  }
+
   .btn-connect { border-color: var(--accent-soft); color: #e5e7eb; }
 
   /* STATUS */
@@ -619,7 +645,10 @@
         </div>
 
         <div class="btn-row" style="margin-top: 12px;">
-          <button id="btnMint" class="btn btn-primary" type="button" disabled title="First connect your wallet">Mint your Key</button>
+          <span class="mint-btn-wrap" id="mintBtnWrap">
+            <button id="btnMint" class="btn btn-primary" type="button" disabled>Mint your Key</button>
+            <div class="mint-tooltip" id="mintTooltip">First connect your wallet</div>
+          </span>
         </div>
         <div id="mintStatus" class="status-text">
           Connect wallet to enable minting.
@@ -840,7 +869,7 @@
     selectedProvider.request({ method: 'eth_chainId' }).then(function(chainId) {
       if (chainId === EXPECTED_CHAIN_ID) {
         if (statusNet) statusNet.innerHTML = 'Network: <span class="highlight">' + CHAIN_NAME + '</span>';
-        if (btnMint) btnMint.disabled = false;
+        if (btnMint) { btnMint.disabled = false; btnMint.title = ''; }
         if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
       } else {
         var chainName = {
@@ -866,7 +895,7 @@
       selectedProvider.on('chainChanged', function(chainId) {
         if (chainId === EXPECTED_CHAIN_ID) {
           if (statusNet) statusNet.innerHTML = 'Network: <span class="highlight">' + CHAIN_NAME + '</span>';
-          if (btnMint) btnMint.disabled = false;
+         if (btnMint) { btnMint.disabled = false; if (mintTooltip) mintTooltip.classList.remove('visible'); }
           if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
         } else {
           var chainName = {
@@ -999,6 +1028,24 @@
   if (btnMint) btnMint.onclick = mintKey;
   if (modalClose) modalClose.onclick = hideModal;
   if (walletModal) walletModal.onclick = function(e) { if (e.target === walletModal) hideModal(); };
+
+  // ═══ EVENTS ═══
+  if (btnConnect) btnConnect.onclick = handleConnect;
+  if (btnMint) btnMint.onclick = mintKey;
+  if (modalClose) modalClose.onclick = hideModal;
+  if (walletModal) walletModal.onclick = function(e) { if (e.target === walletModal) hideModal(); };
+
+  // ═══ MINT TOOLTIP ═══
+  var mintBtnWrap = document.getElementById('mintBtnWrap');
+  var mintTooltip = document.getElementById('mintTooltip');
+  if (mintBtnWrap && mintTooltip) {
+    mintBtnWrap.addEventListener('mouseenter', function() {
+      if (btnMint && btnMint.disabled) mintTooltip.classList.add('visible');
+    });
+    mintBtnWrap.addEventListener('mouseleave', function() {
+      mintTooltip.classList.remove('visible');
+    });
+  }
 
   loadEpochAndPrice();
   setInterval(loadEpochAndPrice, 30000);
