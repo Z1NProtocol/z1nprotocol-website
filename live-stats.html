@@ -79,18 +79,19 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 @media(max-width:900px){.page{padding:32px 18px 28px;}}
 h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .lead{font-size:17px;opacity:0.85;line-height:1.65;margin-bottom:8px;max-width:920px;}
-.lead-small{font-size:14px;opacity:0.7;line-height:1.65;margin-top:4px;margin-bottom:22px;max-width:920px;}
+.lead-small{font-size:14px;opacity:0.7;line-height:1.65;margin-top:4px;margin-bottom:38px;max-width:920px;}
 
 /* LATEST KEY BAR */
 .latest-wrap{width:100%;margin:10px 0 18px;}
-.latest-frame{position:relative;width:100%;overflow:hidden;border-radius:16px;border:1px solid rgba(148,163,184,0.18);background:radial-gradient(circle at top,rgba(94,232,160,0.08),rgba(2,6,23,0) 62%);padding:14px 16px;--mx:50%;--my:50%;}
-.latest-spot{pointer-events:none;position:absolute;inset:-45%;background:radial-gradient(220px 110px at var(--mx) var(--my),rgba(94,232,160,0.22),rgba(94,232,160,0.08) 38%,rgba(94,232,160,0) 70%);opacity:0;transition:opacity 160ms ease;}
-.latest-frame:hover .latest-spot{opacity:1;}
+.latest-frame{position:relative;width:100%;overflow:hidden;border-radius:16px;border:none;background:none;padding:14px 16px;--mx:50%;--my:50%;}
+.latest-spot{display:none;}
 .latest-row{display:flex;align-items:center;justify-content:center;gap:14px;}
 .latest-left{min-width:240px;text-align:center;width:100%;}
-.latest-epoch{font-size:13px;margin-bottom:8px;}
-.latest-epoch .ep-label{color:var(--text-soft);font-weight:700;}
-.latest-epoch .ep-value{color:#ffffff;font-weight:700;}
+.latest-headline{font-size:13px;margin-bottom:8px;}
+.latest-headline .ep-label{color:var(--text-soft);font-weight:700;}
+.latest-headline .ep-value{color:#ffffff;font-weight:700;}
+.latest-headline .hl-sep{color:var(--text-soft);opacity:0.4;}
+.latest-headline .hl-title{color:var(--text-soft);font-weight:700;text-transform:uppercase;letter-spacing:0.12em;font-size:11px;}
 .latest-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.72);opacity:0.85;margin-bottom:6px;}
 .latest-key{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
 .latest-sub{font-size:12px;color:var(--text-soft);opacity:0.85;}
@@ -145,13 +146,15 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 @media(max-width:600px){.field-cards{grid-template-columns:1fr;}}
 
 /* MOST ATTESTED FIELD SIGNAL */
-.field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:14px 14px 16px;overflow:visible;position:relative;}
-.field-signal::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 65%);opacity:0.9;}
+.field-signal{margin-top:18px;background:none;border-radius:0;border:none;padding:14px 0 16px;overflow:visible;position:relative;}
+.field-signal::before{display:none;}
 .field-signal>*{position:relative;}
 .fs-top{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:10px;}
-.fs-epoch-line{font-size:13px;margin-bottom:2px;}
-.fs-epoch-line .ep-label{color:var(--text-soft);font-weight:700;}
-.fs-epoch-line .ep-value{color:#ffffff;font-weight:700;}
+.fs-headline{font-size:13px;margin-bottom:2px;}
+.fs-headline .ep-label{color:var(--text-soft);font-weight:700;}
+.fs-headline .ep-value{color:#ffffff;font-weight:700;}
+.fs-headline .hl-sep{color:var(--text-soft);opacity:0.4;}
+.fs-headline .hl-title{color:var(--text-soft);font-weight:600;font-size:13px;letter-spacing:0.02em;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
 .fs-intent-big{font-size:20px;font-weight:800;margin:4px 0;}
 .fs-body{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
@@ -211,11 +214,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="latest-spot" aria-hidden="true"></div>
       <div class="latest-row">
         <div class="latest-left">
-          <div class="latest-epoch" id="epochBadge"><span class="ep-label">Epoch </span><span class="ep-value">–</span></div>
-          <div class="latest-label">Latest minted Key</div>
+          <div class="latest-headline" id="epochBadge"><span class="ep-label">Epoch </span><span class="ep-value">–</span><span class="hl-sep">  —  </span><span class="hl-title">Latest minted Key</span></div>
           <div class="latest-key" id="latestKey">Z1N #–</div>
           <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">–</div>
-          <div class="latest-sub" id="latestSub">Loading...</div>
         </div>
       </div>
     </div>
@@ -272,8 +273,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <!-- Most Attested Field Signal -->
   <section class="field-signal" aria-label="Most Attested Field Signal">
     <div class="fs-top">
-      <div class="fs-epoch-line" id="fsEpoch" style="cursor:help;" title="The most attested signal is always from 2 epochs prior — attestation requires one full epoch window."><span class="ep-label">Epoch </span><span class="ep-value">–</span></div>
-      <div class="fs-title">Most Attested Field Signal</div>
+      <div class="fs-headline" id="fsEpoch" style="cursor:help;" title="The most attested signal is always from 2 epochs prior — attestation requires one full epoch window."><span class="ep-label">Epoch </span><span class="ep-value">–</span><span class="hl-sep">  —  </span><span class="hl-title">Most Attested Field Signal</span></div>
       <div class="fs-intent-big" id="fsIntent"></div>
     </div>
     <div class="fs-body" id="fsBody">Loading...</div>
@@ -445,7 +445,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       var gl = data.latestKey.glyphLine || "";
       var glyphs = gl.split("").filter(function(g){return g.trim();});
       var latestKeyEl = document.getElementById("latestKey");
-      var latestSubEl = document.getElementById("latestSub");
       var latestGlyphsEl = document.getElementById("latestGlyphs");
       if(latestKeyEl) latestKeyEl.textContent = "Z1N #" + data.latestKey.tokenId;
       if(latestGlyphsEl){
@@ -487,9 +486,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     var fsMeta=document.getElementById("fsMeta");
 
     if(fsEpoch){
-      var tip=fsEpoch.querySelector(".fs-tip");
-      fsEpoch.textContent=d.signal.epoch;
-      if(tip)fsEpoch.appendChild(tip);
+      var epVal=fsEpoch.querySelector(".ep-value");
+      if(epVal) epVal.textContent=d.signal.epoch.replace("Epoch ","");
     }
     if(fsBody)fsBody.textContent=d.signal.body;
 
@@ -603,16 +601,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   wireMobileSwipe();
   loadData();
   setInterval(loadData,30000);
-})();
-
-// Tooltip for epoch in field signal
-(function(){
-  var el = document.getElementById("fsEpoch");
-  if(!el) return;
-  var tip = el.querySelector(".fs-tip");
-  if(!tip) return;
-  el.addEventListener("mouseenter", function(){ tip.style.display = "block"; });
-  el.addEventListener("mouseleave", function(){ tip.style.display = "none"; });
 })();
 
 // Hamburger
