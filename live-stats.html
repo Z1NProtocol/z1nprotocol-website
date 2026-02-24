@@ -83,7 +83,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 
 /* LATEST KEY BAR */
 .latest-wrap{width:100%;margin:10px 0 18px;}
-.latest-frame{position:relative;width:100%;overflow:hidden;border-radius:16px;border:none;background:none;padding:14px 16px;--mx:50%;--my:50%;}
+.latest-frame{position:relative;width:100%;overflow:hidden;border-radius:0;border:none;border-top:1px solid rgba(148,163,184,0.12);border-bottom:1px solid rgba(148,163,184,0.12);background:none;padding:18px 16px;--mx:50%;--my:50%;}
 .latest-spot{display:none;}
 .latest-row{display:flex;align-items:center;justify-content:center;gap:14px;}
 .latest-left{min-width:240px;text-align:center;width:100%;}
@@ -447,7 +447,26 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       if(latestKeyEl) latestKeyEl.textContent = "Z1N #" + data.latestKey.tokenId;
       if(latestGlyphsEl){
         if(glyphs.length > 0){
-          latestGlyphsEl.innerHTML = glyphs.map(function(g,i){return i===0?g:'<span class="dot">·</span>'+g;}).join("");
+          latestGlyphsEl.textContent = "";
+          glyphs.forEach(function(g, i){
+            setTimeout(function(){
+              if(i > 0){
+                var dot = document.createElement("span");
+                dot.className = "dot";
+                dot.textContent = "·";
+                dot.style.opacity = "0";
+                dot.style.transition = "opacity 0.3s ease";
+                latestGlyphsEl.appendChild(dot);
+                requestAnimationFrame(function(){ dot.style.opacity = "1"; });
+              }
+              var span = document.createElement("span");
+              span.textContent = g;
+              span.style.opacity = "0";
+              span.style.transition = "opacity 0.4s ease";
+              latestGlyphsEl.appendChild(span);
+              requestAnimationFrame(function(){ span.style.opacity = "1"; });
+            }, i * 180);
+          });
         } else { latestGlyphsEl.textContent = "–"; }
       }
     }
