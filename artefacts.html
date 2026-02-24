@@ -85,15 +85,6 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .lead{font-size:17px;opacity:0.88;line-height:1.65;margin-bottom:10px;max-width:860px;}
 .lead-small{font-size:14px;opacity:0.72;line-height:1.65;margin-top:4px;margin-bottom:18px;max-width:860px;}
 
-/* INFO BLOCK */
-.info-block{max-width:980px;font-size:14px;line-height:1.65;margin:0 0 44px;}
-.info-block p{margin:0 0 10px 0;color:rgba(255,255,255,0.92);}
-.info-block p.subtle{color:var(--text-soft);opacity:0.95;}
-.info-block p:last-child{margin-bottom:0;}
-.info-block ul{list-style:none;margin:10px 0 10px 0;padding:0;}
-.info-block li{position:relative;padding-left:20px;margin:2px 0;line-height:1.22;opacity:0.92;}
-.info-block li::before{content:"";position:absolute;left:0;top:0.55em;width:8px;height:8px;border-radius:999px;border:1px solid rgba(255,255,255,0.75);transform:translateY(-50%);}
-
 /* ERAS */
 .era-title-main{font-size:26px;margin:4px 0 18px 0;}
 .era-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:8px;}
@@ -133,7 +124,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 <header>
   <div class="nav-inner">
     <div class="logo-wrap">
-      <a href="/index.html" class="logo-link" aria-label="Z1N Protocol home">
+      <a href="index.html" class="logo-link" aria-label="Z1N Protocol home">
         <div class="logo-dot">Ω</div>
         <div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div>
       </a>
@@ -142,13 +133,13 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <span></span><span></span><span></span>
     </button>
     <nav class="nav-links" id="navLinks">
-      <a href="/about.html">About</a>
-      <a href="/how-it-works.html">How it Works</a>
-      <a href="/live-stats.html">Live Stats</a>
-      <a href="/artefacts.html" class="active">Artefacts</a>
-      <a href="/nbi-artefacts.html">4 NBIs</a>
-      <a href="/mint-key.html">Mint your Key</a>
-      <a href="/your-keys.html">Your Keys</a>
+      <a href="about.html">About</a>
+      <a href="how-it-works.html">How it Works</a>
+      <a href="live-stats.html">Live Stats</a>
+      <a href="artefacts.html" class="active">Artefacts</a>
+      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="mint-key.html">Mint your Key</a>
+      <a href="your-keys.html">Your Keys</a>
     </nav>
   </div>
 </header>
@@ -158,36 +149,24 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
   <p class="lead">
     Artefacts are living mirrors: a way to look back and ask,
-    "Did my presence change anything?"
+    "Did my presence change anything?" Their visual language evolves in eras.
   </p>
 
   <p class="lead-small">
-    Artefacts in Z1N are living mirrors. Their visual language evolves in eras.
+    When your Key awakens, the field offers you one artefact for free — a live mirror that updates every epoch.
+    You may mint additional artefacts for 21 POL. Each artefact is version-locked at mint time.
   </p>
 
-  <section class="info-block" aria-label="Artefacts explained">
-    <p>
-      When your Key awakens, the field offers you one artefact for free: a live mirror that updates every epoch.
-      You may mint additional artefacts for <strong>21 POL</strong>. Each artefact is version-locked at mint time.
-    </p>
+  <p class="lead-small">
+    Artefacts remain anchored to the Key that minted them. What you can grant is viewing access — 
+    revocable at any time, without transferring ownership. When access is revoked, the renderer displays
+    a withdrawn state. You may restore access whenever you wish.
+  </p>
 
-    <p>
-      Artefacts are not transferred as objects. They remain anchored to the Key that minted them.
-      What you can grant is <em>viewing access</em>.
-    </p>
-
-    <ul>
-      <li>At any time, you may revoke viewing access for any address you previously allowed.</li>
-      <li>Access does not transfer ownership: the viewer receives permission, not the artefact itself.</li>
-      <li>When access is revoked, the renderer displays a withdrawn state instead of the mirror.</li>
-      <li>You may restore access whenever you wish.</li>
-    </ul>
-
-    <p>
-      <strong>Era shifts:</strong> the artefact design may change every <strong>210 epochs</strong>.
-      New mints adopt the new era's visual grammar. Existing artefacts keep their original grammar permanently.
-    </p>
-  </section>
+  <p class="lead-small" style="margin-bottom:38px;">
+    <strong>Era shifts:</strong> the artefact design may change every 210 epochs.
+    New mints adopt the new era's visual grammar. Existing artefacts keep their original grammar permanently.
+  </p>
 
   <h2 class="era-title-main">Artefact eras</h2>
 
