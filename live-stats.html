@@ -87,8 +87,11 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .latest-spot{pointer-events:none;position:absolute;inset:-45%;background:radial-gradient(220px 110px at var(--mx) var(--my),rgba(94,232,160,0.22),rgba(94,232,160,0.08) 38%,rgba(94,232,160,0) 70%);opacity:0;transition:opacity 160ms ease;}
 .latest-frame:hover .latest-spot{opacity:1;}
 .latest-row{display:flex;align-items:center;justify-content:center;gap:14px;}
-.latest-left{min-width:240px;text-align:center;}
-.latest-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.72);opacity:0.85;margin-bottom:6px;justify-content:center;}
+.latest-left{min-width:240px;text-align:center;width:100%;}
+.latest-epoch{font-size:13px;margin-bottom:8px;}
+.latest-epoch .ep-label{color:var(--text-soft);font-weight:700;}
+.latest-epoch .ep-value{color:#ffffff;font-weight:700;}
+.latest-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.72);opacity:0.85;margin-bottom:6px;}
 .latest-key{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
 .latest-sub{font-size:12px;color:var(--text-soft);opacity:0.85;}
 .latest-glyphs{font-size:20px;letter-spacing:0.04em;margin-top:4px;margin-bottom:4px;font-weight:700;color:#ffffff;}
@@ -111,7 +114,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .donut-card::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 62%);opacity:0.85;}
 .donut-card>*{position:relative;}
 .donut-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px;}
-.donut-top .label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.75);opacity:0.9;}
+.donut-top .label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.75);opacity:0.9;font-weight:700;}
 .donut-top .sub{font-size:12px;color:var(--text-soft);white-space:nowrap;}
 .donut-mid{display:flex;align-items:center;justify-content:center;padding:4px 0 2px;}
 .donut-svg{width:150px;height:150px;display:block;}
@@ -137,8 +140,6 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fc-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;margin-bottom:6px;height:18px;display:flex;align-items:flex-end;justify-content:center;}
 .fc-value{font-size:22px;font-weight:700;margin-bottom:4px;height:32px;line-height:32px;text-align:center;}
 .fc-sub{font-size:12px;color:var(--text-soft);opacity:1;line-height:1.55;text-align:center;}
-.fc-value{font-size:22px;font-weight:700;margin-bottom:4px;height:32px;line-height:32px;}
-.fc-sub{font-size:12px;color:var(--text-soft);opacity:1;line-height:1.55;}
 .field-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.35);box-shadow:0 6px 18px rgba(0,0,0,0.30),0 0 18px rgba(94,232,160,0.10);background-color:rgba(2,6,23,0.92);}
 @media(max-width:900px){.field-cards{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(max-width:600px){.field-cards{grid-template-columns:1fr;}}
@@ -147,11 +148,13 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:14px 14px 16px;overflow:visible;position:relative;}
 .field-signal::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 65%);opacity:0.9;}
 .field-signal>*{position:relative;}
-.fs-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.fs-top{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:10px;}
+.fs-epoch-line{font-size:13px;margin-bottom:2px;}
+.fs-epoch-line .ep-label{color:var(--text-soft);font-weight:700;}
+.fs-epoch-line .ep-value{color:#ffffff;font-weight:700;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
-.fs-intent{font-weight:700;margin-left:6px;}
-.fs-epoch{font-size:12px;color:rgba(255,255,255,0.75);opacity:0.9;border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;}
-.fs-body{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;}
+.fs-intent-big{font-size:20px;font-weight:800;margin:4px 0;}
+.fs-body{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
 .fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
 
 /* FOOTER */
@@ -207,8 +210,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     <div class="latest-frame" id="latestFrame">
       <div class="latest-spot" aria-hidden="true"></div>
       <div class="latest-row">
-        <div class="latest-left" style="width:100%;">
-          <div class="latest-label" style="display:flex;align-items:center;width:100%;">Latest minted Key<span class="fs-epoch" id="epochBadge" style="margin-left:auto;text-transform:none;letter-spacing:normal;">Epoch –</span></div>
+        <div class="latest-left">
+          <div class="latest-epoch" id="epochBadge"><span class="ep-label">Epoch </span><span class="ep-value">–</span></div>
+          <div class="latest-label">Latest minted Key</div>
           <div class="latest-key" id="latestKey">Z1N #–</div>
           <div class="latest-glyphs" id="latestGlyphs" aria-label="Latest glyph line">–</div>
           <div class="latest-sub" id="latestSub">Loading...</div>
@@ -268,8 +272,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <!-- Most Attested Field Signal -->
   <section class="field-signal" aria-label="Most Attested Field Signal">
     <div class="fs-top">
-      <div class="fs-title">Most Attested Field Signal <span class="fs-intent" id="fsIntent"></span></div>
-      <div class="fs-epoch" id="fsEpoch" style="position:relative;cursor:help;">Epoch –<div class="fs-tip" style="display:none;position:absolute;top:calc(100% + 8px);right:0;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text-soft);max-width:280px;white-space:normal;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:100;">The most attested signal is always from 2 epochs prior — attestation requires one full epoch window before closure.</div></div>
+      <div class="fs-epoch-line" id="fsEpoch" style="cursor:help;" title="The most attested signal is always from 2 epochs prior — attestation requires one full epoch window."><span class="ep-label">Epoch </span><span class="ep-value">–</span></div>
+      <div class="fs-title">Most Attested Field Signal</div>
+      <div class="fs-intent-big" id="fsIntent"></div>
     </div>
     <div class="fs-body" id="fsBody">Loading...</div>
     <div class="fs-meta" id="fsMeta"></div>
@@ -454,7 +459,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     // Current epoch
     var epochBadge = document.getElementById("epochBadge");
     if(epochBadge && ce !== undefined){
-      epochBadge.textContent = "Epoch " + ce;
+      var epVal = epochBadge.querySelector(".ep-value");
+      if(epVal) epVal.textContent = ce;
     }
   }
 
@@ -490,8 +496,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
     if(fsIntent){
       if(d.signal.intent){
-        fsIntent.textContent=d.signal.intent;
         var intentKey=d.signal.intent.replace("Ω","");
+        fsIntent.textContent="Ω"+intentKey;
         fsIntent.style.color=COLORS[intentKey]||"var(--text-soft)";
       }else{
         fsIntent.textContent="";
