@@ -214,8 +214,8 @@
   .mint-layout {
     margin-top: 24px;
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: 24px;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
     align-items: stretch;
   }
   @media(max-width: 900px) { .mint-layout { grid-template-columns: 1fr; } }
@@ -235,6 +235,7 @@
     text-transform: uppercase;
     color: var(--text-soft);
     margin-bottom: 10px;
+    font-weight: 700;
   }
 
   .divider { border-top: 1px solid rgba(148,163,184,0.28); margin: 12px 0 14px; }
@@ -368,8 +369,8 @@
   }
   .unlock-card > * { position: relative; }
   .unlock-card-kicker {
-    font-size: 10px; letter-spacing: 0.16em;
-    text-transform: uppercase; color: rgba(255,255,255,0.55);
+    font-size: 13px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--text-soft);
     margin-bottom: 14px;
   }
   .unlock-cap { margin-bottom: 14px; }
