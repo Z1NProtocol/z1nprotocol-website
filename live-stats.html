@@ -459,17 +459,17 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
                 dot.className = "dot";
                 dot.textContent = "·";
                 dot.style.opacity = "0";
-                dot.style.transition = "opacity 0.3s ease";
+                dot.style.transition = "opacity 0.2s ease";
                 latestGlyphsEl.appendChild(dot);
                 requestAnimationFrame(function(){ dot.style.opacity = "1"; });
               }
               var span = document.createElement("span");
               span.textContent = g;
               span.style.opacity = "0";
-              span.style.transition = "opacity 0.4s ease";
+              span.style.transition = "opacity 0.25s ease";
               latestGlyphsEl.appendChild(span);
               requestAnimationFrame(function(){ span.style.opacity = "1"; });
-            }, i * 180);
+            }, i * 100);
           });
         } else if(glyphs.length > 0 && latestGlyphsEl.dataset.rendered){
           // skip re-render on refresh
