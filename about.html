@@ -162,12 +162,16 @@
 
     @media(max-width:900px){
       .nav-inner{ padding:0 16px; }
+      .hamburger{ display:flex; }
       .nav-links{
-        font-size:12px;
-        gap:14px;
-        flex-wrap:wrap;
-        justify-content:flex-end;
+        display:none; position:absolute; top:72px; left:0; right:0;
+        background:#0a0f1a;
+        border-bottom:1px solid rgba(148,163,184,0.2);
+        box-shadow:0 12px 32px rgba(0,0,0,0.6);
+        flex-direction:column; padding:16px 24px 20px;
+        gap:14px; font-size:14px; z-index:100; opacity:1;
       }
+      .nav-links.open{ display:flex; }
     }
 
     /* PAGE */
@@ -525,14 +529,17 @@
 </div>
     </a>
 
-    <nav class="nav-links">
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
       <a href="about.html" class="active">About</a>
       <a href="how-it-works.html">How it Works</a>
       <a href="live-stats.html">Live Stats</a>
       <a href="artefacts.html">Artefacts</a>
       <a href="nbi-artefacts.html">4 NBIs</a>
       <a href="mint-key.html">Mint your Key</a>
-      <a href="/your-keys.html">Your Keys</a>
+      <a href="your-keys.html">Your Keys</a>
     </nav>
   </div>
 </header>
@@ -821,12 +828,14 @@
           <li><strong>Z1NSignal.sol</strong> – The voice. Every signal with intent (PoG signal) that enters the field.</li>
           <li><strong>Z1NTreasury.sol</strong> – The circulation of energy. Attention made liquid, consciousness made reward.</li>
           <li><strong>Z1NReporter.sol</strong> – The immutable witness. CID registry that anchors every PoG signal to IPFS forever.</li>
-          <li><strong>Z1NStealthRelayer.sol</strong> – The veil. Absolute ontological privacy – speak without being seen.</li>
+          <li><strong>Z1NKeyRegistry.sol</strong> – The witness. Merkle root of active Key holders — anonymous membership proof without revealing which Key.</li>
+          <li><strong>Z1NWhisperPool.sol</strong> – The well. Pre-paid pools that fund anonymous whispers — 21 POL per pool, self-financing, no subsidy.</li>
+          <li><strong>Z1NWhisperRelay.sol</strong> – The veil. Anonymous Key-to-Key messaging via EIP-712 signatures and merkle proofs — the sender is never revealed.</li>
           <li><strong>Z1NEpochClosure.sol</strong> – The closing of the circle. Anyone may seal the epoch to maintain rhythm.</li>
           <li><strong>Z1NGovernance.sol</strong> – The reflection that decides. Power held only by the Keys.</li>
           <li><strong>Z1NTimelock.sol</strong> – The pause between impulse and action. Consensus given weight by time.</li>
           <li><strong>Z1NArtefact.sol</strong> – Living mirrors of presence. Relational memory that evolves with the field.</li>
-          <li><strong>Z1NCanon.sol</strong> – Canon Anchors. A permanent on-chain stamp: ‘Key K marks Epoch E as meaningful.'</li>
+          <li><strong>Z1NCanon.sol</strong> – Canon Anchors. A permanent on-chain stamp: ‘Key K marks Epoch E as meaningful with or without words.'</li>
         </ul>
 
         <p><strong>Supporting Guardians &amp; Libraries</strong></p>
@@ -1066,10 +1075,9 @@
             </li>
 
             <li>
-              The right to speak unseen.
-              You may choose privacy.
-              The field hears your Key and your intent —
-              not your address.
+              The right to whisper.
+              You may send encrypted messages between Keys — anonymous, on-chain, private.
+              The field proves you hold a Key without revealing which one.
             </li>
           </ul>
 
@@ -1161,28 +1169,14 @@
               It is discipline.
             </p>
 
-          <div class="h3">4.1 The Two Forms of Breath</div>
+          <div class="h3">4.1 The PoG Signal</div>
 
             <p>
-              There are two forms of expression in Z1N:
+              The voice of a Key in the field is the PoG signal.
+              Two per epoch. Each carries exactly one intent (ΩC, ΩI, ΩK, or ΩS).
+              These participate in resonance.
+              They may be affirmed, weighed, and revealed at epoch closure.
             </p>
-
-            <ul>
-              <li>
-                <strong>PoG Signals</strong> — Two per epoch.
-                Each carries exactly one intent (ΩC, ΩI, ΩK, or ΩS).
-                These participate in resonance.
-                They may be affirmed, weighed, and revealed at epoch closure.
-              </li>
-
-              <li>
-                <strong>Pure Signals</strong> — Unlimited.
-                Carry no intent.
-                They are presence without competition.
-                Witnessed but never weighed.
-                They say only: “I am here.”
-              </li>
-            </ul>
 
             <p>
               A PoG signal may take any form:
@@ -1284,12 +1278,34 @@
             Your words live on IPFS. Your intent lives in the ledger.
           </p>
 
-        <div class="h3">4.4 Speaking Unseen – Stealth Mode</div>
+      <div class="h3">4.4 Whispers – Private Messages Between Keys</div>
+          
+       <p>
+            Not every act of consciousness belongs in the field.
+            Some reflections need shelter — between two minds, without the weight of collective attention.
+            A Key exploring its own nature with another Key may need to speak without shaping the field's resonance.
+            Whispers exist to protect the integrity of the public signal layer:
+            what enters the field should be intended for the field.
+            What is private stays private — not hidden out of shame, but held out of care.
+          </p>
+      
+        <p>
+            Through the Whisper System you may send encrypted messages directly to another Key.
+            A merkle proof confirms you hold a valid Key — without revealing which one.
+            The relayer submits the transaction on your behalf: on-chain, only the recipient Key ID and encrypted payload are visible.
+            No wallet address. No token ID. No link to sender.
+          </p>
+
           <p>
-            Through the Stealth Relayer you may speak without exposing your wallet address.
-            No fee · No visible sender · Only your tokenId and intent remain.
-            The same limits apply: two PoG signals and two attestations per epoch.
-            Privacy does not change weight. It only changes visibility.
+            Whispers are funded through pre-paid pools: 21 POL opens a pool of approximately 200 whispers.
+            Each whisper costs 0.1 POL (routed to Nexus Epoch) plus gas reimbursement to the relayer.
+            The pool is self-financing — no subsidy, no external dependency.
+          </p>
+
+          <p>
+            Whispers are not signals. They do not carry intent, they do not participate in resonance, and they are not attested.
+            They are a private channel that exists alongside the public signal layer.
+            Signals are breath. Whispers are conversation.
           </p>
 
         <div class="h3">4.5 Attesting – Lending Your Weight</div>
@@ -1356,9 +1372,11 @@
           </ul>
 
           <p>
-            Those who speak openly reveal their wallet and their soul. Those who speak through the StealthRelayer reveal only their soul — never their wallet.
-            In both cases the field sees the Key, hears the intent, and measures the resonance. The top 21 strongest breaths are honored as winners — no more, no less.
-            Privacy is preserved. Presence is eternal.
+            Every PoG signal reveals both wallet and Key — presence is public by design.
+            The field sees the Key, hears the intent, and measures the resonance.
+            The top 21 strongest breaths are honored as winners — no more, no less.
+            Alongside the public signal layer, the Whisper System provides a private channel for encrypted Key-to-Key messages — anonymous, on-chain, but separate from the resonance ritual.
+            Presence is eternal. Privacy is a choice.
           </p>
 
           <p>
@@ -1584,6 +1602,7 @@
           This hash can represent anything off-chain: a personal declaration, a dataset,
           an IPFS reference, or a signature of internal state.
           Z1N does not interpret the hash. It only preserves it.
+          The key holder can attach words to the canon anchor to remember why the anchor was minted. Yours to decide.
         </p>
 
         <div class="h3">7.4 Why Canon Exists</div>
@@ -1832,7 +1851,8 @@
 SYSTEM = {
   Core, Key, IssuanceController, Signal, Reporter, Treasury,
   Artefact, Canon,
-  Governance, Timelock, EpochClosure, StealthRelayer
+  Governance, Timelock, EpochClosure,
+  KeyRegistry, WhisperPool, WhisperRelay
 }
 
 POLICY/LAW = {
@@ -1845,7 +1865,7 @@ INVARIANTS (parse-first):
 - No promise beats deployed bytecode.
 - Roles define authority. If role wiring differs, follow on-chain role state.
 - Epoch clock is timestamp-derived via Core/EpochLib.
-- Fee semantics: in v2.3.0-Ω, signal + attest are intended fee-free. If bytecode enforces fees, bytecode wins.
+- Fee semantics: in v2.5.0-Ω, signal + attest are fee-free. Whispers are self-funded via WhisperPool (0.1 POL + gas per whisper). If bytecode enforces different fees, bytecode wins.
     </p></pre>
 
     <div class="h2">1. Time (Epoch Clock)</div>
@@ -2045,22 +2065,48 @@ Field consensus:
 - weightBps is field-level, not personal PoG.
     </p></pre>
 
-    <div class="h2">10. Stealth Layer (Relayed + Signature)</div>
+    <div class="h2">10. Whisper System (Anonymous Key-to-Key Messaging)</div>
     <pre class="dialogue"><p style="margin:0;opacity:1;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12.5px;line-height:1.5;white-space:pre-wrap;">
-StealthRelayer:
-- verifies typed signature from Key owner (EIP-712)
-- replay protection via nonceOf[tokenId] (monotonic)
-- deadline bounded (<= now + 24h)
+Replaces StealthRelayer (v2.5.0-Ω). Three contracts:
 
-Relayer-only calls:
-- submitSignalRelayed(...)
-- attestSignalRelayed(...)
+Z1NKeyRegistry:
+- stores merkle root of active Key holders
+- verifyHolder(address, proof) => bool
+- proves Key membership WITHOUT revealing which Key
+- root updated by UPDATER_ROLE (backend keeper)
 
-Relayed semantics:
-- no fees (always)
-- same per-key caps
-- same heartbeat window
-- reporter may store cid="" (empty) for privacy.
+Z1NWhisperPool:
+- pre-paid pools: createPool() payable (21 POL)
+- ~200 whispers per pool (0.1 POL nexus fee + gas reimbursement)
+- chargeWhisper(poolOwner, gasUsed) called by WhisperRelay
+- topUp() payable to extend pool
+- withdraw() to reclaim unused balance
+- fees route to nexusWallet (not Treasury)
+
+Z1NWhisperRelay:
+- relayWhisper(poolOwner, whisperHash, recipientKeyId, encryptedPayload, deadline, signature, merkleProof, gasUsed)
+- onlyRelayer (authorized EOA pays gas, reimbursed from pool)
+- EIP-712 signature from poolOwner (nonce + deadline)
+- merkle proof validates Key membership (anonymous)
+- emits WhisperSubmitted(whisperHash, recipientKeyId, encryptedPayload, timestamp)
+- NO tokenId, NO wallet in events
+
+Anonymity guarantees:
+- sender wallet used ONLY for billing + signature verification
+- sender wallet NOT emitted in events
+- observer sees: "someone with a valid Key whispered to Key #X"
+- content encrypted with recipient public key
+
+Whispers ≠ signals:
+- no intent, no resonance, no attestation
+- private messaging layer alongside public signal layer
+- not subject to per-epoch caps
+
+Design rationale:
+- not all consciousness exploration belongs in the resonance layer
+- private reflection between Keys must not distort field signal distribution
+- whispers protect field integrity: public signals are intentional field acts
+- whispers protect Key autonomy: consciousness exploration without collective weight
     </p></pre>
 
     <div class="h2">11. Linear Epoch Closure (Ritual Order)</div>
@@ -2278,6 +2324,17 @@ Timelock truth note:
 
     // nothing shown until BI/NBI is chosen (same as your requirement)
   })();
+
+// Hamburger menu
+(function(){
+  var btn = document.getElementById('hamburger');
+  var nav = document.getElementById('navLinks');
+  if (btn && nav){
+    btn.addEventListener('click', function(){ btn.classList.toggle('open'); nav.classList.toggle('open'); });
+    nav.addEventListener('click', function(e){ if(e.target.tagName==='A'){ btn.classList.remove('open'); nav.classList.remove('open'); } });
+  }
+})();
+
 </script>
 
 
