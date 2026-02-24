@@ -102,7 +102,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 /* INTENT LEGEND */
 .intent-legend{width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 14px;user-select:none;}
 .intent-legend .title{font-size:13px;color:var(--text-soft);opacity:0.95;}
-.intent-legend .row{display:flex;gap:18px;align-items:center;justify-content:center;font-size:14px;letter-spacing:0.02em;}
+.intent-legend .row{display:flex;gap:18px;align-items:center;justify-content:center;font-size:14px;letter-spacing:0.02em;font-weight:700;}
 .intent-legend .c{color:var(--C);} .intent-legend .i{color:var(--I);} .intent-legend .k{color:var(--K);} .intent-legend .s{color:var(--S);}
 
 /* DONUT GRID — 3 columns */
@@ -134,7 +134,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .field-card{background:var(--card-bg);border-radius:16px;border:1px solid var(--card-border);padding:14px 14px 16px;font-size:13px;transition:border-color 220ms ease,box-shadow 220ms ease,transform 220ms ease,background-color 220ms ease;position:relative;overflow:hidden;}
 .field-card::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:16px;background:radial-gradient(circle at top,rgba(94,232,160,0.08),rgba(2,6,23,0) 62%);opacity:0.9;}
 .field-card>*{position:relative;}
-.fc-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;opacity:0.55;margin-bottom:6px;height:18px;display:flex;align-items:flex-end;}
+.fc-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;margin-bottom:6px;height:18px;display:flex;align-items:flex-end;}
 .fc-value{font-size:22px;font-weight:700;margin-bottom:4px;height:32px;line-height:32px;}
 .fc-sub{font-size:12px;opacity:0.75;line-height:1.55;}
 .field-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.35);box-shadow:0 6px 18px rgba(0,0,0,0.30),0 0 18px rgba(94,232,160,0.10);background-color:rgba(2,6,23,0.92);}
@@ -149,7 +149,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
 .fs-intent{font-weight:700;margin-left:6px;}
 .fs-epoch{font-size:12px;color:rgba(255,255,255,0.75);opacity:0.9;border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;}
-.fs-body{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:13px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;}
+.fs-body{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;}
 .fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
 
 /* FOOTER */
@@ -259,7 +259,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="fc-sub">Epochs marked as meaningful.</div>
     </div>
     <div class="field-card">
-      <div class="fc-label">Artefacts Minted</div>
+      <div class="fc-label">Artefacts</div>
       <div class="fc-value loading" id="vArtefacts">–</div>
       <div class="fc-sub">Living mirrors of presence.</div>
     </div>
@@ -287,7 +287,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     <div class="contracts-grid">
       <div class="contract-item"><span class="contract-label">Core</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13" target="_blank" rel="noreferrer">0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13</a></div>
       <div class="contract-item"><span class="contract-label">Key</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469" target="_blank" rel="noreferrer">0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469</a></div>
-      <div class="contract-item"><span class="contract-label">Signal</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535" target="_blank" rel="noreferrer">0x85f0A512eaAe6B05C1b372F4b9e29aAec0bC3535</a></div>
+      <div class="contract-item"><span class="contract-label">Signal</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x3CD0DF7b0aC8fdF4dB1c65149741dB12F144e3bd" target="_blank" rel="noreferrer">0x3CD0DF7b0aC8fdF4dB1c65149741dB12F144e3bd</a></div>
       <div class="contract-item"><span class="contract-label">Issuance</span> <span class="contract-sep">–</span> <a class="contract-addr" href="https://polygonscan.com/address/0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF" target="_blank" rel="noreferrer">0x6765B339dd0cdb1ca8c101C97073dd5Fd3Cf97dF</a></div>
     </div>
   </div>
@@ -496,11 +496,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     }
 
     if(fsMeta){
-      var parts = [];
-      if(d.signal.weight>0) parts.push("Attestation weight: "+d.signal.weight);
-      if(d.signal.tokenId) parts.push("Key #"+d.signal.tokenId);
-      if(d.signal.epoch && typeof d.signal.epoch === "number") parts.push("Signal epoch: "+d.signal.epoch);
-      fsMeta.textContent = parts.join(" · ");
+      fsMeta.textContent = "";
     }
 
     // Mark active donut
