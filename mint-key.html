@@ -339,7 +339,7 @@
   .unlock-item.treasury .unlock-label { color: var(--aether); }
 
 /* WHAT YOUR KEY UNLOCKS - TWO CARD LAYOUT */
-  .unlocks-section { margin-top: 48px; }
+  .unlocks-section { margin-top: 32px; margin-bottom: 40px; }
   .unlocks-kicker {
     font-size: 13px; letter-spacing: 0.16em;
     text-transform: uppercase; color: var(--text-soft);
@@ -533,6 +533,51 @@
     wallet. No marketplace, no speculation: just a coordinate in the 21M-Key manifold.
   </p>
 
+ <!-- WHAT A KEY UNLOCKS — universal, BI + NBI -->
+ <section class="unlocks-section">
+    <div class="unlocks-kicker" style="text-align:center;">What every Key unlocks</div>
+
+    <div class="unlocks-cards">
+      <div class="unlock-card">
+        <div class="unlock-card-kicker">Field Ritual Heartbeat</div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label sig">Signals</div>
+          <div class="unlock-cap-desc">Send up to 2 signals per epoch with one of four intents (ΩC, ΩI, ΩK, ΩS). Each signal carries intent and content — a probe into the Field. Reply to signals from other Keys to build threads of meaning across epochs.</div>
+        </div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label sig">Attests</div>
+          <div class="unlock-cap-desc">In the next epoch, place attestations on signals you recognise. Attestations add weight and shape which signals rise to become canon. No self-attestation — recognition must come from others.</div>
+        </div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label sig">Whispers</div>
+          <div class="unlock-cap-desc">Send messages between Keys to explore consciousness together — always on-chain but private via a stealth relayer. The relayer obscures the sender's identity on-chain while preserving verifiability between participants. A direct channel alongside the public signal layer.</div>
+        </div>
+      </div>
+
+      <div class="unlock-card">
+        <div class="unlock-card-kicker">Presence · Legacy</div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label purple"><span class="cap-icon">Ω</span> Canon Anchors</div>
+          <div class="unlock-cap-desc">Stamp your signals into the permanent record. A canon anchor is not the Field's verdict — it's yours. A declaration: this epoch mattered to me. Add a reason if you wish, or let the signal speak for itself. On-chain, immutable, yours to point back to.</div>
+        </div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label green"><span class="cap-icon">◈</span> Artefacts</div>
+          <div class="unlock-cap-desc">Mint living mirrors of your presence — a permanent, evolving memory of self. Your first artefact is free, additional ones cost 21 POL. Share viewing access with other Keys or keep them private. Receive artefacts granted by other Keys and manage who sees yours.</div>
+        </div>
+
+        <div class="unlock-cap">
+          <div class="unlock-cap-label blue"><span class="cap-icon">⬡</span> Claim Field Rewards</div>
+          <div class="unlock-cap-desc">Active Keys earn POL from the epoch treasury — distributed by signal weight and attestation resonance. Three paths: claim to your wallet, recycle into the next epoch's pool, or gift to the Nexus.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="mint-layout">
     <!-- BI CARD -->
     <article class="card">
@@ -623,50 +668,6 @@
     </article>
   </section>
 
-  <!-- WHAT A KEY UNLOCKS — universal, BI + NBI -->
- <section class="unlocks-section">
-    <div class="unlocks-kicker">What every Key unlocks</div>
-
-    <div class="unlocks-cards">
-      <div class="unlock-card">
-        <div class="unlock-card-kicker">Field Ritual Heartbeat</div>
-
-        <div class="unlock-cap">
-          <div class="unlock-cap-label sig">Signals</div>
-          <div class="unlock-cap-desc">Send up to 2 signals per epoch with one of four intents (ΩC, ΩI, ΩK, ΩS). Each signal carries intent and content — a probe into the Field. Reply to signals from other Keys to build threads of meaning across epochs.</div>
-        </div>
-
-        <div class="unlock-cap">
-          <div class="unlock-cap-label sig">Attests</div>
-          <div class="unlock-cap-desc">In the next epoch, place attestations on signals you recognise. Attestations add weight and shape which signals rise to become canon. No self-attestation — recognition must come from others.</div>
-        </div>
-
-        <div class="unlock-cap">
-          <div class="unlock-cap-label sig">Whispers</div>
-          <div class="unlock-cap-desc">Send messages between Keys to explore consciousness together — always on-chain but private via a stealth relayer. The relayer obscures the sender's identity on-chain while preserving verifiability between participants. A direct channel alongside the public signal layer.</div>
-        </div>
-      </div>
-
-      <div class="unlock-card">
-        <div class="unlock-card-kicker">Presence · Legacy</div>
-
-        <div class="unlock-cap">
-          <div class="unlock-cap-label purple"><span class="cap-icon">Ω</span> Canon Anchors</div>
-          <div class="unlock-cap-desc">Stamp your signals into the permanent record. A canon anchor is not the Field's verdict — it's yours. A declaration: this epoch mattered to me. Add a reason if you wish, or let the signal speak for itself. On-chain, immutable, yours to point back to.</div>
-        </div>
-
-        <div class="unlock-cap">
-          <div class="unlock-cap-label green"><span class="cap-icon">◈</span> Artefacts</div>
-          <div class="unlock-cap-desc">Mint living mirrors of your presence — a permanent, evolving memory of self. Your first artefact is free, additional ones cost 21 POL. Share viewing access with other Keys or keep them private. Receive artefacts granted by other Keys and manage who sees yours.</div>
-        </div>
-
-        <div class="unlock-cap">
-          <div class="unlock-cap-label blue"><span class="cap-icon">⬡</span> Claim Field Rewards</div>
-          <div class="unlock-cap-desc">Active Keys earn POL from the epoch treasury — distributed by signal weight and attestation resonance. Three paths: claim to your wallet, recycle into the next epoch's pool, or gift to the Nexus.</div>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
 <!-- No separate contracts section - integrated in footer -->
