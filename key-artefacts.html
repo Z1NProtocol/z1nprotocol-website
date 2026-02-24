@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Z1N Protocol – Key Artefacts</title>
+  <title>Z1N Protocol � Key Artefacts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
   <style>
@@ -114,7 +114,7 @@
     .live-item-id { font-size: 14px; font-weight: 600; color: var(--accent); }
     .live-item.sent .live-item-id { color: var(--text-soft); }
     .live-item-status { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
-    /* Subtle labels, keep “action” feel via border/background only */
+    /* Subtle labels, keep �action� feel via border/background only */
 .live-item-status.yours { background: rgba(102,214,154,0.12); color: var(--text-soft); border: 1px solid rgba(102,214,154,0.18); }
 .live-item-status.sent  { background: rgba(148,163,184,0.10); color: var(--text-soft); border: 1px solid rgba(148,163,184,0.18); }
 
@@ -175,7 +175,7 @@
     .static-card.sent .static-epoch { background: rgba(100,100,100,0.4); color: #888; }
     .static-owner { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
 
-/* Make labels subtle light-grey (keep background tint, remove “loud” colors) */
+/* Make labels subtle light-grey (keep background tint, remove �loud� colors) */
 .static-owner.yours { background: rgba(245,200,66,0.14); color: var(--text-soft); border: 1px solid rgba(245,200,66,0.22); }
 .static-owner.sent  { background: rgba(148,163,184,0.10); color: var(--text-soft); border: 1px solid rgba(148,163,184,0.18); }
 
@@ -258,18 +258,18 @@
 
 <div class="modal-overlay" id="modal">
   <div class="modal-content">
-    <button class="modal-close" id="modalClose">×</button>
+    <button class="modal-close" id="modalClose">�</button>
     <div id="modalBody"></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="imgZoom" style="z-index:10001;">
   <div class="modal-content" style="max-width:960px;">
-    <button class="modal-close" id="imgZoomClose">×</button>
+    <button class="modal-close" id="imgZoomClose">�</button>
     <div style="padding:12px;">
       <img id="imgZoomTarget" src="" style="width:100%;border-radius:14px;display:block;" alt="Zoom preview">
       <div style="margin-top:10px;font-size:11px;color:var(--text-soft);text-align:center;">
-        Click × or press ESC to close
+        Click � or press ESC to close
       </div>
     </div>
   </div>
@@ -280,7 +280,7 @@
 <header>
   <div class="nav-inner">
     <a href="index.html" class="logo-link">
-      <div class="logo-dot">Ω</div>
+      <div class="logo-dot">O</div>
       <div class="logo-text">Z1N PROTOCOL</div>
     </a>
     <nav class="nav-links">
@@ -295,25 +295,25 @@
 </header>
 
 <main class="page">
-  <a href="your-keys.html" class="back-link" id="backLink">← Back to Your Keys</a>
+  <a href="your-keys.html" class="back-link" id="backLink">? Back to Your Keys</a>
 
   <div class="key-header-card">
     <div class="key-title-row">
-      <h1 class="key-title" id="keyTitle">Artefacts for Key #—</h1>
-      <span class="genesis-badge" id="genesisBadge" style="display:none;">✶ Genesis</span>
+      <h1 class="key-title" id="keyTitle">Artefacts for Key #�</h1>
+      <span class="genesis-badge" id="genesisBadge" style="display:none;">? Genesis</span>
     </div>
     <div class="key-glyphs" id="keyGlyphs">Loading...</div>
     <div class="key-meta">
-      <span>Key Owner: <span id="ownerAddress">—</span></span>
-      <span>·</span>
-      <a id="explorerLink" href="#" target="_blank">View Key on chain ↗</a>
+      <span>Key Owner: <span id="ownerAddress">�</span></span>
+      <span>�</span>
+      <a id="explorerLink" href="#" target="_blank">View Key on chain ?</a>
     </div>
     
     <div id="walletInfoBanner" class="wallet-info-banner" style="display:none;">
       <div class="wallet-info-content">
         <span class="wallet-dot" id="walletDot"></span>
         <span class="wallet-label" id="walletLabel">W?</span>
-        <span class="wallet-info-text">To send artefacts, ensure <strong id="requiredWalletDisplay">—</strong> is active in your wallet</span>
+        <span class="wallet-info-text">To send artefacts, ensure <strong id="requiredWalletDisplay">�</strong> is active in your wallet</span>
       </div>
     </div>
   </div>
@@ -323,7 +323,7 @@
   </div>
 </main>
 
-<footer>Your presence is real · The Field remembers · <span style="cursor:pointer;text-decoration:underline;" onclick="toggleDebug()">Debug</span></footer>
+<footer>Your presence is real � The Field remembers � <span style="cursor:pointer;text-decoration:underline;" onclick="toggleDebug()">Debug</span></footer>
 
 <script>
 // Wallet colors helper
@@ -381,7 +381,7 @@ function debug(msg) {
   var Z1N_ARTEFACT = '0xf1887e8D53bbb61F64bfD16Ec41598618053bd2c';
   var Z1N_STATIC_ARTEFACT = '0x37bF24f72D96ed12D4F13c6790caF7Dfe344F3f2';
  var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
-  var GLYPHS = ['∞','π','⋮','⊕','⊗','∴','∵','↔','↻','△','◇','○','●','□','☰','☷','⚑','✱','⊥','≡','◊'];
+  var GLYPHS = ['8','p','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','?','=','?'];
 
   var keyId, keyOwner = '', currentEpoch = 0, liveArtefacts = [], staticArtefacts = [], currentRpcIndex = 0;
   var liveFilters = { sort: 'minted-desc', ownership: 'all', visibility: 'all', search: '' };
@@ -414,7 +414,7 @@ function debug(msg) {
     requiredDisplay.textContent = shortAddr(keyOwner);
   }
 
-  function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '—'; }
+  function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '�'; }
   function getParam(n) { var u = new URL(location.href); return u.searchParams.get(n) || (location.hash ? new URLSearchParams(location.hash.slice(1)).get(n) : null); }
   
   var keyParam = getParam('key');
@@ -455,7 +455,7 @@ function debug(msg) {
       var r = await rpc('eth_call', [{to: Z1N_KEY, data: data}, 'latest']);
       var len = parseInt(r.slice(2,66),16), pack = BigInt('0x'+r.slice(66,130)), syms = [];
       for (var i=0; i<len; i++) { var idx = Number((pack >> BigInt(5*(7-1-i))) & BigInt(0x1F)); if(idx<GLYPHS.length) syms.push(GLYPHS[idx]); }
-      return syms.join(' · ') || null;
+      return syms.join(' � ') || null;
     } catch (e) { return null; }
   }
 
@@ -549,9 +549,9 @@ function debug(msg) {
   }
 
 
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   // RECIPIENT VALIDATION
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   function setupRecipientValidation(inputId, validationMsgId, sendBtnId) {
     var input = document.getElementById(inputId);
     var msg = document.getElementById(validationMsgId);
@@ -579,13 +579,13 @@ function debug(msg) {
         // Can't send to self
         if (addr === keyOwner.toLowerCase()) {
           input.classList.add('invalid');
-          msg.textContent = '✗ Cannot send to yourself';
+          msg.textContent = '? Cannot send to yourself';
           msg.className = 'validation-msg error';
           return;
         }
         
         input.classList.add('valid');
-        msg.textContent = '✓ Valid wallet address';
+        msg.textContent = '? Valid wallet address';
         msg.className = 'validation-msg success';
         recipientValidated = true;
         recipientAddress = addr;
@@ -600,7 +600,7 @@ function debug(msg) {
         // Can't send to own key
         if (keyIdToCheck === keyId) {
           input.classList.add('invalid');
-          msg.textContent = '✗ Cannot send to your own Key';
+          msg.textContent = '? Cannot send to your own Key';
           msg.className = 'validation-msg error';
           return;
         }
@@ -617,14 +617,14 @@ function debug(msg) {
             if (result.address === keyOwner.toLowerCase()) {
               input.classList.remove('validating');
               input.classList.add('invalid');
-              msg.textContent = '✗ Key #' + keyIdToCheck + ' is owned by you';
+              msg.textContent = '? Key #' + keyIdToCheck + ' is owned by you';
               msg.className = 'validation-msg error';
               return;
             }
             
             input.classList.remove('validating');
             input.classList.add('valid');
-            msg.textContent = '✓ Key #' + keyIdToCheck + ' exists (' + shortAddr(result.address) + ')';
+            msg.textContent = '? Key #' + keyIdToCheck + ' exists (' + shortAddr(result.address) + ')';
             msg.className = 'validation-msg success';
             recipientValidated = true;
             recipientAddress = result.address;
@@ -632,7 +632,7 @@ function debug(msg) {
           } else {
             input.classList.remove('validating');
             input.classList.add('invalid');
-            msg.textContent = '✗ Key #' + keyIdToCheck + ' does not exist';
+            msg.textContent = '? Key #' + keyIdToCheck + ' does not exist';
             msg.className = 'validation-msg error';
           }
         }, 300);
@@ -641,14 +641,14 @@ function debug(msg) {
       
       // Invalid format
       input.classList.add('invalid');
-      msg.textContent = '✗ Enter a Key ID (e.g. 42) or wallet address (0x...)';
+      msg.textContent = '? Enter a Key ID (e.g. 42) or wallet address (0x...)';
       msg.className = 'validation-msg error';
     };
   }
 
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   // LIVE ARTEFACT MODAL
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   function openLiveModal(art) {
     debug('openLiveModal: tokenId=' + art.tokenId + ', owner=' + art.owner + ', isSent=' + art.isSent + ', hasBeenTransferred=' + art.hasBeenTransferred);
 
@@ -664,13 +664,13 @@ function debug(msg) {
     var revokedImgUrl = getRevokedPreviewUrl(currentEpoch);
     
     var html = '<div class="modal-details">' +
-      '<div class="modal-title" style="color:var(--accent);">◈ Live Artefact #' + art.keyIndex + ' <span style="font-size:12px;color:var(--text-soft);font-weight:400;">of Key #' + keyId + '</span></div>' +
+      '<div class="modal-title" style="color:var(--accent);">? Live Artefact #' + art.keyIndex + ' <span style="font-size:12px;color:var(--text-soft);font-weight:400;">of Key #' + keyId + '</span></div>' +
       '<div class="modal-meta">' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Token ID</span><span class="modal-meta-value">' + art.tokenId + '</span></div>' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Artefact Owner</span><span class="modal-meta-value" style="font-family:monospace;font-size:11px;">' + shortAddr(artefactOwner) + '</span></div>' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Status</span><span class="modal-meta-value ' + (isYours ? 'yours' : 'sent') + '">' + (isYours ? 'You own this' : 'Sent to ' + shortAddr(art.owner)) + '</span></div>' +
-       '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? '🔒 Locked' : '↔ Available') + '</span></div>' +
-        (art.isSent ? '<div class="modal-meta-row"><span class="modal-meta-label">Revoke History</span><span class="modal-meta-value" style="font-size:11px;">' + (art.revokeCount || 0) + ' revokes · ' + (art.restoreCount || 0) + ' restores</span></div>' : '') +
+       '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? '?? Locked' : '? Available') + '</span></div>' +
+        (art.isSent ? '<div class="modal-meta-row"><span class="modal-meta-label">Revoke History</span><span class="modal-meta-value" style="font-size:11px;">' + (art.revokeCount || 0) + ' revokes � ' + (art.restoreCount || 0) + ' restores</span></div>' : '') +
       '</div>';
     
     if (canTransfer) {
@@ -678,7 +678,7 @@ function debug(msg) {
         // SEND FLOW
       var walletColor = Z1NWallets.getColor(artefactOwner);
       html += '<div class="send-form">' +
-        '<div class="send-form-title" style="color:var(--accent);">◈ Send Live Artefact</div>' +
+        '<div class="send-form-title" style="color:var(--accent);">? Send Live Artefact</div>' +
         
         '<div style="background:' + walletColor.bg + ';border:1px solid ' + walletColor.border + ';border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">' +
           '<span style="width:10px;height:10px;border-radius:50%;background:' + walletColor.hex + ';"></span>' +
@@ -697,7 +697,7 @@ function debug(msg) {
         '</div>' +
         
         '<div style="background:rgba(102,214,154,0.08);border:1px solid rgba(102,214,154,0.25);border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;color:var(--text-soft);line-height:1.5;">' +
-          'A Live Artefact is a <em>dynamic mirror</em> of your Key. The receiver sees your Key\'s current state. You can <strong>Revoke</strong> viewing rights later — they keep the NFT but see a frozen/grayed version.' +
+          'A Live Artefact is a <em>dynamic mirror</em> of your Key. The receiver sees your Key\'s current state. You can <strong>Revoke</strong> viewing rights later � they keep the NFT but see a frozen/grayed version.' +
         '</div>' +
         
         '<input type="text" class="send-input" id="liveSendRecipient" placeholder="Key ID (e.g. 42) or Wallet (0x...)">' +
@@ -713,7 +713,7 @@ function debug(msg) {
       var isCurrentlyRevoked = art.isRevoked;
       
       html += '<div class="send-form">' +
-        '<div class="send-form-title" style="color:' + (isCurrentlyRevoked ? 'var(--accent)' : 'var(--warning)') + ';">◈ ' + (isCurrentlyRevoked ? 'Restore Viewing Rights' : 'Revoke Viewing Rights') + '</div>' +
+        '<div class="send-form-title" style="color:' + (isCurrentlyRevoked ? 'var(--accent)' : 'var(--warning)') + ';">? ' + (isCurrentlyRevoked ? 'Restore Viewing Rights' : 'Revoke Viewing Rights') + '</div>' +
         
         '<div class="preview-comparison">';
       
@@ -759,17 +759,17 @@ function debug(msg) {
       html += '<textarea class="send-textarea" id="revokeRestoreMessage" placeholder="Add a message (optional)" maxlength="140" style="margin-bottom:12px;"></textarea>';
       
       // Buttons
-      html += '<button class="btn danger" id="revokeBtn" style="width:100%;' + (isCurrentlyRevoked ? 'display:none;' : '') + '">⚠ Revoke Viewing</button>' +
-        '<button class="btn live" id="restoreBtn" style="width:100%;' + (isCurrentlyRevoked ? '' : 'display:none;') + '">↺ Restore Viewing</button>' +
+      html += '<button class="btn danger" id="revokeBtn" style="width:100%;' + (isCurrentlyRevoked ? 'display:none;' : '') + '">? Revoke Viewing</button>' +
+        '<button class="btn live" id="restoreBtn" style="width:100%;' + (isCurrentlyRevoked ? '' : 'display:none;') + '">? Restore Viewing</button>' +
         '<div id="revokeStatus"></div>' +
       '</div>';
       
     } else if (art.hasBeenTransferred) {
-      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">🔒 Permanently locked — receiver has transferred</div>';
+      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">?? Permanently locked � receiver has transferred</div>';
     }
     
     html += '<div class="modal-actions" style="margin-top:12px;">' +
-      '<a class="btn secondary" href="' + EXPLORER + '/token/' + Z1N_ARTEFACT + '?a=' + art.tokenId + '" target="_blank">View on Chain ↗</a>' +
+      '<a class="btn secondary" href="' + EXPLORER + '/token/' + Z1N_ARTEFACT + '?a=' + art.tokenId + '" target="_blank">View on Chain ?</a>' +
     '</div></div>';
     
     modalBody.innerHTML = html;
@@ -852,9 +852,9 @@ function debug(msg) {
     loader.src = url;
   }
 
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   // LIVE SEND - USING ethers.js properly
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   async function handleLiveSend(tokenId, artefactOwner) {
     var status = document.getElementById('liveSendStatus');
     
@@ -1015,7 +1015,7 @@ function debug(msg) {
           errMsg = 'ERC721 transfer error - check ownership and approval';
         }
         
-        status.innerHTML = '<div class="send-error">⚠️ Transaction will fail:<br><br><strong>' + errMsg + '</strong><br><br><small style="opacity:0.7;">Token ID: ' + tokenId + '<br>From: ' + shortAddr(fromAddr) + '<br>To: ' + shortAddr(toAddr) + '</small></div>';
+        status.innerHTML = '<div class="send-error">?? Transaction will fail:<br><br><strong>' + errMsg + '</strong><br><br><small style="opacity:0.7;">Token ID: ' + tokenId + '<br>From: ' + shortAddr(fromAddr) + '<br>To: ' + shortAddr(toAddr) + '</small></div>';
         return;
       }
       
@@ -1040,12 +1040,12 @@ function debug(msg) {
           if (receipt) {
             debug('Receipt: status=' + receipt.status);
             if (receipt.status === '0x1') {
-              showToast('✓ Live Artefact sent!', 'success');
+              showToast('? Live Artefact sent!', 'success');
               closeModal();
               setTimeout(function() { window.location.reload(); }, 1500);
               return;
             } else {
-              status.innerHTML = '<div class="send-error">Transaction failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent);">View tx ↗</a></div>';
+              status.innerHTML = '<div class="send-error">Transaction failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent);">View tx ?</a></div>';
               return;
             }
           }
@@ -1053,7 +1053,7 @@ function debug(msg) {
           debug('Receipt check error: ' + e.message);
         }
       }
-      status.innerHTML = '<div class="send-error">Timeout - <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent);">check explorer ↗</a></div>';
+      status.innerHTML = '<div class="send-error">Timeout - <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:var(--keys-accent);">check explorer ?</a></div>';
       
     } catch (e) {
       console.error('Send error:', e);
@@ -1070,9 +1070,9 @@ function debug(msg) {
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   // REVOKE
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   async function handleRevoke(tokenId, holderAddress) {
     var status = document.getElementById('revokeStatus');
     
@@ -1119,12 +1119,12 @@ function debug(msg) {
           var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
           if (receipt) {
             if (receipt.status === '0x1') {
-              showToast('✓ Viewing rights revoked', 'success');
+              showToast('? Viewing rights revoked', 'success');
               closeModal();
               setTimeout(function() { window.location.reload(); }, 1500);
               return;
             } else {
-              status.innerHTML = '<div class="send-error">Revoke failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View tx ↗</a></div>';
+              status.innerHTML = '<div class="send-error">Revoke failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View tx ?</a></div>';
               return;
             }
           }
@@ -1140,9 +1140,9 @@ function debug(msg) {
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   // RESTORE VIEWING
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   async function handleRestoreViewing(tokenId, holderAddress) {
     var status = document.getElementById('revokeStatus');
 
@@ -1183,12 +1183,12 @@ function debug(msg) {
         var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
         if (receipt) {
           if (receipt.status === '0x1') {
-            showToast('✓ Viewing restored', 'success');
+            showToast('? Viewing restored', 'success');
             closeModal();
             setTimeout(function() { window.location.reload(); }, 1500);
             return;
           } else {
-            status.innerHTML = '<div class="send-error">Restore failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View tx ↗</a></div>';
+            status.innerHTML = '<div class="send-error">Restore failed. <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View tx ?</a></div>';
             return;
           }
         }
@@ -1202,9 +1202,9 @@ function debug(msg) {
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   // STATIC ARTEFACT MODAL
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   function openStaticModal(art) {
     var isYours = !art.isSent;
     var canTransfer = isYours && !art.hasBeenTransferred;
@@ -1217,12 +1217,12 @@ function debug(msg) {
       (art.isSent ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:48px;font-weight:800;color:rgba(200,100,100,0.9);letter-spacing:8px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">SENT</div>' : '') +
     '</div>' +
     '<div class="modal-details">' +
-      '<div class="modal-title" style="color:var(--keys-accent);">◇ Static Artefact #' + art.keyIndex + (art.epochId ? ' <span style="font-size:12px;background:rgba(245,200,66,0.2);padding:2px 8px;border-radius:4px;">Epoch ' + art.epochId + '</span>' : '') + '</div>' +
+      '<div class="modal-title" style="color:var(--keys-accent);">? Static Artefact #' + art.keyIndex + (art.epochId ? ' <span style="font-size:12px;background:rgba(245,200,66,0.2);padding:2px 8px;border-radius:4px;">Epoch ' + art.epochId + '</span>' : '') + '</div>' +
       '<div class="modal-meta">' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Token ID</span><span class="modal-meta-value">' + art.tokenId + '</span></div>' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Artefact Owner</span><span class="modal-meta-value" style="font-family:monospace;font-size:11px;">' + shortAddr(artefactOwner) + '</span></div>' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Status</span><span class="modal-meta-value ' + (isYours ? 'yours' : 'sent') + '">' + (isYours ? 'Yours' : 'Sent to ' + shortAddr(art.owner)) + '</span></div>' +
-        '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? '🔒 Locked' : '↔ Available (1 transfer)') + '</span></div>' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? '?? Locked' : '? Available (1 transfer)') + '</span></div>' +
       '</div>';
     
     if (canTransfer) {
@@ -1237,14 +1237,14 @@ function debug(msg) {
         '<div id="staticSendValidation" class="validation-msg"></div>' +
         '<button class="btn static" id="staticSendBtn" style="width:100%;margin-top:8px;" disabled>Send Artefact</button>' +
         '<div id="staticSendStatus"></div>' +
-        '<p style="font-size:11px;color:var(--text-soft);margin-top:10px;">⚠ Can only be transferred once — then permanently locked</p>' +
+        '<p style="font-size:11px;color:var(--text-soft);margin-top:10px;">? Can only be transferred once � then permanently locked</p>' +
       '</div>';
     } else if (art.hasBeenTransferred) {
-      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">🔒 Already transferred — permanently locked</div>';
+      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">?? Already transferred � permanently locked</div>';
     }
     
     html += '<div class="modal-actions">' +
-      '<a class="btn secondary" href="' + EXPLORER + '/token/' + Z1N_STATIC_ARTEFACT + '?a=' + art.tokenId + '" target="_blank">View on Chain ↗</a>' +
+      '<a class="btn secondary" href="' + EXPLORER + '/token/' + Z1N_STATIC_ARTEFACT + '?a=' + art.tokenId + '" target="_blank">View on Chain ?</a>' +
     '</div></div>';
     
     modalBody.innerHTML = html;
@@ -1261,9 +1261,9 @@ function debug(msg) {
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   // STATIC SEND
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   async function handleStaticSend(tokenId, artefactOwner) {
     var status = document.getElementById('staticSendStatus');
     
@@ -1319,7 +1319,7 @@ function debug(msg) {
           params: [{ from: fromAddr, to: Z1N_STATIC_ARTEFACT, data: txData }]
         });
       } catch (gasErr) {
-        status.innerHTML = '<div class="send-error">⚠️ Gas estimation failed: ' + gasErr.message + '<br><br>The artefact may have already been transferred.</div>';
+        status.innerHTML = '<div class="send-error">?? Gas estimation failed: ' + gasErr.message + '<br><br>The artefact may have already been transferred.</div>';
         return;
       }
       
@@ -1343,7 +1343,7 @@ function debug(msg) {
           var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
           if (receipt) {
             if (receipt.status === '0x1') {
-              showToast('✓ Artefact sent!', 'success');
+              showToast('? Artefact sent!', 'success');
               closeModal();
               setTimeout(function() { window.location.reload(); }, 1500);
               return;
@@ -1364,9 +1364,9 @@ function debug(msg) {
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   // DATA LOADING
-  // ═══════════════════════════════════════════════════════════════════
+  // -------------------------------------------------------------------
   
   if (isNaN(keyId)) { 
     try { var ctx = JSON.parse(localStorage.getItem('z1n_signal_context')||'{}'); keyId = typeof ctx.keyId === 'number' ? ctx.keyId : NaN; } catch(e){} 
@@ -1381,7 +1381,7 @@ function debug(msg) {
   var transferred = getParam('transferred');
  if (mintedType) { 
   setTimeout(function() { 
-    showToast('✅ ' + (mintedType === 'live' ? 'Live' : 'Static') + ' Artefact minted!', 'success'); 
+    showToast('? ' + (mintedType === 'live' ? 'Live' : 'Static') + ' Artefact minted!', 'success'); 
   }, 500);
 
   // extra refetch after mint (backend/chain can be a few seconds behind)
@@ -1392,7 +1392,7 @@ function debug(msg) {
   history.replaceState({}, '', location.pathname + '?key=' + keyId); 
 }
   if (transferred) {
-    setTimeout(function() { showToast('✅ Artefact sent!', 'success'); }, 500);
+    setTimeout(function() { showToast('? Artefact sent!', 'success'); }, 500);
     history.replaceState({}, '', location.pathname + '?key=' + keyId);
   }
 
@@ -1452,7 +1452,7 @@ var resp = await fetch(url, { cache: 'no-store' });
       
       keyOwner = data.keyOwner || '';
       document.getElementById('ownerAddress').textContent = data.keyOwnerShort || shortAddr(keyOwner);
-      document.getElementById('keyGlyphs').textContent = await fetchGlyphs(keyId) || '◇ · ∞ · ☰';
+      document.getElementById('keyGlyphs').textContent = await fetchGlyphs(keyId) || '? � 8 � ?';
       
       liveArtefacts = (data.liveArtefacts||[]).map(function(a,i){ 
      a.keyIndex = i + 1; 
@@ -1469,7 +1469,7 @@ var resp = await fetch(url, { cache: 'no-store' });
       renderContent();
     } catch (e) { 
       debug('loadArtefacts error: ' + e.message);
-      mc.innerHTML = '<div class="error-state">⚠ ' + e.message + '<br><br>Backend may be syncing. Try again in a few minutes.</div>'; 
+      mc.innerHTML = '<div class="error-state">? ' + e.message + '<br><br>Backend may be syncing. Try again in a few minutes.</div>'; 
     }
   }
 
@@ -1484,10 +1484,10 @@ var resp = await fetch(url, { cache: 'no-store' });
     // LIVE SECTION
     html += '<div class="section-divider"><span class="section-title live">Live Artefacts (' + liveArtefacts.length + ')</span></div>';
     if (!liveArtefacts.length) {
-      html += '<div class="empty-state"><div class="icon">◈</div><p>No live artefacts yet.</p><a href="mint-live-artefact.html?key=' + keyId + '" class="btn live" style="margin-top:16px;">+ Mint Live Artefact</a></div>';
+      html += '<div class="empty-state"><div class="icon">?</div><p>No live artefacts yet.</p><a href="mint-live-artefact.html?key=' + keyId + '" class="btn live" style="margin-top:16px;">+ Mint Live Artefact</a></div>';
     } else {
       html += '<div class="section-card"><div class="live-layout"><div class="live-info">';
-      html += '<div class="section-header"><span class="section-icon">◈</span><span class="section-header-title live">Live Artefacts</span></div>';
+      html += '<div class="section-header"><span class="section-icon">?</span><span class="section-header-title live">Live Artefacts</span></div>';
       html += '<div class="stats-row">' +
   '<div class="stat-item"><span class="stat-value">' + liveArtefacts.length + '</span><span class="stat-label">Total</span></div>' +
   '<div class="stat-item"><span class="stat-value muted">' + liveYours + '</span><span class="stat-label">Yours</span></div>' +
@@ -1508,16 +1508,16 @@ var resp = await fetch(url, { cache: 'no-store' });
             '<div class="live-item-left">' +
               '<span class="live-item-id">#' + a.keyIndex + '</span>';
           if (a.isSent) {
-            html += '<span class="live-item-visibility ' + (a.isRevoked ? 'blocked' : 'viewable') + '">' + (a.isRevoked ? '⊘' : '◈') + '</span>' +
+            html += '<span class="live-item-visibility ' + (a.isRevoked ? 'blocked' : 'viewable') + '">' + (a.isRevoked ? '?' : '?') + '</span>' +
               '<span class="live-item-status-text ' + (a.isRevoked ? 'blocked' : 'viewable') + '">' + (a.isRevoked ? 'BLOCKED' : 'VIEWABLE') + '</span>';
           }
           html += '</div>' +
             '<div class="live-item-right">';
           if (a.isSent) {
             html += '<span class="live-item-holder">' + shortAddr(a.owner) + '</span>' +
-              '<button class="live-toggle-btn ' + (a.isRevoked ? 'restore' : 'revoke') + '" data-token="' + a.tokenId + '">' + (a.isRevoked ? '↺' : '⊘') + '</button>';
+              '<button class="live-toggle-btn ' + (a.isRevoked ? 'restore' : 'revoke') + '" data-token="' + a.tokenId + '">' + (a.isRevoked ? '?' : '?') + '</button>';
           } else {
-            html += '<span class="live-item-status yours">→ SEND</span>';
+            html += '<span class="live-item-status yours">? SEND</span>';
           }
           html += '</div></div>';
         });
@@ -1529,13 +1529,13 @@ var resp = await fetch(url, { cache: 'no-store' });
     // STATIC SECTION
     html += '<div class="section-divider"><span class="section-title static">Static Artefacts (' + staticArtefacts.length + ')</span></div>';
     if (!staticArtefacts.length) {
-      html += '<div class="empty-state"><div class="icon">◇</div><p>No static artefacts yet.</p><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static" style="margin-top:16px;">+ Mint Static Artefact</a></div>';
+      html += '<div class="empty-state"><div class="icon">?</div><p>No static artefacts yet.</p><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static" style="margin-top:16px;">+ Mint Static Artefact</a></div>';
     } else {
-      html += '<div class="section-card" style="margin-bottom:16px;"><div class="section-header"><span class="section-icon">◇</span><span class="section-header-title static">Static Artefacts</span></div>';
+      html += '<div class="section-card" style="margin-bottom:16px;"><div class="section-header"><span class="section-icon">?</span><span class="section-header-title static">Static Artefacts</span></div>';
       html += '<div class="stats-row" style="border-bottom:none;padding-bottom:0;margin-bottom:0;"><div class="stat-item"><span class="stat-value">' + staticArtefacts.length + '</span><span class="stat-label">Total</span></div><div class="stat-item"><span class="stat-value muted">' + staticYours + '</span><span class="stat-label">Yours</span></div><div class="stat-item"><span class="stat-value muted">' + staticSent + '</span><span class="stat-label">Sent</span></div><div style="margin-left:auto;"><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static">+ Mint Static</a></div></div></div>';
       
       if (staticArtefacts.length > FILTER_THRESHOLD) {
-        html += '<div class="filter-toolbar"><div class="filter-group"><span class="filter-label">Sort</span><select class="filter-select" data-type="static" data-filter="sort"><option value="minted-desc"' + (staticFilters.sort==='minted-desc'?' selected':'') + '>Newest</option><option value="minted-asc"' + (staticFilters.sort==='minted-asc'?' selected':'') + '>Oldest</option><option value="epoch-desc"' + (staticFilters.sort==='epoch-desc'?' selected':'') + '>Epoch ↓</option><option value="epoch-asc"' + (staticFilters.sort==='epoch-asc'?' selected':'') + '>Epoch ↑</option></select></div><div class="filter-group"><button class="filter-btn' + (staticFilters.ownership==='all'?' active':'') + '" data-type="static" data-ownership="all">All</button><button class="filter-btn' + (staticFilters.ownership==='yours'?' active':'') + '" data-type="static" data-ownership="yours">Yours</button><button class="filter-btn' + (staticFilters.ownership==='sent'?' active':'') + '" data-type="static" data-ownership="sent">Sent</button></div></div>';
+        html += '<div class="filter-toolbar"><div class="filter-group"><span class="filter-label">Sort</span><select class="filter-select" data-type="static" data-filter="sort"><option value="minted-desc"' + (staticFilters.sort==='minted-desc'?' selected':'') + '>Newest</option><option value="minted-asc"' + (staticFilters.sort==='minted-asc'?' selected':'') + '>Oldest</option><option value="epoch-desc"' + (staticFilters.sort==='epoch-desc'?' selected':'') + '>Epoch ?</option><option value="epoch-asc"' + (staticFilters.sort==='epoch-asc'?' selected':'') + '>Epoch ?</option></select></div><div class="filter-group"><button class="filter-btn' + (staticFilters.ownership==='all'?' active':'') + '" data-type="static" data-ownership="all">All</button><button class="filter-btn' + (staticFilters.ownership==='yours'?' active':'') + '" data-type="static" data-ownership="yours">Yours</button><button class="filter-btn' + (staticFilters.ownership==='sent'?' active':'') + '" data-type="static" data-ownership="sent">Sent</button></div></div>';
       }
       
       var filtered = applyFilters(staticArtefacts, staticFilters);
@@ -1549,7 +1549,7 @@ var resp = await fetch(url, { cache: 'no-store' });
           html += '<div class="static-card ' + cls + '" data-token="' + a.tokenId + '">' +
             '<img class="static-img loading" data-epoch="' + (a.epochId||currentEpoch) + '" data-owner="' + (isYours ? '1' : '0') + '" src="">' +
             (a.isSent ? '<div class="sent-label">SENT</div>' : '') +
-            '<div class="static-top-overlay"><span class="static-index">#' + a.keyIndex + '</span>' + (a.hasBeenTransferred ? '<span class="static-lock">🔒</span>' : '') + '</div>' +
+            '<div class="static-top-overlay"><span class="static-index">#' + a.keyIndex + '</span>' + (a.hasBeenTransferred ? '<span class="static-lock">??</span>' : '') + '</div>' +
             '<div class="static-overlay"><div>' + (a.epochId ? '<span class="static-epoch ' + cls + '">Ep.' + a.epochId + '</span>' : '') + '</div><span class="static-owner ' + cls + '">' + (isYours ? 'Yours' : 'Sent') + '</span></div>' +
           '</div>';
         });
@@ -1645,11 +1645,13 @@ var resp = await fetch(url, { cache: 'no-store' });
   if (!isNaN(keyId) && keyId >= 0) {
     loadArtefacts();
   } else {
-    document.getElementById('mainContent').innerHTML = '<div class="error-state">⚠ No Key ID specified.</div>';
+    document.getElementById('mainContent').innerHTML = '<div class="error-state">? No Key ID specified.</div>';
   }
 })();
 </script>
 </body>
 </html>
+
+
 
 
