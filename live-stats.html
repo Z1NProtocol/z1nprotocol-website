@@ -4,7 +4,8 @@
 <meta charset="utf-8" />
 <title>Z1N Protocol – Live Stats (Field Lens)</title>
 <meta name="description" content="Live stats of the Z1N Field: intent mix across epochs (ΩC/ΩI/ΩK/ΩS), latest minted Key, canon anchors, artefacts, and the most attested signal per lens." />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <meta name="robots" content="noindex,follow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="canonical" href="https://www.z1nprotocol.xyz/live-stats.html" />
@@ -68,11 +69,20 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .hamburger.open span:nth-child(2){opacity:0;}
 .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 @media(max-width:900px){
-  .nav-inner{padding:0 16px;}
-  .hamburger{display:flex;}
-  .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:#0a0f1a;border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;opacity:1;}
-  .nav-links.open{display:flex;}
-}
+      .nav-inner{ padding:0 16px; }
+      .hamburger{ display:flex; }
+      .nav-links{
+        display:none; position:absolute; top:72px; left:0; right:0;
+        background:rgba(10,15,26,0.98);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+        border-bottom:1px solid rgba(148,163,184,0.2);
+        box-shadow:0 12px 32px rgba(0,0,0,0.6);
+        flex-direction:column; padding:16px 24px 20px;
+        gap:14px; font-size:14px; z-index:100; opacity:1;
+      }
+      .nav-links.open{ display:flex; }
+    }
 
 /* PAGE */
 .page{max-width:1200px;margin:0 auto;padding:40px 24px 32px;}
@@ -108,6 +118,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .intent-legend{width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 14px;user-select:none;}
 .intent-legend .title{font-size:13px;color:var(--text-soft);opacity:0.95;}
 .intent-legend .row{display:flex;gap:18px;align-items:center;justify-content:center;font-size:14px;letter-spacing:0.02em;font-weight:700;}
+@media(max-width:600px){.intent-legend .row{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:12px;justify-items:center;}}
 .intent-legend .c{color:var(--C);} .intent-legend .i{color:var(--I);} .intent-legend .k{color:var(--K);} .intent-legend .s{color:var(--S);}
 
 /* DONUT GRID — 3 columns */
@@ -162,7 +173,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .epoch-tooltip{position:fixed;display:none;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text-soft);max-width:280px;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:1000;pointer-events:none;}
 
 /* FOOTER */
-footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px 40px;font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
+footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px calc(40px + env(safe-area-inset-bottom, 0px));font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
 footer .tagline{margin-bottom:6px;font-size:13px;}
 footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 .footer-contracts{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;align-items:center;}
@@ -173,6 +184,11 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 .contract-addr{font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;font-size:10px;word-break:break-all;transition:color 0.2s;color:var(--text-soft);}
 .contract-addr:hover{color:var(--text-main);text-decoration:underline;}
 .contract-sep{color:var(--text-soft);opacity:0.3;margin:0 4px;}
+@media(max-width:600px){
+  .contract-item{display:flex;flex-direction:column;align-items:center;}
+  .contract-sep{display:none;}
+  .contract-addr{font-size:9px;}
+}
 
 @keyframes shimmer{0%{opacity:0.4;}50%{opacity:0.8;}100%{opacity:0.4;}}
 .loading{animation:shimmer 1.5s ease-in-out infinite;}
@@ -579,6 +595,14 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   function wireMobileSwipe(){
     var track=document.getElementById("swipeTrack");
     if(!track)return;
+    var startX=0,startY=0,swipeLocked=false;
+    track.addEventListener("touchstart",function(e){startX=e.touches[0].clientX;startY=e.touches[0].clientY;swipeLocked=false;},{passive:true});
+    track.addEventListener("touchmove",function(e){
+      if(swipeLocked)return;
+      var dx=Math.abs(e.touches[0].clientX-startX),dy=Math.abs(e.touches[0].clientY-startY);
+      if(dy>dx*1.2&&dx<15){swipeLocked=true;return;}
+      if(dx>10)e.preventDefault();
+    },{passive:false});
     var swipeCards=track.querySelectorAll(".donut-card.swipe");
     swipeCards.forEach(function(card){
       var key=card.getAttribute("data-key")||"total";

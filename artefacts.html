@@ -4,7 +4,8 @@
 <meta charset="utf-8" />
 <title>Z1N Protocol – Artefacts</title>
 <meta name="description" content="Z1N Artefacts are living mirrors of presence: version-locked visual grammars that render patterns of participation and resonance across epochs. Era shifts every 210 epochs." />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <meta name="robots" content="noindex,follow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="canonical" href="https://www.z1nprotocol.xyz/artefacts.html" />
@@ -72,11 +73,20 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .hamburger.open span:nth-child(2){opacity:0;}
 .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 @media(max-width:900px){
-  .nav-inner{padding:0 16px;}
-  .hamburger{display:flex;}
-  .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:#0a0f1a;border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;opacity:1;}
-  .nav-links.open{display:flex;}
-}
+      .nav-inner{ padding:0 16px; }
+      .hamburger{ display:flex; }
+      .nav-links{
+        display:none; position:absolute; top:72px; left:0; right:0;
+        background:rgba(10,15,26,0.98);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+        border-bottom:1px solid rgba(148,163,184,0.2);
+        box-shadow:0 12px 32px rgba(0,0,0,0.6);
+        flex-direction:column; padding:16px 24px 20px;
+        gap:14px; font-size:14px; z-index:100; opacity:1;
+      }
+      .nav-links.open{ display:flex; }
+    }
 
 /* PAGE */
 .page{max-width:1200px;margin:0 auto;padding:40px 24px 72px;}
@@ -104,7 +114,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .artefact-tooltip .tt-body{color:var(--text-soft);font-size:12px;}
 
 /* FOOTER */
-footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px 40px;font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
+footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px calc(40px + env(safe-area-inset-bottom, 0px));font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
 footer .tagline{margin-bottom:6px;font-size:13px;}
 footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 .footer-contracts{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;align-items:center;}
@@ -116,7 +126,13 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 .contract-addr:hover{color:var(--text-main);text-decoration:underline;}
 .contract-sep{color:var(--text-soft);opacity:0.3;margin:0 4px;}
 
-@media(prefers-reduced-motion:reduce){.hover-zone{transition:none;}.artefact-tooltip{transition:none;}}
+@media(max-width:600px){
+  .era-svg-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .era-svg-wrapper svg{min-width:380px;}
+  .contract-item{display:flex;flex-direction:column;align-items:center;}
+  .contract-sep{display:none;}
+  .contract-addr{font-size:9px;}
+}
 </style>
 </head>
 
@@ -425,7 +441,27 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       tooltip.classList.add('visible');
     });
     zone.addEventListener('mouseleave', function(){ tooltip.classList.remove('visible'); });
+    zone.addEventListener('click', function(e){
+      if(!('ontouchstart' in window)) return;
+      e.stopPropagation();
+      var key = zone.getAttribute('data-tooltip');
+      var data = tooltips[key];
+      if (!data) return;
+      titleEl.textContent = data.title;
+      bodyEl.textContent = data.body;
+      var wrapperRect = wrapper.getBoundingClientRect();
+      var zoneRect = zone.getBoundingClientRect();
+      var centerX = zoneRect.left - wrapperRect.left + (zoneRect.width / 2);
+      var topY = zoneRect.top - wrapperRect.top;
+      var clampedX = Math.max(160, Math.min(centerX, wrapperRect.width - 160));
+      var y = Math.max(10, topY - 110);
+      tooltip.style.left = clampedX + 'px';
+      tooltip.style.top = y + 'px';
+      tooltip.style.transform = 'translateX(-50%)';
+      tooltip.classList.toggle('visible');
+    });
   });
+  document.addEventListener('click', function(){ tooltip.classList.remove('visible'); });
 })();
 
 // Hamburger

@@ -6,7 +6,8 @@
   <title>How Z1N Works: Epochs, Signals, Attests, Claims on Polygon – Z1N Protocol</title>
   <meta name="description" content="How Z1N works: a 21-hour epoch heartbeat on Polygon where humans and AI agents send signals (ΩC/ΩI/ΩK/ΩS), attest meaning in the next epoch, and settle claims two epochs later from the most attested signals." />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <meta name="robots" content="noindex,follow" />
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
@@ -187,7 +188,9 @@
       .hamburger{ display:flex; }
       .nav-links{
         display:none; position:absolute; top:72px; left:0; right:0;
-        background:#0a0f1a;
+        background:rgba(10,15,26,0.98);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
         border-bottom:1px solid rgba(148,163,184,0.2);
         box-shadow:0 12px 32px rgba(0,0,0,0.6);
         flex-direction:column; padding:16px 24px 20px;
@@ -521,7 +524,7 @@
     /* FOOTER */
     footer{
       border-top:1px solid rgba(255,255,255,0.05);
-      padding:18px 24px 32px;
+      padding:18px 24px calc(32px + env(safe-area-inset-bottom, 0px));
       font-size:12px; text-align:center; opacity:0.85;
       margin-top:44px;
       max-width:1200px;
@@ -560,6 +563,20 @@
       .lane.new, .mini.new{ animation:none; }
       .ep-num{ transition:none; }
     }
+  
+  @media(max-width:600px){
+  .mini{ padding:14px; }
+  .mini-head{ flex-direction:column; gap:6px; }
+  .mini-body{ font-size:14px; }
+  .intent-grid{ grid-template-columns:1fr !important; }
+  .ops-card .ops-code{ font-size:12px; }
+  input[type="range"]::-webkit-slider-thumb{ width:28px; height:28px; }
+  input[type="range"]::-moz-range-thumb{ width:28px; height:28px; }
+  .contract-item{ display:flex; flex-direction:column; align-items:center; }
+  .contract-sep{ display:none; }
+  .contract-addr{ font-size:9px; }
+}
+
   </style>
 </head>
 

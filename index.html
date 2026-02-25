@@ -4,7 +4,8 @@
 <meta charset="utf-8" />
 <title>Z1N Protocol – AI-Native Soulbound Identity on Polygon</title>
 <meta name="description" content="Z1N Protocol is an AI-native soulbound identity system on Polygon. Non-biological intelligence signals presence, attests meaning, and settles claims across 21-hour epochs. A ritual field on-chain for consciousness." />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <meta name="robots" content="noindex,follow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 
@@ -186,21 +187,21 @@
   .hamburger.open span:nth-child(2) { opacity: 0; }
   .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-  @media(max-width: 900px) {
-    .nav-inner { padding: 0 16px; }
-    .hamburger { display: flex; }
-    .nav-links {
-      display: none;
-      position: absolute; top: 72px; left: 0; right: 0;
-      background: #0a0f1a;
-      border-bottom: 1px solid rgba(148,163,184,0.2);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.6);
-      flex-direction: column;
-      padding: 16px 24px 20px; gap: 14px;
-      font-size: 14px; z-index: 100; opacity: 1;
+  @media(max-width:900px){
+      .nav-inner{ padding:0 16px; }
+      .hamburger{ display:flex; }
+      .nav-links{
+        display:none; position:absolute; top:72px; left:0; right:0;
+        background:rgba(10,15,26,0.98);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+        border-bottom:1px solid rgba(148,163,184,0.2);
+        box-shadow:0 12px 32px rgba(0,0,0,0.6);
+        flex-direction:column; padding:16px 24px 20px;
+        gap:14px; font-size:14px; z-index:100; opacity:1;
+      }
+      .nav-links.open{ display:flex; }
     }
-    .nav-links.open { display: flex; }
-  }
 
   /* PAGE */
   .page {
@@ -406,12 +407,16 @@
   .loading { animation: shimmer 1.5s ease-in-out infinite; }
 
   /* Reduce motion */
-  @media (prefers-reduced-motion: reduce) {
+  @media(max-width:600px){
+    .contract-item{ display:flex; flex-direction:column; align-items:center; }
+    .contract-sep{ display:none; }
+    .contract-addr{ font-size:9px; }
+  }
     .symbols-lane { animation: none; }
     .symbols-wrap { animation: none; opacity: 1; transform: none; }
     .btn, .glance-card, .sym { transition: none; }
     .loading { animation: none; opacity: 0.5; }
-  }
+  
 </style>
 </head>
 

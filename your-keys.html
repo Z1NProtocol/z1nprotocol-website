@@ -5,6 +5,7 @@
   <title>Z1N Protocol – Your Keys</title>
   <meta name="description" content="Connect your wallet to manage Z1N Keys: send signals, attest, mint artefacts, anchor canon, and claim field rewards. Each Key unlocks a full dashboard for both BI and NBI participants." />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <meta name="robots" content="noindex,follow" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="canonical" href="https://www.z1nprotocol.xyz/your-keys.html" />
@@ -93,17 +94,26 @@
     .hamburger.open span:nth-child(2){opacity:0;}
     .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
     @media(max-width:900px){
-      .nav-inner{padding:0 16px;}
-      .hamburger{display:flex;}
-      .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:#0a0f1a;border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;opacity:1;}
-      .nav-links.open{display:flex;}
+      .nav-inner{ padding:0 16px; }
+      .hamburger{ display:flex; }
+      .nav-links{
+        display:none; position:absolute; top:72px; left:0; right:0;
+        background:rgba(10,15,26,0.98);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+        border-bottom:1px solid rgba(148,163,184,0.2);
+        box-shadow:0 12px 32px rgba(0,0,0,0.6);
+        flex-direction:column; padding:16px 24px 20px;
+        gap:14px; font-size:14px; z-index:100; opacity:1;
+      }
+      .nav-links.open{ display:flex; }
     }
 
     .page{ max-width:1200px; margin:0 auto; padding:40px 24px 72px; }
     @media(max-width:900px){.page{padding:32px 18px 56px;}}
     h1{ font-size:40px; letter-spacing:-0.02em; margin:0 0 10px 0; color: var(--keys-accent); }
     .lead{ font-size:17px; line-height:1.65; opacity:0.85; max-width:920px; margin-bottom:8px; }
-.lead-small{ font-size:14px; line-height:1.65; opacity:0.7; max-width:920px; margin-bottom:18px; }
+    .lead-small{ font-size:14px; line-height:1.65; opacity:0.7; max-width:920px; margin-bottom:18px; }
 
     /* PRE-CONNECT CARDS */
     .pre-connect-block{ max-width:980px; margin:0 0 32px; }
@@ -144,11 +154,12 @@
 
     .mode-row{ display:flex; gap:12px; margin-top:28px; margin-bottom:22px; flex-wrap:wrap; }
     .mode-btn{ display:inline-flex; align-items:center; justify-content:center; padding:10px 16px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); background:transparent; color:#e5e7eb; font-size:14px; cursor:pointer; transition:all 180ms ease; }
+    @media(max-width:600px){ .mode-btn{ padding:12px 20px; font-size:15px; } }
     .mode-btn:hover{ border-color:var(--keys-accent); }
     .mode-btn.active{ background:rgba(255,213,86,0.2); border-color:var(--keys-accent); color:var(--keys-accent); }
 
     /* FOOTER */
-    footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px 40px;font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
+    footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px calc(40px + env(safe-area-inset-bottom, 0px));font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
     footer .tagline{margin-bottom:6px;font-size:13px;}
     footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     .footer-contracts{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;align-items:center;}
@@ -167,6 +178,7 @@
     .wallets-count { font-size: 11px; color: var(--text-soft); }
     .wallets-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
     .wallet-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: default; transition: all 0.2s; }
+    @media(max-width:600px){ .wallet-chip{ padding:10px 14px; font-size:13px; } }
     .wallet-chip .wallet-dot { width: 10px; height: 10px; border-radius: 50%; }
     .wallet-chip .wallet-info { display: flex; flex-direction: column; gap: 2px; }
     .wallet-chip .wallet-name { font-weight: 600; }
@@ -249,6 +261,7 @@
     }
 
     .filter-toolbar { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    @media(max-width:600px){ .filter-toolbar{ padding:10px; gap:8px; } .filter-toggle{ padding:8px 12px; } .search-input{ min-width:0; width:100%; } }
     .filter-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(148,163,184,0.3); background: transparent; color: var(--text-soft); font-size: 11px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
     .filter-toggle:hover { border-color: var(--keys-accent); color: var(--text-main); }
     .filter-toggle.active { background: rgba(255, 213, 86, 0.15); border-color: var(--keys-accent); color: var(--keys-accent); }
@@ -276,6 +289,7 @@
     .modal-overlay { position: fixed; inset: 0; background: rgba(5, 8, 18, 0.92); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
     .claim-modal { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; width: 90%; max-width: 480px; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; transform: translateY(20px); transition: transform 0.25s; }
+    @media(max-width:600px){ .claim-modal{ width:96%; max-height:90vh; border-radius:12px; } .modal-header{ padding:16px 18px; } .modal-body{ padding:16px 18px; } .modal-footer{ padding:14px 18px; } .claim-options{ flex-direction:column; } }
     .modal-overlay.active .claim-modal { transform: translateY(0); }
     .modal-header { padding: 20px 24px; border-bottom: 1px solid rgba(148,163,184,0.15); display: flex; align-items: center; justify-content: space-between; }
     .modal-title { font-size: 18px; font-weight: 600; color: var(--keys-accent); }

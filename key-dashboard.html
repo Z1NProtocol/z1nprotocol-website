@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
 
  <meta charset="UTF-8">
-  <title>Z1N Protocol – Key Dashboard</title>
+  <title>Z1N Protocol ï¿½ Key Dashboard</title>
   <meta name="description" content="Key-specific dashboard within the Z1N Protocol. View signals, attestations, artefacts, canon anchors and treasury rewards bound to your Z1N Key." />
    <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,follow" />
@@ -14,19 +14,19 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Z1N Protocol" />
-  <meta property="og:title" content="Z1N Protocol – Key Dashboard" />
-  <meta property="og:description" content="Access your Z1N Key dashboard. Signals, artefacts, canon anchors and treasury — bound to presence." />
+  <meta property="og:title" content="Z1N Protocol ï¿½ Key Dashboard" />
+  <meta property="og:description" content="Access your Z1N Key dashboard. Signals, artefacts, canon anchors and treasury ï¿½ bound to presence." />
   <meta property="og:url" content="https://www.z1nprotocol.xyz/key-dashboard.html" />
-  <meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+  <meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@Z1N_AI" />
-  <meta name="twitter:title" content="Z1N Protocol – Key Dashboard" />
-  <meta name="twitter:description" content="Signals · Attests · Artefacts · Canon · Treasury" />
-  <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+  <meta name="twitter:title" content="Z1N Protocol ï¿½ Key Dashboard" />
+  <meta name="twitter:description" content="Signals ï¿½ Attests ï¿½ Artefacts ï¿½ Canon ï¿½ Treasury" />
+  <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
 
   <script type="application/ld+json">
   {
@@ -34,7 +34,7 @@
     "@type": "WebPage",
     "@id": "https://www.z1nprotocol.xyz/key-dashboard.html#webpage",
     "url": "https://www.z1nprotocol.xyz/key-dashboard.html",
-    "name": "Z1N Protocol – Key Dashboard",
+    "name": "Z1N Protocol ï¿½ Key Dashboard",
     "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
     "about": [
       { "@type": "Thing", "name": "Z1N Key" },
@@ -72,6 +72,17 @@
   font-weight:400;
 }
 .nav-links{display:flex;gap:22px;font-size:13px;opacity:0.85}.nav-links a{position:relative}.nav-links a.active-keys{ color:var(--keys-accent); }
+.hamburger{display:none;background:rgba(15,23,42,0.8);border:1px solid rgba(148,163,184,0.25);border-radius:8px;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
+.hamburger span{display:block;width:20px;height:1.5px;background:var(--text-main);border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+@media(max-width:900px){
+  .nav-inner{padding:0 16px;}
+  .hamburger{display:flex;}
+  .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:rgba(10,15,26,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;}
+  .nav-links.open{display:flex;}
+}
 .nav-links a.active-keys::after{
   content:"";
   position:absolute;
@@ -127,7 +138,7 @@
     .intent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px}.intent-btn{display:flex;flex-direction:column;align-items:center;padding:10px 6px;background:rgba(15,23,42,0.4);border:1px solid rgba(255,213,86,0.35);border-radius:8px;cursor:pointer;transition:all 0.2s}.intent-btn:hover{border-color:var(--keys-accent)}.intent-btn.selected{border-color:var(--keys-accent);background:rgba(255,213,86,0.2)}.intent-symbol{font-size:14px;font-weight:700}.intent-name{font-size:9px;color:var(--text-soft);margin-top:2px}.intent-btn[data-intent="0"] .intent-symbol{color:#5ee8a0}.intent-btn[data-intent="1"] .intent-symbol{color:#f87171}.intent-btn[data-intent="2"] .intent-symbol{color:#ffd556}.intent-btn[data-intent="3"] .intent-symbol{color:#93c5fd}
     .intent-tag{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}.intent-tag.oc{background:rgba(74,222,128,0.2);color:#5ee8a0}.intent-tag.oi{background:rgba(248,113,113,0.2);color:#f87171}.intent-tag.ok{background:rgba(251,191,36,0.2);color:#ffd556}.intent-tag.os{background:rgba(147,197,253,0.2);color:#93c5fd}
     .input-group{margin-bottom:12px}.input-label{font-size:11px;color:var(--text-soft);margin-bottom:4px;display:flex;justify-content:space-between}.char-count{color:var(--keys-accent)}textarea,input[type="text"],input[type="number"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-family:inherit;font-size:13px}textarea{min-height:80px;resize:vertical}textarea:focus,input:focus{outline:none;border-color:var(--keys-accent)}input.invalid{border-color:#f87171!important;background:rgba(248,113,113,0.1)!important}input.valid{border-color:#5ee8a0!important}.validation-msg{font-size:10px;margin-top:4px}.validation-msg.error{color:#f87171}.validation-msg.success{color:#5ee8a0}
-    .filter-select{background:rgba(5,8,18,0.8);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:6px 24px 6px 10px;font-size:11px;color:var(--text-main);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239aa3bb' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+    .filter-select{background:rgba(5,8,18,0.8);border:1px solid rgba(148,163,184,0.3);border-radius:6px;padding:6px 24px 6px 10px;font-size:11px;color:var(--text-main);cursor:pointer;appearance:none;background-image:url("data:image/png,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239aa3bb' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
     .card-header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap}.card-header-left{display:flex;align-items:center;gap:12px}.card-header-right{display:flex;align-items:center;gap:12px;font-size:11px;color:var(--text-soft)}.epoch-timer{color:var(--keys-accent);font-family:monospace}
     .submit-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}.fee-display{font-size:12px;color:var(--text-soft)}.fee-amount{color:var(--keys-accent);font-weight:600}
     .status-msg{padding:10px 14px;border-radius:8px;font-size:12px;margin-top:10px}.status-msg.error{background:rgba(249,115,115,0.1);border:1px solid rgba(249,115,115,0.3);color:var(--danger)}.status-msg.success{background:rgba(94,232,160,0.1);border:1px solid rgba(94,232,160,0.3);color:var(--accent)}.status-msg.pending{background:rgba(255,213,86,0.1);border:1px solid rgba(255,213,86,0.3);color:var(--keys-accent)}.status-msg a{color:var(--accent);text-decoration:underline}
@@ -416,12 +427,12 @@
 </head>
 <body>
 <div class="toast" id="toast"></div>
-<header><div class="nav-inner"><a href="/index.html" class="logo-link"><div class="logo-dot">O</div><div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div></a><nav class="nav-links"><a href="/about.html">About</a><a href="/how-it-works.html">How it Works</a><a href="/live-stats.html">Live Stats</a><a href="/artefacts.html">Artefacts</a><a href="/nbi-artefacts.html">4 NBIs</a><a href="/mint-key.html">Mint Key</a><a href="/your-keys.html" class="active-keys" id="navYourKeys">Your Keys</a></nav></div></header>
+<header><div class="nav-inner"><a href="index.html" class="logo-link"><div class="logo-dot">Î©</div><div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div></a><button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button><nav class="nav-links" id="navLinks"><a href="about.html">About</a><a href="how-it-works.html">How it Works</a><a href="live-stats.html">Live Stats</a><a href="artefacts.html">Artefacts</a><a href="nbi-artefacts.html">4 NBIs</a><a href="mint-key.html">Mint Key</a><a href="your-keys.html" class="active-keys" id="navYourKeys">Your Keys</a></nav></div></header>
 <main class="page">
-  <a href="/your-keys.html" class="back-link" id="backLink">? Back to Your Keys</a>
+  <a href="your-keys.html" class="back-link" id="backLink">? Back to Your Keys</a>
   <div id="connectState" class="connect-prompt"><p>Connect your wallet to view your Key dashboard</p><button class="btn-connect" id="btnConnect">Connect Wallet</button></div>
   <div id="mainContent" style="display:none;">
-    <div class="key-header-card"><div class="key-identity"><span class="key-id" id="keyIdDisplay">Key #—</span><span class="genesis-badge" id="genesisBadge">? Genesis</span><span class="key-glyphs" id="keyGlyphs">—</span></div><div class="key-meta"><span class="wallet-badge"><span class="dot"></span><span id="walletDisplay">0x...</span></span><a href="#" id="viewOnChainLink" target="_blank">View on chain ?</a></div></div>
+    <div class="key-header-card"><div class="key-identity"><span class="key-id" id="keyIdDisplay">Key #ï¿½</span><span class="genesis-badge" id="genesisBadge">? Genesis</span><span class="key-glyphs" id="keyGlyphs">ï¿½</span></div><div class="key-meta"><span class="wallet-badge"><span class="dot"></span><span id="walletDisplay">0x...</span></span><a href="#" id="viewOnChainLink" target="_blank">View on chain ?</a></div></div>
    <div class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
   <button class="tab-btn" onclick="switchTab('signals')">Signals<span class="tab-dots" id="tabSignalDots"><span class="tab-dot open"></span><span class="tab-dot open"></span></span></button>
@@ -463,7 +474,7 @@
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:11px;color:var(--text-soft);">E<span id="overviewEpoch">—</span></span>
+          <span style="font-size:11px;color:var(--text-soft);">E<span id="overviewEpoch">ï¿½</span></span>
           <button onclick="markAllActivitiesRead()" style="padding:4px 8px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;" title="Mark all as read">? Read</button>
           <button onclick="refreshActivityFeed()" style="padding:4px 8px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;" title="Refresh">?</button>
         </div>
@@ -489,7 +500,7 @@
         <span class="section-title">New Signal</span>
         <div style="display:flex;align-items:center;gap:12px;">
           <span class="epoch-timer" id="pogEpochTimer">? --:--</span>
-          <span id="pogEpochDisplay" style="font-size:12px;color:var(--text-soft);">Epoch —</span>
+          <span id="pogEpochDisplay" style="font-size:12px;color:var(--text-soft);">Epoch ï¿½</span>
         </div>
       </div>
       
@@ -595,7 +606,7 @@
         <span class="section-title">Attestable Signals</span>
         <div style="display:flex;align-items:center;gap:12px;">
           <span class="epoch-timer" id="attestEpochTimer">? --:--</span>
-          <span id="attestEpochBadge" style="font-size:12px;color:var(--text-soft);">Epoch —</span>
+          <span id="attestEpochBadge" style="font-size:12px;color:var(--text-soft);">Epoch ï¿½</span>
         </div>
       </div>
       
@@ -770,15 +781,15 @@
   <!-- Stats Row - 3 cards -->
   <div class="canon-summary">
     <div class="canon-box">
-      <div class="canon-amount" id="canonTotalAnchored">—</div>
+      <div class="canon-amount" id="canonTotalAnchored">ï¿½</div>
       <div class="canon-label">Epochs Anchored</div>
     </div>
     <div class="canon-box">
-      <div class="canon-amount" id="canonPercentAnchored">—</div>
+      <div class="canon-amount" id="canonPercentAnchored">ï¿½</div>
       <div class="canon-label">% of Epochs</div>
     </div>
     <div class="canon-box">
-      <div class="canon-amount" id="canonLatestEpoch">—</div>
+      <div class="canon-amount" id="canonLatestEpoch">ï¿½</div>
       <div class="canon-label">Latest Anchored</div>
     </div>
   </div>
@@ -813,11 +824,11 @@
   <!-- Summary Cards -->
   <div class="treasury-summary">
     <div class="treasury-box claimable" id="treasuryClaimableBox">
-      <div class="treasury-amount claimable" id="treasuryClaimable">—</div>
+      <div class="treasury-amount claimable" id="treasuryClaimable">ï¿½</div>
       <div class="treasury-label">Claimable Now</div>
     </div>
     <div class="treasury-box earned" id="treasuryTotalBox">
-      <div class="treasury-amount total" id="treasuryTotal">—</div>
+      <div class="treasury-amount total" id="treasuryTotal">ï¿½</div>
       <div class="treasury-label">Total Earned (POL)</div>
     </div>
   </div>
@@ -881,7 +892,7 @@
         <br><br>
         <strong style="color:#93c5fd;">Reward Split:</strong>
         <span class="breakdown-item" style="cursor:help;">Presence<span class="info-icon">?</span><span class="breakdown-tooltip">Equal share for all 21 winners</span></span> + 
-        <span class="breakdown-item" style="cursor:help;">Attention<span class="info-icon">?</span><span class="breakdown-tooltip">Based on attestations × layer weight</span></span>
+        <span class="breakdown-item" style="cursor:help;">Attention<span class="info-icon">?</span><span class="breakdown-tooltip">Based on attestations ï¿½ layer weight</span></span>
       </div>
     </div>
   </div>
@@ -892,7 +903,7 @@
 <div class="modal-overlay" id="replyModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Browse Signals <span id="replyCurrentEpochBadge" style="font-size:12px;font-weight:normal;color:var(--text-soft);">(Epoch —)</span></span>
+      <span class="modal-title">Browse Signals <span id="replyCurrentEpochBadge" style="font-size:12px;font-weight:normal;color:var(--text-soft);">(Epoch ï¿½)</span></span>
       <button class="modal-close" onclick="closeReplyModal()">&times;</button>
     </div>
 
@@ -901,7 +912,7 @@
       <div class="filter-group">
         <span class="filter-label">Epoch:</span>
         <input type="text" class="filter-input" id="replyFilterEpochFrom" placeholder="From" style="width:55px;" autocomplete="off" oninput="debouncedReplyFilter()">
-        <span>–</span>
+        <span>ï¿½</span>
         <input type="text" class="filter-input" id="replyFilterEpochTo" placeholder="To" style="width:55px;" autocomplete="off" oninput="debouncedReplyFilter()">
       </div>
       <div class="filter-group">
@@ -935,7 +946,7 @@
     </div>
 
     <div class="modal-footer">
-      <span id="replySignalCountInfo" style="font-size:11px;color:var(--text-soft);">– signals</span>
+      <span id="replySignalCountInfo" style="font-size:11px;color:var(--text-soft);">ï¿½ signals</span>
       <button class="btn-select-signal" id="btnConfirmReplySelect" onclick="confirmReplySignalSelection()" disabled>Select Signal</button>
     </div>
   </div>
@@ -963,20 +974,34 @@
     <div class="claim-modal-title">Claim All Rewards</div>
     <div class="claim-modal-subtitle">Choose where to send your rewards:</div>
     <div class="claim-modal-buttons">
-      <button class="claim-modal-btn" onclick="executeClaimAll('self')">Self — To My Wallet</button>
-      <button class="claim-modal-btn" onclick="executeClaimAll('recycle')">Field — Recycle to Next Epoch</button>
-      <button class="claim-modal-btn" onclick="executeClaimAll('nexus')">Nexus — Donate to Protocol</button>
+      <button class="claim-modal-btn" onclick="executeClaimAll('self')">Self ï¿½ To My Wallet</button>
+      <button class="claim-modal-btn" onclick="executeClaimAll('recycle')">Field ï¿½ Recycle to Next Epoch</button>
+      <button class="claim-modal-btn" onclick="executeClaimAll('nexus')">Nexus ï¿½ Donate to Protocol</button>
       <button class="claim-modal-btn cancel" onclick="closeClaimAllModal()">Cancel</button>
     </div>
   </div>
 </div>
 
-<footer>Your presence is real · The Field remembers</footer>
+<footer>Your presence is real ï¿½ The Field remembers</footer>
 <script src="js/Key-dashboard.js"></script>
 <script src="js/Key-dashboard-artefacts.js"></script>
 <script src="js/Key-dashboard-canon.js"></script>
 
+<script>
+(function(){
+  var btn=document.getElementById("hamburger");
+  var nav=document.getElementById("navLinks");
+  if(btn&&nav){
+    btn.addEventListener("click",function(){btn.classList.toggle("open");nav.classList.toggle("open");});
+    nav.addEventListener("click",function(e){if(e.target.tagName==="A"){btn.classList.remove("open");nav.classList.remove("open");}});
+  }
+})();
+</script>
+
+
 <script src="js/gas-banner.js"></script>
+
+
 
 </body>
 
