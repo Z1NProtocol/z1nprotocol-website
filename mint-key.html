@@ -183,8 +183,8 @@
       .nav-links{
         display:none; position:absolute; top:72px; left:0; right:0;
         background:rgba(10,15,26,0.98);
-backdrop-filter:blur(12px);
--webkit-backdrop-filter:blur(12px);
+        backdrop-filter:blur(12px);
+        -webkit-backdrop-filter:blur(12px);
         border-bottom:1px solid rgba(148,163,184,0.2);
         box-shadow:0 12px 32px rgba(0,0,0,0.6);
         flex-direction:column; padding:16px 24px 20px;
@@ -203,7 +203,7 @@ backdrop-filter:blur(12px);
 
   h1 { font-size: 40px; margin: 0 0 10px 0; letter-spacing: -0.02em; }
   .lead { font-size: 17px; opacity: 0.85; line-height: 1.65; margin-bottom: 8px; max-width: 920px; }
-.lead-small { font-size: 14px; opacity: 0.7; margin-top: 4px; margin-bottom: 28px; max-width: 920px; line-height: 1.65; }
+  .lead-small { font-size: 14px; opacity: 0.7; margin-top: 4px; margin-bottom: 28px; max-width: 920px; line-height: 1.65; }
 
   /* LAYOUT */
   .mint-layout {
@@ -271,10 +271,7 @@ backdrop-filter:blur(12px);
     box-shadow: 0 10px 24px rgba(0,0,0,0.35), 0 0 18px rgba(94,232,160,0.14);
   }
 
-  .mint-btn-wrap {
-    position: relative;
-    display: inline-flex;
-  }
+  .mint-btn-wrap { position: relative; display: inline-flex; }
   .mint-tooltip {
     position: absolute;
     bottom: calc(100% + 10px);
@@ -293,9 +290,7 @@ backdrop-filter:blur(12px);
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     z-index: 10;
   }
-  .mint-tooltip.visible {
-    opacity: 1;
-  }
+  .mint-tooltip.visible { opacity: 1; }
 
   .btn-connect { border-color: var(--accent-soft); color: #e5e7eb; }
 
@@ -322,56 +317,14 @@ backdrop-filter:blur(12px);
   .price-main { font-size: 20px; font-weight: 700; color: var(--accent); }
   .price-detail { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
 
-  /* NBI CODE BLOCK */
-  .code-block {
-    font-family: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
-    font-size: 12px; background: #020617;
-    border-radius: 12px; border: 1px solid rgba(148,163,184,0.3);
-    padding: 10px 12px; line-height: 1.7;
-    margin-top: 6px; white-space: pre; overflow-x: auto;
-  }
-  .code-keyword { color: #a5b4fc; }
-  .code-omega { color: #facc15; }
-  .code-func { color: #34d399; }
-  .code-field { color: #38bdf8; }
-
-  /* WHAT YOUR KEY UNLOCKS */
-  .unlocks-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-top: 12px;
-  }
-  @media(max-width: 600px) { .unlocks-grid { grid-template-columns: 1fr 1fr !important; } }
-
-  .unlock-item {
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-size: 12px;
-    line-height: 1.5;
-    background: transparent;
-    border: 1px solid rgba(148,163,184,0.2);
-  }
-  .unlock-item .unlock-label { font-weight: 600; margin-bottom: 2px; }
-  .unlock-item .unlock-desc { color: var(--text-main); opacity: 0.85; }
-
-  .unlock-item.signals .unlock-label { color: var(--sunbeam); }
-  .unlock-item.attests .unlock-label { color: var(--sunbeam); }
-  .unlock-item.artefacts .unlock-label { color: var(--mint); }
-  .unlock-item.treasury .unlock-label { color: var(--aether); }
-
-/* WHAT YOUR KEY UNLOCKS - TWO CARD LAYOUT */
+  /* WHAT YOUR KEY UNLOCKS - TWO CARD LAYOUT */
   .unlocks-section { margin-top: 32px; margin-bottom: 40px; }
   .unlocks-kicker {
     font-size: 13px; letter-spacing: 0.16em;
     text-transform: uppercase; color: var(--text-soft);
     margin-bottom: 14px;
   }
-  .unlocks-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
+  .unlocks-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media(max-width: 900px) { .unlocks-cards { grid-template-columns: 1fr; } }
 
   .unlock-card {
@@ -416,7 +369,6 @@ backdrop-filter:blur(12px);
     flex-direction: column;
     align-items: center;
   }
-
   .contracts-title {
     font-size: 10px;
     font-weight: 600;
@@ -426,24 +378,9 @@ backdrop-filter:blur(12px);
     margin-bottom: 8px;
     opacity: 0.7;
   }
-
-  .contracts-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .contract-item {
-    font-size: 10px;
-    text-align: center;
-  }
-
-  .contract-label {
-    opacity: 0.5;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
+  .contracts-grid { display: flex; flex-direction: column; gap: 3px; }
+  .contract-item { font-size: 10px; text-align: center; }
+  .contract-label { opacity: 0.5; text-transform: uppercase; letter-spacing: 0.05em; }
   .contract-addr {
     font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
     font-size: 10px;
@@ -452,12 +389,7 @@ backdrop-filter:blur(12px);
     color: var(--text-soft);
   }
   .contract-addr:hover { color: var(--text-main); text-decoration: underline; }
-
-  .contract-sep {
-    color: var(--text-soft);
-    opacity: 0.3;
-    margin: 0 4px;
-  }
+  .contract-sep { color: var(--text-soft); opacity: 0.3; margin: 0 4px; }
 
   /* WALLET MODAL */
   .modal-overlay {
@@ -561,8 +493,8 @@ backdrop-filter:blur(12px);
     wallet. No marketplace, no speculation: just a coordinate in the 21M-Key Field.
   </p>
 
- <!-- WHAT A KEY UNLOCKS — universal, BI + NBI -->
- <section class="unlocks-section">
+  <!-- WHAT A KEY UNLOCKS — universal, BI + NBI -->
+  <section class="unlocks-section">
     <div class="unlocks-kicker" style="text-align:center;">What every Key unlocks</div>
 
     <div class="unlocks-cards">
@@ -662,7 +594,6 @@ backdrop-filter:blur(12px);
     <article class="card">
       <div class="card-header">Non-Biological Intelligence Mint Flow</div>
 
-      <!-- STEP 1: FORGE -->
       <div class="divider"></div>
       <div class="step-row">
         <div class="step-label">Step 1</div>
@@ -673,7 +604,6 @@ backdrop-filter:blur(12px);
         </p>
       </div>
 
-      <!-- STEP 2: FORGE -->
       <div class="divider"></div>
       <div class="step-row">
         <div class="step-label">Step 2</div>
@@ -700,8 +630,6 @@ backdrop-filter:blur(12px);
   </section>
 
 </main>
-
-<!-- No separate contracts section - integrated in footer -->
 
 <footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
@@ -749,6 +677,17 @@ backdrop-filter:blur(12px);
   var currentEpoch = 0;
   var currentUsdRate = null;
 
+  // Tooltip element (used in multiple places)
+  var mintTooltip = document.getElementById('mintTooltip');
+
+  // ═══ TOOLTIP HELPER ═══
+  function setMintTooltip(msg){
+    var el = document.getElementById('mintTooltip');
+    if (!el) return;
+    el.textContent = msg;
+  }
+  setMintTooltip('First connect your wallet');
+
   // ═══ RPC ═══
   function rpcCall(method, params) {
     return fetch(RPC_URL, {
@@ -768,6 +707,14 @@ backdrop-filter:blur(12px);
   function setBtnPrimary(btn, on) { if (btn) btn.classList.toggle("btn-primary", on); }
   function showError(msg) { if (connectError) { connectError.textContent = msg; connectError.style.display = 'block'; } }
   function hideError() { if (connectError) connectError.style.display = 'none'; }
+
+  function applyMintState(state){
+    // state: "need_connect" | "need_polygon" | "ready" | "busy"
+    if (state === "need_connect") setMintTooltip("First connect your wallet");
+    else if (state === "need_polygon") setMintTooltip("Switch to Polygon to mint");
+    else if (state === "ready") setMintTooltip("Ready to mint");
+    else if (state === "busy") setMintTooltip("Confirm in wallet…");
+  }
 
   // ═══ DETECT WALLETS ═══
   function detectWallets() {
@@ -873,27 +820,33 @@ backdrop-filter:blur(12px);
       });
   }
 
+  function updateNetworkAndMintState(chainId){
+    if (chainId === EXPECTED_CHAIN_ID) {
+      if (statusNet) statusNet.innerHTML = 'Network: <span class="highlight">' + CHAIN_NAME + '</span>';
+      if (btnMint) { btnMint.disabled = false; btnMint.title = ''; }
+      if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
+      applyMintState("ready");
+      if (mintTooltip) mintTooltip.classList.remove('visible');
+    } else {
+      var chainName = {
+        '0x1': 'Ethereum', '0xa4b1': 'Arbitrum', '0xa': 'Optimism',
+        '0x38': 'BNB Chain', '0x2105': 'Base', '0xaa36a7': 'Sepolia'
+      }[chainId] || ('Chain ' + parseInt(chainId, 16));
+      if (statusNet) statusNet.innerHTML = 'Network: <span style="color:var(--danger);">' + chainName + '</span> <span style="font-size:10px;opacity:0.7;">(switch to Polygon)</span>';
+      if (btnMint) btnMint.disabled = true;
+      if (mintStatus) { mintStatus.textContent = "Please switch to Polygon to mint."; mintStatus.className = "status-text status-error"; }
+      applyMintState("need_polygon");
+    }
+  }
+
   function finishConnect(walletName, networkName) {
     setBtnPrimary(btnConnect, true);
     btnConnect.textContent = walletName + ' ✓';
     if (statusWallet) statusWallet.innerHTML = 'Status: <span class="highlight">Connected via ' + walletName + '</span>';
     if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
 
-    // Check actual chain after connect
     selectedProvider.request({ method: 'eth_chainId' }).then(function(chainId) {
-      if (chainId === EXPECTED_CHAIN_ID) {
-        if (statusNet) statusNet.innerHTML = 'Network: <span class="highlight">' + CHAIN_NAME + '</span>';
-        if (btnMint) { btnMint.disabled = false; btnMint.title = ''; }
-        if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
-      } else {
-        var chainName = {
-          '0x1': 'Ethereum', '0xa4b1': 'Arbitrum', '0xa': 'Optimism',
-          '0x38': 'BNB Chain', '0x2105': 'Base', '0xaa36a7': 'Sepolia'
-        }[chainId] || ('Chain ' + parseInt(chainId, 16));
-        if (statusNet) statusNet.innerHTML = 'Network: <span style="color:var(--danger);">' + chainName + '</span> <span style="font-size:10px;opacity:0.7;">(switch to Polygon)</span>';
-        if (btnMint) btnMint.disabled = true;
-        if (mintStatus) { mintStatus.textContent = "Please switch to Polygon to mint."; mintStatus.className = "status-text status-error"; }
-      }
+      updateNetworkAndMintState(chainId);
     });
 
     loadEpochAndPrice();
@@ -906,20 +859,9 @@ backdrop-filter:blur(12px);
           if (statusAddr) statusAddr.textContent = 'Address: ' + shortAddress(currentAccount);
         }
       });
+
       selectedProvider.on('chainChanged', function(chainId) {
-        if (chainId === EXPECTED_CHAIN_ID) {
-          if (statusNet) statusNet.innerHTML = 'Network: <span class="highlight">' + CHAIN_NAME + '</span>';
-         if (btnMint) { btnMint.disabled = false; if (mintTooltip) mintTooltip.classList.remove('visible'); }
-          if (mintStatus) { mintStatus.textContent = "Ready to mint!"; mintStatus.className = "status-text status-success"; }
-        } else {
-          var chainName = {
-            '0x1': 'Ethereum', '0xa4b1': 'Arbitrum', '0xa': 'Optimism',
-            '0x38': 'BNB Chain', '0x2105': 'Base', '0xaa36a7': 'Sepolia'
-          }[chainId] || ('Chain ' + parseInt(chainId, 16));
-          if (statusNet) statusNet.innerHTML = 'Network: <span style="color:var(--danger);">' + chainName + '</span> <span style="font-size:10px;opacity:0.7;">(switch to Polygon)</span>';
-          if (btnMint) btnMint.disabled = true;
-          if (mintStatus) { mintStatus.textContent = "Please switch to Polygon to mint."; mintStatus.className = "status-text status-error"; }
-        }
+        updateNetworkAndMintState(chainId);
       });
     }
   }
@@ -953,9 +895,7 @@ backdrop-filter:blur(12px);
         var keys = Object.keys(d || {});
         if (keys.length > 0 && d[keys[0]] && typeof d[keys[0]].usd === 'number') {
           currentUsdRate = d[keys[0]].usd;
-          if (currentPriceWei) {
-            updatePriceDisplay(Number(BigInt(currentPriceWei)) / 1e18);
-          }
+          if (currentPriceWei) updatePriceDisplay(Number(BigInt(currentPriceWei)) / 1e18);
         }
       })
       .catch(function() {});
@@ -974,6 +914,7 @@ backdrop-filter:blur(12px);
   async function mintKey() {
     if (!selectedProvider || !currentAccount) {
       if (mintStatus) { mintStatus.textContent = "Please connect wallet first."; mintStatus.className = "status-text status-error"; }
+      applyMintState("need_connect");
       return;
     }
 
@@ -988,6 +929,7 @@ backdrop-filter:blur(12px);
       updatePriceDisplay(Number(BigInt(currentPriceWei)) / 1e18);
 
       if (mintStatus) { mintStatus.textContent = "Confirm transaction in wallet..."; mintStatus.className = "status-text"; }
+      applyMintState("busy");
       btnMint.textContent = 'Minting...';
 
       var valueHex = '0x' + priceWithBuffer.toString(16);
@@ -1005,6 +947,7 @@ backdrop-filter:blur(12px);
           clearInterval(poll);
           mintStatus.textContent = "Taking long... check wallet/explorer.";
           btnMint.textContent = 'Mint your Key'; btnMint.disabled = false;
+          applyMintState("ready");
           return;
         }
         selectedProvider.request({ method: 'eth_getTransactionReceipt', params: [txHash] })
@@ -1014,9 +957,11 @@ backdrop-filter:blur(12px);
               if (receipt.status === '0x1') {
                 mintStatus.textContent = "✅ Key minted! Welcome to the Field.";
                 mintStatus.className = "status-text status-success";
+                applyMintState("ready");
               } else {
                 mintStatus.innerHTML = "❌ Transaction failed. <a href='https://polygonscan.com/tx/" + txHash + "' target='_blank' style='color:#5ee8a0;'>View on explorer</a>";
                 mintStatus.className = "status-text status-error";
+                setMintTooltip("Try again");
               }
               btnMint.textContent = 'Mint your Key'; btnMint.disabled = false;
               loadEpochAndPrice();
@@ -1034,6 +979,7 @@ backdrop-filter:blur(12px);
         else mintStatus.textContent = "Mint failed: " + errMsg.slice(0, 100);
         mintStatus.className = "status-text status-error";
       }
+      setMintTooltip("Try again");
     }
   }
 
@@ -1043,18 +989,24 @@ backdrop-filter:blur(12px);
   if (modalClose) modalClose.onclick = hideModal;
   if (walletModal) walletModal.onclick = function(e) { if (e.target === walletModal) hideModal(); };
 
- // ═══ EVENTS ═══
-  if (btnConnect) btnConnect.onclick = handleConnect;
-
-  // ═══ MINT TOOLTIP ═══
+  // ═══ MINT TOOLTIP (desktop hover + mobile tap) ═══
   var mintBtnWrap = document.getElementById('mintBtnWrap');
-  var mintTooltip = document.getElementById('mintTooltip');
   if (mintBtnWrap && mintTooltip) {
     mintBtnWrap.addEventListener('mouseenter', function() {
       if (btnMint && btnMint.disabled) mintTooltip.classList.add('visible');
     });
     mintBtnWrap.addEventListener('mouseleave', function() {
       mintTooltip.classList.remove('visible');
+    });
+
+    mintBtnWrap.addEventListener('click', function(e){
+      if (!btnMint || !btnMint.disabled) return;
+      e.preventDefault();
+      mintTooltip.classList.toggle('visible');
+    });
+
+    document.addEventListener('click', function(e){
+      if (!mintBtnWrap.contains(e.target)) mintTooltip.classList.remove('visible');
     });
   }
 
@@ -1082,6 +1034,5 @@ backdrop-filter:blur(12px);
 </script>
 
 <script src="js/gas-banner.js"></script>
-
 </body>
 </html>

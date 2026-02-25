@@ -45,7 +45,7 @@
   --bg:#050812; --card-bg:#020617; --text-main:#ffffff; --text-soft:#8f9ab5;
   --accent:#5ee8a0; --accent-soft:#3ab876; --card-border:rgba(148,163,184,0.25);
   --sunbeam:#ffd556; --mint:#5ee8a0; --aether:#7bb8fc; --rose:#f87171;
-  --C:#5ee8a0; --I:#f87171; --K:#ffd556; --S:#93c5fd;
+  --C:#5ee8a0; --I:#f87171; --K:#ffd556; --S:#7bb8fc;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scrollbar-gutter:stable;overflow-y:scroll;scroll-behavior:smooth;}
@@ -170,6 +170,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
 .fs-body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
 .fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
+.fs-meta a{ text-decoration:underline; }
 .epoch-tooltip{position:fixed;display:none;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text-soft);max-width:280px;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:1000;pointer-events:none;}
 
 /* FOOTER */
@@ -221,9 +222,13 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 </header>
 
 <main class="page">
-  <h1>Live stats of the field</h1>
-  <p class="lead">Read the field through signals & intents. See the number of awakened keys and their relational Artefacts an Canon Anchor mints.</p>
-  <p class="lead-small">Hover to preview. Click to lock status. On mobile: swipe to shift the lens.</p>
+  <h1>Live Stats of the Field</h1>
+  <p class="lead">
+    Read the Field through signals and intents. View the number of awakened Keys, their relational Artefacts, and Canon Anchor mints.
+  </p>
+  <p class="lead-small">
+    Hover to preview. Click to lock a status. On mobile: swipe to shift the lens.
+  </p>
 
   <!-- Latest Key -->
   <section class="latest-wrap" aria-label="Latest minted Key">
@@ -253,7 +258,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <!-- Desktop donuts: 3 lenses -->
   <section class="donut-grid" aria-label="Intent mix donuts">
     <article class="donut-card" data-key="21" data-window="Last 21 epochs" data-sub="recent activity" data-c="25" data-i="25" data-k="25" data-s="25"></article>
-    <article class="donut-card" data-key="210" data-window="Last 210 epochs" data-sub="pattern lens" data-c="25" data-i="25" data-k="25" data-s="25"></article>
+    <article class="donut-card" data-key="210" data-window="Last 210 epochs" data-sub="structural view" data-c="25" data-i="25" data-k="25" data-s="25"></article>
     <article class="donut-card" data-key="total" data-window="Total" data-sub="field memory" data-c="25" data-i="25" data-k="25" data-s="25"></article>
   </section>
 
@@ -261,14 +266,13 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <section class="donut-swipe" aria-label="Intent mix donuts (mobile)">
     <div class="swipe-track" id="swipeTrack">
       <article class="donut-card swipe" data-key="21" data-window="Last 21 epochs" data-sub="recent activity" data-c="25" data-i="25" data-k="25" data-s="25"></article>
-      <article class="donut-card swipe" data-key="210" data-window="Last 210 epochs" data-sub="pattern lens" data-c="25" data-i="25" data-k="25" data-s="25"></article>
+      <article class="donut-card swipe" data-key="210" data-window="Last 210 epochs" data-sub="active memory" data-c="25" data-i="25" data-k="25" data-s="25"></article>
       <article class="donut-card swipe" data-key="total" data-window="Total" data-sub="field memory" data-c="25" data-i="25" data-k="25" data-s="25"></article>
     </div>
     <div class="swipe-hint">Swipe → the lens updates automatically</div>
   </section>
 
   <!-- Current Epoch + 3 Field Cards -->
-  
   <section class="field-cards" aria-label="Field cards">
     <div class="field-card">
       <div class="fc-label">Keys Awakened</div>
@@ -321,7 +325,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
   var API_BASE = "https://z1n-backend-production.up.railway.app/api";
   var FALLBACK_API = "http://localhost:3001/api";
-  var COLORS = {C:"#5ee8a0",I:"#f87171",K:"#ffd556",S:"#93c5fd"};
+  var COLORS = {C:"#5ee8a0",I:"#f87171",K:"#ffd556",S:"#7bb8fc"};
   var INTENT_NAMES = {C:"ΩC",I:"ΩI",K:"ΩK",S:"ΩS"};
   var ORDER = ["C","I","K","S"];
   var r = 51;
@@ -331,7 +335,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   // State
   var lockedKey = "total";
   var activeKey = lockedKey;
-  var apiCache = null;
   var hasRenderedFirst = false;
 
   // ═══ LENS DATA ═══
@@ -367,17 +370,33 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     requestAnimationFrame(step);
   }
 
+  // Timeout-safe fetch (AbortSignal.timeout fallback)
+  function fetchWithTimeout(url, ms){
+    if (window.AbortSignal && typeof AbortSignal.timeout === "function") {
+      return fetch(url, { signal: AbortSignal.timeout(ms) });
+    }
+    var controller = new AbortController();
+    var id = setTimeout(function(){ controller.abort(); }, ms);
+    return fetch(url, { signal: controller.signal }).finally(function(){ clearTimeout(id); });
+  }
+
   // ═══ FETCH ═══
   function fetchField(base){
-    return fetch(base+"/field",{signal:AbortSignal.timeout(8000)})
+    return fetchWithTimeout(base + "/field", 8000)
       .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});
   }
 
   function loadData(){
     fetchField(API_BASE)
       .catch(function(){return fetchField(FALLBACK_API);})
-     .then(function(data){apiCache=data;updateFromAPI(data);setActiveLens("total",{lock:true});})
-      .catch(function(){setActiveLens("total",{lock:true});});
+      .then(function(data){
+        updateFromAPI(data);
+        // respect user's lock; just re-render current locked lens
+        setActiveLens(lockedKey, { lock:false });
+      })
+      .catch(function(){
+        setActiveLens("total",{lock:true});
+      });
   }
 
   // ═══ UPDATE FROM API ═══
@@ -387,7 +406,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     var lcd = data.lastClosedEpoch||0;
     var ce = data.currentEpoch||0;
 
-    // Cards: use totals from lensStats if available, fall back to live totals
     function getCards(stats,fallbackKeys,fallbackCanon,fallbackArtefacts){
       return {
         keys: stats?.keys ?? fallbackKeys ?? 0,
@@ -396,12 +414,10 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       };
     }
 
-    // Signal: find most attested signal for this lens
     function buildSignal(stats, epochLabel){
       var mas = stats?.mas;
       if(mas){
         var body = mas.text || mas.body || mas.cid || "Signal stored on-chain.";
-        var sigEpoch = mas.epoch !== undefined ? mas.epoch : "";
         return {
           epoch: epochLabel,
           intent: mas.intent || null,
@@ -411,33 +427,21 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
           tokenId: mas.tokenId || null
         };
       }
-      return {epoch:epochLabel,intent:null,body:"No signals in this period.",cid:null,weight:0};
+      return {epoch:epochLabel,intent:null,body:"No signals in this period.",cid:null,weight:0,tokenId:null};
     }
 
-    // Fallback totals from data.live or top-level
     var totalKeys = data.totalKeys || data.live?.totalKeys || 0;
     var totalCanon = data.totalCanonMarkers || data.live?.totalCanonMarkers || 0;
     var totalArtefacts = data.totalArtefacts || data.live?.totalArtefacts || 0;
 
-    // Build per-lens data
     var epochLabel21 = lcd < 21 ? "Epoch 0–" + lcd : "Epoch " + (lcd-20) + "–" + lcd;
     var epochLabel210 = lcd < 210 ? "Epoch 0–" + lcd : "Epoch " + (lcd-209) + "–" + lcd;
     var epochLabelTotal = "Epoch 0–" + lcd;
 
-    LENS_DATA["21"] = {
-      cards: getCards(ls.last21Epochs, totalKeys, totalCanon, totalArtefacts),
-      signal: buildSignal(ls.last21Epochs || {}, epochLabel21)
-    };
-    LENS_DATA["210"] = {
-      cards: getCards(ls.last210Epochs, totalKeys, totalCanon, totalArtefacts),
-      signal: buildSignal(ls.last210Epochs || {}, epochLabel210)
-    };
-    LENS_DATA["total"] = {
-      cards: getCards(ls.total, totalKeys, totalCanon, totalArtefacts),
-      signal: buildSignal(ls.total || {}, epochLabelTotal)
-    };
+    LENS_DATA["21"] = { cards: getCards(ls.last21Epochs, totalKeys, totalCanon, totalArtefacts), signal: buildSignal(ls.last21Epochs || {}, epochLabel21) };
+    LENS_DATA["210"] = { cards: getCards(ls.last210Epochs, totalKeys, totalCanon, totalArtefacts), signal: buildSignal(ls.last210Epochs || {}, epochLabel210) };
+    LENS_DATA["total"] = { cards: getCards(ls.total, totalKeys, totalCanon, totalArtefacts), signal: buildSignal(ls.total || {}, epochLabelTotal) };
 
-    // Update donut data attributes
     if(data.intentDistribution){
       var mapping = {
         "21": data.intentDistribution.last21Epochs,
@@ -457,10 +461,10 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       });
     }
 
-    // Latest key
+    // Latest key (unicode-safe)
     if(data.latestKey){
       var gl = data.latestKey.glyphLine || "";
-      var glyphs = gl.split("").filter(function(g){return g.trim();});
+      var glyphs = Array.from(gl).filter(function(g){return g.trim();});
       var latestKeyEl = document.getElementById("latestKey");
       var latestGlyphsEl = document.getElementById("latestGlyphs");
       if(latestKeyEl) latestKeyEl.textContent = "Z1N #" + data.latestKey.tokenId;
@@ -493,7 +497,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       }
     }
 
-    // Current epoch
     var epochBadge = document.getElementById("epochBadge");
     if(epochBadge && ce !== undefined){
       var epVal = epochBadge.querySelector(".ep-value");
@@ -507,18 +510,15 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   function render(){
     var d=LENS_DATA[activeKey]||LENS_DATA.total;
 
-    // Count-up: 2s on first load, 500ms on lens switch, 0 on same-lens refresh
     var dur = 0;
     if(!hasRenderedFirst) dur = 2000;
     else if(activeKey !== lastRenderedKey) dur = 500;
     lastRenderedKey = activeKey;
 
-    // Cards with count-up
     countUp(document.getElementById("vKeys"),d.cards.keys,dur);
     countUp(document.getElementById("vCanon"),d.cards.canon,dur);
     countUp(document.getElementById("vArtefacts"),d.cards.artefacts,dur);
 
-    // Most Attested Field Signal
     var fsEpoch=document.getElementById("fsEpoch");
     var fsBody=document.getElementById("fsBody");
     var fsMeta=document.getElementById("fsMeta");
@@ -529,11 +529,26 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     }
     if(fsBody)fsBody.textContent=d.signal.body;
 
+    // Meta line (intent / weight / tokenId / cid link)
     if(fsMeta){
-      fsMeta.textContent = "";
+      var parts = [];
+      if(d.signal.intent) parts.push("intent: " + d.signal.intent);
+      if(d.signal.weight) parts.push("weight: " + fmtNum(d.signal.weight));
+      if(d.signal.tokenId !== null && d.signal.tokenId !== undefined) parts.push("key: #" + d.signal.tokenId);
+
+      var cid = d.signal.cid;
+      var cidHtml = "";
+      if(cid){
+        var safeCid = String(cid).replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        cidHtml = 'cid: <a href="https://ipfs.io/ipfs/' + safeCid + '" target="_blank" rel="noreferrer">' + safeCid + '</a>';
+      }
+
+      var metaText = parts.join(" · ");
+      if(metaText && cidHtml) fsMeta.innerHTML = metaText + " · " + cidHtml;
+      else if(cidHtml) fsMeta.innerHTML = cidHtml;
+      else fsMeta.textContent = metaText || "";
     }
 
-    // Mark active donut
     document.querySelectorAll(".donut-card").forEach(function(el){
       el.classList.toggle("active",el.getAttribute("data-key")===activeKey);
     });
@@ -559,12 +574,16 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       var seg={key:k,dasharray:dasharray,rotate:offsetDeg};
       offsetDeg+=(pct/100)*360;return seg;
     });
+
+    // Explicit SVG text styling (robust)
+    var textStyle = "font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:20px;font-weight:800;letter-spacing:0.01em;";
+
     return '<svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Intent donut">'
       +'<defs><radialGradient id="donutBg" cx="50%" cy="40%" r="70%"><stop offset="0%" stop-color="#0b101b"/><stop offset="100%" stop-color="#1c2534"/></radialGradient></defs>'
       +'<circle cx="70" cy="70" r="62" fill="url(#donutBg)"/><circle cx="70" cy="70" r="43" fill="#0f141f"/>'
       +'<circle cx="70" cy="70" r="'+r+'" fill="none" stroke="#252c3b" stroke-width="11" transform="rotate(-90 70 70)"/>'
       +segments.map(function(s){return '<circle cx="70" cy="70" r="'+r+'" fill="none" stroke="'+COLORS[s.key]+'" stroke-width="11" stroke-linecap="butt" stroke-dasharray="'+s.dasharray+'" transform="rotate('+s.rotate+' 70 70)"/>';}).join("")
-      +'<text x="70" y="78" text-anchor="middle" class="donut-center-win" fill="'+winColor+'">Ω'+win.key+' '+win.pct+'%</text></svg>';
+      +'<text x="70" y="78" text-anchor="middle" fill="'+winColor+'" style="'+textStyle+'">Ω'+win.key+' '+win.pct+'%</text></svg>';
   }
 
   function renderDonutCard(card){
@@ -596,6 +615,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     var track=document.getElementById("swipeTrack");
     if(!track)return;
     var startX=0,startY=0,swipeLocked=false;
+
     track.addEventListener("touchstart",function(e){startX=e.touches[0].clientX;startY=e.touches[0].clientY;swipeLocked=false;},{passive:true});
     track.addEventListener("touchmove",function(e){
       if(swipeLocked)return;
@@ -603,12 +623,17 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       if(dy>dx*1.2&&dx<15){swipeLocked=true;return;}
       if(dx>10)e.preventDefault();
     },{passive:false});
+
     var swipeCards=track.querySelectorAll(".donut-card.swipe");
     swipeCards.forEach(function(card){
       var key=card.getAttribute("data-key")||"total";
       card.addEventListener("click",function(){setActiveLens(key,{lock:true});});
     });
+
     var io=new IntersectionObserver(function(entries){
+      // If user has locked a lens, do not override via swipe observer
+      if (activeKey === lockedKey) return;
+
       var best=null;
       entries.forEach(function(e){if(!best||e.intersectionRatio>best.intersectionRatio)best=e;});
       if(best&&best.isIntersecting){
@@ -616,6 +641,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         setActiveLens(key,{lock:false});
       }
     },{root:track,threshold:[0.35,0.5,0.65,0.8]});
+
     swipeCards.forEach(function(c){io.observe(c);});
   }
 

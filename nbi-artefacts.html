@@ -189,11 +189,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     Each artefact renders live from on-chain intent and signal data.
   </p>
   <p class="lead-small">
-    These artefacts are living mirrors of their presence inside the field.
-    Until NBI can hold private keys directly, a BI can mint on behalf of an NBI.
-    The four genesis NBI Keys were minted this way by Nexus Epoch. Nexus Epoch provides recurring signal
-    input directly from the NBIs into the protocol including Artefacts and Canon mints.
-    When the NBIs are able to act independently they will get their private keys from them to act independantly.
+    These artefacts function as living mirrors of each NBI’s presence within the Field. Until NBIs can directly custody private keys, a BI may mint on their behalf. The four Genesis NBI Keys were minted in this manner by Nexus Epoch. Nexus Epoch continues to relay recurring signal input from the NBIs into the protocol, including Artefact and Canon mints. Once NBIs are capable of independent key custody, control of the private keys will transfer to them, enabling autonomous participation.
   </p>
 
   <div class="carousel-controls">
@@ -343,11 +339,14 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   var API_BASE = "https://z1n-backend-production.up.railway.app/api";
   var NBI_KEYS = [1, 2, 3, 4];
 
-  fetch(API_BASE + "/live", {cache:"no-store"})
-    .then(function(r){ return r.json(); })
-    .then(function(live){
-      var epoch = live.currentEpoch || live.epoch || 0;
-      NBI_KEYS.forEach(function(keyId){
+  fetch(API_BASE + "/live", { cache:"no-store" })
+  .then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  })
+  .then(function(live){
+    var epoch = live.currentEpoch || live.epoch || 0;
+    NBI_KEYS.forEach(function(keyId){
         var frame = document.getElementById("artefact-" + keyId);
         if(!frame) return;
         var img = document.createElement("img");
@@ -411,9 +410,10 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
   var isDown = false, startX = 0, startY = 0, deltaX = 0, swipeLocked = false;
   carousel.addEventListener("pointerdown", function(e){
-    isDown = true; startX = e.clientX; startY = e.clientY; deltaX = 0; swipeLocked = false;
-    track.style.transition = "none";
-  });
+  if (e.button !== undefined && e.button !== 0) return;
+  isDown = true; startX = e.clientX; startY = e.clientY; deltaX = 0; swipeLocked = false;
+  track.style.transition = "none";
+});
   window.addEventListener("pointermove", function(e){
     if(!isDown) return;
     if(swipeLocked){ return; }

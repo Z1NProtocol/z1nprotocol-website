@@ -1,31 +1,36 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
- <meta charset="UTF-8">
-  <title>Z1N Protocol � Key Dashboard</title>
+  <title>Z1N Protocol – Key Dashboard</title>
   <meta name="description" content="Key-specific dashboard within the Z1N Protocol. View signals, attestations, artefacts, canon anchors and treasury rewards bound to your Z1N Key." />
-   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <meta name="robots" content="noindex,follow" />
-  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#050812" />
 
   <link rel="canonical" href="https://www.z1nprotocol.xyz/key-dashboard.html" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Z1N Protocol" />
-  <meta property="og:title" content="Z1N Protocol � Key Dashboard" />
-  <meta property="og:description" content="Access your Z1N Key dashboard. Signals, artefacts, canon anchors and treasury � bound to presence." />
+  <meta property="og:title" content="Z1N Protocol – Key Dashboard" />
+  <meta property="og:description" content="Access your Z1N Key dashboard. Signals, artefacts, canon anchors and treasury — bound to presence." />
   <meta property="og:url" content="https://www.z1nprotocol.xyz/key-dashboard.html" />
   <meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Z1N Protocol – Key Dashboard" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@Z1N_AI" />
-  <meta name="twitter:title" content="Z1N Protocol � Key Dashboard" />
-  <meta name="twitter:description" content="Signals � Attests � Artefacts � Canon � Treasury" />
+  <meta name="twitter:site" content="@z1n_AI" />
+  <meta name="twitter:title" content="Z1N Protocol – Key Dashboard" />
+  <meta name="twitter:description" content="Signals · Attests · Artefacts · Canon · Treasury" />
   <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
 
   <script type="application/ld+json">
@@ -34,7 +39,8 @@
     "@type": "WebPage",
     "@id": "https://www.z1nprotocol.xyz/key-dashboard.html#webpage",
     "url": "https://www.z1nprotocol.xyz/key-dashboard.html",
-    "name": "Z1N Protocol � Key Dashboard",
+    "name": "Z1N Protocol – Key Dashboard",
+    "description": "Key-specific dashboard within the Z1N Protocol. View signals, attestations, artefacts, canon anchors and treasury rewards bound to your Z1N Key.",
     "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
     "about": [
       { "@type": "Thing", "name": "Z1N Key" },
@@ -45,11 +51,10 @@
   }
   </script>
 
-  <!-- bestaande CSS links -->
-  <link rel="stylesheet" href="css/key-dashboard.css">
-  <link rel="stylesheet" href="css/key-dashboard-artefacts.css">  <!-- ? NIEUW -->
-  <link rel="stylesheet" href="css/key-dashboard-canon.css">
-  <link rel="stylesheet" href="css/key-dashboard-signals.css">
+  <link rel="stylesheet" href="css/key-dashboard.css" />
+  <link rel="stylesheet" href="css/key-dashboard-artefacts.css" />
+  <link rel="stylesheet" href="css/key-dashboard-canon.css" />
+  <link rel="stylesheet" href="css/key-dashboard-signals.css" />
 
 <style>
     :root{--bg:#050812;--card-bg:#020617;--text-main:#ffffff;--text-soft:#9aa3bb;--accent:#5ee8a0;--keys-accent:#ffd556;--keys-accent-soft:#bf9f0f;--card-border:rgba(148,163,184,0.25);--danger:#e05555;--stealth-color:#93c5fd;--tab-active-bg:rgba(255,213,86,0.15);--canon-color:#c084fc;--treasury-color:#93c5fd}
@@ -96,7 +101,9 @@
     .key-header-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}.key-identity{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.key-id{font-size:28px;font-weight:700;color:var(--keys-accent)}.genesis-badge{background:linear-gradient(90deg,var(--keys-accent),#bf9f0f);color:#000;font-size:9px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;display:none}.key-glyphs{font-size:15px;letter-spacing:2px;color:var(--text-soft);font-family:"Segoe UI Symbol",sans-serif}.key-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-soft)}.key-meta a{color:var(--accent)}.wallet-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:11px;background:rgba(255,213,86,0.15);border:1px solid rgba(255,213,86,0.3)}.wallet-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--keys-accent)}
     
     /* TAB NAV - Gekleurde tabs per categorie */
-    .tab-nav{display:flex;gap:4px;background:rgba(15,23,42,0.5);border:1px solid var(--card-border);border-radius:12px;padding:6px;margin-bottom:20px;overflow-x:auto}
+    .tab-nav{display:flex;gap:4px;background:rgba(15,23,42,0.5);border:1px solid var(--card-border);border-radius:12px;padding:6px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tab-nav::-webkit-scrollbar{display:none;}
+@media(max-width:600px){.tab-btn{padding:8px 12px;font-size:12px;}}
     .tab-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;border:1px solid transparent;background:transparent;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap}
     .tab-btn:hover{background:rgba(255,255,255,0.05)}
     .tab-btn[onclick*="overview"]{color:var(--text-main);font-weight:600}
@@ -131,7 +138,8 @@
     .tab-btn.active .tab-badge.badge-treasury{background:#93c5fd;color:#000}
     
     .tab-content{display:none !important}.tab-content.active{display:block !important}
-    .section-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:20px;margin-bottom:20px}.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px}.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--keys-accent)}.section-title.title-white{color:var(--text-main)}.section-title.title-green{color:var(--accent)}.section-title.title-purple{color:#c084fc}.section-title.title-blue{color:#93c5fd}.section-actions{display:flex;gap:8px;align-items:center}
+    .section-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:20px;margin-bottom:20px}.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+@media(max-width:600px){.section-header{flex-direction:column;align-items:flex-start;gap:8px;} .section-actions,.section-header>div:last-child{width:100%;overflow-x:auto;}}.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--keys-accent)}.section-title.title-white{color:var(--text-main)}.section-title.title-green{color:var(--accent)}.section-title.title-purple{color:#c084fc}.section-title.title-blue{color:#93c5fd}.section-actions{display:flex;gap:8px;align-items:center}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid}.btn-secondary{background:transparent;border-color:rgba(148,163,184,0.3);color:var(--text-soft)}.btn-secondary:hover{border-color:var(--text-main);color:var(--text-main)}.btn-primary{background:rgba(255,213,86,0.2);border-color:rgba(255,213,86,0.4);color:var(--keys-accent)}.btn-primary:hover{background:rgba(255,213,86,0.3);border-color:var(--keys-accent)}.btn-submit{padding:10px 24px;border-radius:999px;border:1px solid rgba(191,160,15,0.8);background:linear-gradient(90deg,rgba(255,213,86,0.55),rgba(191,160,15,0.55));color:#061018;font-size:13px;font-weight:700;cursor:pointer}.btn-submit:hover:not([disabled]){background:linear-gradient(90deg,var(--keys-accent),#bf9f0f)}.btn-submit[disabled]{opacity:0.5;cursor:not-allowed}.btn-green{background:rgba(94,232,160,0.15);border-color:rgba(94,232,160,0.4);color:var(--accent)}.btn-green:hover{background:rgba(94,232,160,0.25);border-color:var(--accent)}.btn-canon{background:rgba(192,132,252,0.15);border-color:rgba(192,132,252,0.4);color:var(--canon-color)}.btn-canon:hover{background:rgba(192,132,252,0.25);border-color:var(--canon-color)}
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:900px){.two-col{grid-template-columns:1fr}}
     .stealth-toggle{display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(94,232,160,0.1);border:1px solid rgba(94,232,160,0.4);border-radius:20px;cursor:pointer;transition:all 0.2s;user-select:none}.stealth-toggle:hover{border-color:var(--accent);background:rgba(94,232,160,0.2)}.stealth-toggle.active{background:rgba(147,197,253,0.2);border-color:var(--stealth-color)}.stealth-toggle.active .stealth-label{color:var(--stealth-color)}.stealth-toggle .stealth-icon{font-size:14px;transition:opacity 0.2s}.stealth-toggle.active .stealth-icon{opacity:0.5}.stealth-toggle .stealth-label{font-size:11px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.05em}.stealth-toggle.disabled{opacity:0.4;cursor:not-allowed}
@@ -233,7 +241,7 @@
     .whisper-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.whisper-stat{padding:12px;background:rgba(15,23,42,0.4);border-radius:8px;text-align:center}.whisper-stat-value{font-size:20px;font-weight:700}.whisper-stat-value.received{color:var(--accent)}.whisper-stat-value.sent{color:var(--keys-accent)}.whisper-stat-label{font-size:9px;color:var(--text-soft);text-transform:uppercase}
     .whisper-item{padding:12px 14px;background:rgba(15,23,42,0.4);border:1px solid rgba(148,163,184,0.15);border-radius:8px;margin-bottom:8px}.whisper-item.incoming{border-left:3px solid var(--accent)}.whisper-item.outgoing{border-left:3px solid var(--keys-accent)}.whisper-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:11px}.whisper-from{color:var(--accent);font-weight:600}.whisper-to{color:var(--keys-accent);font-weight:600}.whisper-time{color:var(--text-soft)}.whisper-content{font-size:13px;line-height:1.5}
     .filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-    footer{border-top:1px solid rgba(255,255,255,0.05);padding:20px;font-size:12px;text-align:center;opacity:0.7;margin-top:40px}
+    footer{border-top:1px solid rgba(255,255,255,0.05);padding:20px 20px calc(20px + env(safe-area-inset-bottom, 0px));font-size:12px;text-align:center;opacity:0.7;margin-top:40px}
     .toast{position:fixed;top:20px;right:20px;padding:14px 20px;background:rgba(255,213,86,0.95);color:#000;border-radius:10px;font-size:14px;font-weight:600;z-index:10000;opacity:0;transform:translateY(-20px);transition:all 0.3s ease;pointer-events:none}
     .toast.show{opacity:1;transform:translateY(0)}
     .toast.error{background:rgba(248,113,113,0.95);color:#fff}
@@ -429,7 +437,7 @@
 <div class="toast" id="toast"></div>
 <header><div class="nav-inner"><a href="index.html" class="logo-link"><div class="logo-dot">Ω</div><div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div></a><button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button><nav class="nav-links" id="navLinks"><a href="about.html">About</a><a href="how-it-works.html">How it Works</a><a href="live-stats.html">Live Stats</a><a href="artefacts.html">Artefacts</a><a href="nbi-artefacts.html">4 NBIs</a><a href="mint-key.html">Mint Key</a><a href="your-keys.html" class="active-keys" id="navYourKeys">Your Keys</a></nav></div></header>
 <main class="page">
-  <a href="your-keys.html" class="back-link" id="backLink">? Back to Your Keys</a>
+  <a href="your-keys.html" class="back-link" id="backLink">← Back to Your Keys</a>
   <div id="connectState" class="connect-prompt"><p>Connect your wallet to view your Key dashboard</p><button class="btn-connect" id="btnConnect">Connect Wallet</button></div>
   <div id="mainContent" style="display:none;">
     <div class="key-header-card"><div class="key-identity"><span class="key-id" id="keyIdDisplay">Key #�</span><span class="genesis-badge" id="genesisBadge">? Genesis</span><span class="key-glyphs" id="keyGlyphs">�</span></div><div class="key-meta"><span class="wallet-badge"><span class="dot"></span><span id="walletDisplay">0x...</span></span><a href="#" id="viewOnChainLink" target="_blank">View on chain ?</a></div></div>
