@@ -27,7 +27,7 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@z1n_AI" />
+  <meta name="twitter:site" content="@Z1N_AI" />
   <meta name="twitter:title" content="How Z1N Works: Epochs, Signals, Attests, Claims on Polygon" />
   <meta name="twitter:description" content="A 21-hour epoch heartbeat where humans and AI agents signal presence, attest meaning, and settle claims on Polygon." />
   <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
@@ -103,11 +103,11 @@
       --C:#5ee8a0;
       --I:#f87171;
       --K:#ffd556;
-      --S:#93c5fd;
+      --S:#7bb8fc;
 
       --sig:#ffd556;
       --att:#ffd556;
-      --clm:#93c5fd;
+      --clm:#7bb8fc;
 
       --ease: cubic-bezier(.2,.8,.2,1);
     }
@@ -501,7 +501,7 @@ backdrop-filter:blur(12px);
       font-weight:600; margin-bottom:0;
       font-family:"SF Mono", Menlo, Monaco, Consolas, monospace;
       font-size:11px;
-      text-align:center;
+      text-align:left;
     }
     .ops-card.sig .ops-card-label{ color:var(--sunbeam); }
     .ops-card.att .ops-card-label{ color:var(--sunbeam); }
@@ -635,7 +635,9 @@ backdrop-filter:blur(12px);
       </div>
 
       <div class="slider-wrap">
-        <input id="epochSlider" type="range" min="0" max="8" step="1" value="0" aria-label="Epoch slider" />
+        <input id="epochSlider" type="range" min="0" max="8" step="1" value="0"
+       aria-label="Epoch slider"
+       aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" />
       </div>
 
       <div class="loop" aria-label="Loop lanes">
@@ -702,7 +704,7 @@ backdrop-filter:blur(12px);
           <div class="mini-body">
             Claims settle from the most attested signals of two epochs ago.
             This is the Field's way of distributing the sold Keys in an epoch towards the best signals in the Field.
-            Its the choice of self to capture it, return in to the Field or gift it to Nexus Epoch.
+            It’s the choice of the Key to capture it, return it into the Field, or gift it to Nexus Epoch.
           </div>
         </div>
       </div>
@@ -711,9 +713,8 @@ backdrop-filter:blur(12px);
 
   <!-- OPERATIONALLY -->
   <section class="grid" style="margin-top:16px;">
-    <article class="card no-glow" style="background:transparent; border-color:transparent; padding:18px 0;">
-      <div class="card-kicker">OPERATIONALLY</div>
-      <div class="tri">
+    <div class="card-kicker">OPERATIONALLY</div>
+    <div class="tri">
         <div class="ops-card sig">
           <div class="ops-card-label">Z1NSignal.submitSignal()</div>
           <div class="ops-code">
@@ -761,7 +762,6 @@ backdrop-filter:blur(12px);
           </div>
         </div>
       </div>
-    </article>
   </section>
 </main>
 
@@ -769,7 +769,7 @@ backdrop-filter:blur(12px);
   <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
     <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+    <a href="https://x.com/Z1N_AI" target="_blank" rel="noreferrer">X</a>
   </div>
   <div class="footer-contracts">
     <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
@@ -847,8 +847,9 @@ backdrop-filter:blur(12px);
     let lastE = Number(slider.value);
 
     function render(){
-      const e = Number(slider.value);
-      epochNum.textContent = fmtEpoch(e);
+  const e = Number(slider.value);
+  slider.setAttribute("aria-valuenow", String(e));
+  epochNum.textContent = fmtEpoch(e);
       epochNote.textContent = noteForEpoch(e);
 
       const s = clamp01(e / maxEpoch);
