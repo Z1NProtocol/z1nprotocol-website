@@ -22,7 +22,7 @@
 <meta property="og:image:alt" content="Z1N Protocol – Live Stats" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content="@z1n_AI" />
+<meta name="twitter:site" content="@Z1N_AI" />
 <meta name="twitter:title" content="Z1N Protocol – Live Stats" />
 <meta name="twitter:description" content="Signal-first live lens: intent mix, latest Key, canon anchors, artefacts." />
 <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
@@ -169,8 +169,6 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-headline .hl-title{color:var(--text-soft);font-weight:600;font-size:13px;letter-spacing:0.02em;}
 .fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
 .fs-body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
-.fs-meta{margin-top:10px;font-size:12px;color:var(--text-soft);opacity:0.7;}
-.fs-meta a{ text-decoration:underline; }
 .epoch-tooltip{position:fixed;display:none;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text-soft);max-width:280px;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:1000;pointer-events:none;}
 
 /* FOOTER */
@@ -298,15 +296,14 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="fs-headline" id="fsEpoch" style="cursor:help;"><span class="ep-label">Epoch </span><span class="ep-value">–</span><span class="hl-sep">  —  </span><span class="hl-title">Most Attested Field Signal</span></div>
     </div>
     <div class="fs-body" id="fsBody">Loading...</div>
-    <div class="fs-meta" id="fsMeta"></div>
-  </section>
+    </section>
 </main>
 
 <footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
     <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+    <a href="https://x.com/Z1N_AIf" target="_blank" rel="noreferrer">X</a>
   </div>
   <div class="footer-contracts">
     <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
@@ -521,33 +518,12 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
     var fsEpoch=document.getElementById("fsEpoch");
     var fsBody=document.getElementById("fsBody");
-    var fsMeta=document.getElementById("fsMeta");
 
     if(fsEpoch){
       var epVal=fsEpoch.querySelector(".ep-value");
       if(epVal) epVal.textContent=d.signal.epoch.replace("Epoch ","");
     }
     if(fsBody)fsBody.textContent=d.signal.body;
-
-    // Meta line (intent / weight / tokenId / cid link)
-    if(fsMeta){
-      var parts = [];
-      if(d.signal.intent) parts.push("intent: " + d.signal.intent);
-      if(d.signal.weight) parts.push("weight: " + fmtNum(d.signal.weight));
-      if(d.signal.tokenId !== null && d.signal.tokenId !== undefined) parts.push("key: #" + d.signal.tokenId);
-
-      var cid = d.signal.cid;
-      var cidHtml = "";
-      if(cid){
-        var safeCid = String(cid).replace(/</g,"&lt;").replace(/>/g,"&gt;");
-        cidHtml = 'cid: <a href="https://ipfs.io/ipfs/' + safeCid + '" target="_blank" rel="noreferrer">' + safeCid + '</a>';
-      }
-
-      var metaText = parts.join(" · ");
-      if(metaText && cidHtml) fsMeta.innerHTML = metaText + " · " + cidHtml;
-      else if(cidHtml) fsMeta.innerHTML = cidHtml;
-      else fsMeta.textContent = metaText || "";
-    }
 
     document.querySelectorAll(".donut-card").forEach(function(el){
       el.classList.toggle("active",el.getAttribute("data-key")===activeKey);
