@@ -123,7 +123,28 @@
     /* TAB NAV - Gekleurde tabs per categorie */
     .tab-nav{display:flex;gap:4px;background:rgba(15,23,42,0.5);border:1px solid var(--card-border);border-radius:12px;padding:6px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .tab-nav::-webkit-scrollbar{display:none;}
-@media(max-width:600px){.tab-btn{padding:8px 12px;font-size:12px;}}
+@media(max-width:600px){
+  .tab-nav{
+    position:relative;
+    gap:2px;
+    padding:4px;
+  }
+  .tab-nav::after{
+    content:"";
+    position:absolute;
+    right:0;top:0;bottom:0;
+    width:32px;
+    background:linear-gradient(to right,transparent,rgba(15,23,42,0.95));
+    pointer-events:none;
+    border-radius:0 12px 12px 0;
+    z-index:1;
+  }
+  .tab-btn{
+    padding:8px 10px;
+    font-size:11px;
+    flex:0 0 auto;
+  }
+}
     .tab-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;border:1px solid transparent;background:transparent;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap}
     .tab-btn:hover{background:rgba(255,255,255,0.05)}
     .tab-btn[onclick*="overview"]{color:var(--text-main);font-weight:600}
@@ -445,6 +466,9 @@
 
 #tab-attests .two-col {
   grid-template-columns: 1fr 1fr;
+}
+@media(max-width:900px){
+  #tab-attests .two-col{grid-template-columns:1fr;}
 }
 #tab-attests .two-col .section-card {
   min-width: 0;
