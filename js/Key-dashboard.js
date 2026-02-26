@@ -2040,7 +2040,9 @@ ActivityFeed.activities.forEach(function(a) {
   
  // Filter unseen items — only RECEIVED unread
   var filtered = ActivityFeed.activities.filter(function(a) {
-    if (a.direction !== 'received' || ActivityFeed.readItems.has(a.id)) return false;
+    if (a.direction !== 'received') return false;
+    var isTreasury = a.type === 'treasury_claimable';
+    if (!isTreasury && ActivityFeed.readItems.has(a.id)) return false;
     
     if (presenceFilter === 'all') return true;
     
@@ -2176,6 +2178,7 @@ function renderActivityItem(activity) {
       icon = '◈';
       title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> shared an artefact with you';
       preview = activity.tokenId ? 'Artefact #' + activity.tokenId : '';
+      activity.epoch = undefined;
       break;
 
     case 'reply_received':
@@ -2447,39 +2450,21 @@ function updateTabBadges() {
     whisperBadge.classList.toggle('hidden', unreadWhispers === 0);
   }
 
-  // Artefacts badge (inside tab content)
-  var artefactBadge = document.getElementById('artefactBadge');
-  if (artefactBadge) {
-    artefactBadge.textContent = unreadArtefacts;
-    artefactBadge.classList.toggle('hidden', unreadArtefacts === 0);
-  }
-
-  // Artefacts tab-nav badge — count received artefacts directly + from activity feed
+  // Artefacts tab-nav badge — use existing #artefactBadge, count from activity + direct data
   var artefactBadgeCount = unreadArtefacts;
   if (artefactBadgeCount === 0 && typeof allLiveArtefacts !== 'undefined' && allLiveArtefacts.length > 0) {
     allLiveArtefacts.forEach(function(a) {
-      if (a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId) {
+      var isReceived = a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId;
+      if (isReceived) {
         var artId = 'artefact_recv_' + a.tokenId;
         if (!ActivityFeed.readItems.has(artId)) artefactBadgeCount++;
       }
     });
   }
-  var artefactsTab = document.querySelector('.tab-btn[onclick*="artefacts"]');
-  if (artefactsTab) {
-    var existingBadge = artefactsTab.querySelector('.tab-badge');
-    if (artefactBadgeCount > 0) {
-      if (!existingBadge) {
-        var badge = document.createElement('span');
-        badge.className = 'tab-badge badge-artefacts';
-        badge.textContent = artefactBadgeCount;
-        artefactsTab.appendChild(badge);
-      } else {
-        existingBadge.textContent = artefactBadgeCount;
-        existingBadge.classList.remove('hidden');
-      }
-    } else if (existingBadge) {
-      existingBadge.classList.add('hidden');
-    }
+  var artefactBadge = document.getElementById('artefactBadge');
+  if (artefactBadge) {
+    artefactBadge.textContent = artefactBadgeCount;
+    artefactBadge.classList.toggle('hidden', artefactBadgeCount === 0);
   }
 
   // Canon badge — always hidden
@@ -2669,7 +2654,7 @@ async function loadClaimedEpochs() {
   
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl && claimedEpochsData.length === 0) {
-    totalEl.textContent = '—';
+    totalEl.textContent = '0';
   }
   
   var claimedCountEl = document.getElementById('treasuryClaimedCount');
@@ -2678,7 +2663,7 @@ async function loadClaimedEpochs() {
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl) {
     var totalEarned = claimedEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amount || '0'); }, 0);
-totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '—';
+totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '0';
   }
   
   renderClaimedEpochs();
@@ -2782,7 +2767,7 @@ function saveClaimedEpoch(epochId, amount, claimType) {
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl) {
     var totalEarned = claimedEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amount || '0'); }, 0);
-totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '—';
+totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '0';
   }
   renderClaimedEpochs();
 }
@@ -2812,7 +2797,7 @@ async function claimSingleReward(epochId, claimType) {
       var claimableCountEl = document.getElementById('treasuryClaimableCount');
       if (claimableCountEl) claimableCountEl.textContent = '(' + claimableEpochsData.length + ')';
       var claimableEl = document.getElementById('treasuryClaimable');
-      if (claimableEl) { var total = claimableEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amountFormatted || '0'); }, 0); claimableEl.textContent = total > 0 ? total.toFixed(2) : '—'; }
+      if (claimableEl) { var total = claimableEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amountFormatted || '0'); }, 0); claimableEl.textContent = total > 0 ? total.toFixed(2) : '0'; }
       var claimableBox = document.getElementById('treasuryClaimableBox');
       if (claimableBox) claimableBox.classList.toggle('has-claimable', claimableEpochsData.length > 0);
       var actionDone = claimType === 'recycle' ? 'Recycled' : claimType === 'nexus' ? 'Donated' : 'Claimed';
