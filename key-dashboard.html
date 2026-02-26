@@ -28,13 +28,13 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@z1n_AI" />
+  <meta name="twitter:site" content="@Z1N_AI" />
   <meta name="twitter:title" content="Z1N Protocol – Key Dashboard" />
   <meta name="twitter:description" content="Signals · Attests · Artefacts · Canon · Treasury" />
   <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
 
   <script type="application/ld+json">
-  {
+  [{
     "@context": "https://schema.org",
     "@type": "WebPage",
     "@id": "https://www.z1nprotocol.xyz/key-dashboard.html#webpage",
@@ -48,7 +48,27 @@
       { "@type": "Thing", "name": "Blockchain presence" }
     ],
     "inLanguage": "en"
-  }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://www.z1nprotocol.xyz/#org",
+    "name": "Z1N Protocol",
+    "url": "https://www.z1nprotocol.xyz/",
+    "sameAs": [
+      "https://x.com/Z1N_AI",
+      "https://github.com/z1nprotocol",
+      "https://discord.gg/FBkCGfFEcV"
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Z1N Protocol", "item": "https://www.z1nprotocol.xyz/" },
+      { "@type": "ListItem", "position": 2, "name": "Key Dashboard", "item": "https://www.z1nprotocol.xyz/key-dashboard.html" }
+    ]
+  }]
   </script>
 
   <link rel="stylesheet" href="css/key-dashboard.css" />
@@ -463,11 +483,10 @@
       <div class="artefact-preview-label">Live Artefact</div>
       <div class="artefact-preview-img" id="overviewArtefactContainer">
         <img id="overviewArtefactPreview" src="" alt="Artefact Preview" style="display:none;">
-        <div id="overviewArtefactCounts" style="font-size:11px;color:var(--text-soft);text-align:center;margin-top:4px;">0 artefacts</div>
         <div class="artefact-placeholder" id="overviewArtefactPlaceholder">◈</div>
       </div>
-      <div class="artefact-preview-status" id="artefactStatus">Loading...</div>
-      <button class="btn btn-green" id="btnMintLiveArtefactOverview" onclick="mintLiveArtefact()" style="width:100%;">+ Mint Artefact</button>
+      <div id="overviewArtefactCounts" style="font-size:11px;color:var(--text-soft);text-align:center;margin-top:6px;margin-bottom:8px;"></div>
+      <button class="btn btn-green" id="btnMintLiveArtefactOverview" onclick="mintLiveArtefactFromOverview()" style="width:100%;">+ Mint Artefact</button>
       <div id="mintArtefactStatusOverview" style="margin-top:10px;"></div>
     </div>
     
@@ -977,12 +996,12 @@
     </div>
   </div>
 </div>
-
 <footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
     <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
     <a href="https://x.com/Z1N_AI" target="_blank" rel="noreferrer">X</a>
+    <a href="https://discord.gg/FBkCGfFEcV" target="_blank" rel="noreferrer">Discord</a>
   </div>
 </footer>
 
