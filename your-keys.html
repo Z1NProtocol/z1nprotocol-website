@@ -971,40 +971,6 @@ backdrop-filter:blur(12px);
   setInterval(loadEpochEnd, 60000);
 })();
 </script>
-<script>
-(function(){
-  var API_BASE = 'https://z1n-backend-production.up.railway.app/api';
-  var timerEl = document.getElementById('epochTimer');
-  if (!timerEl) return;
-  var epochEnd = 0;
-  function pad(n){ return n < 10 ? '0' + n : n; }
-  function tick(){
-    if (!epochEnd) return;
-    var now = Date.now();
-    var diff = epochEnd - now;
-    if (diff <= 0){ timerEl.textContent = '⏱ closing...'; return; }
-    var h = Math.floor(diff / 3600000);
-    var m = Math.floor((diff % 3600000) / 60000);
-    var s = Math.floor((diff % 60000) / 1000);
-    timerEl.textContent = '⏱ ' + pad(h) + ':' + pad(m) + ':' + pad(s);
-  }
-  function loadEpochEnd(){
-    fetch(API_BASE + '/live', { cache:'no-store' })
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(d){
-        if (!d) return;
-        if (d.epochEnd) epochEnd = new Date(d.epochEnd).getTime();
-        else if (d.epochEndTime) epochEnd = new Date(d.epochEndTime).getTime();
-        else if (d.currentEpochEnd) epochEnd = new Date(d.currentEpochEnd).getTime();
-        tick();
-      })
-      .catch(function(){});
-  }
-  loadEpochEnd();
-  setInterval(tick, 1000);
-  setInterval(loadEpochEnd, 60000);
-})();
-</script>
 <script src="js/gas-banner.js"></script>
 </body>
 </html>
