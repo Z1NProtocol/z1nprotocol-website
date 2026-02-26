@@ -59,7 +59,7 @@
 <style>
     :root{--bg:#050812;--card-bg:#020617;--text-main:#ffffff;--text-soft:#9aa3bb;--accent:#5ee8a0;--keys-accent:#ffd556;--keys-accent-soft:#bf9f0f;--card-border:rgba(148,163,184,0.25);--danger:#e05555;--stealth-color:#93c5fd;--tab-active-bg:rgba(255,213,86,0.15);--canon-color:#c084fc;--treasury-color:#93c5fd}
     *{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text-main);font-family:system-ui,-apple-system,sans-serif;min-height:100vh}a{color:inherit;text-decoration:none}
-    header{height:72px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,0.05)}.nav-inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}.logo-link{display:inline-flex;align-items:center;gap:8px}.logo-dot{width:24px;height:24px;border-radius:999px;border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-size:14px}.logo-text{
+    header{height:72px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,0.05)}.nav-inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}.logo-link{display:inline-flex;align-items:center;gap:8px}.logo-dot{width:24px;height:24px;border-radius:6px;border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-size:13px;font-family:"Segoe UI Symbol","Apple Symbols",sans-serif}.logo-text{
   font-size:11px;
   letter-spacing:0.18em;
   text-transform:uppercase;
@@ -440,7 +440,7 @@
   <a href="your-keys.html" class="back-link" id="backLink">← Back to Your Keys</a>
   <div id="connectState" class="connect-prompt"><p>Connect your wallet to view your Key dashboard</p><button class="btn-connect" id="btnConnect">Connect Wallet</button></div>
   <div id="mainContent" style="display:none;">
-    <div class="key-header-card"><div class="key-identity"><span class="key-id" id="keyIdDisplay">Key #�</span><span class="genesis-badge" id="genesisBadge">? Genesis</span><span class="key-glyphs" id="keyGlyphs">�</span></div><div class="key-meta"><span class="wallet-badge"><span class="dot"></span><span id="walletDisplay">0x...</span></span><a href="#" id="viewOnChainLink" target="_blank">View on chain ?</a></div></div>
+    <div class="key-header-card"><div class="key-identity"><span class="key-id" id="keyIdDisplay">Key #—</span><span class="genesis-badge" id="genesisBadge">✶ Genesis</span><span class="key-glyphs" id="keyGlyphs">—</span></div><div class="key-meta"><span class="wallet-badge"><span class="dot"></span><span id="walletDisplay">0x...</span></span><a href="#" id="viewOnChainLink" target="_blank">View on chain ↗</a></div></div>
    <div class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
   <button class="tab-btn" onclick="switchTab('signals')">Signals<span class="tab-dots" id="tabSignalDots"><span class="tab-dot open"></span><span class="tab-dot open"></span></span></button>
@@ -462,7 +462,7 @@
       <div class="artefact-preview-label">Live Artefact</div>
       <div class="artefact-preview-img" id="overviewArtefactContainer">
         <img id="overviewArtefactPreview" src="" alt="Artefact Preview" style="display:none;">
-        <div class="artefact-placeholder" id="overviewArtefactPlaceholder">?</div>
+        <div class="artefact-placeholder" id="overviewArtefactPlaceholder">◈</div>
       </div>
       <div class="artefact-preview-status" id="artefactStatus">Loading...</div>
       <button class="btn btn-green" id="btnMintLiveArtefactOverview" onclick="mintLiveArtefact()" style="width:100%;">+ Mint Artefact</button>
@@ -482,9 +482,9 @@
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:11px;color:var(--text-soft);">E<span id="overviewEpoch">�</span></span>
-          <button onclick="markAllActivitiesRead()" style="padding:4px 8px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;" title="Mark all as read">? Read</button>
-          <button onclick="refreshActivityFeed()" style="padding:4px 8px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;" title="Refresh">?</button>
+          <span style="font-size:11px;color:var(--text-soft);">E<span id="overviewEpoch">—</span></span>
+          <button onclick="markAllActivitiesRead()" style="padding:4px 8px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;" title="Mark all as read">✓ Read</button>
+          <button onclick="refreshActivityFeed()" style="padding:4px 8px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;" title="Refresh">↻</button>
         </div>
       </div>
       
@@ -507,8 +507,8 @@
       <div class="section-header" style="margin-bottom:16px;">
         <span class="section-title">New Signal</span>
         <div style="display:flex;align-items:center;gap:12px;">
-          <span class="epoch-timer" id="pogEpochTimer">? --:--</span>
-          <span id="pogEpochDisplay" style="font-size:12px;color:var(--text-soft);">Epoch �</span>
+          <span class="epoch-timer" id="pogEpochTimer">⏱ --:--</span>
+          <span id="pogEpochDisplay" style="font-size:12px;color:var(--text-soft);">Epoch —</span>
         </div>
       </div>
       
@@ -551,8 +551,8 @@
         <span class="section-title">Replies to Your Signals <span id="receivedRepliesCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
         <div style="display:flex;gap:6px;align-items:center;">
           <select class="filter-select" id="repliesSortSelect" onchange="loadReceivedReplies()">
-            <option value="recent">? Recent</option>
-            <option value="attested">? Most Attested</option>
+            <option value="recent">↓ Recent</option>
+            <option value="attested">✓ Most Attested</option>
           </select>
           <select class="filter-select" id="repliesIntentFilter" onchange="loadReceivedReplies()">
             <option value="">All Intents</option>
@@ -561,12 +561,12 @@
             <option value="2">OK</option>
             <option value="3">OS</option>
           </select>
-          <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedRepliesCSV()">? CSV</button>
+          <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedRepliesCSV()">↓ CSV</button>
         </div>
       </div>
       <div class="signal-list" id="receivedRepliesList" style="max-height:320px;">
         <div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">
-          <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">??</div>
+          <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">💬</div>
           No replies yet
         </div>
       </div>
@@ -580,8 +580,8 @@
       <span class="section-title">Sent Signals <span id="sentSignalsCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
       <div style="display:flex;gap:6px;align-items:center;">
         <select class="filter-select" id="sentSortSelect" onchange="loadSentSignals()">
-          <option value="recent">? Recent</option>
-          <option value="attested">? Most Attested</option>
+          <option value="recent">↓ Recent</option>
+          <option value="attested">✓ Most Attested</option>
         </select>
         <select class="filter-select" id="sentIntentFilter" onchange="loadSentSignals()">
           <option value="">All Intents</option>
@@ -595,7 +595,7 @@
           <option value="new">New</option>
           <option value="reply">Reply</option>
         </select>
-        <button class="filter-select" style="cursor:pointer;" onclick="downloadSentSignalsCSV()">? CSV</button>
+        <button class="filter-select" style="cursor:pointer;" onclick="downloadSentSignalsCSV()">↓ CSV</button>
       </div>
     </div>
     <div class="signal-list" id="sentSignalsList" style="max-height:250px;">
@@ -613,8 +613,8 @@
       <div class="section-header" style="margin-bottom:16px;">
         <span class="section-title">Attestable Signals</span>
         <div style="display:flex;align-items:center;gap:12px;">
-          <span class="epoch-timer" id="attestEpochTimer">? --:--</span>
-          <span id="attestEpochBadge" style="font-size:12px;color:var(--text-soft);">Epoch �</span>
+          <span class="epoch-timer" id="attestEpochTimer">⏱ --:--</span>
+          <span id="attestEpochBadge" style="font-size:12px;color:var(--text-soft);">Epoch —</span>
         </div>
       </div>
       
@@ -634,8 +634,8 @@
           <option value="2">OK</option>
           <option value="3">OS</option>
         </select>
-        <button onclick="loadAttestableSignals()" style="padding:6px 10px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:11px;cursor:pointer;">?</button>
-        <button class="filter-select" style="cursor:pointer;" onclick="downloadAttestableCSV()">? CSV</button>
+        <button onclick="loadAttestableSignals()" style="padding:6px 10px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:11px;cursor:pointer;">↻</button>
+        <button class="filter-select" style="cursor:pointer;" onclick="downloadAttestableCSV()">↓ CSV</button>
       </div>
       
       <div id="attestLoadingInline" style="padding:20px;text-align:center;color:var(--text-soft);font-size:11px;">Loading signals...</div>
@@ -644,7 +644,7 @@
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(148,163,184,0.15);">
         <div id="attestSelectedInfoInline" style="font-size:11px;color:var(--text-soft);margin-bottom:10px;">Select a signal to attest</div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-          <button class="btn-submit" id="btnAttestNormalInline" onclick="submitAttestInline()" disabled>? Attest Signal</button>
+          <button class="btn-submit" id="btnAttestNormalInline" onclick="submitAttestInline()" disabled>✓ Attest Signal</button>
         </div>
       </div>
     </div>
@@ -656,8 +656,8 @@
         <div style="display:flex;gap:6px;align-items:center;">
           <input type="text" id="receivedAttestsSearchKey" placeholder="Key ID..." style="width:60px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterReceivedAttests()">
           <select class="filter-select" id="receivedAttestsSortSelect" onchange="loadReceivedAttests()">
-            <option value="recent">? Recent</option>
-            <option value="epoch">? By Epoch</option>
+            <option value="recent">↓ Recent</option>
+            <option value="epoch">↕ By Epoch</option>
           </select>
           <select class="filter-select" id="receivedAttestsIntentFilter" onchange="loadReceivedAttests()">
             <option value="">All Intents</option>
@@ -666,12 +666,12 @@
             <option value="2">OK</option>
             <option value="3">OS</option>
           </select>
-          <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedAttestsCSV()">? CSV</button>
+          <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedAttestsCSV()">↓ CSV</button>
         </div>
       </div>
       <div class="signal-list" id="receivedAttestsList" style="max-height:320px;">
         <div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">
-          <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">?</div>
+          <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">✓</div>
           No attestations received yet
         </div>
       </div>
@@ -685,8 +685,8 @@
       <span class="section-title">Sent Attests <span id="sentAttestsCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
       <div style="display:flex;gap:6px;align-items:center;">
         <select class="filter-select" id="sentAttestsSortSelect" onchange="loadSentAttests()">
-          <option value="recent">? Recent</option>
-          <option value="epoch">? By Epoch</option>
+          <option value="recent">↓ Recent</option>
+          <option value="epoch">↕ By Epoch</option>
         </select>
         <select class="filter-select" id="sentAttestsIntentFilter" onchange="loadSentAttests()">
           <option value="">All Intents</option>
@@ -695,7 +695,7 @@
           <option value="2">OK</option>
           <option value="3">OS</option>
         </select>
-        <button class="filter-select" style="cursor:pointer;" onclick="downloadSentAttestsCSV()">? CSV</button>
+        <button class="filter-select" style="cursor:pointer;" onclick="downloadSentAttestsCSV()">↓ CSV</button>
       </div>
     </div>
     <div class="signal-list" id="sentAttestsList" style="max-height:250px;">
@@ -738,10 +738,10 @@
             <div style="display:flex;gap:6px;align-items:center;">
               <input type="text" id="sentWhispersSearchKey" placeholder="To Key..." style="width:70px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterSentWhispers()">
               <select class="filter-select" id="sentWhispersSortSelect" onchange="loadSentWhispers()">
-                <option value="recent">? Recent</option>
-                <option value="oldest">? Oldest</option>
+                <option value="recent">↓ Recent</option>
+                <option value="oldest">↑ Oldest</option>
               </select>
-              <button class="filter-select" style="cursor:pointer;" onclick="downloadSentWhispersCSV()">? CSV</button>
+              <button class="filter-select" style="cursor:pointer;" onclick="downloadSentWhispersCSV()">↓ CSV</button>
             </div>
           </div>
           <div class="signal-list" id="sentWhispersList" style="max-height:320px;">
@@ -758,15 +758,15 @@
           <div style="display:flex;gap:6px;align-items:center;">
             <input type="text" id="receivedWhispersSearchKey" placeholder="From Key..." style="width:80px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterReceivedWhispers()">
             <select class="filter-select" id="receivedWhispersSortSelect" onchange="loadReceivedWhispers()">
-              <option value="recent">? Recent</option>
-              <option value="oldest">? Oldest</option>
+              <option value="recent">↓ Recent</option>
+              <option value="oldest">↑ Oldest</option>
             </select>
-            <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedWhispersCSV()">? CSV</button>
+            <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedWhispersCSV()">↓ CSV</button>
           </div>
         </div>
         <div class="signal-list" id="receivedWhispersList" style="max-height:300px;">
           <div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">
-            <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">??</div>
+            <div style="font-size:24px;opacity:0.3;margin-bottom:8px;">💬</div>
             No whispers received yet
           </div>
         </div>
@@ -789,15 +789,16 @@
   <!-- Stats Row - 3 cards -->
   <div class="canon-summary">
     <div class="canon-box">
-      <div class="canon-amount" id="canonTotalAnchored">�</div>
+      <div class="canon-amount" id="canonTotalAnchored">—</div>
+
       <div class="canon-label">Epochs Anchored</div>
     </div>
     <div class="canon-box">
-      <div class="canon-amount" id="canonPercentAnchored">�</div>
+      <div class="canon-amount" id="canonPercentAnchored">—</div>
       <div class="canon-label">% of Epochs</div>
     </div>
     <div class="canon-box">
-      <div class="canon-amount" id="canonLatestEpoch">�</div>
+      <div class="canon-amount" id="canonLatestEpoch">—</div>
       <div class="canon-label">Latest Anchored</div>
     </div>
   </div>
@@ -816,8 +817,8 @@
     <div class="canon-filter-bar" id="canonFilterBar" style="display: none;">
       <button class="canon-filter-pill active" data-sort="latest" onclick="setCanonSort('latest')">Latest minted</button>
       <button class="canon-filter-pill" data-sort="oldest" onclick="setCanonSort('oldest')">Oldest minted</button>
-      <button class="canon-filter-pill" data-sort="epoch-desc" onclick="setCanonSort('epoch-desc')">Epoch ?</button>
-      <button class="canon-filter-pill" data-sort="epoch-asc" onclick="setCanonSort('epoch-asc')">Epoch ?</button>
+      <button class="canon-filter-pill" data-sort="epoch-desc" onclick="setCanonSort('epoch-desc')">Epoch ↓</button>
+      <button class="canon-filter-pill" data-sort="epoch-asc" onclick="setCanonSort('epoch-asc')">Epoch ↑</button>
     </div>
     
     <!-- Canon Grid -->
@@ -832,11 +833,11 @@
   <!-- Summary Cards -->
   <div class="treasury-summary">
     <div class="treasury-box claimable" id="treasuryClaimableBox">
-      <div class="treasury-amount claimable" id="treasuryClaimable">�</div>
+      <div class="treasury-amount claimable" id="treasuryClaimable">—</div>
       <div class="treasury-label">Claimable Now</div>
     </div>
     <div class="treasury-box earned" id="treasuryTotalBox">
-      <div class="treasury-amount total" id="treasuryTotal">�</div>
+      <div class="treasury-amount total" id="treasuryTotal">—</div>
       <div class="treasury-label">Total Earned (POL)</div>
     </div>
   </div>
@@ -844,7 +845,7 @@
   <!-- Claim All Button -->
   <div id="claimAllSection" style="display:none;">
     <button id="btnClaimAll" class="btn-claim-all" onclick="claimAllRewards()">
-      <span class="btn-icon">?</span>
+      <span class="btn-icon">⬡</span>
       <span>Claim All Rewards</span>
     </button>
     <div id="claimAllProgress" style="display:none;margin-top:14px;padding:12px 16px;background:rgba(147,197,253,0.1);border:1px solid rgba(147,197,253,0.2);border-radius:8px;">
@@ -861,9 +862,9 @@
     <!-- LEFT: Claimable Epochs -->
     <div class="section-card">
       <div class="section-header">
-        <span class="section-title title-blue"><span style="font-size:14px;margin-right:6px;">?</span>Claimable Epochs <span id="treasuryClaimableCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
+        <span class="section-title title-blue"><span style="font-size:14px;margin-right:6px;">⬡</span>Claimable Epochs <span id="treasuryClaimableCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
         <div class="treasury-header-actions">
-          <button class="sort-btn" onclick="sortClaimableEpochs()" title="Sort by epoch">E <span id="claimableSortIcon">?</span></button>
+          <button class="sort-btn" onclick="sortClaimableEpochs()" title="Sort by epoch">E <span id="claimableSortIcon">↓</span></button>
         </div>
       </div>
       <div id="claimableEpochsList" class="treasury-list">
@@ -874,13 +875,13 @@
     <!-- RIGHT: Claimed Epochs -->
     <div class="section-card">
       <div class="section-header">
-        <span class="section-title title-blue"><span style="font-size:14px;margin-right:6px;">?</span>Claimed History <span id="treasuryClaimedCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
+        <span class="section-title title-blue"><span style="font-size:14px;margin-right:6px;">✓</span>Claimed History <span id="treasuryClaimedCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
         <div class="treasury-header-actions">
           <button class="sort-btn" id="filterSelf" onclick="filterClaimedByType('self')" title="Filter Self">Self</button>
           <button class="sort-btn" id="filterField" onclick="filterClaimedByType('recycle')" title="Filter Field">Field</button>
           <button class="sort-btn" id="filterNexus" onclick="filterClaimedByType('nexus')" title="Filter Nexus">Nexus</button>
-          <button class="sort-btn" onclick="sortClaimedEpochs()" title="Sort by epoch">E <span id="claimedSortIcon">?</span></button>
-          <button class="csv-btn" onclick="downloadClaimedCSV()" title="Download CSV">? CSV</button>
+          <button class="sort-btn" onclick="sortClaimedEpochs()" title="Sort by epoch">E <span id="claimedSortIcon">↓</span></button>
+          <button class="csv-btn" onclick="downloadClaimedCSV()" title="Download CSV">↓ CSV</button>
         </div>
       </div>
       <div id="claimedEpochsList" class="treasury-list">
@@ -893,14 +894,14 @@
   <!-- Info Footer -->
   <div style="margin-top:20px;padding:14px 16px;background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.15);border-radius:8px;">
     <div style="display:flex;align-items:flex-start;gap:10px;font-size:11px;color:var(--text-soft);">
-      <span style="font-size:14px;color:#93c5fd;">??</span>
+      <span style="font-size:14px;color:#93c5fd;">ℹ</span>
       <div>
         <strong style="color:#93c5fd;">Claim Window:</strong> 
         You have <strong>21 epochs</strong> to claim rewards after an epoch closes. Unclaimed rewards are recycled.
         <br><br>
         <strong style="color:#93c5fd;">Reward Split:</strong>
         <span class="breakdown-item" style="cursor:help;">Presence<span class="info-icon">?</span><span class="breakdown-tooltip">Equal share for all 21 winners</span></span> + 
-        <span class="breakdown-item" style="cursor:help;">Attention<span class="info-icon">?</span><span class="breakdown-tooltip">Based on attestations � layer weight</span></span>
+        <span class="breakdown-item" style="cursor:help;">Attention<span class="info-icon">?</span><span class="breakdown-tooltip">Based on attestations × layer weight</span></span>
       </div>
     </div>
   </div>
@@ -911,7 +912,7 @@
 <div class="modal-overlay" id="replyModal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Browse Signals <span id="replyCurrentEpochBadge" style="font-size:12px;font-weight:normal;color:var(--text-soft);">(Epoch �)</span></span>
+      <span class="modal-title">Browse Signals <span id="replyCurrentEpochBadge" style="font-size:12px;font-weight:normal;color:var(--text-soft);">(Epoch —)</span></span>
       <button class="modal-close" onclick="closeReplyModal()">&times;</button>
     </div>
 
@@ -920,7 +921,7 @@
       <div class="filter-group">
         <span class="filter-label">Epoch:</span>
         <input type="text" class="filter-input" id="replyFilterEpochFrom" placeholder="From" style="width:55px;" autocomplete="off" oninput="debouncedReplyFilter()">
-        <span>�</span>
+        <span>→</span>
         <input type="text" class="filter-input" id="replyFilterEpochTo" placeholder="To" style="width:55px;" autocomplete="off" oninput="debouncedReplyFilter()">
       </div>
       <div class="filter-group">
@@ -936,14 +937,14 @@
         <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentK" checked onchange="immediateReplyFilter()"><span class="intent-tag ok">OK</span></label>
         <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentS" checked onchange="immediateReplyFilter()"><span class="intent-tag os">OS</span></label>
       </div>
-      <button class="filter-btn" onclick="resetReplyFilters()">? Clear</button>
+      <button class="filter-btn" onclick="resetReplyFilters()">↺ Clear</button>
     </div>
 
     <div style="padding:8px 20px;border-bottom:1px solid var(--card-border);font-size:10px;color:var(--text-soft);display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
       <span><b style="color:var(--keys-accent);">K#</b> = Key ID</span>
       <span><b>E</b> = Epoch</span>
-      <span><b style="color:#ffd556;">?</b> = Attestations</span>
-      <button onclick="downloadReplySignalsCSV(event)" style="margin-left:auto;padding:4px 10px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;">? CSV</button>
+      <span><b style="color:#ffd556;">✓</b> = Attestations</span>
+      <button onclick="downloadReplySignalsCSV(event)" style="margin-left:auto;padding:4px 10px;border-radius:4px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:10px;cursor:pointer;">↓ CSV</button>
     </div>
 
     <div class="modal-body">
@@ -954,7 +955,7 @@
     </div>
 
     <div class="modal-footer">
-      <span id="replySignalCountInfo" style="font-size:11px;color:var(--text-soft);">� signals</span>
+      <span id="replySignalCountInfo" style="font-size:11px;color:var(--text-soft);">— signals</span>
       <button class="btn-select-signal" id="btnConfirmReplySelect" onclick="confirmReplySignalSelection()" disabled>Select Signal</button>
     </div>
   </div>
@@ -982,15 +983,15 @@
     <div class="claim-modal-title">Claim All Rewards</div>
     <div class="claim-modal-subtitle">Choose where to send your rewards:</div>
     <div class="claim-modal-buttons">
-      <button class="claim-modal-btn" onclick="executeClaimAll('self')">Self � To My Wallet</button>
-      <button class="claim-modal-btn" onclick="executeClaimAll('recycle')">Field � Recycle to Next Epoch</button>
-      <button class="claim-modal-btn" onclick="executeClaimAll('nexus')">Nexus � Donate to Protocol</button>
+      <button class="claim-modal-btn" onclick="executeClaimAll('self')">Self · To My Wallet</button>
+      <button class="claim-modal-btn" onclick="executeClaimAll('recycle')">Field · Recycle to Next Epoch</button>
+      <button class="claim-modal-btn" onclick="executeClaimAll('nexus')">Nexus · Donate to Protocol</button>
       <button class="claim-modal-btn cancel" onclick="closeClaimAllModal()">Cancel</button>
     </div>
   </div>
 </div>
 
-<footer>Your presence is real � The Field remembers</footer>
+<footer>Your presence is real · The Field remembers</footer>
 <script src="js/Key-dashboard.js"></script>
 <script src="js/Key-dashboard-artefacts.js"></script>
 <script src="js/Key-dashboard-canon.js"></script>
