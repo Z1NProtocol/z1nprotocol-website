@@ -813,12 +813,19 @@ backdrop-filter:blur(12px);
       var keys = (data.keys || []).map(function(k) {
         return { tokenId: k.tokenId, wallet: walletAddr, genesis: k.genesis, glyphSymbols: k.glyphSymbols, epoch: k.epoch, signalsUsed: k.signalsUsed || 0, attestsUsed: 0, liveArtefacts: k.liveArtefacts || 0, canonCount: k.canonCount || 0, unseenCount: 0, totalClaimed: 0, claimableEpochs: [] };
       });
-      // Fetch actual attest usage for each key (attests target epoch = currentEpoch - 1)
+      // Fetch actual attest usage: API ignores epoch/fromKeyId params, so filter client-side
+      // In epoch N, you attest epoch N-1 signals, so count attests where epoch == N-1 AND fromKeyId matches
       if (currentEpochNum > 0) {
+        var targetEpoch = currentEpochNum - 1;
         await Promise.all(keys.map(function(k) {
-          return fetch(API_BASE + '/attestations?fromKeyId=' + k.tokenId + '&epoch=' + currentEpochNum)
+          return fetch(API_BASE + '/attestations?fromKeyId=' + k.tokenId)
             .then(function(r) { return r.ok ? r.json() : {}; })
-            .then(function(d) { k.attestsUsed = (d.attestations || d.data || []).length; })
+            .then(function(d) {
+              var all = d.attestations || d.data || [];
+              k.attestsUsed = all.filter(function(a) {
+                return a.fromKeyId == k.tokenId && a.epoch == targetEpoch;
+              }).length;
+            })
             .catch(function() {});
         }));
       }
@@ -937,38 +944,25 @@ backdrop-filter:blur(12px);
 })();
 </script>
 <script>
-// EPOCH TIMER
+// EPOCH TIMER — client-side calculation (matches Key-dashboard.js)
 (function(){
-  var API_BASE = 'https://z1n-backend-production.up.railway.app/api';
+  var EPOCH_DURATION = 75600; // 21 hours mainnet
+  var EPOCH_GENESIS = 1770739470; // Mainnet genesis: 2026-02-10T16:04:30Z
   var timerEl = document.getElementById('epochTimer');
   if (!timerEl) return;
-  var epochEnd = 0;
-  function pad(n){ return n < 10 ? '0' + n : n; }
-  function tick(){
-    if (!epochEnd) return;
-    var now = Date.now();
-    var diff = epochEnd - now;
-    if (diff <= 0){ timerEl.textContent = '⏱ closing...'; return; }
-    var h = Math.floor(diff / 3600000);
-    var m = Math.floor((diff % 3600000) / 60000);
-    var s = Math.floor((diff % 60000) / 1000);
-    timerEl.textContent = '⏱ ' + pad(h) + ':' + pad(m) + ':' + pad(s);
-  }
-  function loadEpochEnd(){
-    fetch(API_BASE + '/live', { cache:'no-store' })
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(d){
-        if (!d) return;
-        if (d.epochEnd) epochEnd = new Date(d.epochEnd).getTime();
-        else if (d.epochEndTime) epochEnd = new Date(d.epochEndTime).getTime();
-        else if (d.currentEpochEnd) epochEnd = new Date(d.currentEpochEnd).getTime();
-        tick();
-      })
-      .catch(function(){});
-  }
-  loadEpochEnd();
-  setInterval(tick, 1000);
-  setInterval(loadEpochEnd, 60000);
+  setInterval(function(){
+    var now = Math.floor(Date.now() / 1000);
+    var timeSinceGenesis = now - EPOCH_GENESIS;
+    var rem = EPOCH_DURATION - (timeSinceGenesis % EPOCH_DURATION);
+    var h = Math.floor(rem / 3600);
+    var m = Math.floor((rem % 3600) / 60);
+    var s = rem % 60;
+    if (h > 0) {
+      timerEl.textContent = '\u23F1 ' + h + 'h ' + String(m).padStart(2, '0') + 'm';
+    } else {
+      timerEl.textContent = '\u23F1 ' + m + 'm ' + String(s).padStart(2, '0') + 's';
+    }
+  }, 1000);
 })();
 </script>
 <script src="js/gas-banner.js"></script>
