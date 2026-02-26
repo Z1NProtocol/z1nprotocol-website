@@ -703,8 +703,54 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       previewImg.src = API_BASE + '/artefact/' + currentKeyId + '/static-preview?epoch=' + activeEpoch + '&t=' + Date.now();
       previewImg.onerror = function() { this.style.display = 'none'; var placeholder = this.parentElement.querySelector('.artefact-placeholder'); if (placeholder) placeholder.style.display = 'flex'; };
       previewImg.onload = function() { this.style.display = 'block'; var placeholder = this.parentElement.querySelector('.artefact-placeholder'); if (placeholder) placeholder.style.display = 'none'; };
+      // Make artefact preview clickable — open enlarged popup
+      previewImg.style.cursor = 'pointer';
+      previewImg.onclick = function() { openOverviewArtefactPopup(); };
+    }
+    // Update minted/received counts
+    updateOverviewArtefactCounts();
+  }
+
+  function updateOverviewArtefactCounts() {
+    var countEl = document.getElementById('overviewArtefactCounts');
+    if (!countEl) return;
+    var minted = allLiveArtefacts ? allLiveArtefacts.filter(function(a) { return !a.isReceived && !a.receivedFromKeyId && !a.fromKeyId; }).length : 0;
+    var received = allLiveArtefacts ? allLiveArtefacts.filter(function(a) { return a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId; }).length : 0;
+    if (minted === 0 && received === 0) {
+      countEl.textContent = allLiveArtefacts ? allLiveArtefacts.length + ' artefact(s)' : '0 artefacts';
+    } else {
+      countEl.textContent = minted + ' minted · ' + received + ' received';
     }
   }
+
+  window.openOverviewArtefactPopup = function() {
+    var modal = document.getElementById('artefactModal');
+    var title = document.getElementById('artefactModalTitle');
+    var body = document.getElementById('artefactModalBody');
+    if (!modal || !title || !body) return;
+    
+    title.textContent = 'Artefact Preview — K#' + currentKeyId;
+    
+    var imgSrc = API_BASE + '/artefact/' + currentKeyId + '/static-preview?epoch=' + activeEpoch + '&t=' + Date.now();
+    var minted = allLiveArtefacts ? allLiveArtefacts.filter(function(a) { return !a.isReceived && !a.receivedFromKeyId && !a.fromKeyId; }).length : 0;
+    var received = allLiveArtefacts ? allLiveArtefacts.filter(function(a) { return a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId; }).length : 0;
+    var total = allLiveArtefacts ? allLiveArtefacts.length : 0;
+    
+    body.innerHTML = '<div style="text-align:center;padding:12px;">' +
+      '<img src="' + imgSrc + '" alt="Artefact" style="max-width:100%;max-height:400px;border-radius:8px;border:1px solid var(--card-border);" onerror="this.outerHTML=\'<div style=\\\'padding:60px;text-align:center;color:var(--text-soft);font-size:48px;opacity:0.3;\\\'>◈</div>\'">' +
+      '<div style="margin-top:16px;display:flex;justify-content:center;gap:20px;font-size:12px;color:var(--text-soft);">' +
+        '<span>' + total + ' total</span>' +
+        '<span>' + minted + ' minted</span>' +
+        '<span>' + received + ' received</span>' +
+      '</div>' +
+      '<div style="margin-top:16px;display:flex;gap:8px;justify-content:center;">' +
+        '<button onclick="switchTab(\'artefacts\');closeArtefactModal();" class="btn btn-primary" style="font-size:12px;padding:8px 16px;">View All Artefacts</button>' +
+        '<button onclick="mintLiveArtefact();closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? '+ Mint Extra — 21 POL' : '+ Mint First — FREE') + '</button>' +
+      '</div>' +
+    '</div>';
+    
+    modal.classList.add('active');
+  };
 
   async function loadArtefactData() {
     var grid = document.getElementById('liveArtefactGrid');
@@ -2235,11 +2281,16 @@ window.filterActivityFeed = function() {
 // ─────────────────────────────────────────────────────────────────
 
 window.handleActivityClick = function(id, type) {
-  ActivityFeed.readItems.add(id);
-  saveActivityReadItems();
+  // Treasury items should NOT be marked as read or removed — they stay until claimed
+  var isTreasury = type === 'treasury_claimable';
+  
+  if (!isTreasury) {
+    ActivityFeed.readItems.add(id);
+    saveActivityReadItems();
+  }
   
   var item = document.querySelector('.activity-item[data-id="' + id + '"]');
-  if (item) {
+  if (item && !isTreasury) {
     item.classList.remove('unread');
     item.style.transition = 'opacity 0.3s, max-height 0.3s';
     item.style.opacity = '0';
@@ -2450,7 +2501,7 @@ function updateTabBadges() {
     whisperBadge.classList.toggle('hidden', unreadWhispers === 0);
   }
 
-  // Artefacts tab-nav badge — use existing #artefactBadge, count from activity + direct data
+  // Artefacts tab-nav badge — write badge into BOTH #artefactBadge AND the tab-nav button
   var artefactBadgeCount = unreadArtefacts;
   if (artefactBadgeCount === 0 && typeof allLiveArtefacts !== 'undefined' && allLiveArtefacts.length > 0) {
     allLiveArtefacts.forEach(function(a) {
@@ -2461,10 +2512,29 @@ function updateTabBadges() {
       }
     });
   }
+  // Update #artefactBadge (inside tab-content)
   var artefactBadge = document.getElementById('artefactBadge');
   if (artefactBadge) {
     artefactBadge.textContent = artefactBadgeCount;
     artefactBadge.classList.toggle('hidden', artefactBadgeCount === 0);
+  }
+  // ALSO update the tab-nav button badge (separate element)
+  var artefactsTab = document.querySelector('.tab-btn[onclick*="artefacts"]');
+  if (artefactsTab) {
+    var existingTabBadge = artefactsTab.querySelector('.tab-badge');
+    if (artefactBadgeCount > 0) {
+      if (!existingTabBadge) {
+        var newBadge = document.createElement('span');
+        newBadge.className = 'tab-badge badge-artefacts';
+        newBadge.textContent = artefactBadgeCount;
+        artefactsTab.appendChild(newBadge);
+      } else {
+        existingTabBadge.textContent = artefactBadgeCount;
+        existingTabBadge.classList.remove('hidden');
+      }
+    } else if (existingTabBadge) {
+      existingTabBadge.classList.add('hidden');
+    }
   }
 
   // Canon badge — always hidden
