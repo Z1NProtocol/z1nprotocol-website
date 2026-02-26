@@ -1935,6 +1935,7 @@ async function loadActivityFeed() {
           type: 'artefact_received',
           direction: 'received',
           timestamp: art.blockNumber || art.timestamp || 0,
+          epoch: art.epoch || art.receivedEpoch || art.mintEpoch || undefined,
           fromKeyId: fromKey,
           tokenId: art.tokenId
         });
@@ -2173,7 +2174,7 @@ function renderActivityItem(activity) {
    case 'artefact_received':
       iconClass = 'artefact';
       icon = '◈';
-      title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> sent you an artefact';
+      title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> shared an artefact with you';
       preview = activity.tokenId ? 'Artefact #' + activity.tokenId : '';
       break;
 
@@ -2453,13 +2454,14 @@ function updateTabBadges() {
     artefactBadge.classList.toggle('hidden', unreadArtefacts === 0);
   }
 
-  // Artefacts tab-nav badge — use direct count from artefact data if ActivityFeed has none
+  // Artefacts tab-nav badge — count received artefacts directly + from activity feed
   var artefactBadgeCount = unreadArtefacts;
-  if (artefactBadgeCount === 0 && typeof allLiveArtefacts !== 'undefined') {
-    var receivedArts = allLiveArtefacts.filter(function(a) { return a.isReceived || (a.fromKeyId && a.fromKeyId !== currentKeyId); });
-    receivedArts.forEach(function(a) {
-      var artId = 'artefact_recv_' + a.tokenId;
-      if (!ActivityFeed.readItems.has(artId)) artefactBadgeCount++;
+  if (artefactBadgeCount === 0 && typeof allLiveArtefacts !== 'undefined' && allLiveArtefacts.length > 0) {
+    allLiveArtefacts.forEach(function(a) {
+      if (a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId) {
+        var artId = 'artefact_recv_' + a.tokenId;
+        if (!ActivityFeed.readItems.has(artId)) artefactBadgeCount++;
+      }
     });
   }
   var artefactsTab = document.querySelector('.tab-btn[onclick*="artefacts"]');
@@ -2468,7 +2470,7 @@ function updateTabBadges() {
     if (artefactBadgeCount > 0) {
       if (!existingBadge) {
         var badge = document.createElement('span');
-        badge.className = 'tab-badge';
+        badge.className = 'tab-badge badge-artefacts';
         badge.textContent = artefactBadgeCount;
         artefactsTab.appendChild(badge);
       } else {
