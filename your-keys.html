@@ -276,6 +276,7 @@ backdrop-filter:blur(12px);
     .no-results { text-align: center; padding: 40px 20px; color: var(--text-soft); border: 1px dashed rgba(148,163,184,0.2); border-radius: 10px; margin-top: 20px; }
     #btnManageWallets:hover { border-color: var(--keys-accent); color: var(--keys-accent); }
 
+    .epoch-timer{color:var(--keys-accent);font-family:monospace;font-size:13px;}
     .loading{ color:var(--text-soft); font-size:14px; margin-top:22px; }
     .wallet-loading { position: fixed; inset: 0; background: rgba(5, 8, 18, 0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .wallet-loading.active { opacity: 1; pointer-events: all; }
@@ -412,10 +413,10 @@ backdrop-filter:blur(12px);
   <div id="keysToolbar" style="display:none;">
     <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
       <span style="font-size:14px;"><span id="totalKeysCount">0</span> Keys</span>
-      <span style="display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--text-soft);">
-        <span>Epoch <span id="currentEpoch" style="color:var(--keys-accent); font-weight:600;">—</span></span>
-        <span id="epochTimer" style="font-family:monospace; color:var(--keys-accent); font-size:12px; opacity:0.8;">⏱ --:--:--</span>
-      </span>
+      <div style="display:inline-flex; align-items:center; gap:12px;">
+        <span class="epoch-timer" id="epochTimer">⏱ --:--</span>
+        <span id="currentEpochDisplay" style="font-size:12px; color:var(--text-soft);">Epoch <span id="currentEpoch" style="color:var(--keys-accent); font-weight:600;">—</span></span>
+      </div>
       <button id="btnManageWallets" style="margin-left:auto; background:transparent; border:1px solid rgba(148,163,184,0.3); color:var(--text-soft); padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; transition:all 0.2s;">± Manage Wallets</button>
     </div>
   </div>
@@ -937,6 +938,40 @@ backdrop-filter:blur(12px);
 </script>
 <script>
 // EPOCH TIMER
+(function(){
+  var API_BASE = 'https://z1n-backend-production.up.railway.app/api';
+  var timerEl = document.getElementById('epochTimer');
+  if (!timerEl) return;
+  var epochEnd = 0;
+  function pad(n){ return n < 10 ? '0' + n : n; }
+  function tick(){
+    if (!epochEnd) return;
+    var now = Date.now();
+    var diff = epochEnd - now;
+    if (diff <= 0){ timerEl.textContent = '⏱ closing...'; return; }
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    timerEl.textContent = '⏱ ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  function loadEpochEnd(){
+    fetch(API_BASE + '/live', { cache:'no-store' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d) return;
+        if (d.epochEnd) epochEnd = new Date(d.epochEnd).getTime();
+        else if (d.epochEndTime) epochEnd = new Date(d.epochEndTime).getTime();
+        else if (d.currentEpochEnd) epochEnd = new Date(d.currentEpochEnd).getTime();
+        tick();
+      })
+      .catch(function(){});
+  }
+  loadEpochEnd();
+  setInterval(tick, 1000);
+  setInterval(loadEpochEnd, 60000);
+})();
+</script>
+<script>
 (function(){
   var API_BASE = 'https://z1n-backend-production.up.railway.app/api';
   var timerEl = document.getElementById('epochTimer');
