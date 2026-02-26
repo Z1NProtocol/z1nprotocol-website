@@ -170,8 +170,9 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 @media(max-width:900px){
   .donut-grid,.desktop-below{display:none !important;}
   .mob-wrap{display:block;margin-top:4px;}
+  .intent-legend{display:none;}
 }
-.mob-controls{display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:12px;}
+.mob-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .mob-dots{display:flex;gap:10px;}
 .mob-dot{width:14px;height:14px;border-radius:999px;border:1.5px solid rgba(148,163,184,0.6);background:transparent;cursor:pointer;transition:background 0.2s,transform 0.2s,border-color 0.2s;padding:0;}
 .mob-dot:hover{border-color:var(--accent);transform:scale(1.1);}
@@ -197,6 +198,15 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .ms-signal-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-soft);font-weight:600;text-align:center;margin-bottom:6px;}
 .ms-signal-epoch{font-size:12px;color:var(--text-soft);text-align:center;margin-bottom:6px;}
 .ms-signal-body{font-size:13px;line-height:1.6;opacity:0.92;text-align:center;white-space:pre-wrap;word-break:break-word;}
+
+/* Mobile stat tooltip */
+.ms-stat-label{position:relative;cursor:help;}
+.ms-stat-tip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-soft);white-space:nowrap;z-index:10;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.5);}
+.ms-stat-label.show-tip .ms-stat-tip{display:block;}
+
+/* Mobile intent legend inside card */
+.ms-legend{display:flex;justify-content:center;gap:10px;font-size:11px;font-weight:700;margin-bottom:14px;flex-wrap:wrap;}
+.ms-legend .c{color:var(--C);} .ms-legend .i{color:var(--I);} .ms-legend .k{color:var(--K);} .ms-legend .s{color:var(--S);}
 
 /* FOOTER */
 footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px calc(40px + env(safe-area-inset-bottom, 0px));font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
@@ -309,11 +319,12 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         <article class="mob-slide" data-lens="21">
           <div class="ms-title">Last 21 epochs</div>
           <div class="ms-sub">recent activity</div>
+          <div class="ms-legend"><span class="c">ΩC Collective</span><span class="i">ΩI Individual</span><span class="k">ΩK Co-creative</span><span class="s">ΩS Silence</span></div>
           <div class="ms-donut" id="mobDonut21"></div>
           <div class="ms-stats">
-            <div class="ms-stat"><div class="ms-stat-label">Keys</div><div class="ms-stat-value" id="mobKeys21">–</div></div>
-            <div class="ms-stat"><div class="ms-stat-label">Canon</div><div class="ms-stat-value" id="mobCanon21">–</div></div>
-            <div class="ms-stat"><div class="ms-stat-label">Artefacts</div><div class="ms-stat-value" id="mobArt21">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Soulbound identities minted.">Keys Awakened</div><div class="ms-stat-value" id="mobKeys21">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Epochs marked as meaningful.">Canon Anchors</div><div class="ms-stat-value" id="mobCanon21">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Living mirrors of presence.">Artefacts</div><div class="ms-stat-value" id="mobArt21">–</div></div>
           </div>
           <div class="ms-divider"></div>
           <div class="ms-signal-label">Most Attested Signal</div>
@@ -323,11 +334,12 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         <article class="mob-slide" data-lens="210">
           <div class="ms-title">Last 210 epochs</div>
           <div class="ms-sub">structural view</div>
+          <div class="ms-legend"><span class="c">ΩC Collective</span><span class="i">ΩI Individual</span><span class="k">ΩK Co-creative</span><span class="s">ΩS Silence</span></div>
           <div class="ms-donut" id="mobDonut210"></div>
           <div class="ms-stats">
-            <div class="ms-stat"><div class="ms-stat-label">Keys</div><div class="ms-stat-value" id="mobKeys210">–</div></div>
-            <div class="ms-stat"><div class="ms-stat-label">Canon</div><div class="ms-stat-value" id="mobCanon210">–</div></div>
-            <div class="ms-stat"><div class="ms-stat-label">Artefacts</div><div class="ms-stat-value" id="mobArt210">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Soulbound identities minted.">Keys Awakened</div><div class="ms-stat-value" id="mobKeys210">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Epochs marked as meaningful.">Canon Anchors</div><div class="ms-stat-value" id="mobCanon210">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Living mirrors of presence.">Artefacts</div><div class="ms-stat-value" id="mobArt210">–</div></div>
           </div>
           <div class="ms-divider"></div>
           <div class="ms-signal-label">Most Attested Signal</div>
@@ -337,11 +349,12 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         <article class="mob-slide" data-lens="total">
           <div class="ms-title">Total</div>
           <div class="ms-sub">field memory</div>
+          <div class="ms-legend"><span class="c">ΩC Collective</span><span class="i">ΩI Individual</span><span class="k">ΩK Co-creative</span><span class="s">ΩS Silence</span></div>
           <div class="ms-donut" id="mobDonutTotal"></div>
           <div class="ms-stats">
-            <div class="ms-stat"><div class="ms-stat-label">Keys</div><div class="ms-stat-value" id="mobKeysTotal">–</div></div>
-            <div class="ms-stat"><div class="ms-stat-label">Canon</div><div class="ms-stat-value" id="mobCanonTotal">–</div></div>
-            <div class="ms-stat"><div class="ms-stat-label">Artefacts</div><div class="ms-stat-value" id="mobArtTotal">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Soulbound identities minted.">Keys Awakened</div><div class="ms-stat-value" id="mobKeysTotal">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Epochs marked as meaningful.">Canon Anchors</div><div class="ms-stat-value" id="mobCanonTotal">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label" data-tip="Living mirrors of presence.">Artefacts</div><div class="ms-stat-value" id="mobArtTotal">–</div></div>
           </div>
           <div class="ms-divider"></div>
           <div class="ms-signal-label">Most Attested Signal</div>
@@ -555,6 +568,22 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
 // Hamburger
 (function(){var b=document.getElementById("hamburger"),n=document.getElementById("navLinks");if(b&&n){b.addEventListener("click",function(){b.classList.toggle("open");n.classList.toggle("open");});n.addEventListener("click",function(e){if(e.target.tagName==="A"){b.classList.remove("open");n.classList.remove("open");}});}})();
+
+// Mobile stat tooltips (tap to show)
+(function(){
+  document.querySelectorAll(".ms-stat-label[data-tip]").forEach(function(el){
+    var tip=document.createElement("span");
+    tip.className="ms-stat-tip";
+    tip.textContent=el.getAttribute("data-tip");
+    el.appendChild(tip);
+    el.addEventListener("click",function(e){
+      e.stopPropagation();
+      document.querySelectorAll(".ms-stat-label.show-tip").forEach(function(o){if(o!==el)o.classList.remove("show-tip");});
+      el.classList.toggle("show-tip");
+    });
+  });
+  document.addEventListener("click",function(){document.querySelectorAll(".ms-stat-label.show-tip").forEach(function(o){o.classList.remove("show-tip");});});
+})();
 </script>
 <script src="js/gas-banner.js"></script>
 </body>
