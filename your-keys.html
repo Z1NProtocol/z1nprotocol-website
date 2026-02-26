@@ -903,7 +903,7 @@ footer .links a:hover{color:var(--text-main);}
 
   async function connectWallet() {
     var eth = getProvider();
-    if (!eth) { alert('Please install MetaMask or another Web3 wallet'); return; }
+    if (!eth) { alert('No wallet detected.\n\nOn mobile: open this page inside your wallet app (MetaMask → Browser tab).\n\nOn desktop: install MetaMask or another Web3 wallet and refresh.'); return; }
     showLoading('Connecting wallet...');
     try {
       var accounts = await eth.request({ method: 'eth_requestAccounts' });
@@ -912,7 +912,7 @@ footer .links a:hover{color:var(--text-main);}
   }
 
   async function addAnotherWallet() {
-    var eth = getProvider(); if (!eth) return;
+    var eth = getProvider(); if (!eth) { alert('No wallet detected.\n\nOn mobile: open this page inside your wallet app (MetaMask → Browser tab).\n\nOn desktop: install MetaMask or another Web3 wallet and refresh.'); return; }
     showLoading('Managing wallets...');
     try {
       await eth.request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] });
