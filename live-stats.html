@@ -155,9 +155,9 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .donut-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.45);box-shadow:0 6px 18px rgba(0,0,0,0.35),0 0 0 1px rgba(94,232,160,0.14),0 0 18px rgba(94,232,160,0.10);}
 .donut-card.active{border-color:rgba(94,232,160,0.85);box-shadow:0 10px 28px rgba(0,0,0,0.45),0 0 0 1px rgba(94,232,160,0.22),0 0 28px rgba(94,232,160,0.18);transform:translateY(-1px);}
 
-/* Mobile swipe */
+/* Mobile swipe donuts */
 .donut-swipe{display:none;margin-bottom:14px;}
-.swipe-track{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+.swipe-track{display:flex;gap:14px;overflow-x:auto;padding:2px 11% 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
 .swipe-track::-webkit-scrollbar{height:10px;}
 .swipe-track::-webkit-scrollbar-thumb{background:rgba(148,163,184,0.25);border-radius:999px;}
 .swipe-track::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);border-radius:999px;}
@@ -175,10 +175,17 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fc-sub{font-size:12px;color:var(--text-soft);opacity:1;line-height:1.55;text-align:center;}
 .field-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.35);box-shadow:0 6px 18px rgba(0,0,0,0.30),0 0 18px rgba(94,232,160,0.10);background-color:rgba(2,6,23,0.92);}
 @media(max-width:900px){.field-cards{grid-template-columns:repeat(3,minmax(0,1fr));}}
-@media(max-width:600px){.field-cards{grid-template-columns:1fr;max-width:78%;margin-left:auto;margin-right:auto;}}
+@media(max-width:600px){
+  .field-cards{grid-template-columns:1fr;max-width:78%;margin-left:auto;margin-right:auto;}
+  .field-card{padding:12px 16px;text-align:center;}
+  .fc-label{display:inline;height:auto;margin-bottom:0;margin-right:8px;font-size:11px;}
+  .fc-value{display:inline;height:auto;font-size:18px;line-height:1;margin-bottom:0;}
+  .fc-sub{margin-top:4px;}
+}
 
 /* MOST ATTESTED FIELD SIGNAL */
 .field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:14px 14px 16px;overflow:visible;position:relative;}
+@media(max-width:600px){.field-signal{max-width:78%;margin-left:auto;margin-right:auto;margin-top:16px;}}
 .field-signal::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 65%);opacity:0.9;}
 .field-signal>*{position:relative;}
 .fs-top{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:10px;}
@@ -319,7 +326,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     </section>
 </main>
 
-<<footer>
+<footer>
   <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
     <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
@@ -479,7 +486,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       });
     }
 
-    // Latest key (unicode-safe)
+    // Latest key — render glyphs instantly (no fly-in animation)
     if(data.latestKey){
       var gl = data.latestKey.glyphLine || "";
       var glyphs = Array.from(gl).filter(function(g){return g.trim();});
@@ -487,31 +494,13 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       var latestGlyphsEl = document.getElementById("latestGlyphs");
       if(latestKeyEl) latestKeyEl.textContent = "Z1N #" + data.latestKey.tokenId;
       if(latestGlyphsEl){
-        if(glyphs.length > 0 && !latestGlyphsEl.dataset.rendered){
-          latestGlyphsEl.dataset.rendered = "1";
-          latestGlyphsEl.textContent = "";
-          glyphs.forEach(function(g, i){
-            setTimeout(function(){
-              if(i > 0){
-                var dot = document.createElement("span");
-                dot.className = "dot";
-                dot.textContent = "·";
-                dot.style.opacity = "0";
-                dot.style.transition = "opacity 0.2s ease";
-                latestGlyphsEl.appendChild(dot);
-                requestAnimationFrame(function(){ dot.style.opacity = "1"; });
-              }
-              var span = document.createElement("span");
-              span.textContent = g;
-              span.style.opacity = "0";
-              span.style.transition = "opacity 0.25s ease";
-              latestGlyphsEl.appendChild(span);
-              requestAnimationFrame(function(){ span.style.opacity = "1"; });
-            }, i * 100);
-          });
-        } else if(glyphs.length > 0 && latestGlyphsEl.dataset.rendered){
-          // skip re-render on refresh
-        } else { latestGlyphsEl.textContent = "–"; }
+        if(glyphs.length > 0){
+          latestGlyphsEl.innerHTML = glyphs.map(function(g, i){
+            return (i > 0 ? '<span class="dot">·</span>' : '') + '<span>' + g + '</span>';
+          }).join('');
+        } else {
+          latestGlyphsEl.textContent = "–";
+        }
       }
     }
 
@@ -628,14 +617,11 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     });
 
     var io=new IntersectionObserver(function(entries){
-      // If user has locked a lens, do not override via swipe observer
-      if (activeKey === lockedKey) return;
-
       var best=null;
       entries.forEach(function(e){if(!best||e.intersectionRatio>best.intersectionRatio)best=e;});
       if(best&&best.isIntersecting){
         var key=best.target.getAttribute("data-key")||"total";
-        setActiveLens(key,{lock:false});
+        setActiveLens(key,{lock:true});
       }
     },{root:track,threshold:[0.35,0.5,0.65,0.8]});
 
