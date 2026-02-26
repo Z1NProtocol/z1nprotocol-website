@@ -184,7 +184,8 @@
   var libraryFilter = { status: 'all', search: '' };
   var keyGlyphsCache = {};
   var ownedViewMode = 'card';
-  var pendingArtefacts = [];
+var libraryViewMode = 'card';
+var pendingArtefacts = [];
   var pendingViewChanges = {};
   var lastOwnedSig = '';
   var lastSharedSig = '';
@@ -728,8 +729,12 @@
     var countRevoked = sharedWithMe.filter(function(a) { return a.status === 'revoked' || !a.viewingActive; }).length;
     
     var html = '<div class="artefact-section-header">' +
-      '<h3 class="section-title title-green">Received Artefacts <span class="count" style="color:var(--accent);">(' + sharedWithMe.length + ')</span></h3>' +
-    '</div>';
+  '<h3 class="section-title title-green">Received Artefacts <span class="count" style="color:var(--accent);">(' + sharedWithMe.length + ')</span></h3>' +
+  '<div class="header-actions">' +
+    '<button class="view-toggle' + (libraryViewMode === 'card' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryViewMode(\'card\')" title="Card view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">◦</button>' +
+    '<button class="view-toggle' + (libraryViewMode === 'list' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryViewMode(\'list\')" title="List view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">☰</button>' +
+  '</div>' +
+'</div>';
     
     if (showFilters) {
       html += '<div class="artefact-filter-bar">' +
@@ -750,7 +755,28 @@
       '</div>';
     } else if (filtered.length === 0) {
       html += '<div class="artefact-empty">No artefacts match your filters</div>';
-    } else {
+    } else if (libraryViewMode === 'list') {
+    html += '<div class="artefact-list-grid">';
+    filtered.forEach(function(art) {
+      var isRevoked = art.status === 'revoked' || !art.viewingActive;
+      var statusClass = isRevoked ? 'status-revoked' : 'status-received';
+      var statusLabel = isRevoked ? 'Revoked' : 'Received';
+      var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId +
+        '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId +
+        '&artefactTokenId=' + art.tokenId;
+      var hasNotif = hasUnreadNotification(art.tokenId);
+      html += '<div class="artefact-list-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
+        '<div class="list-card-preview">' +
+          (isRevoked ? '<div class="list-placeholder shared" style="color:#f87171;">◈</div>' : artImg(previewUrl, 'From Key #' + art.sourceKeyId)) +
+        '</div>' +
+        '<div class="list-card-meta">' +
+          '<div class="list-card-id">From #' + art.sourceKeyId + '</div>' +
+          '<div class="artefact-status ' + statusClass + '">' + statusLabel + '</div>' +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+  } else {
       html += '<div class="artefact-grid" id="sharedArtefactGrid">';
       filtered.forEach(function(art) {
         var isRevoked = art.status === 'revoked' || !art.viewingActive;
@@ -1170,6 +1196,12 @@
     renderOwnedSection();
   }
 
+  function setLibraryViewMode(mode) {
+  libraryViewMode = mode;
+  lastSharedSig = '';
+  renderSharedSection();
+}
+
   function filterLibrary() {
     var searchInput = document.getElementById('librarySearchInput');
     libraryFilter.search = searchInput ? searchInput.value.trim() : '';
@@ -1339,6 +1371,7 @@
     mint: mint,
     filterOwned: filterOwned,
     setOwnedFilter: setOwnedFilter,
+    setLibraryViewMode: setLibraryViewMode,
     setViewMode: setViewMode,
     filterLibrary: filterLibrary,
     setLibraryFilter: setLibraryFilter,
