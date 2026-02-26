@@ -245,6 +245,7 @@
     .toast{position:fixed;top:20px;right:20px;padding:14px 20px;background:rgba(255,213,86,0.95);color:#000;border-radius:10px;font-size:14px;font-weight:600;z-index:10000;opacity:0;transform:translateY(-20px);transition:all 0.3s ease;pointer-events:none}
     .toast.show{opacity:1;transform:translateY(0)}
     .toast.error{background:rgba(248,113,113,0.95);color:#fff}
+    .toast.info{background:rgba(30,58,95,0.95);border:1px solid #3b82f6;color:#93c5fd}
     .stealth-eye-tab{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;border:2px solid var(--accent);background:rgba(94,232,160,0.15);color:var(--accent)}
     .stealth-eye-tab:hover{transform:scale(1.1);background:rgba(94,232,160,0.25)}
     .stealth-eye-tab.active{border-color:#f87171;background:rgba(248,113,113,0.2);color:#f87171}
@@ -889,21 +890,6 @@
       </div>
     </div>
     
-  </div>
-  
-  <!-- Info Footer -->
-  <div style="margin-top:20px;padding:14px 16px;background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.15);border-radius:8px;">
-    <div style="display:flex;align-items:flex-start;gap:10px;font-size:11px;color:var(--text-soft);">
-      <span style="font-size:14px;color:#93c5fd;">ℹ</span>
-      <div>
-        <strong style="color:#93c5fd;">Claim Window:</strong> 
-        You have <strong>21 epochs</strong> to claim rewards after an epoch closes. Unclaimed rewards are recycled.
-        <br><br>
-        <strong style="color:#93c5fd;">Reward Split:</strong>
-        <span class="breakdown-item" style="cursor:help;">Presence<span class="info-icon">?</span><span class="breakdown-tooltip">Equal share for all 21 winners</span></span> + 
-        <span class="breakdown-item" style="cursor:help;">Attention<span class="info-icon">?</span><span class="breakdown-tooltip">Based on attestations × layer weight</span></span>
-      </div>
-    </div>
   </div>
   
 </div>

@@ -107,14 +107,15 @@ function showSafetyWarning(callback) {
   }
   return escaped; 
 }
-  function showToast(message, duration, isError) {
+  function showToast(message, duration, isError, isInfo) {
     var toast = document.getElementById('toast');
     if (!toast) return;
     toast.textContent = message;
-    toast.classList.remove('error');
+    toast.classList.remove('error', 'info');
     if (isError) toast.classList.add('error');
+    if (isInfo) toast.classList.add('info');
     toast.classList.add('show');
-    setTimeout(function() { toast.classList.remove('show', 'error'); }, duration || 3000);
+    setTimeout(function() { toast.classList.remove('show', 'error', 'info'); }, duration || 3000);
   }
   function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '—'; }
 
@@ -368,7 +369,7 @@ window.toggleGlobalStealth = function() {
       sigs.forEach(function(sig) {
         var card = document.createElement('div'); card.className = 'signal-card'; card.dataset.hash = sig.hash;
         var ic = (sig.intentSymbol || '').toLowerCase().replace('ω','o'), sg = getShortGlyphs(sig.keyId), gs = sg ? '<span style="font-size:11px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-        card.innerHTML = '<div class="signal-header"><div class="signal-meta"><span class="signal-key">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'">'+(sig.intentSymbol||'')+'</span><span class="signal-epoch">E'+sig.epoch+'</span><span style="color:#ffd556;">✓'+(sig.attestCount||0)+'</span></div><span class="signal-time">'+(sig.timeAgo||'')+'</span></div><div class="signal-content">'+escapeHtml(sig.cid||'[Silence]')+'</div><div class="signal-hash">'+sig.hash.slice(0,18)+'...</div>';
+        card.innerHTML = '<div class="signal-header"><div class="signal-meta"><span class="signal-key">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'">'+(sig.intentSymbol||'')+'</span><span class="signal-epoch">E'+sig.epoch+'</span><span style="color:#fbbf24;">✓'+(sig.attestCount||0)+'</span></div><span class="signal-time">'+(sig.timeAgo||'')+'</span></div><div class="signal-content">'+escapeHtml(sig.cid||'[Silence]')+'</div><div class="signal-hash">'+sig.hash.slice(0,18)+'...</div>';
         card.onclick = function() { document.querySelectorAll('#replySignalsList .signal-card.selected').forEach(function(el){ el.classList.remove('selected'); }); card.classList.add('selected'); replySelectedSignal = sig; if (selectBtn) selectBtn.disabled = false; };
         list.appendChild(card);
       });
@@ -791,7 +792,7 @@ window.filterAttestSignals = function() {
       var it = document.createElement('div'); it.className = 'attest-signal-item';
       it.onclick = function() { document.querySelectorAll('#attestSignalsListInline .attest-signal-item.selected').forEach(function(el){ el.classList.remove('selected'); }); it.classList.add('selected'); selectedAttestSignal = sig; if (info) info.innerHTML = 'Selected: <strong style="color:var(--keys-accent);">K#' + sig.keyId + '</strong>'; updateAttestBtn(); };
       var ic = ['oc','oi','ok','os'][sig.intent] || 'oc', isym = sig.intentSymbol || ['ΩC','ΩI','ΩK','ΩS'][sig.intent] || '?', sg = getShortGlyphs(sig.keyId), gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">'+sg+'</span>' : '';
-      it.innerHTML = '<div class="signal-top"><span style="color:var(--keys-accent);font-weight:600;font-size:11px;">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'" style="font-size:9px;">'+isym+'</span><span style="color:#ffd556;font-size:10px;">✓'+(sig.attestCount||0)+'</span><span style="font-size:9px;color:var(--text-soft);">'+(sig.timeAgo||'')+'</span></div><div class="signal-content" style="color:#fff;">'+escapeHtml(sig.cid||'[Silence]')+'</div>';
+      it.innerHTML = '<div class="signal-top"><span style="color:var(--keys-accent);font-weight:600;font-size:11px;">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'" style="font-size:9px;">'+isym+'</span><span style="color:#fbbf24;font-size:10px;">✓'+(sig.attestCount||0)+'</span><span style="font-size:9px;color:var(--text-soft);">'+(sig.timeAgo||'')+'</span></div><div class="signal-content" style="color:#fff;">'+escapeHtml(sig.cid||'[Silence]')+'</div>';
       list.appendChild(it);
     });
   }
@@ -1026,7 +1027,7 @@ if (sentAttestsCountEl) sentAttestsCountEl.textContent = '(' + attests.length + 
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = att.signalContent || att.signalCid || '[Signal]';
       
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#ffd556;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       list.appendChild(it);
     });
   } catch (e) { list.innerHTML = '<div style="padding:20px;text-align:center;color:#f87171;font-size:11px;">Error loading attestations</div>'; }
@@ -1083,7 +1084,7 @@ if (receivedAttestsCountTitleEl) receivedAttestsCountTitleEl.textContent = '(' +
       it.dataset.activityId = activityId;
       
       var fromKeyDisplay = att.fromKeyId !== null ? 'K#' + att.fromKeyId : (att.fromWallet ? att.fromWallet.slice(0,6) + '...' : '?');
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#ffd556;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.fromKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.fromKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       
       // Click to mark as read
       it.addEventListener('click', function() {
@@ -1111,7 +1112,7 @@ window.filterReceivedAttests = function() {
     var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
     var content = att.signalContent || att.signalCid || '[Your signal]';
     var fromKeyDisplay = att.fromKeyId !== null ? 'K#' + att.fromKeyId : (att.fromWallet ? att.fromWallet.slice(0,6) + '...' : '?');
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#ffd556;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;">'+escapeHtml(content)+'</div></div><span class="signal-time">'+(att.timeAgo||'')+'</span>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;">'+escapeHtml(content)+'</div></div><span class="signal-time">'+(att.timeAgo||'')+'</span>';
     list.appendChild(it);
   });
 };
@@ -2186,7 +2187,7 @@ function renderActivityItem(activity) {
     case 'treasury_claimable':
       iconClass = 'treasury';
       icon = '⬡';
-      title = 'Reward available <strong>E' + (activity.epoch || '?') + '</strong>';
+      title = 'Claimable event · <strong>Epoch ' + (activity.epoch || '?') + '</strong>';
       preview = activity.amount ? activity.amount + ' POL' : '';
       break;
       
@@ -2201,7 +2202,7 @@ function renderActivityItem(activity) {
     epochBadge = ' <span style="font-size:10px;color:var(--text-soft);font-weight:400;">· E' + activity.epoch + '</span>';
   }
   if (activity.attestCount > 0) {
-    epochBadge += ' <span style="font-size:10px;color:#ffd556;">✓' + activity.attestCount + '</span>';
+    epochBadge += ' <span style="font-size:10px;color:#fbbf24;">✓' + activity.attestCount + '</span>';
   }
   
   // Build HTML
@@ -2434,8 +2435,8 @@ function updateTabBadges() {
     return a.type === 'reply_received' && !ActivityFeed.readItems.has(a.id);
   }).length;
   
-  var unreadArtefacts = ActivityFeed.activities.filter(function(a) {
-    return a.type === 'artefact_received' && !ActivityFeed.readItems.has(a.id);
+   var unreadArtefacts = ActivityFeed.activities.filter(function(a) {
+    return a.type.indexOf('artefact') !== -1 && a.direction === 'received' && !ActivityFeed.readItems.has(a.id);
   }).length;
 
   // Whispers badge (inside tab content)
@@ -2452,18 +2453,26 @@ function updateTabBadges() {
     artefactBadge.classList.toggle('hidden', unreadArtefacts === 0);
   }
 
-  // Artefacts tab-nav badge
+  // Artefacts tab-nav badge — use direct count from artefact data if ActivityFeed has none
+  var artefactBadgeCount = unreadArtefacts;
+  if (artefactBadgeCount === 0 && typeof allLiveArtefacts !== 'undefined') {
+    var receivedArts = allLiveArtefacts.filter(function(a) { return a.isReceived || (a.fromKeyId && a.fromKeyId !== currentKeyId); });
+    receivedArts.forEach(function(a) {
+      var artId = 'artefact_recv_' + a.tokenId;
+      if (!ActivityFeed.readItems.has(artId)) artefactBadgeCount++;
+    });
+  }
   var artefactsTab = document.querySelector('.tab-btn[onclick*="artefacts"]');
   if (artefactsTab) {
     var existingBadge = artefactsTab.querySelector('.tab-badge');
-    if (unreadArtefacts > 0) {
+    if (artefactBadgeCount > 0) {
       if (!existingBadge) {
         var badge = document.createElement('span');
         badge.className = 'tab-badge';
-        badge.textContent = unreadArtefacts;
+        badge.textContent = artefactBadgeCount;
         artefactsTab.appendChild(badge);
       } else {
-        existingBadge.textContent = unreadArtefacts;
+        existingBadge.textContent = artefactBadgeCount;
         existingBadge.classList.remove('hidden');
       }
     } else if (existingBadge) {
@@ -2615,7 +2624,7 @@ async function loadTreasuryData() {
     });
     
     var totalClaimable = parseFloat(data.totalClaimableFormatted || '0');
-if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
+if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '0';
     if (claimableCountEl) claimableCountEl.textContent = '(' + claimableEpochsData.length + ')';
     
     if (claimableBox) claimableBox.classList.toggle('has-claimable', totalClaimable > 0);
@@ -2631,6 +2640,7 @@ if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.t
    renderClaimableEpochs();
     await loadClaimedEpochs();
     updateTabBadges();
+    if (ActivityFeed.loaded) { loadActivityFeed(); }
     
   } catch (e) {
     console.error('Treasury load error:', e);
@@ -2697,18 +2707,18 @@ function renderClaimableEpochs() {
     var deadlineClass = '';
     var deadlineText = '';
     if (epochsRemaining <= 0) { deadlineClass = 'danger'; deadlineText = '⚠️ Expires soon!'; }
-    else if (epochsRemaining <= 3) { deadlineClass = 'danger'; deadlineText = epochsRemaining + ' epoch' + (epochsRemaining === 1 ? '' : 's') + ' left!'; }
-    else if (epochsRemaining <= 7) { deadlineClass = 'warning'; deadlineText = epochsRemaining + ' epochs left'; }
-    else { deadlineText = epochsRemaining + ' epochs left'; }
+    else if (epochsRemaining <= 3) { deadlineClass = 'danger'; deadlineText = epochsRemaining + ' Epoch' + (epochsRemaining === 1 ? '' : 's') + ' left to claim!'; }
+    else if (epochsRemaining <= 7) { deadlineClass = 'warning'; deadlineText = epochsRemaining + ' Epochs left to claim'; }
+    else { deadlineText = epochsRemaining + ' Epochs left to claim'; }
     
     var itemClass = 'treasury-epoch-item';
     if (epochsRemaining <= 3 && epochsRemaining > 0) itemClass += ' urgent';
     if (status) itemClass += ' claiming';
     
     html += '<div class="' + itemClass + '" id="epoch-item-' + epoch.epochId + '">';
-    html += '<div class="epoch-item-header"><span class="epoch-item-id">E' + epoch.epochId + (status ? ' <span class="epoch-status ' + statusClass + '">' + status + '</span>' : '') + '</span><span class="epoch-item-amount">' + amount + ' POL</span></div>';
-    html += '<div class="epoch-item-breakdown"><span class="breakdown-item">Presence: ' + presence + '<span class="info-icon">ⓘ</span><span class="breakdown-tooltip">Base share: Equal for all 21 winners</span></span><span class="breakdown-item">Attention: ' + attention + '<span class="info-icon">ⓘ</span><span class="breakdown-tooltip">Weighted: attestations × layer multiplier</span></span><span class="epoch-deadline ' + deadlineClass + '">⏱ ' + deadlineText + '</span></div>';
-  html += '<div class="epoch-item-actions"><button class="btn-epoch claim" onclick="claimSingleReward(' + epoch.epochId + ',\'self\')" ' + (status ? 'disabled' : '') + '>Self</button><button class="btn-epoch recycle" onclick="claimSingleReward(' + epoch.epochId + ',\'recycle\')" ' + (status ? 'disabled' : '') + ' title="Recycle to next epoch">Field</button><button class="btn-epoch nexus" onclick="claimSingleReward(' + epoch.epochId + ',\'nexus\')" ' + (status ? 'disabled' : '') + ' title="Donate to Nexus">Nexus</button></div>';
+    html += '<div class="epoch-item-header"><span class="epoch-item-id">Epoch ' + epoch.epochId + (status ? ' <span class="epoch-status ' + statusClass + '">' + status + '</span>' : '') + '</span><span class="epoch-item-amount">' + amount + ' POL</span></div>';
+    html += '<div class="epoch-item-breakdown"><span class="breakdown-item">Presence: ' + presence + '<span class="info-icon" style="position:relative;">ⓘ<span class="breakdown-tooltip" style="left:0;right:auto;transform:none;">Base share: Equal for all 21 winners</span></span></span><span class="breakdown-item">Attention: ' + attention + '<span class="info-icon">ⓘ</span><span class="breakdown-tooltip">Weighted: attestations × layer multiplier</span></span><span class="epoch-deadline ' + deadlineClass + '">⏱ ' + deadlineText + '</span></div>';
+  html += '<div class="epoch-item-actions"><button class="btn-epoch claim" onclick="claimSingleReward(' + epoch.epochId + ',\'self\')" ' + (status ? 'disabled' : '') + '>Claim Self</button><button class="btn-epoch recycle" onclick="claimSingleReward(' + epoch.epochId + ',\'recycle\')" ' + (status ? 'disabled' : '') + ' title="Recycle to next epoch">Field</button><button class="btn-epoch nexus" onclick="claimSingleReward(' + epoch.epochId + ',\'nexus\')" ' + (status ? 'disabled' : '') + ' title="Donate to Nexus">Nexus</button></div>';
     html += '</div>';
   });
   
@@ -2794,7 +2804,7 @@ async function claimSingleReward(epochId, claimType) {
     updateEpochStatus(epochId, 'Confirming...', 'pending');
     var confirmed = await waitForTransaction(txHash, 60);
     if (confirmed) {
-      updateEpochStatus(epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#7bb8fc">✓ tx</a>', 'success');
+      updateEpochStatus(epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#93c5fd">✓ tx</a>', 'success');
       saveClaimedEpoch(epochId, epochData.amountFormatted, claimType);
       claimableEpochsData = claimableEpochsData.filter(function(e) { return e.epochId !== epochId; });
       var claimableCountEl = document.getElementById('treasuryClaimableCount');
@@ -2857,7 +2867,7 @@ async function executeClaimAll(claimType) {
     var txHash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: currentAccount, to: claimData.to, data: claimData.data, gas: estimatedGas }] });
       updateEpochStatus(epoch.epochId, 'Confirming...', 'pending');
       var confirmed = await waitForTransaction(txHash, 60);
-    if (confirmed) { updateEpochStatus(epoch.epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#7bb8fc">✓ tx</a>', 'success'); saveClaimedEpoch(epoch.epochId, epoch.amountFormatted, claimType); completed++; }
+    if (confirmed) { updateEpochStatus(epoch.epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#93c5fd">✓ tx</a>', 'success'); saveClaimedEpoch(epoch.epochId, epoch.amountFormatted, claimType); completed++; }
       else { throw new Error('Not confirmed'); }
     } catch (e) {
       var msg = e.message || 'Failed';
