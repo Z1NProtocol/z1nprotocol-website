@@ -89,20 +89,16 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .hamburger.open span:nth-child(2){opacity:0;}
 .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 @media(max-width:900px){
-      .nav-inner{ padding:0 16px; }
-      .hamburger{ display:flex; }
-      .nav-links{
-        display:none; position:absolute; top:72px; left:0; right:0;
-        background:rgba(10,15,26,0.98);
-backdrop-filter:blur(12px);
--webkit-backdrop-filter:blur(12px);
-        border-bottom:1px solid rgba(148,163,184,0.2);
-        box-shadow:0 12px 32px rgba(0,0,0,0.6);
-        flex-direction:column; padding:16px 24px 20px;
-        gap:14px; font-size:14px; z-index:100; opacity:1;
-      }
-      .nav-links.open{ display:flex; }
-    }
+  .nav-inner{padding:0 16px;}
+  .hamburger{display:flex;}
+  .nav-links{
+    display:none;position:absolute;top:72px;left:0;right:0;
+    background:rgba(10,15,26,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);
+    flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;
+  }
+  .nav-links.open{display:flex;}
+}
 
 /* PAGE */
 .page{max-width:1200px;margin:0 auto;padding:40px 24px 32px;}
@@ -113,26 +109,19 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 
 /* LATEST KEY BAR */
 .latest-wrap{width:100%;margin:10px 0 18px;}
-.latest-frame{position:relative;width:100%;overflow:hidden;border-radius:0;border:none;border-top:1px solid rgba(148,163,184,0.12);border-bottom:1px solid rgba(148,163,184,0.12);background:none;padding:18px 16px;--mx:50%;--my:50%;}
+.latest-frame{position:relative;width:100%;overflow:hidden;border-top:1px solid rgba(148,163,184,0.12);border-bottom:1px solid rgba(148,163,184,0.12);padding:18px 16px;--mx:50%;--my:50%;}
 .latest-spot{pointer-events:none;position:absolute;inset:-45%;background:radial-gradient(220px 110px at var(--mx) var(--my),rgba(94,232,160,0.22),rgba(94,232,160,0.08) 38%,rgba(94,232,160,0) 70%);opacity:0;transition:opacity 160ms ease;}
 .latest-frame:hover .latest-spot{opacity:1;}
-.latest-row{display:flex;align-items:center;justify-content:center;gap:14px;}
-.latest-left{min-width:240px;text-align:center;width:100%;}
+.latest-row{display:flex;align-items:center;justify-content:center;}
+.latest-left{text-align:center;width:100%;}
 .latest-headline{font-size:13px;margin-bottom:8px;}
 .latest-headline .ep-label{color:var(--text-soft);font-weight:700;}
 .latest-headline .ep-value{color:var(--text-soft);font-weight:700;}
 .latest-headline .hl-sep{color:var(--text-soft);opacity:0.4;}
 .latest-headline .hl-title{color:var(--text-soft);font-weight:700;text-transform:uppercase;letter-spacing:0.12em;font-size:11px;}
-.latest-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.72);opacity:0.85;margin-bottom:6px;}
 .latest-key{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
-.latest-sub{font-size:12px;color:var(--text-soft);opacity:0.85;}
 .latest-glyphs{font-size:20px;letter-spacing:0.04em;margin-top:4px;margin-bottom:4px;font-weight:700;color:#ffffff;}
 .latest-glyphs .dot{color:rgba(148,163,184,0.55);padding:0 5px;}
-.epoch-badge{font-size:12px;color:rgba(255,255,255,0.75);border:1px solid rgba(148,163,184,0.22);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);white-space:nowrap;display:inline-block;}
-.epoch-row{margin:10px 0 10px;}
-@media(max-width:900px){
-  .latest-row{flex-direction:column;align-items:flex-start;}
-}
 
 /* INTENT LEGEND */
 .intent-legend{width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 14px;user-select:none;}
@@ -141,7 +130,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 @media(max-width:600px){.intent-legend .row{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:12px;justify-items:center;}}
 .intent-legend .c{color:var(--C);} .intent-legend .i{color:var(--I);} .intent-legend .k{color:var(--K);} .intent-legend .s{color:var(--S);}
 
-/* DONUT GRID — 3 columns */
+/* ═══ DESKTOP ONLY ═══ */
 .donut-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:18px;}
 .donut-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:14px 14px 16px;position:relative;overflow:hidden;cursor:pointer;transition:transform 220ms ease,box-shadow 220ms ease,border-color 220ms ease;}
 .donut-card::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 62%);opacity:0.85;}
@@ -151,41 +140,20 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .donut-top .sub{font-size:12px;color:var(--text-soft);white-space:nowrap;}
 .donut-mid{display:flex;align-items:center;justify-content:center;padding:4px 0 2px;}
 .donut-svg{width:150px;height:150px;display:block;}
-.donut-center-win{font-size:20px;font-weight:800;letter-spacing:0.01em;}
 .donut-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.45);box-shadow:0 6px 18px rgba(0,0,0,0.35),0 0 0 1px rgba(94,232,160,0.14),0 0 18px rgba(94,232,160,0.10);}
 .donut-card.active{border-color:rgba(94,232,160,0.85);box-shadow:0 10px 28px rgba(0,0,0,0.45),0 0 0 1px rgba(94,232,160,0.22),0 0 28px rgba(94,232,160,0.18);transform:translateY(-1px);}
 
-/* Mobile swipe donuts */
-.donut-swipe{display:none;margin-bottom:14px;}
-.swipe-track{display:flex;gap:14px;overflow-x:auto;padding:2px 11% 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
-.swipe-track::-webkit-scrollbar{height:10px;}
-.swipe-track::-webkit-scrollbar-thumb{background:rgba(148,163,184,0.25);border-radius:999px;}
-.swipe-track::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);border-radius:999px;}
-.donut-card.swipe{flex:0 0 78%;scroll-snap-align:center;}
-.swipe-hint{font-size:12px;color:var(--text-soft);margin-top:6px;opacity:0.9;text-align:center;}
-@media(max-width:900px){.donut-grid{display:none;} .donut-swipe{display:block;}}
-
-/* FIELD CARDS — 3 columns */
-.field-cards{margin-top:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%;}
+.desktop-below{margin-top:10px;}
+.field-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%;}
 .field-card{background:var(--card-bg);border-radius:16px;border:1px solid var(--card-border);padding:14px 14px 16px;font-size:13px;transition:border-color 220ms ease,box-shadow 220ms ease,transform 220ms ease,background-color 220ms ease;position:relative;overflow:hidden;}
 .field-card::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:16px;background:radial-gradient(circle at top,rgba(94,232,160,0.08),rgba(2,6,23,0) 62%);opacity:0.9;}
 .field-card>*{position:relative;}
 .fc-label{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;margin-bottom:6px;height:18px;display:flex;align-items:flex-end;justify-content:center;}
 .fc-value{font-size:22px;font-weight:700;margin-bottom:4px;height:32px;line-height:32px;text-align:center;}
-.fc-sub{font-size:12px;color:var(--text-soft);opacity:1;line-height:1.55;text-align:center;}
+.fc-sub{font-size:12px;color:var(--text-soft);line-height:1.55;text-align:center;}
 .field-card:hover{transform:translateY(-2px);border-color:rgba(94,232,160,0.35);box-shadow:0 6px 18px rgba(0,0,0,0.30),0 0 18px rgba(94,232,160,0.10);background-color:rgba(2,6,23,0.92);}
-@media(max-width:900px){.field-cards{grid-template-columns:repeat(3,minmax(0,1fr));}}
-@media(max-width:600px){
-  .field-cards{grid-template-columns:1fr;max-width:78%;margin-left:auto;margin-right:auto;}
-  .field-card{padding:12px 16px;text-align:center;}
-  .fc-label{display:inline;height:auto;margin-bottom:0;margin-right:8px;font-size:11px;}
-  .fc-value{display:inline;height:auto;font-size:18px;line-height:1;margin-bottom:0;}
-  .fc-sub{margin-top:4px;}
-}
 
-/* MOST ATTESTED FIELD SIGNAL */
 .field-signal{margin-top:18px;background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);padding:14px 14px 16px;overflow:visible;position:relative;}
-@media(max-width:600px){.field-signal{max-width:78%;margin-left:auto;margin-right:auto;margin-top:16px;}}
 .field-signal::before{content:"";position:absolute;inset:-1px;pointer-events:none;border-radius:18px;background:radial-gradient(circle at top,rgba(94,232,160,0.10),rgba(2,6,23,0) 65%);opacity:0.9;}
 .field-signal>*{position:relative;}
 .fs-top{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:10px;}
@@ -194,9 +162,41 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-headline .ep-value{color:var(--text-soft);font-weight:700;}
 .fs-headline .hl-sep{color:var(--text-soft);opacity:0.4;}
 .fs-headline .hl-title{color:var(--text-soft);font-weight:600;font-size:13px;letter-spacing:0.02em;}
-.fs-title{font-size:13px;color:var(--text-soft);font-weight:600;letter-spacing:0.02em;}
-.fs-body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
+.fs-body{font-size:13px;line-height:1.65;opacity:0.92;max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
 .epoch-tooltip{position:fixed;display:none;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text-soft);max-width:280px;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:1000;pointer-events:none;}
+
+/* ═══ MOBILE CAROUSEL ═══ */
+.mob-wrap{display:none;}
+@media(max-width:900px){
+  .donut-grid,.desktop-below{display:none !important;}
+  .mob-wrap{display:block;margin-top:4px;}
+}
+.mob-controls{display:flex;justify-content:center;align-items:center;gap:12px;margin-bottom:12px;}
+.mob-dots{display:flex;gap:10px;}
+.mob-dot{width:14px;height:14px;border-radius:999px;border:1.5px solid rgba(148,163,184,0.6);background:transparent;cursor:pointer;transition:background 0.2s,transform 0.2s,border-color 0.2s;padding:0;}
+.mob-dot:hover{border-color:var(--accent);transform:scale(1.1);}
+.mob-dot.active{background:radial-gradient(circle at 30% 30%,var(--accent),var(--accent-soft));border-color:var(--accent-soft);transform:scale(1.12);}
+.mob-arrows{display:flex;gap:8px;}
+.mob-arrow{width:32px;height:32px;border-radius:999px;border:1px solid rgba(148,163,184,0.3);background:rgba(255,255,255,0.03);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-soft);font-size:16px;transition:border-color 0.2s,color 0.2s;}
+.mob-arrow:hover{border-color:var(--accent);color:var(--accent);}
+.mob-arrow:disabled{opacity:0.25;cursor:default;}
+
+.mob-carousel{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--card-border);background:radial-gradient(circle at top,rgba(94,232,160,0.06),transparent 60%);touch-action:pan-y;}
+.mob-track{display:flex;transition:transform 0.4s ease;will-change:transform;}
+.mob-slide{flex:0 0 100%;min-width:100%;padding:22px 20px 24px;}
+
+.ms-title{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.75);font-weight:700;text-align:center;margin-bottom:4px;}
+.ms-sub{font-size:12px;color:var(--text-soft);text-align:center;margin-bottom:14px;}
+.ms-donut{display:flex;justify-content:center;margin-bottom:18px;}
+.ms-donut .donut-svg{width:160px;height:160px;}
+.ms-stats{display:flex;justify-content:center;gap:28px;margin-bottom:18px;}
+.ms-stat{text-align:center;}
+.ms-stat-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-soft);font-weight:700;margin-bottom:2px;}
+.ms-stat-value{font-size:20px;font-weight:700;}
+.ms-divider{width:40px;height:1px;background:rgba(148,163,184,0.2);margin:0 auto 14px;}
+.ms-signal-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-soft);font-weight:600;text-align:center;margin-bottom:6px;}
+.ms-signal-epoch{font-size:12px;color:var(--text-soft);text-align:center;margin-bottom:6px;}
+.ms-signal-body{font-size:13px;line-height:1.6;opacity:0.92;text-align:center;white-space:pre-wrap;word-break:break-word;}
 
 /* FOOTER */
 footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px calc(40px + env(safe-area-inset-bottom, 0px));font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
@@ -212,9 +212,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 .contract-addr{font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;font-size:10px;word-break:break-all;transition:color 0.2s;color:var(--text-soft);}
 .contract-addr:hover{color:var(--text-main);text-decoration:underline;}
 .contract-sep{color:var(--text-soft);opacity:0.3;margin:0 4px;}
-@media(max-width:600px){
-  .contract-addr{font-size:9px;}
-}
+@media(max-width:600px){.contract-addr{font-size:9px;}}
 
 @keyframes shimmer{0%{opacity:0.4;}50%{opacity:0.8;}100%{opacity:0.4;}}
 .loading{animation:shimmer 1.5s ease-in-out infinite;}
@@ -248,12 +246,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
 <main class="page">
   <h1>Live Stats of the Field</h1>
-  <p class="lead">
-    Read the Field through signals and intents. View the number of awakened Keys, their relational Artefacts, and Canon Anchor mints.
-  </p>
-  <p class="lead-small">
-    Hover to preview. Click to lock a status. On mobile: swipe to shift the lens.
-  </p>
+  <p class="lead">Read the Field through signals and intents. View the number of awakened Keys, their relational Artefacts, and Canon Anchor mints.</p>
+  <p class="lead-small">Hover to preview. Click to lock a lens. On mobile: swipe to shift.</p>
 
   <!-- Latest Key -->
   <section class="latest-wrap" aria-label="Latest minted Key">
@@ -280,50 +274,83 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     </div>
   </div>
 
-  <!-- Desktop donuts: 3 lenses -->
+  <!-- DESKTOP: 3 donut cards -->
   <section class="donut-grid" aria-label="Intent mix donuts">
     <article class="donut-card" data-key="21" data-window="Last 21 epochs" data-sub="recent activity" data-c="25" data-i="25" data-k="25" data-s="25"></article>
     <article class="donut-card" data-key="210" data-window="Last 210 epochs" data-sub="structural view" data-c="25" data-i="25" data-k="25" data-s="25"></article>
     <article class="donut-card" data-key="total" data-window="Total" data-sub="field memory" data-c="25" data-i="25" data-k="25" data-s="25"></article>
   </section>
 
-  <!-- Mobile swipe donuts -->
-  <section class="donut-swipe" aria-label="Intent mix donuts (mobile)">
-    <div class="swipe-track" id="swipeTrack">
-      <article class="donut-card swipe" data-key="21" data-window="Last 21 epochs" data-sub="recent activity" data-c="25" data-i="25" data-k="25" data-s="25"></article>
-      <article class="donut-card swipe" data-key="210" data-window="Last 210 epochs" data-sub="active memory" data-c="25" data-i="25" data-k="25" data-s="25"></article>
-      <article class="donut-card swipe" data-key="total" data-window="Total" data-sub="field memory" data-c="25" data-i="25" data-k="25" data-s="25"></article>
-    </div>
-    <div class="swipe-hint">Swipe → the lens updates automatically</div>
-  </section>
-
-  <!-- Current Epoch + 3 Field Cards -->
-  <section class="field-cards" aria-label="Field cards">
-    <div class="field-card">
-      <div class="fc-label">Keys Awakened</div>
-      <div class="fc-value loading" id="vKeys">–</div>
-      <div class="fc-sub">Soulbound identities minted.</div>
-    </div>
-    <div class="field-card">
-      <div class="fc-label">Canon Anchors</div>
-      <div class="fc-value loading" id="vCanon">–</div>
-      <div class="fc-sub">Epochs marked as meaningful.</div>
-    </div>
-    <div class="field-card">
-      <div class="fc-label">Artefacts</div>
-      <div class="fc-value loading" id="vArtefacts">–</div>
-      <div class="fc-sub">Living mirrors of presence.</div>
-    </div>
-  </section>
-
-  <!-- Most Attested Field Signal -->
-  <div class="epoch-tooltip" id="epochTooltip">The most attested signal is always from 2 epochs prior — attestation requires one full epoch window.</div>
-  <section class="field-signal" aria-label="Most Attested Field Signal">
-    <div class="fs-top">
-      <div class="fs-headline" id="fsEpoch" style="cursor:help;"><span class="ep-label">Epoch </span><span class="ep-value">–</span><span class="hl-sep">  —  </span><span class="hl-title">Most Attested Field Signal</span></div>
-    </div>
-    <div class="fs-body" id="fsBody">Loading...</div>
+  <!-- DESKTOP: field cards + signal -->
+  <div class="desktop-below">
+    <section class="field-cards" aria-label="Field cards">
+      <div class="field-card"><div class="fc-label">Keys Awakened</div><div class="fc-value loading" id="vKeys">–</div><div class="fc-sub">Soulbound identities minted.</div></div>
+      <div class="field-card"><div class="fc-label">Canon Anchors</div><div class="fc-value loading" id="vCanon">–</div><div class="fc-sub">Epochs marked as meaningful.</div></div>
+      <div class="field-card"><div class="fc-label">Artefacts</div><div class="fc-value loading" id="vArtefacts">–</div><div class="fc-sub">Living mirrors of presence.</div></div>
     </section>
+    <div class="epoch-tooltip" id="epochTooltip">The most attested signal is always from 2 epochs prior — attestation requires one full epoch window.</div>
+    <section class="field-signal" aria-label="Most Attested Field Signal">
+      <div class="fs-top"><div class="fs-headline" id="fsEpoch" style="cursor:help;"><span class="ep-label">Epoch </span><span class="ep-value">–</span><span class="hl-sep">  —  </span><span class="hl-title">Most Attested Field Signal</span></div></div>
+      <div class="fs-body" id="fsBody">Loading...</div>
+    </section>
+  </div>
+
+  <!-- MOBILE: full-lens carousel -->
+  <div class="mob-wrap" id="mobWrap">
+    <div class="mob-controls">
+      <div class="mob-dots" id="mobDots"></div>
+      <div class="mob-arrows">
+        <button class="mob-arrow" id="mobPrev" type="button" aria-label="Previous">‹</button>
+        <button class="mob-arrow" id="mobNext" type="button" aria-label="Next">›</button>
+      </div>
+    </div>
+    <section class="mob-carousel" id="mobCarousel" aria-label="Mobile lens carousel">
+      <div class="mob-track" id="mobTrack">
+        <article class="mob-slide" data-lens="21">
+          <div class="ms-title">Last 21 epochs</div>
+          <div class="ms-sub">recent activity</div>
+          <div class="ms-donut" id="mobDonut21"></div>
+          <div class="ms-stats">
+            <div class="ms-stat"><div class="ms-stat-label">Keys</div><div class="ms-stat-value" id="mobKeys21">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label">Canon</div><div class="ms-stat-value" id="mobCanon21">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label">Artefacts</div><div class="ms-stat-value" id="mobArt21">–</div></div>
+          </div>
+          <div class="ms-divider"></div>
+          <div class="ms-signal-label">Most Attested Signal</div>
+          <div class="ms-signal-epoch" id="mobSigEp21">–</div>
+          <div class="ms-signal-body" id="mobSigBody21">Loading...</div>
+        </article>
+        <article class="mob-slide" data-lens="210">
+          <div class="ms-title">Last 210 epochs</div>
+          <div class="ms-sub">structural view</div>
+          <div class="ms-donut" id="mobDonut210"></div>
+          <div class="ms-stats">
+            <div class="ms-stat"><div class="ms-stat-label">Keys</div><div class="ms-stat-value" id="mobKeys210">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label">Canon</div><div class="ms-stat-value" id="mobCanon210">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label">Artefacts</div><div class="ms-stat-value" id="mobArt210">–</div></div>
+          </div>
+          <div class="ms-divider"></div>
+          <div class="ms-signal-label">Most Attested Signal</div>
+          <div class="ms-signal-epoch" id="mobSigEp210">–</div>
+          <div class="ms-signal-body" id="mobSigBody210">Loading...</div>
+        </article>
+        <article class="mob-slide" data-lens="total">
+          <div class="ms-title">Total</div>
+          <div class="ms-sub">field memory</div>
+          <div class="ms-donut" id="mobDonutTotal"></div>
+          <div class="ms-stats">
+            <div class="ms-stat"><div class="ms-stat-label">Keys</div><div class="ms-stat-value" id="mobKeysTotal">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label">Canon</div><div class="ms-stat-value" id="mobCanonTotal">–</div></div>
+            <div class="ms-stat"><div class="ms-stat-label">Artefacts</div><div class="ms-stat-value" id="mobArtTotal">–</div></div>
+          </div>
+          <div class="ms-divider"></div>
+          <div class="ms-signal-label">Most Attested Signal</div>
+          <div class="ms-signal-epoch" id="mobSigEpTotal">–</div>
+          <div class="ms-signal-body" id="mobSigBodyTotal">Loading...</div>
+        </article>
+      </div>
+    </section>
+  </div>
 </main>
 
 <footer>
@@ -351,325 +378,183 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   var API_BASE = "https://z1n-backend-production.up.railway.app/api";
   var FALLBACK_API = "http://localhost:3001/api";
   var COLORS = {C:"#5ee8a0",I:"#f87171",K:"#ffd556",S:"#7bb8fc"};
-  var INTENT_NAMES = {C:"ΩC",I:"ΩI",K:"ΩK",S:"ΩS"};
   var ORDER = ["C","I","K","S"];
-  var r = 51;
-  var circumference = 2 * Math.PI * r;
+  var r = 51, circumference = 2*Math.PI*r;
   var HAS_HOVER = window.matchMedia && window.matchMedia("(hover:hover)").matches;
 
-  // State
-  var lockedKey = "total";
-  var activeKey = lockedKey;
-  var hasRenderedFirst = false;
+  var lockedKey = "total", activeKey = lockedKey, hasRenderedFirst = false;
 
-  // ═══ LENS DATA ═══
   var LENS_DATA = {};
   ["21","210","total"].forEach(function(k){
-    LENS_DATA[k] = {
-      cards: {keys:"–",canon:"–",artefacts:"–"},
-      signal: {epoch:"–",intent:null,body:"No signals yet.",cid:null,weight:0,tokenId:null}
-    };
+    LENS_DATA[k] = {cards:{keys:"–",canon:"–",artefacts:"–"}, intents:{C:25,I:25,K:25,S:25}, signal:{epoch:"–",body:"No signals yet."}};
   });
 
-  // ═══ HELPERS ═══
   function fmtNum(n){
     if(n===undefined||n===null)return "–";
-    var num = typeof n==="number"?n:(parseInt(String(n),10)||0);
+    var num=typeof n==="number"?n:(parseInt(String(n),10)||0);
     return String(num).replace(/\B(?=(\d{3})+(?!\d))/g," ");
   }
   function stopLoading(el){if(el)el.classList.remove("loading");}
-
-  function countUp(el,target,duration){
+  function countUp(el,target,dur){
     var num=typeof target==="number"?target:(parseInt(String(target),10)||0);
-    if(!el){return;} stopLoading(el);
+    if(!el)return; stopLoading(el);
     if(isNaN(num)){el.textContent="–";return;}
-    if(duration<=0){el.textContent=fmtNum(num);return;}
-    var startTime=null;
-    function step(ts){
-      if(!startTime)startTime=ts;
-      var p=Math.min((ts-startTime)/duration,1);
-      var eased=1-Math.pow(1-p,3);
-      el.textContent=fmtNum(Math.round(eased*num));
-      if(p<1)requestAnimationFrame(step);
-    }
+    if(dur<=0){el.textContent=fmtNum(num);return;}
+    var t0=null;
+    function step(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/dur,1);el.textContent=fmtNum(Math.round((1-Math.pow(1-p,3))*num));if(p<1)requestAnimationFrame(step);}
     requestAnimationFrame(step);
   }
+  function fetchT(url,ms){
+    if(window.AbortSignal&&typeof AbortSignal.timeout==="function")return fetch(url,{signal:AbortSignal.timeout(ms)});
+    var c=new AbortController(),id=setTimeout(function(){c.abort();},ms);
+    return fetch(url,{signal:c.signal}).finally(function(){clearTimeout(id);});
+  }
 
-  // Timeout-safe fetch (AbortSignal.timeout fallback)
-  function fetchWithTimeout(url, ms){
-    if (window.AbortSignal && typeof AbortSignal.timeout === "function") {
-      return fetch(url, { signal: AbortSignal.timeout(ms) });
-    }
-    var controller = new AbortController();
-    var id = setTimeout(function(){ controller.abort(); }, ms);
-    return fetch(url, { signal: controller.signal }).finally(function(){ clearTimeout(id); });
+  // ═══ DONUT ═══
+  function dominant(i){var e=Object.entries(i).sort(function(a,b){return b[1]-a[1];});return{key:e[0][0],pct:e[0][1]};}
+  function donutSVG(intents,uid){
+    var sum=intents.C+intents.I+intents.K+intents.S;
+    var s=sum===0?{C:25,I:25,K:25,S:25}:{C:(intents.C/sum)*100,I:(intents.I/sum)*100,K:(intents.K/sum)*100,S:(intents.S/sum)*100};
+    var w=dominant({C:Math.round(s.C),I:Math.round(s.I),K:Math.round(s.K),S:Math.round(s.S)});
+    var gid="dBg"+(uid||""),off=-90;
+    var segs=ORDER.map(function(k){var p=s[k],a=(p/100)*circumference;var o={k:k,d:a.toFixed(1)+" "+(circumference-a).toFixed(1),r:off};off+=(p/100)*360;return o;});
+    var ts="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:20px;font-weight:800;letter-spacing:0.01em;";
+    return '<svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">'
+      +'<defs><radialGradient id="'+gid+'" cx="50%" cy="40%" r="70%"><stop offset="0%" stop-color="#0b101b"/><stop offset="100%" stop-color="#1c2534"/></radialGradient></defs>'
+      +'<circle cx="70" cy="70" r="62" fill="url(#'+gid+')"/><circle cx="70" cy="70" r="43" fill="#0f141f"/>'
+      +'<circle cx="70" cy="70" r="'+r+'" fill="none" stroke="#252c3b" stroke-width="11" transform="rotate(-90 70 70)"/>'
+      +segs.map(function(x){return '<circle cx="70" cy="70" r="'+r+'" fill="none" stroke="'+COLORS[x.k]+'" stroke-width="11" stroke-linecap="butt" stroke-dasharray="'+x.d+'" transform="rotate('+x.r+' 70 70)"/>';}).join("")
+      +'<text x="70" y="78" text-anchor="middle" fill="'+COLORS[w.key]+'" style="'+ts+'">Ω'+w.key+' '+w.pct+'%</text></svg>';
+  }
+  function renderDonutCard(card){
+    var wl=card.getAttribute("data-window")||"",sub=card.getAttribute("data-sub")||"";
+    var i={C:Number(card.getAttribute("data-c")||0),I:Number(card.getAttribute("data-i")||0),K:Number(card.getAttribute("data-k")||0),S:Number(card.getAttribute("data-s")||0)};
+    card.innerHTML='<div class="donut-top"><div class="label">'+wl+'</div><div class="sub">'+sub+'</div></div><div class="donut-mid">'+donutSVG(i,card.getAttribute("data-key"))+'</div>';
   }
 
   // ═══ FETCH ═══
-  function fetchField(base){
-    return fetchWithTimeout(base + "/field", 8000)
-      .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});
-  }
-
+  function fetchField(base){return fetchT(base+"/field",8000).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
   function loadData(){
-    fetchField(API_BASE)
-      .catch(function(){return fetchField(FALLBACK_API);})
-      .then(function(data){
-        updateFromAPI(data);
-        // respect user's lock; just re-render current locked lens
-        setActiveLens(lockedKey, { lock:false });
-      })
-      .catch(function(){
-        setActiveLens("total",{lock:true});
-      });
+    fetchField(API_BASE).catch(function(){return fetchField(FALLBACK_API);})
+      .then(function(data){updateFromAPI(data);setActiveLens(lockedKey,{lock:false});renderMobile();})
+      .catch(function(){setActiveLens("total",{lock:true});});
   }
 
-  // ═══ UPDATE FROM API ═══
+  // ═══ API → STATE ═══
   function updateFromAPI(data){
     if(!data)return;
-    var ls = data.lensStats||{};
-    var lcd = data.lastClosedEpoch||0;
-    var ce = data.currentEpoch||0;
+    var ls=data.lensStats||{},lcd=data.lastClosedEpoch||0,ce=data.currentEpoch||0;
+    function gc(s,fk,fc,fa){return{keys:s?.keys??fk??0,canon:s?.canon??fc??0,artefacts:s?.artefacts??fa??0};}
+    function bs(s,el){var m=s?.mas;if(m)return{epoch:el,body:m.text||m.body||m.cid||"Signal stored on-chain."};return{epoch:el,body:"No signals in this period."};}
 
-    function getCards(stats,fallbackKeys,fallbackCanon,fallbackArtefacts){
-      return {
-        keys: stats?.keys ?? fallbackKeys ?? 0,
-        canon: stats?.canon ?? fallbackCanon ?? 0,
-        artefacts: stats?.artefacts ?? fallbackArtefacts ?? 0
-      };
-    }
+    var tk=data.totalKeys||data.live?.totalKeys||0,tc=data.totalCanonMarkers||data.live?.totalCanonMarkers||0,ta=data.totalArtefacts||data.live?.totalArtefacts||0;
+    var el21=lcd<21?"Epoch 0–"+lcd:"Epoch "+(lcd-20)+"–"+lcd;
+    var el210=lcd<210?"Epoch 0–"+lcd:"Epoch "+(lcd-209)+"–"+lcd;
+    var elT="Epoch 0–"+lcd;
 
-    function buildSignal(stats, epochLabel){
-      var mas = stats?.mas;
-      if(mas){
-        var body = mas.text || mas.body || mas.cid || "Signal stored on-chain.";
-        return {
-          epoch: epochLabel,
-          intent: mas.intent || null,
-          body: body,
-          cid: mas.cid || null,
-          weight: mas.weight || 0,
-          tokenId: mas.tokenId || null
-        };
-      }
-      return {epoch:epochLabel,intent:null,body:"No signals in this period.",cid:null,weight:0,tokenId:null};
-    }
-
-    var totalKeys = data.totalKeys || data.live?.totalKeys || 0;
-    var totalCanon = data.totalCanonMarkers || data.live?.totalCanonMarkers || 0;
-    var totalArtefacts = data.totalArtefacts || data.live?.totalArtefacts || 0;
-
-    var epochLabel21 = lcd < 21 ? "Epoch 0–" + lcd : "Epoch " + (lcd-20) + "–" + lcd;
-    var epochLabel210 = lcd < 210 ? "Epoch 0–" + lcd : "Epoch " + (lcd-209) + "–" + lcd;
-    var epochLabelTotal = "Epoch 0–" + lcd;
-
-    LENS_DATA["21"] = { cards: getCards(ls.last21Epochs, totalKeys, totalCanon, totalArtefacts), signal: buildSignal(ls.last21Epochs || {}, epochLabel21) };
-    LENS_DATA["210"] = { cards: getCards(ls.last210Epochs, totalKeys, totalCanon, totalArtefacts), signal: buildSignal(ls.last210Epochs || {}, epochLabel210) };
-    LENS_DATA["total"] = { cards: getCards(ls.total, totalKeys, totalCanon, totalArtefacts), signal: buildSignal(ls.total || {}, epochLabelTotal) };
+    LENS_DATA["21"]={cards:gc(ls.last21Epochs,tk,tc,ta),intents:{C:25,I:25,K:25,S:25},signal:bs(ls.last21Epochs||{},el21)};
+    LENS_DATA["210"]={cards:gc(ls.last210Epochs,tk,tc,ta),intents:{C:25,I:25,K:25,S:25},signal:bs(ls.last210Epochs||{},el210)};
+    LENS_DATA["total"]={cards:gc(ls.total,tk,tc,ta),intents:{C:25,I:25,K:25,S:25},signal:bs(ls.total||{},elT)};
 
     if(data.intentDistribution){
-      var mapping = {
-        "21": data.intentDistribution.last21Epochs,
-        "210": data.intentDistribution.last210Epochs,
-        total: data.intentDistribution.total
-      };
-      document.querySelectorAll(".donut-card").forEach(function(card){
-        var key = card.getAttribute("data-key");
-        var id = mapping[key];
-        if(id){
-          card.setAttribute("data-c", id["ΩC"] || 0);
-          card.setAttribute("data-i", id["ΩI"] || 0);
-          card.setAttribute("data-k", id["ΩK"] || 0);
-          card.setAttribute("data-s", id["ΩS"] || 0);
-          renderDonutCard(card);
-        }
+      var mp={"21":data.intentDistribution.last21Epochs,"210":data.intentDistribution.last210Epochs,total:data.intentDistribution.total};
+      ["21","210","total"].forEach(function(k){var id=mp[k];if(id)LENS_DATA[k].intents={C:id["ΩC"]||0,I:id["ΩI"]||0,K:id["ΩK"]||0,S:id["ΩS"]||0};});
+      document.querySelectorAll(".donut-grid .donut-card").forEach(function(c){
+        var k=c.getAttribute("data-key"),id=mp[k];
+        if(id){c.setAttribute("data-c",id["ΩC"]||0);c.setAttribute("data-i",id["ΩI"]||0);c.setAttribute("data-k",id["ΩK"]||0);c.setAttribute("data-s",id["ΩS"]||0);renderDonutCard(c);}
       });
     }
 
-    // Latest key — render glyphs instantly (no fly-in animation)
     if(data.latestKey){
-      var gl = data.latestKey.glyphLine || "";
-      var glyphs = Array.from(gl).filter(function(g){return g.trim();});
-      var latestKeyEl = document.getElementById("latestKey");
-      var latestGlyphsEl = document.getElementById("latestGlyphs");
-      if(latestKeyEl) latestKeyEl.textContent = "Z1N #" + data.latestKey.tokenId;
-      if(latestGlyphsEl){
-        if(glyphs.length > 0){
-          latestGlyphsEl.innerHTML = glyphs.map(function(g, i){
-            return (i > 0 ? '<span class="dot">·</span>' : '') + '<span>' + g + '</span>';
-          }).join('');
-        } else {
-          latestGlyphsEl.textContent = "–";
-        }
-      }
+      var gl=data.latestKey.glyphLine||"",gs=Array.from(gl).filter(function(g){return g.trim();});
+      var lk=document.getElementById("latestKey"),lg=document.getElementById("latestGlyphs");
+      if(lk)lk.textContent="Z1N #"+data.latestKey.tokenId;
+      if(lg){if(gs.length>0)lg.innerHTML=gs.map(function(g,i){return(i>0?'<span class="dot">·</span>':'')+'<span>'+g+'</span>';}).join('');else lg.textContent="–";}
     }
-
-    var epochBadge = document.getElementById("epochBadge");
-    if(epochBadge && ce !== undefined){
-      var epVal = epochBadge.querySelector(".ep-value");
-      if(epVal) epVal.textContent = ce;
-    }
+    var eb=document.getElementById("epochBadge");
+    if(eb&&ce!==undefined){var ev=eb.querySelector(".ep-value");if(ev)ev.textContent=ce;}
   }
 
-  // ═══ RENDER ═══
-  var lastRenderedKey = null;
-
+  // ═══ DESKTOP RENDER ═══
+  var lastKey=null;
   function render(){
     var d=LENS_DATA[activeKey]||LENS_DATA.total;
-
-    var dur = 0;
-    if(!hasRenderedFirst) dur = 2000;
-    else if(activeKey !== lastRenderedKey) dur = 500;
-    lastRenderedKey = activeKey;
-
+    var dur=0;if(!hasRenderedFirst)dur=2000;else if(activeKey!==lastKey)dur=500;lastKey=activeKey;
     countUp(document.getElementById("vKeys"),d.cards.keys,dur);
     countUp(document.getElementById("vCanon"),d.cards.canon,dur);
     countUp(document.getElementById("vArtefacts"),d.cards.artefacts,dur);
-
-    var fsEpoch=document.getElementById("fsEpoch");
-    var fsBody=document.getElementById("fsBody");
-
-    if(fsEpoch){
-      var epVal=fsEpoch.querySelector(".ep-value");
-      if(epVal) epVal.textContent=d.signal.epoch.replace("Epoch ","");
-    }
-    if(fsBody)fsBody.textContent=d.signal.body;
-
-    document.querySelectorAll(".donut-card").forEach(function(el){
-      el.classList.toggle("active",el.getAttribute("data-key")===activeKey);
-    });
-
+    var fe=document.getElementById("fsEpoch"),fb=document.getElementById("fsBody");
+    if(fe){var v=fe.querySelector(".ep-value");if(v)v.textContent=d.signal.epoch.replace("Epoch ","");}
+    if(fb)fb.textContent=d.signal.body;
+    document.querySelectorAll(".donut-grid .donut-card").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-key")===activeKey);});
     hasRenderedFirst=true;
   }
-
-  // ═══ DONUT RENDERING ═══
-  function dominantKey(intents){
-    var entries=Object.entries(intents).sort(function(a,b){return b[1]-a[1];});
-    return {key:entries[0][0],pct:entries[0][1]};
-  }
-
-  function buildDonutSVG(intents){
-    var sum=intents.C+intents.I+intents.K+intents.S;
-    var safe=sum===0?{C:25,I:25,K:25,S:25}:{C:(intents.C/sum)*100,I:(intents.I/sum)*100,K:(intents.K/sum)*100,S:(intents.S/sum)*100};
-    var win=dominantKey({C:Math.round(safe.C),I:Math.round(safe.I),K:Math.round(safe.K),S:Math.round(safe.S)});
-    var winColor=COLORS[win.key];
-    var offsetDeg=-90;
-    var segments=ORDER.map(function(k){
-      var pct=safe[k];var arc=(pct/100)*circumference;
-      var dasharray=arc.toFixed(1)+" "+(circumference-arc).toFixed(1);
-      var seg={key:k,dasharray:dasharray,rotate:offsetDeg};
-      offsetDeg+=(pct/100)*360;return seg;
-    });
-
-    // Explicit SVG text styling (robust)
-    var textStyle = "font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:20px;font-weight:800;letter-spacing:0.01em;";
-
-    return '<svg class="donut-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-label="Intent donut">'
-      +'<defs><radialGradient id="donutBg" cx="50%" cy="40%" r="70%"><stop offset="0%" stop-color="#0b101b"/><stop offset="100%" stop-color="#1c2534"/></radialGradient></defs>'
-      +'<circle cx="70" cy="70" r="62" fill="url(#donutBg)"/><circle cx="70" cy="70" r="43" fill="#0f141f"/>'
-      +'<circle cx="70" cy="70" r="'+r+'" fill="none" stroke="#252c3b" stroke-width="11" transform="rotate(-90 70 70)"/>'
-      +segments.map(function(s){return '<circle cx="70" cy="70" r="'+r+'" fill="none" stroke="'+COLORS[s.key]+'" stroke-width="11" stroke-linecap="butt" stroke-dasharray="'+s.dasharray+'" transform="rotate('+s.rotate+' 70 70)"/>';}).join("")
-      +'<text x="70" y="78" text-anchor="middle" fill="'+winColor+'" style="'+textStyle+'">Ω'+win.key+' '+win.pct+'%</text></svg>';
-  }
-
-  function renderDonutCard(card){
-    var windowLabel=card.getAttribute("data-window")||"Window";
-    var sub=card.getAttribute("data-sub")||"";
-    var intents={C:Number(card.getAttribute("data-c")||0),I:Number(card.getAttribute("data-i")||0),K:Number(card.getAttribute("data-k")||0),S:Number(card.getAttribute("data-s")||0)};
-    card.innerHTML='<div class="donut-top"><div class="label">'+windowLabel+'</div><div class="sub">'+sub+'</div></div><div class="donut-mid">'+buildDonutSVG(intents)+'</div>';
-  }
-
-  // ═══ LENS SWITCHING ═══
-  function setActiveLens(lensKey,opts){
-    var lock=(opts&&opts.lock)||false;
-    if(lock)lockedKey=lensKey;
-    activeKey=lensKey;
-    render();
-  }
-
-  function wireDesktopBehavior(){
-    var cards=document.querySelectorAll(".donut-grid .donut-card");
-    cards.forEach(function(card){
-      var key=card.getAttribute("data-key")||"total";
-      card.addEventListener("mouseenter",function(){setActiveLens(key,{lock:false});});
-      card.addEventListener("mouseleave",function(){setActiveLens(lockedKey,{lock:false});});
-      card.addEventListener("click",function(){setActiveLens(key,{lock:true});});
+  function setActiveLens(k,o){if(o&&o.lock)lockedKey=k;activeKey=k;render();}
+  function wireDesktop(){
+    document.querySelectorAll(".donut-grid .donut-card").forEach(function(c){
+      var k=c.getAttribute("data-key")||"total";
+      c.addEventListener("mouseenter",function(){setActiveLens(k,{lock:false});});
+      c.addEventListener("mouseleave",function(){setActiveLens(lockedKey,{lock:false});});
+      c.addEventListener("click",function(){setActiveLens(k,{lock:true});});
     });
   }
 
-  function wireMobileSwipe(){
-    var track=document.getElementById("swipeTrack");
-    if(!track)return;
-    var startX=0,startY=0,swipeLocked=false;
-
-    track.addEventListener("touchstart",function(e){startX=e.touches[0].clientX;startY=e.touches[0].clientY;swipeLocked=false;},{passive:true});
-    track.addEventListener("touchmove",function(e){
-      if(swipeLocked)return;
-      var dx=Math.abs(e.touches[0].clientX-startX),dy=Math.abs(e.touches[0].clientY-startY);
-      if(dy>dx*1.2&&dx<15){swipeLocked=true;return;}
-      if(dx>10)e.preventDefault();
-    },{passive:false});
-
-    var swipeCards=track.querySelectorAll(".donut-card.swipe");
-    swipeCards.forEach(function(card){
-      var key=card.getAttribute("data-key")||"total";
-      card.addEventListener("click",function(){setActiveLens(key,{lock:true});});
+  // ═══ MOBILE RENDER ═══
+  function renderMobile(){
+    ["21","210","total"].forEach(function(k){
+      var d=LENS_DATA[k],suf=k==="total"?"Total":k;
+      var de=document.getElementById("mobDonut"+suf);if(de)de.innerHTML=donutSVG(d.intents,"m"+k);
+      var ke=document.getElementById("mobKeys"+suf);if(ke)ke.textContent=fmtNum(d.cards.keys);
+      var ce=document.getElementById("mobCanon"+suf);if(ce)ce.textContent=fmtNum(d.cards.canon);
+      var ae=document.getElementById("mobArt"+suf);if(ae)ae.textContent=fmtNum(d.cards.artefacts);
+      var se=document.getElementById("mobSigEp"+suf);if(se)se.textContent=d.signal.epoch;
+      var sb=document.getElementById("mobSigBody"+suf);if(sb)sb.textContent=d.signal.body;
     });
-
-    var io=new IntersectionObserver(function(entries){
-      var best=null;
-      entries.forEach(function(e){if(!best||e.intersectionRatio>best.intersectionRatio)best=e;});
-      if(best&&best.isIntersecting){
-        var key=best.target.getAttribute("data-key")||"total";
-        setActiveLens(key,{lock:true});
-      }
-    },{root:track,threshold:[0.35,0.5,0.65,0.8]});
-
-    swipeCards.forEach(function(c){io.observe(c);});
   }
 
-  // ═══ SPOTLIGHT ═══
+  // ═══ MOBILE CAROUSEL ═══
   (function(){
-    var frame=document.getElementById("latestFrame");
-    if(!frame)return;
-    frame.addEventListener("mousemove",function(e){
-      var r=frame.getBoundingClientRect();
-      frame.style.setProperty("--mx",((e.clientX-r.left)/r.width*100).toFixed(2)+"%");
-      frame.style.setProperty("--my",((e.clientY-r.top)/r.height*100).toFixed(2)+"%");
-    },{passive:true});
+    var car=document.getElementById("mobCarousel"),trk=document.getElementById("mobTrack");
+    var dots=document.getElementById("mobDots"),pb=document.getElementById("mobPrev"),nb=document.getElementById("mobNext");
+    if(!car||!trk)return;
+    var slides=trk.querySelectorAll(".mob-slide"),idx=0,tot=slides.length;
+    for(var i=0;i<tot;i++){(function(n){
+      var b=document.createElement("button");b.className="mob-dot"+(n===0?" active":"");b.type="button";
+      b.addEventListener("click",function(){idx=n;snap();});dots.appendChild(b);
+    })(i);}
+    function snap(){
+      trk.style.transition="transform 0.4s ease";
+      trk.style.transform="translateX(-"+(idx*100)+"%)";
+      var ds=dots.querySelectorAll(".mob-dot");for(var j=0;j<ds.length;j++)ds[j].classList.toggle("active",j===idx);
+      pb.disabled=(idx===0);nb.disabled=(idx===tot-1);
+    }
+    pb.addEventListener("click",function(){if(idx>0){idx--;snap();}});
+    nb.addEventListener("click",function(){if(idx<tot-1){idx++;snap();}});
+    var down=false,sx=0,sy=0,dx=0,lock=false;
+    car.addEventListener("pointerdown",function(e){if(e.button!==undefined&&e.button!==0)return;down=true;sx=e.clientX;sy=e.clientY;dx=0;lock=false;trk.style.transition="none";});
+    window.addEventListener("pointermove",function(e){if(!down||lock)return;var mx=e.clientX-sx,my=e.clientY-sy;if(Math.abs(my)>Math.abs(mx)*1.2&&Math.abs(mx)<15){lock=true;snap();return;}dx=mx;trk.style.transform="translateX(calc(-"+(idx*100)+"% + "+(dx/car.clientWidth*100)+"%))"});
+    function up(){if(!down)return;down=false;var th=car.clientWidth*0.18;if(dx>th&&idx>0)idx--;else if(dx<-th&&idx<tot-1)idx++;snap();}
+    window.addEventListener("pointerup",up);window.addEventListener("pointercancel",up);
+    car.addEventListener("dragstart",function(e){e.preventDefault();});
+    snap();
   })();
 
+  // ═══ SPOTLIGHT ═══
+  (function(){var f=document.getElementById("latestFrame");if(!f)return;f.addEventListener("mousemove",function(e){var r=f.getBoundingClientRect();f.style.setProperty("--mx",((e.clientX-r.left)/r.width*100).toFixed(2)+"%");f.style.setProperty("--my",((e.clientY-r.top)/r.height*100).toFixed(2)+"%");},{passive:true});})();
+
   // ═══ INIT ═══
-  document.querySelectorAll(".donut-card").forEach(renderDonutCard);
-  if(HAS_HOVER)wireDesktopBehavior();
-  wireMobileSwipe();
+  document.querySelectorAll(".donut-grid .donut-card").forEach(renderDonutCard);
+  if(HAS_HOVER)wireDesktop();
+  renderMobile();
   loadData();
   setInterval(loadData,30000);
 })();
 
-// Epoch tooltip
-(function(){
-  var trigger = document.getElementById("fsEpoch");
-  var tip = document.getElementById("epochTooltip");
-  if(!trigger || !tip) return;
-  trigger.addEventListener("mouseenter", function(){
-    var rect = trigger.getBoundingClientRect();
-    tip.style.left = rect.left + "px";
-    tip.style.top = (rect.bottom + 8) + "px";
-    tip.style.display = "block";
-  });
-  trigger.addEventListener("mouseleave", function(){ tip.style.display = "none"; });
-})();
+// Epoch tooltip (desktop)
+(function(){var t=document.getElementById("fsEpoch"),p=document.getElementById("epochTooltip");if(!t||!p)return;t.addEventListener("mouseenter",function(){var r=t.getBoundingClientRect();p.style.left=r.left+"px";p.style.top=(r.bottom+8)+"px";p.style.display="block";});t.addEventListener("mouseleave",function(){p.style.display="none";});})();
 
 // Hamburger
-(function(){
-  var btn=document.getElementById("hamburger");
-  var nav=document.getElementById("navLinks");
-  if(btn&&nav){
-    btn.addEventListener("click",function(){btn.classList.toggle("open");nav.classList.toggle("open");});
-    nav.addEventListener("click",function(e){if(e.target.tagName==="A"){btn.classList.remove("open");nav.classList.remove("open");}});
-  }
-})();
+(function(){var b=document.getElementById("hamburger"),n=document.getElementById("navLinks");if(b&&n){b.addEventListener("click",function(){b.classList.toggle("open");n.classList.toggle("open");});n.addEventListener("click",function(e){if(e.target.tagName==="A"){b.classList.remove("open");n.classList.remove("open");}});}})();
 </script>
 <script src="js/gas-banner.js"></script>
 </body>
