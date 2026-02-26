@@ -24,7 +24,7 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@z1n_AI" />
+  <meta name="twitter:site" content="@Z1N_AI" />
   <meta name="twitter:title" content="Z1N Protocol – Your Keys" />
   <meta name="twitter:description" content="Manage your Keys: signals, attestations, artefacts, canon anchors, and field rewards." />
   <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
@@ -412,7 +412,10 @@ backdrop-filter:blur(12px);
   <div id="keysToolbar" style="display:none;">
     <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
       <span style="font-size:14px;"><span id="totalKeysCount">0</span> Keys</span>
-      <span style="font-size:12px; color:var(--text-soft);">Epoch: <span id="currentEpoch" style="color:var(--keys-accent); font-weight:600;">—</span></span>
+      <span style="display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--text-soft);">
+        <span>Epoch <span id="currentEpoch" style="color:var(--keys-accent); font-weight:600;">—</span></span>
+        <span id="epochTimer" style="font-family:monospace; color:var(--keys-accent); font-size:12px; opacity:0.8;">⏱ --:--:--</span>
+      </span>
       <button id="btnManageWallets" style="margin-left:auto; background:transparent; border:1px solid rgba(148,163,184,0.3); color:var(--text-soft); padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; transition:all 0.2s;">± Manage Wallets</button>
     </div>
   </div>
@@ -451,7 +454,7 @@ backdrop-filter:blur(12px);
   <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
     <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank" rel="noreferrer">X</a>
+    <a href="https://x.com/Z1N_AI" target="_blank" rel="noreferrer">X</a>
   </div>
   <div class="footer-contracts">
     <div class="contracts-title">Verified Contracts · Polygon Mainnet</div>
@@ -806,9 +809,19 @@ backdrop-filter:blur(12px);
       if (!response.ok) return [];
       var data = await response.json();
       if (data.currentEpoch) currentEpochNum = data.currentEpoch;
-      return (data.keys || []).map(function(k) {
-        return { tokenId: k.tokenId, wallet: walletAddr, genesis: k.genesis, glyphSymbols: k.glyphSymbols, epoch: k.epoch, signalsUsed: k.signalsUsed || 0, attestsUsed: k.attestsUsed || 0, liveArtefacts: k.liveArtefacts || 0, canonCount: k.canonCount || 0, unseenCount: 0, totalClaimed: 0, claimableEpochs: [] };
+      var keys = (data.keys || []).map(function(k) {
+        return { tokenId: k.tokenId, wallet: walletAddr, genesis: k.genesis, glyphSymbols: k.glyphSymbols, epoch: k.epoch, signalsUsed: k.signalsUsed || 0, attestsUsed: 0, liveArtefacts: k.liveArtefacts || 0, canonCount: k.canonCount || 0, unseenCount: 0, totalClaimed: 0, claimableEpochs: [] };
       });
+      // Fetch actual attest usage for each key (attests target epoch = currentEpoch - 1)
+      if (currentEpochNum > 0) {
+        await Promise.all(keys.map(function(k) {
+          return fetch(API_BASE + '/attestations?fromKeyId=' + k.tokenId + '&epoch=' + currentEpochNum)
+            .then(function(r) { return r.ok ? r.json() : {}; })
+            .then(function(d) { k.attestsUsed = (d.attestations || d.data || []).length; })
+            .catch(function() {});
+        }));
+      }
+      return keys;
     } catch (err) { console.error('Error loading keys for ' + walletAddr + ':', err); return []; }
   }
 
@@ -920,6 +933,41 @@ backdrop-filter:blur(12px);
     btn.addEventListener("click",function(){btn.classList.toggle("open");nav.classList.toggle("open");});
     nav.addEventListener("click",function(e){if(e.target.tagName==="A"){btn.classList.remove("open");nav.classList.remove("open");}});
   }
+})();
+</script>
+<script>
+// EPOCH TIMER
+(function(){
+  var API_BASE = 'https://z1n-backend-production.up.railway.app/api';
+  var timerEl = document.getElementById('epochTimer');
+  if (!timerEl) return;
+  var epochEnd = 0;
+  function pad(n){ return n < 10 ? '0' + n : n; }
+  function tick(){
+    if (!epochEnd) return;
+    var now = Date.now();
+    var diff = epochEnd - now;
+    if (diff <= 0){ timerEl.textContent = '⏱ closing...'; return; }
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    timerEl.textContent = '⏱ ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  function loadEpochEnd(){
+    fetch(API_BASE + '/live', { cache:'no-store' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d) return;
+        if (d.epochEnd) epochEnd = new Date(d.epochEnd).getTime();
+        else if (d.epochEndTime) epochEnd = new Date(d.epochEndTime).getTime();
+        else if (d.currentEpochEnd) epochEnd = new Date(d.currentEpochEnd).getTime();
+        tick();
+      })
+      .catch(function(){});
+  }
+  loadEpochEnd();
+  setInterval(tick, 1000);
+  setInterval(loadEpochEnd, 60000);
 })();
 </script>
 <script src="js/gas-banner.js"></script>

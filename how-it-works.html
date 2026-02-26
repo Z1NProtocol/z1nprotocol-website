@@ -566,15 +566,13 @@ backdrop-filter:blur(12px);
     }
   
   @media(max-width:600px){
-  .mini{ padding:14px; }
-  .mini-head{ flex-direction:column; gap:6px; }
+  .mini{ padding:14px; min-height:auto; }
+  .mini-head{ flex-direction:column; gap:6px; align-items:flex-start; }
   .mini-body{ font-size:14px; }
   .intent-grid{ grid-template-columns:1fr !important; }
   .ops-card .ops-code{ font-size:12px; }
   input[type="range"]::-webkit-slider-thumb{ width:28px; height:28px; }
   input[type="range"]::-moz-range-thumb{ width:28px; height:28px; }
-  .contract-item{ display:flex; flex-direction:column; align-items:center; }
-  .contract-sep{ display:none; }
   .contract-addr{ font-size:9px; }
 }
 

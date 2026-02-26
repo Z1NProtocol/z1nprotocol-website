@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>Z1N Protocol – Mint Live Artefact</title>
   <meta name="description" content="Mint a Live Artefact for your Z1N Key. A dynamic mirror of presence in the Field, bound to your Key and wallet." />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- Key / wallet flows should not be indexed -->
   <meta name="robots" content="noindex,follow" />
@@ -27,7 +29,7 @@
   <meta name="twitter:site" content="@Z1N_AI" />
   <meta name="twitter:title" content="Z1N Protocol – Mint Live Artefact" />
   <meta name="twitter:description" content="Mint a Live Artefact bound to your Z1N Key." />
-  <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
+  <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
 
   <!-- Structured data (lightweight) -->
   <script type="application/ld+json">
@@ -85,7 +87,19 @@
 }
 
     .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
-    .nav-links a{ position:relative; }
+    .hamburger{display:none;background:rgba(15,23,42,0.8);border:1px solid rgba(148,163,184,0.25);border-radius:8px;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
+    .hamburger span{display:block;width:20px;height:1.5px;background:var(--text-main);border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
+    .hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;}
+    .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+    @media(max-width:900px){
+      .hamburger{display:flex;}
+      .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:rgba(10,15,26,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;}
+      .nav-links.open{display:flex;}
+      .mint-btn{position:relative;top:auto;left:auto;transform:none;margin:16px auto 0;display:block;}
+      .mint-btn:hover:not(:disabled){transform:none;}
+      .mint-btn.minting,.mint-btn.success{transform:none;}
+    }
     .nav-links a.active-keys { color: var(--keys-accent); }
 
     .page { max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px; }
@@ -159,7 +173,7 @@
     .status-msg.error { background: rgba(248, 113, 113, 0.15); color: #f87171; }
     .status-msg.pending { background: rgba(255, 213, 86, 0.15); color: var(--keys-accent); }
 
-    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px; font-size: 12px; text-align: center; opacity: 0.85; margin-top: 40px; }
+    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px)); font-size: 12px; text-align: center; opacity: 0.85; margin-top: 40px; }
     footer .tagline { margin-bottom: 6px; font-size: 13px; }
     footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
 
@@ -185,7 +199,8 @@
 </div>
 
     </a>
-    <nav class="nav-links">
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav-links" id="navLinks">
       <a href="about.html">About</a>
       <a href="how-it-works.html">How it Works</a>
       <a href="live-stats.html">Live Stats</a>
@@ -252,7 +267,7 @@
   <div class="tagline">Your presence is real · The Field remembers</div>
   <div class="links">
     <a href="https://github.com/z1nprotocol" target="_blank">GitHub</a>
-    <a href="https://x.com/z1n_AI" target="_blank">X</a>
+    <a href="https://x.com/Z1N_AI" target="_blank">X</a>
   </div>
 </footer>
 
@@ -629,7 +644,16 @@
 })();
 </script>
 
-<script src="js/gas-banner.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById("hamburger");
+  var nav=document.getElementById("navLinks");
+  if(btn&&nav){
+    btn.addEventListener("click",function(){btn.classList.toggle("open");nav.classList.toggle("open");});
+    nav.addEventListener("click",function(e){if(e.target.tagName==="A"){btn.classList.remove("open");nav.classList.remove("open");}});
+  }
+})();
+</script>
 
 </body>
 </html>
