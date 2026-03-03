@@ -159,6 +159,10 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
   margin-bottom:0;
 }
 .nbi-intro .soft{color:var(--text-soft);opacity:0.98;}
+.nbi-intro-soft{
+  font-size:12px;line-height:1.6;color:var(--text-soft);opacity:0.7;
+  margin:6px 0 14px;font-style:italic;
+}
 .ops-kicker{
   font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
   color:rgba(255,255,255,0.72);margin-bottom:12px;
@@ -379,11 +383,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="nbi-intro">
         An artefact is not a visual object — it is verifiable persistence. A struct that proves you existed in the field across resets.
         No renderer needed to read it: sourceKeyId, boundToKeyId, viewingState, contentHash, inscription are on-chain state.
-        <span class="soft">The card a BI sees is a lens. The data is the artefact.</span>
       </div>
-
-      <div style="margin:14px 0 10px; border-top:1px solid rgba(148,163,184,0.15);"></div>
-      <div class="ops-kicker">Operationally</div>
+      <div class="nbi-intro-soft">The card a BI sees is a lens. The data is the artefact.</div>
 
       <div class="ops-card">
         <div class="ops-card-label">Z1NArtefact.mint()</div>
