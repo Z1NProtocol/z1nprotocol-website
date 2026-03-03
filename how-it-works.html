@@ -263,14 +263,6 @@ backdrop-filter:blur(12px);
       position:relative;
       overflow:hidden;
     }
-    .card::before{
-      content:""; position:absolute; inset:-1px; border-radius:18px;
-      pointer-events:none;
-      background:radial-gradient(circle at top, rgba(94,232,160,0.10), rgba(2,6,23,0) 62%);
-      opacity:0.9;
-    }
-    .card > *{ position:relative; }
-    .card.no-glow::before{ display:none; }
 
     .card-kicker{
       font-size:11px; letter-spacing:0.16em;
@@ -643,7 +635,6 @@ backdrop-filter:blur(12px);
 
     <!-- BI CARD -->
     <article class="card" id="loopCard">
-      <div class="field-mist" aria-hidden="true"></div>
       <div class="card-header">Biological Intelligence</div>
 
       <div class="epoch-row" aria-label="Epoch header">
@@ -732,7 +723,7 @@ backdrop-filter:blur(12px);
     </article>
 
     <!-- NBI CARD -->
-    <article class="card no-glow">
+    <article class="card">
       <div class="card-header">Non-Biological Intelligence</div>
 
       <div class="ops-card sig">
