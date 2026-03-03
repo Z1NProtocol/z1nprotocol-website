@@ -146,7 +146,20 @@
       '  font-size: 8px; font-weight: 700; letter-spacing: 0.05em;',
       '  color: #000; background: var(--accent, #5ee8a0);',
       '  padding: 2px 6px; border-radius: 4px;',
-      '}'
+      '}',
+      '',
+      '/* Pending/Offered status */',
+      '.artefact-card.status-pending,',
+      '.artefact-card.status-pending:hover {',
+      '  border-color: rgba(255,213,86,0.4) !important;',
+      '}',
+      '.info-status.status-pending { color: #ffd556; }',
+      '',
+      '/* Released/Retired status */',
+      '.artefact-card.status-released {',
+      '  opacity: 0.45; border-color: rgba(143,154,181,0.15) !important;',
+      '}',
+      '.info-status.status-released { color: var(--text-soft, #9aa3bb); }'
     ].join('\n');
     document.head.appendChild(styleEl);
   }
@@ -184,8 +197,8 @@
   var libraryFilter = { status: 'all', search: '' };
   var keyGlyphsCache = {};
   var ownedViewMode = 'card';
-var libraryViewMode = 'card';
-var pendingArtefacts = [];
+  var libraryViewMode = 'card';
+  var pendingArtefacts = [];
   var pendingViewChanges = {};
   var lastOwnedSig = '';
   var lastSharedSig = '';
@@ -515,7 +528,7 @@ var pendingArtefacts = [];
         }
         if (mintBtn) {
           mintBtn.disabled = false;
-          mintBtn.textContent = ownedArtefacts.length > 0 ? '+ Mint Artefact \u2014 21 POL' : '+ Mint Free Artefact';
+          mintBtn.textContent = ownedArtefacts.length > 0 ? '+ Mint Artefact \u2014 7 POL' : '+ Mint Free Artefact';
         }
       };
       
@@ -529,7 +542,7 @@ var pendingArtefacts = [];
         }
         if (mintBtn) {
           mintBtn.disabled = false;
-          mintBtn.textContent = '+ Mint Artefact \u2014 21 POL';
+          mintBtn.textContent = '+ Mint Artefact \u2014 7 POL';
         }
       };
       
@@ -563,11 +576,13 @@ var pendingArtefacts = [];
     
     var showFilters = ownedArtefacts.length > 5;
     var hasFreeArtefact = ownedArtefacts.length > 0;
-    var mintText = isMinting ? 'Minting...' : (hasFreeArtefact ? '+ Mint Artefact \u2014 21 POL' : '+ Mint Free Artefact');
+    var mintText = isMinting ? 'Minting...' : (hasFreeArtefact ? '+ Mint Artefact \u2014 7 POL' : '+ Mint Free Artefact');
     
     var countInView = ownedArtefacts.filter(function(a) { return a.status === 'in_my_view'; }).length;
+    var countPending = ownedArtefacts.filter(function(a) { return a.status === 'pending'; }).length;
     var countShared = ownedArtefacts.filter(function(a) { return a.status === 'shared'; }).length;
     var countRevoked = ownedArtefacts.filter(function(a) { return a.status === 'revoked'; }).length;
+    var countReleased = ownedArtefacts.filter(function(a) { return a.status === 'released'; }).length;
     
     var html = '<div class="artefact-section-header">' +
       '<h3 class="section-title title-green">Your Artefacts <span class="count" style="color:var(--accent);">(' + ownedArtefacts.length + ')</span></h3>' +
@@ -580,13 +595,21 @@ var pendingArtefacts = [];
     
     html += '<div id="mintArtefactStatus" style="margin-bottom: 12px;"></div>';
     
+    html += '<div id="mintInscriptionRow" style="margin-bottom:12px;display:flex;align-items:center;gap:8px;">' +
+      '<label style="font-size:12px;color:var(--text-soft);white-space:nowrap;">Inscription</label>' +
+      '<input type="text" id="mintInscriptionInput" maxlength="64" placeholder="Optional \u2014 max 64 characters" style="flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text-main);font-family:inherit;">' +
+      '<span id="mintInscriptionCount" style="font-size:10px;color:var(--text-soft);min-width:32px;text-align:right;">0/64</span>' +
+    '</div>';
+    
     if (showFilters) {
       html += '<div class="artefact-filter-bar">' +
         '<div class="filter-pills">' +
           '<button class="filter-pill' + (ownedFilter.status === 'all' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'all\')">All <span class="pill-count">' + ownedArtefacts.length + '</span></button>' +
           '<button class="filter-pill' + (ownedFilter.status === 'in_my_view' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'in_my_view\')">Personal <span class="pill-count">' + countInView + '</span></button>' +
-          '<button class="filter-pill' + (ownedFilter.status === 'shared' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'shared\')">Viewed by <span class="pill-count">' + countShared + '</span></button>' +
+          (countPending > 0 ? '<button class="filter-pill' + (ownedFilter.status === 'pending' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'pending\')">Offered <span class="pill-count">' + countPending + '</span></button>' : '') +
+          '<button class="filter-pill' + (ownedFilter.status === 'shared' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'shared\')">Active <span class="pill-count">' + countShared + '</span></button>' +
           '<button class="filter-pill' + (ownedFilter.status === 'revoked' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'revoked\')">Revoked <span class="pill-count">' + countRevoked + '</span></button>' +
+          (countReleased > 0 ? '<button class="filter-pill' + (ownedFilter.status === 'released' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'released\')">Released <span class="pill-count">' + countReleased + '</span></button>' : '') +
         '</div>' +
         '<input type="text" class="filter-search" id="ownedSearchInput" placeholder="Search ID..." value="' + (ownedFilter.search || '') + '" onkeyup="Z1NArtefacts.filterOwned()">' +
       '</div>';
@@ -607,6 +630,16 @@ var pendingArtefacts = [];
     }
     
     container.innerHTML = html;
+    
+    var inscInput = document.getElementById('mintInscriptionInput');
+    var inscCount = document.getElementById('mintInscriptionCount');
+    if (inscInput && inscCount) {
+      inscInput.addEventListener('input', function() {
+        var len = this.value.length;
+        inscCount.textContent = len + '/64';
+        inscCount.style.color = len > 56 ? 'var(--danger, #f87171)' : 'var(--text-soft)';
+      });
+    }
   }
 
   function renderCardView(filtered, z) {
@@ -631,9 +664,15 @@ var pendingArtefacts = [];
     filtered.forEach(function(art) {
       var artefactIndex = ownedArtefacts.findIndex(function(a) { return a.tokenId === art.tokenId; }) + 1;
       var statusClass = art.status === 'in_my_view' ? 'status-personal' : 
-                        art.status === 'shared' ? 'status-viewedby' : 'status-revoked';
+                        art.status === 'pending' ? 'status-pending' :
+                        art.status === 'shared' ? 'status-viewedby' :
+                        art.status === 'revoked' ? 'status-revoked' :
+                        art.status === 'released' ? 'status-released' : '';
       var statusLabel = art.status === 'in_my_view' ? 'Personal' :
-                        art.status === 'shared' ? 'Viewed by' : 'Revoked';
+                        art.status === 'pending' ? 'Offered' :
+                        art.status === 'shared' ? 'Active' :
+                        art.status === 'revoked' ? 'Revoked' :
+                        art.status === 'released' ? 'Released' : art.status;
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
         '/static-preview?epoch=' + (z.epoch || 0);
@@ -642,7 +681,7 @@ var pendingArtefacts = [];
       }
       
       var hasPending = pendingViewChanges[art.tokenId];
-      var pendingLabel = hasPending === 'sharing' ? 'Sharing...' : hasPending === 'revoking' ? 'Revoking...' : hasPending === 'restoring' ? 'Restoring...' : '';
+      var pendingLabel = hasPending === 'offering' ? 'Offering...' : hasPending === 'cancelling' ? 'Cancelling...' : hasPending === 'accepting' ? 'Accepting...' : hasPending === 'rejecting' ? 'Rejecting...' : hasPending === 'revoking' ? 'Revoking...' : hasPending === 'restoring' ? 'Restoring...' : hasPending === 'releasing' ? 'Releasing...' : '';
       
       html += '<div class="artefact-card ' + statusClass + '"' + (hasPending ? ' style="position:relative;pointer-events:none;opacity:0.6;"' : '') + ' onclick="Z1NArtefacts.openOwnedModal(' + art.tokenId + ')">';
       
@@ -677,9 +716,15 @@ var pendingArtefacts = [];
     filtered.forEach(function(art) {
       var artefactIndex = ownedArtefacts.findIndex(function(a) { return a.tokenId === art.tokenId; }) + 1;
       var statusClass = art.status === 'in_my_view' ? 'status-personal' : 
-                        art.status === 'shared' ? 'status-viewedby' : 'status-revoked';
+                        art.status === 'pending' ? 'status-pending' :
+                        art.status === 'shared' ? 'status-viewedby' :
+                        art.status === 'revoked' ? 'status-revoked' :
+                        art.status === 'released' ? 'status-released' : '';
       var statusLabel = art.status === 'in_my_view' ? 'Personal' :
-                        art.status === 'shared' ? 'Viewed by' : 'Revoked';
+                        art.status === 'pending' ? 'Offered' :
+                        art.status === 'shared' ? 'Active' :
+                        art.status === 'revoked' ? 'Revoked' :
+                        art.status === 'released' ? 'Released' : art.status;
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
         '/static-preview?epoch=' + (z.epoch || 0);
@@ -731,8 +776,8 @@ var pendingArtefacts = [];
     var html = '<div class="artefact-section-header">' +
   '<h3 class="section-title title-green">Received Artefacts <span class="count" style="color:var(--accent);">(' + sharedWithMe.length + ')</span></h3>' +
   '<div class="header-actions">' +
-    '<button class="view-toggle' + (libraryViewMode === 'card' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryViewMode(\'card\')" title="Card view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">◦</button>' +
-    '<button class="view-toggle' + (libraryViewMode === 'list' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryViewMode(\'list\')" title="List view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">☰</button>' +
+    '<button class="view-toggle' + (libraryViewMode === 'card' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryViewMode(\'card\')" title="Card view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">\u25E6</button>' +
+    '<button class="view-toggle' + (libraryViewMode === 'list' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryViewMode(\'list\')" title="List view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">\u2630</button>' +
   '</div>' +
 '</div>';
     
@@ -751,7 +796,7 @@ var pendingArtefacts = [];
       html += '<div class="artefact-empty">' +
         '<div class="empty-icon">\u25C8\u2190</div>' +
         '<p>No artefacts received yet</p>' +
-        '<p class="empty-hint">When another Key shares an artefact with you, it appears here.</p>' +
+        '<p class="empty-hint">When another Key offers an artefact to you, it appears here.</p>' +
       '</div>';
     } else if (filtered.length === 0) {
       html += '<div class="artefact-empty">No artefacts match your filters</div>';
@@ -767,7 +812,7 @@ var pendingArtefacts = [];
       var hasNotif = hasUnreadNotification(art.tokenId);
       html += '<div class="artefact-list-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
         '<div class="list-card-preview">' +
-          (isRevoked ? '<div class="list-placeholder shared" style="color:#f87171;">◈</div>' : artImg(previewUrl, 'From Key #' + art.sourceKeyId)) +
+          (isRevoked ? '<div class="list-placeholder shared" style="color:#f87171;">\u25C8</div>' : artImg(previewUrl, 'From Key #' + art.sourceKeyId)) +
         '</div>' +
         '<div class="list-card-meta">' +
           '<div class="list-card-id">From #' + art.sourceKeyId + '</div>' +
@@ -819,9 +864,15 @@ var pendingArtefacts = [];
     
     var artefactIndex = ownedArtefacts.findIndex(function(a) { return a.tokenId === artefactId; }) + 1;
     var statusLabel = art.status === 'in_my_view' ? 'Personal' :
-                      art.status === 'shared' ? 'Viewed by' : 'Revoked';
+                      art.status === 'pending' ? 'Offered' :
+                      art.status === 'shared' ? 'Active' :
+                      art.status === 'revoked' ? 'Revoked' :
+                      art.status === 'released' ? 'Released' : art.status;
     var statusClass = art.status === 'in_my_view' ? 'status-personal' : 
-                      art.status === 'shared' ? 'status-viewedby' : 'status-revoked';
+                      art.status === 'pending' ? 'status-pending' :
+                      art.status === 'shared' ? 'status-viewedby' :
+                      art.status === 'revoked' ? 'status-revoked' :
+                      art.status === 'released' ? 'status-released' : '';
     
     var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
       '/static-preview?epoch=' + (z.epoch || 0) + '&t=' + Date.now();
@@ -833,32 +884,56 @@ var pendingArtefacts = [];
     
     if (art.status === 'in_my_view') {
       contentHtml = '<div class="share-layout">' +
-        '<div class="share-column"><div class="share-column-title">Recipient View After Binding</div><div class="share-preview">' + artImg(previewUrl, 'Artefact Preview') + '</div></div>' +
-        '<div class="share-column"><div class="share-column-title">Your View After Binding</div><div class="share-preview grayed"><div class="share-preview-placeholder" style="color:var(--accent);font-size:64px;">\u25C8</div></div></div>' +
+        '<div class="share-column"><div class="share-column-title">Recipient View After Accepting</div><div class="share-preview">' + artImg(previewUrl, 'Artefact Preview') + '</div></div>' +
+        '<div class="share-column"><div class="share-column-title">Your View After Accepting</div><div class="share-preview grayed"><div class="share-preview-placeholder" style="color:var(--accent);font-size:64px;">\u25C8</div></div></div>' +
       '</div>' +
       '<div class="share-form">' +
-        '<label>Share with Key ID:</label>' +
+        '<label>Offer to Key ID:</label>' +
         '<input type="number" id="shareTargetKeyId" placeholder="Enter Key ID" min="0">' +
         '<div id="shareKeyValidation" class="validation-msg"></div>' +
         '<div class="warning-box" style="border-color:rgba(94,232,160,0.4);background:rgba(94,232,160,0.08);">' +
-          '<span class="warning-icon" style="filter:hue-rotate(90deg);">\u26A0\uFE0F</span><div><strong>Permanent Binding</strong><p>This artefact will be permanently bound to the recipient Key. You can revoke and restore viewing, but you can never share it with a different Key.</p></div>' +
+          '<span class="warning-icon" style="filter:hue-rotate(90deg);">\u26A0\uFE0F</span><div><strong>Offering</strong><p>The recipient must accept this offering before the artefact becomes bound. Once accepted, you can revoke and restore viewing, but you can never offer it to a different Key.</p></div>' +
         '</div>' +
-        '<button class="btn btn-green" onclick="Z1NArtefacts.grantViewing(' + artefactId + ')">Bind & Share</button>' +
+        '<button class="btn btn-green" onclick="Z1NArtefacts.offerArtefact(' + artefactId + ')">Offer to Key</button>' +
       '</div>';
+    } else if (art.status === 'pending') {
+      var pendingKeyId = art.pendingForKeyId || art.boundToKeyId || 0;
+      contentHtml = '<div class="modal-preview large">' + artImg(previewUrl, 'Artefact Preview') + '</div>' +
+        '<div class="modal-info">' +
+          '<div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--keys-accent);">Offered \u2014 awaiting response</span></div>' +
+          '<div class="info-row"><span class="label">Offered to</span><span class="value">Key #' + pendingKeyId + '</span></div>' +
+        '</div>' +
+        '<div class="action-buttons">' +
+          '<p>Cancel this offering to make the artefact available again.</p>' +
+          '<button class="btn btn-danger" style="background:rgba(248,113,113,0.2);border-color:rgba(248,113,113,0.4);color:#f87171;" onclick="Z1NArtefacts.cancelOffering(' + artefactId + ')">Cancel Offering</button>' +
+        '</div>';
     } else if (art.status === 'shared') {
       contentHtml = '<div class="share-layout">' +
         '<div class="share-column"><div class="share-column-title">Recipient View Now</div><div class="share-preview">' + artImg(previewUrl, 'Artefact Preview') + '</div></div>' +
         '<div class="share-column"><div class="share-column-title">Recipient View After Revoke</div><div class="share-preview grayed"><div class="share-preview-placeholder" style="color:#f87171;font-size:64px;">\u25C8</div></div></div>' +
       '</div>' +
       '<div class="modal-info"><div class="info-row"><span class="label">Status</span><span class="value ' + statusClass + '">' + statusLabel + '</span></div><div class="info-row"><span class="label">Bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div></div>' +
-      '<div class="action-buttons"><p>Revoke viewing to hide the artefact from Key #' + art.boundToKeyId + ' and return it to your view.</p><button class="btn btn-danger" style="background:rgba(248,113,113,0.2);border-color:rgba(248,113,113,0.4);color:#f87171;" onclick="Z1NArtefacts.revokeViewing(' + artefactId + ')">Revoke Viewing</button></div>';
+      '<div class="action-buttons" style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div><p>Revoke viewing to hide the artefact from Key #' + art.boundToKeyId + '.</p><button class="btn btn-danger" style="background:rgba(248,113,113,0.2);border-color:rgba(248,113,113,0.4);color:#f87171;" onclick="Z1NArtefacts.revokeViewing(' + artefactId + ')">Revoke Viewing</button></div>' +
+        '<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;"><p style="color:var(--text-soft);font-size:12px;">Permanently end this artefact relationship. This cannot be undone.</p><button class="btn" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:12px;" onclick="Z1NArtefacts.ownerRelease(' + artefactId + ')">Release Permanently</button></div>' +
+      '</div>';
     } else if (art.status === 'revoked') {
       contentHtml = '<div class="share-layout">' +
         '<div class="share-column"><div class="share-column-title">Recipient View Now</div><div class="share-preview grayed"><div class="share-preview-placeholder" style="color:#f87171;font-size:64px;">\u25C8</div></div></div>' +
         '<div class="share-column"><div class="share-column-title">Recipient View After Restore</div><div class="share-preview">' + artImg(previewUrl, 'Artefact Preview') + '</div></div>' +
       '</div>' +
       '<div class="modal-info"><div class="info-row"><span class="label">Status</span><span class="value ' + statusClass + '">' + statusLabel + '</span></div><div class="info-row"><span class="label">Bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div></div>' +
-      '<div class="action-buttons"><p>Restore viewing to share the artefact with Key #' + art.boundToKeyId + ' again.</p><button class="btn btn-primary" onclick="Z1NArtefacts.restoreViewing(' + artefactId + ')">Restore Viewing</button></div>';
+      '<div class="action-buttons" style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div><p>Restore viewing to share the artefact with Key #' + art.boundToKeyId + ' again.</p><button class="btn btn-primary" onclick="Z1NArtefacts.restoreViewing(' + artefactId + ')">Restore Viewing</button></div>' +
+        '<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;"><p style="color:var(--text-soft);font-size:12px;">Permanently end this artefact relationship. This cannot be undone.</p><button class="btn" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:12px;" onclick="Z1NArtefacts.ownerRelease(' + artefactId + ')">Release Permanently</button></div>' +
+      '</div>';
+    } else if (art.status === 'released') {
+      contentHtml = '<div class="modal-preview large" style="opacity:0.4;">' + artImg(previewUrl, 'Artefact Preview') + '</div>' +
+        '<div class="modal-info">' +
+          '<div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--text-soft);">Released \u2014 retired</span></div>' +
+          (art.boundToKeyId > 0 ? '<div class="info-row"><span class="label">Was bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div>' : '') +
+        '</div>' +
+        '<div style="padding:12px 0;color:var(--text-soft);font-size:13px;">This artefact has been permanently released and cannot be used again.</div>';
     }
     
     modal.innerHTML = '<div class="modal-overlay" onclick="Z1NArtefacts.closeModal()"></div>' +
@@ -882,28 +957,84 @@ var pendingArtefacts = [];
     if (!modal) return;
     
     var artData = sharedWithMe.find(function(a) { return a.tokenId === artefactId; });
-    var isRevoked = artData && (artData.status === 'revoked' || !artData.viewingActive);
+    var status = artData ? artData.status : 'active';
+    var isRevoked = status === 'revoked';
+    var isPending = status === 'pending';
+    var isReleased = status === 'released';
+    var isHidden = status === 'hidden';
+    var isActive = status === 'active';
     
     var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + sourceKeyId + 
       '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
       '&artefactTokenId=' + artefactId + '&t=' + Date.now();
     
     var glyphs = keyGlyphsCache[sourceKeyId] || '';
+    var actionsHtml = '';
+    
+    if (isPending) {
+      actionsHtml = '<div class="action-buttons" style="display:flex;gap:10px;margin-top:16px;">' +
+        '<button class="btn btn-green" style="flex:1;" onclick="Z1NArtefacts.acceptOffering(' + artefactId + ')">Accept</button>' +
+        '<button class="btn btn-danger" style="flex:1;background:rgba(248,113,113,0.2);border-color:rgba(248,113,113,0.4);color:#f87171;" onclick="Z1NArtefacts.rejectOffering(' + artefactId + ')">Reject</button>' +
+      '</div>';
+    } else if (isActive) {
+      actionsHtml = '<div class="action-buttons" style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">' +
+        '<div style="display:flex;gap:10px;">' +
+          '<button class="btn" style="flex:1;background:rgba(143,154,181,0.15);border:1px solid rgba(143,154,181,0.3);color:var(--text-soft);" onclick="Z1NArtefacts.hideArtefact(' + artefactId + ')">Hide from my view</button>' +
+        '</div>' +
+        '<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">' +
+          '<p style="color:var(--text-soft);font-size:12px;">Permanently end this artefact relationship.</p>' +
+          '<button class="btn" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:12px;" onclick="Z1NArtefacts.recipientRelease(' + artefactId + ')">Release Permanently</button>' +
+        '</div>' +
+      '</div>';
+    } else if (isHidden) {
+      actionsHtml = '<div class="action-buttons" style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">' +
+        '<button class="btn btn-green" onclick="Z1NArtefacts.unhideArtefact(' + artefactId + ')">Unhide</button>' +
+        '<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">' +
+          '<p style="color:var(--text-soft);font-size:12px;">Permanently end this artefact relationship.</p>' +
+          '<button class="btn" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:12px;" onclick="Z1NArtefacts.recipientRelease(' + artefactId + ')">Release Permanently</button>' +
+        '</div>' +
+      '</div>';
+    } else if (isRevoked) {
+      actionsHtml = '<div class="action-buttons" style="margin-top:16px;">' +
+        '<p style="color:var(--text-soft);font-size:12px;">The owner has revoked viewing. You can release to end the relationship permanently.</p>' +
+        '<button class="btn" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:12px;" onclick="Z1NArtefacts.recipientRelease(' + artefactId + ')">Release Permanently</button>' +
+      '</div>';
+    }
+    
+    var previewHtml = '';
+    if (isPending) {
+      previewHtml = '<div class="modal-preview large" style="opacity:0.6;">' + artImg(previewUrl, 'Artefact Preview') + '</div>' +
+        '<div style="text-align:center;color:var(--keys-accent);font-size:13px;margin-top:4px;">Pending \u2014 accept to view</div>';
+    } else if (isRevoked) {
+      previewHtml = '<div style="display:flex;align-items:center;justify-content:center;height:300px;"><div style="font-size:80px;color:#f87171;opacity:0.5;">\u25C8</div></div>' +
+        '<div style="text-align:center;color:#f87171;font-size:13px;margin-top:4px;">Viewing revoked by owner</div>';
+    } else if (isHidden) {
+      previewHtml = '<div class="modal-preview large" style="opacity:0.3;">' + artImg(previewUrl, 'Artefact Preview') + '</div>' +
+        '<div style="text-align:center;color:var(--text-soft);font-size:13px;margin-top:4px;">Hidden by you</div>';
+    } else if (isReleased) {
+      previewHtml = '<div style="display:flex;align-items:center;justify-content:center;height:300px;"><div style="font-size:80px;color:var(--text-soft);opacity:0.3;">\u25C8</div></div>' +
+        '<div style="text-align:center;color:var(--text-soft);font-size:13px;margin-top:4px;">Released \u2014 retired</div>';
+    } else {
+      previewHtml = '<div class="modal-preview large">' + artImg(previewUrl, 'Artefact Preview') + '</div>';
+    }
+    
+    var statusLabelLib = isPending ? 'Pending' : isActive ? 'Active' : isHidden ? 'Hidden' : isRevoked ? 'Revoked' : isReleased ? 'Released' : status;
     
     modal.innerHTML = '<div class="modal-overlay" onclick="Z1NArtefacts.closeModal()"></div>' +
       '<div class="modal-content"><button class="modal-close" onclick="Z1NArtefacts.closeModal()">\u00D7</button>' +
-        '<h2>Shared Artefact</h2><div class="modal-body">' +
-          '<div class="modal-preview large">' +
-            (isRevoked ? '<div style="display:flex;align-items:center;justify-content:center;height:300px;"><div style="font-size:80px;color:#f87171;opacity:0.5;">\u25C8</div></div><div style="text-align:center;color:#f87171;font-size:13px;margin-top:4px;">Viewing revoked by owner</div>' : artImg(previewUrl, 'Artefact Preview')) +
-          '</div>' +
-          '<div class="modal-info"><div class="info-row"><span class="label">From</span><span class="value">Key #' + sourceKeyId + '</span></div>' +
+        '<h2>' + (isPending ? 'Incoming Offering' : 'Received Artefact') + '</h2><div class="modal-body">' +
+          previewHtml +
+          '<div class="modal-info">' +
+            '<div class="info-row"><span class="label">From</span><span class="value">Key #' + sourceKeyId + '</span></div>' +
+            '<div class="info-row"><span class="label">Status</span><span class="value">' + statusLabelLib + '</span></div>' +
             (glyphs ? '<div class="info-row"><span class="label">Glyphs</span><span class="value">' + glyphs + '</span></div>' : '') +
           '</div>' +
+          actionsHtml +
+          '<div id="sharingStatus" class="status-area"></div>' +
         '</div></div>';
     
     modal.classList.add('active');
     
-    // Update tab badge after marking read
     var badge = document.getElementById('artefactBadge');
     if (badge) {
       var unreadCount = getUnreadNotificationCount();
@@ -931,7 +1062,7 @@ var pendingArtefacts = [];
     var targetKeyId = parseInt(input.value);
     var z = getZ1N();
     if (isNaN(targetKeyId) || targetKeyId < 0) { msg.textContent = ''; msg.className = 'validation-msg'; return; }
-    if (targetKeyId === z.keyId) { msg.textContent = '\u2717 Cannot share with yourself'; msg.className = 'validation-msg error'; return; }
+    if (targetKeyId === z.keyId) { msg.textContent = '\u2717 Cannot offer to yourself'; msg.className = 'validation-msg error'; return; }
     msg.textContent = 'Checking...'; msg.className = 'validation-msg pending';
     var exists = await keyExists(targetKeyId);
     if (exists) {
@@ -958,29 +1089,29 @@ var pendingArtefacts = [];
     });
   }
 
-  async function grantViewing(artefactId) {
+  async function offerArtefact(artefactId) {
     var input = document.getElementById('shareTargetKeyId');
     var statusEl = document.getElementById('sharingStatus');
     if (!input) return;
     var targetKeyId = parseInt(input.value);
     var z = getZ1N();
     if (isNaN(targetKeyId) || targetKeyId < 0) { if (statusEl) statusEl.innerHTML = '<div class="status-msg error">Enter a valid Key ID</div>'; return; }
-    if (targetKeyId === z.keyId) { if (statusEl) statusEl.innerHTML = '<div class="status-msg error">Cannot share with yourself</div>'; return; }
+    if (targetKeyId === z.keyId) { if (statusEl) statusEl.innerHTML = '<div class="status-msg error">Cannot offer to yourself</div>'; return; }
     var exists = await keyExists(targetKeyId);
     if (!exists) { if (statusEl) statusEl.innerHTML = '<div class="status-msg error">Key #' + targetKeyId + ' does not exist</div>'; return; }
     if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
     try {
       await loadEthersLib();
-      var iface = new ethers.Interface(['function grantViewing(uint256 artefactId, uint256 viewerKeyId)']);
-      var data = iface.encodeFunctionData('grantViewing', [BigInt(artefactId), BigInt(targetKeyId)]);
+      var iface = new ethers.Interface(['function offerArtefact(uint256 artefactId, uint256 recipientKeyId)']);
+      var data = iface.encodeFunctionData('offerArtefact', [BigInt(artefactId), BigInt(targetKeyId)]);
       if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
       var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
       if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
       var success = await waitForReceipt(tx);
       if (success) {
-        if (statusEl) statusEl.innerHTML = '<div class="status-msg success">\u2713 Artefact shared with Key #' + targetKeyId + '</div>';
-        showToast('\u2705 Artefact shared!', 3000);
-        pendingViewChanges[artefactId] = 'sharing'; closeModal(); lastOwnedSig = ''; renderOwnedSection();
+        if (statusEl) statusEl.innerHTML = '<div class="status-msg success">\u2713 Artefact offered to Key #' + targetKeyId + '</div>';
+        showToast('\u2705 Artefact offered!', 3000);
+        pendingViewChanges[artefactId] = 'offering'; closeModal(); lastOwnedSig = ''; renderOwnedSection();
         try {
           await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
           await refresh();
@@ -1053,6 +1184,199 @@ var pendingArtefacts = [];
     }
   }
 
+  async function cancelOffering(artefactId) {
+    var statusEl = document.getElementById('sharingStatus');
+    var z = getZ1N();
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
+    try {
+      await loadEthersLib();
+      var iface = new ethers.Interface(['function cancelOffering(uint256 artefactId)']);
+      var data = iface.encodeFunctionData('cancelOffering', [BigInt(artefactId)]);
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
+      var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
+      var success = await waitForReceipt(tx);
+      if (success) {
+        showToast('Offering cancelled', 3000);
+        pendingViewChanges[artefactId] = 'cancelling'; closeModal(); lastOwnedSig = ''; renderOwnedSection();
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          await refresh();
+          delete pendingViewChanges[artefactId];
+          lastOwnedSig = ''; renderOwnedSection();
+        } catch (e) { console.error('Reindex failed:', e); }
+      } else { throw new Error('Transaction failed'); }
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
+    }
+  }
+
+  async function acceptOffering(artefactId) {
+    var statusEl = document.getElementById('sharingStatus');
+    var z = getZ1N();
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
+    try {
+      await loadEthersLib();
+      var iface = new ethers.Interface(['function acceptOffering(uint256 artefactId)']);
+      var data = iface.encodeFunctionData('acceptOffering', [BigInt(artefactId)]);
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
+      var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
+      var success = await waitForReceipt(tx);
+      if (success) {
+        showToast('\u2705 Artefact accepted!', 3000);
+        pendingViewChanges[artefactId] = 'accepting'; closeModal(); lastSharedSig = ''; renderSharedSection();
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          await refresh();
+          delete pendingViewChanges[artefactId];
+          lastSharedSig = ''; renderSharedSection();
+        } catch (e) { console.error('Reindex failed:', e); }
+      } else { throw new Error('Transaction failed'); }
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
+    }
+  }
+
+  async function rejectOffering(artefactId) {
+    var statusEl = document.getElementById('sharingStatus');
+    var z = getZ1N();
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
+    try {
+      await loadEthersLib();
+      var iface = new ethers.Interface(['function rejectOffering(uint256 artefactId)']);
+      var data = iface.encodeFunctionData('rejectOffering', [BigInt(artefactId)]);
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
+      var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
+      var success = await waitForReceipt(tx);
+      if (success) {
+        showToast('Offering rejected', 3000);
+        pendingViewChanges[artefactId] = 'rejecting'; closeModal(); lastSharedSig = ''; renderSharedSection();
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          await refresh();
+          delete pendingViewChanges[artefactId];
+          lastSharedSig = ''; renderSharedSection();
+        } catch (e) { console.error('Reindex failed:', e); }
+      } else { throw new Error('Transaction failed'); }
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
+    }
+  }
+
+  async function ownerRelease(artefactId) {
+    var statusEl = document.getElementById('sharingStatus');
+    var z = getZ1N();
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(248,113,113,0.15);color:#f87171;">Preparing release...</div>';
+    try {
+      await loadEthersLib();
+      var iface = new ethers.Interface(['function ownerRelease(uint256 artefactId)']);
+      var data = iface.encodeFunctionData('ownerRelease', [BigInt(artefactId)]);
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(248,113,113,0.15);color:#f87171;">Confirm in wallet...</div>';
+      var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(248,113,113,0.15);color:#f87171;">Waiting for confirmation...</div>';
+      var success = await waitForReceipt(tx);
+      if (success) {
+        showToast('Artefact released', 3000);
+        pendingViewChanges[artefactId] = 'releasing'; closeModal(); lastOwnedSig = ''; renderOwnedSection();
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          await refresh();
+          delete pendingViewChanges[artefactId];
+          lastOwnedSig = ''; renderOwnedSection();
+        } catch (e) { console.error('Reindex failed:', e); }
+      } else { throw new Error('Transaction failed'); }
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
+    }
+  }
+
+  async function recipientRelease(artefactId) {
+    var statusEl = document.getElementById('sharingStatus');
+    var z = getZ1N();
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(248,113,113,0.15);color:#f87171;">Preparing release...</div>';
+    try {
+      await loadEthersLib();
+      var iface = new ethers.Interface(['function releaseArtefact(uint256 artefactId)']);
+      var data = iface.encodeFunctionData('releaseArtefact', [BigInt(artefactId)]);
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(248,113,113,0.15);color:#f87171;">Confirm in wallet...</div>';
+      var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(248,113,113,0.15);color:#f87171;">Waiting for confirmation...</div>';
+      var success = await waitForReceipt(tx);
+      if (success) {
+        showToast('Artefact released', 3000);
+        pendingViewChanges[artefactId] = 'releasing'; closeModal(); lastSharedSig = ''; renderSharedSection();
+        try {
+          await fetch((getZ1N().API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/reindex/artefact-viewing', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+          await refresh();
+          delete pendingViewChanges[artefactId];
+          lastSharedSig = ''; renderSharedSection();
+        } catch (e) { console.error('Reindex failed:', e); }
+      } else { throw new Error('Transaction failed'); }
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
+    }
+  }
+
+  async function hideArtefact(artefactId) {
+    var statusEl = document.getElementById('sharingStatus');
+    var z = getZ1N();
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
+    try {
+      await loadEthersLib();
+      var iface = new ethers.Interface(['function hideArtefact(uint256 artefactId)']);
+      var data = iface.encodeFunctionData('hideArtefact', [BigInt(artefactId)]);
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
+      var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
+      var success = await waitForReceipt(tx);
+      if (success) {
+        showToast('Artefact hidden', 3000);
+        closeModal(); lastSharedSig = ''; renderSharedSection();
+        try { await refresh(); } catch (e) {}
+      } else { throw new Error('Transaction failed'); }
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
+    }
+  }
+
+  async function unhideArtefact(artefactId) {
+    var statusEl = document.getElementById('sharingStatus');
+    var z = getZ1N();
+    if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Preparing transaction...</div>';
+    try {
+      await loadEthersLib();
+      var iface = new ethers.Interface(['function unhideArtefact(uint256 artefactId)']);
+      var data = iface.encodeFunctionData('unhideArtefact', [BigInt(artefactId)]);
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
+      var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
+      var success = await waitForReceipt(tx);
+      if (success) {
+        showToast('Artefact unhidden', 3000);
+        closeModal(); lastSharedSig = ''; renderSharedSection();
+        try { await refresh(); } catch (e) {}
+      } else { throw new Error('Transaction failed'); }
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
+    }
+  }
+
   async function waitForReceipt(txHash) {
     for (var i = 0; i < 60; i++) {
       await new Promise(function(r) { setTimeout(r, 2000); });
@@ -1069,7 +1393,7 @@ var pendingArtefacts = [];
   // MINT
   // =====================================================================
   
-  var MINT_PRICE = '0x1236efcbcbb340000'; // 21 POL
+  var MINT_PRICE = '0x6124FEE993BC0000'; // 7 POL
   
   async function mint() {
     var z = getZ1N();
@@ -1091,8 +1415,15 @@ var pendingArtefacts = [];
       
       var hasFirstArtefact = ownedArtefacts.length > 0;
       var functionName = hasFirstArtefact ? 'mintExtraArtefact' : 'mintFirstArtefact';
-      var iface = new ethers.Interface(['function mintFirstArtefact(uint256 keyId)', 'function mintExtraArtefact(uint256 keyId) payable']);
-      var encodedData = iface.encodeFunctionData(functionName, [BigInt(z.keyId)]);
+      var iface = new ethers.Interface([
+        'function mintFirstArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription)',
+        'function mintExtraArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription) payable'
+      ]);
+      var contentHash = '0x' + '0'.repeat(64);
+      var schema = 0;
+      var inscInput = document.getElementById('mintInscriptionInput');
+      var inscription = inscInput ? inscInput.value.trim().slice(0, 64) : '';
+      var encodedData = iface.encodeFunctionData(functionName, [BigInt(z.keyId), contentHash, schema, inscription]);
 
       if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
       if (btn) btn.textContent = 'Confirm in wallet...';
@@ -1110,6 +1441,10 @@ var pendingArtefacts = [];
       if (success) {
         if (statusEl) statusEl.innerHTML = '<div class="status-msg success">\u2705 Artefact minted! Waiting for indexer...</div>';
         showToast('\u2705 Artefact minted!', 4000);
+        var inscClear = document.getElementById('mintInscriptionInput');
+        if (inscClear) { inscClear.value = ''; }
+        var inscCountClear = document.getElementById('mintInscriptionCount');
+        if (inscCountClear) { inscCountClear.textContent = '0/64'; }
         
         pendingArtefacts.push({ id: Date.now(), type: 'mint', addedAt: Date.now() });
         lastOwnedSig = '';
@@ -1131,8 +1466,8 @@ var pendingArtefacts = [];
           renderOwnedSection();
           updateOverviewPreview();
           if (statusEl) statusEl.innerHTML = '';
-          if (btn) { btn.disabled = false; btn.textContent = '+ Mint Artefact \u2014 21 POL'; }
-          if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = '+ Mint Artefact \u2014 21 POL'; }
+          if (btn) { btn.disabled = false; btn.textContent = '+ Mint Artefact \u2014 7 POL'; }
+          if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = '+ Mint Artefact \u2014 7 POL'; }
         } else {
           var refreshAttempts = 0;
           var refreshTimer = setInterval(async function() {
@@ -1146,8 +1481,8 @@ var pendingArtefacts = [];
               renderOwnedSection();
               updateOverviewPreview();
               if (statusEl) statusEl.innerHTML = '';
-              if (btn) { btn.disabled = false; btn.textContent = '+ Mint Artefact \u2014 21 POL'; }
-              if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = '+ Mint Artefact \u2014 21 POL'; }
+              if (btn) { btn.disabled = false; btn.textContent = '+ Mint Artefact \u2014 7 POL'; }
+              if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = '+ Mint Artefact \u2014 7 POL'; }
             }
           }, 10000);
         }
@@ -1168,8 +1503,8 @@ var pendingArtefacts = [];
         msg = msg.slice(0, 150);
       }
       if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg + '</div>';
-      if (btn) { btn.textContent = ownedArtefacts.length > 0 ? '+ Mint Artefact \u2014 21 POL' : '+ Mint Free Artefact'; btn.disabled = false; }
-      if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = ownedArtefacts.length > 0 ? '+ Mint Artefact \u2014 21 POL' : '+ Mint Free Artefact'; }
+      if (btn) { btn.textContent = ownedArtefacts.length > 0 ? '+ Mint Artefact \u2014 7 POL' : '+ Mint Free Artefact'; btn.disabled = false; }
+      if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.textContent = ownedArtefacts.length > 0 ? '+ Mint Artefact \u2014 7 POL' : '+ Mint Free Artefact'; }
     }
   }
 
@@ -1197,10 +1532,10 @@ var pendingArtefacts = [];
   }
 
   function setLibraryViewMode(mode) {
-  libraryViewMode = mode;
-  lastSharedSig = '';
-  renderSharedSection();
-}
+    libraryViewMode = mode;
+    lastSharedSig = '';
+    renderSharedSection();
+  }
 
   function filterLibrary() {
     var searchInput = document.getElementById('librarySearchInput');
@@ -1322,12 +1657,12 @@ var pendingArtefacts = [];
       
       if (unreadCount > 0) {
         var z = getZ1N();
-        var currentEpoch = z.epoch || '—';
+        var currentEpoch = z.epoch || '\u2014';
         sharedWithMe.forEach(function(art) {
           if (!unseenArtefactIds[art.tokenId]) return;
           var type = unseenArtefactIds[art.tokenId];
           var msg = type === 'new' 
-            ? 'shared an artefact with you'
+            ? 'offered an artefact to you'
             : 'changed viewing access';
           
           var item = document.createElement('div');
@@ -1378,9 +1713,16 @@ var pendingArtefacts = [];
     openOwnedModal: openOwnedModal,
     openLibraryModal: openLibraryModal,
     closeModal: closeModal,
-    grantViewing: grantViewing,
+    offerArtefact: offerArtefact,
+    cancelOffering: cancelOffering,
+    acceptOffering: acceptOffering,
+    rejectOffering: rejectOffering,
     revokeViewing: revokeViewing,
     restoreViewing: restoreViewing,
+    ownerRelease: ownerRelease,
+    recipientRelease: recipientRelease,
+    hideArtefact: hideArtefact,
+    unhideArtefact: unhideArtefact,
     updateOverviewPreview: updateOverviewPreview,
     updateBadgesAndFeed: updateBadgesAndFeed
   };
