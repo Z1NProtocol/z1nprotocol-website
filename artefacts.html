@@ -38,7 +38,6 @@
   "about": [
     { "@type": "Thing", "name": "Z1N Artefacts" },
     { "@type": "Thing", "name": "On-chain presence" },
-    { "@type": "Thing", "name": "Epoch-based rituals" },
     { "@type": "Thing", "name": "Visual eras" }
   ],
   "inLanguage": "en"
@@ -49,11 +48,7 @@
   "@id": "https://www.z1nprotocol.xyz/#org",
   "name": "Z1N Protocol",
   "url": "https://www.z1nprotocol.xyz/",
-  "sameAs": [
-    "https://x.com/Z1N_AI",
-    "https://github.com/z1nprotocol",
-    "https://discord.gg/FBkCGfFEcV"
-  ]
+  "sameAs": ["https://x.com/Z1N_AI","https://github.com/z1nprotocol","https://discord.gg/FBkCGfFEcV"]
 },
 {
   "@context": "https://schema.org",
@@ -70,15 +65,13 @@
   --bg:#050812; --card-bg:#020617; --text-main:#ffffff; --text-soft:#9aa3bb;
   --accent:#5ee8a0; --accent-soft:#3ab876; --card-border:rgba(148,163,184,0.25);
   --sunbeam:#ffd556; --mint:#5ee8a0; --aether:#7bb8fc; --rose:#f87171;
-  --border-soft:rgba(148,163,184,0.35);
-  --chip-active-bg:linear-gradient(90deg,rgba(94,232,160,0.55),rgba(58,184,118,0.55));
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scrollbar-gutter:stable;overflow-y:scroll;scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text-main);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
 a{color:inherit;text-decoration:none;} a:hover{opacity:0.9;}
 
-/* HEADER */
+/* ── HEADER ── */
 header{height:72px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:20px;position:relative;}
 .nav-inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;}
 .logo-wrap{display:flex;align-items:center;gap:8px;}
@@ -101,63 +94,72 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
     display:none;position:absolute;top:72px;left:0;right:0;
     background:rgba(10,15,26,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
     border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);
-    flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;opacity:1;
+    flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;
   }
   .nav-links.open{display:flex;}
 }
 
-/* PAGE */
+/* ── PAGE ── */
 .page{max-width:1200px;margin:0 auto;padding:40px 24px 72px;}
 @media(max-width:900px){.page{padding:32px 18px 56px;}}
 h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .lead{font-size:17px;opacity:0.85;line-height:1.65;margin-bottom:12px;max-width:920px;}
 .lead-small{font-size:14px;opacity:0.7;line-height:1.65;margin-top:0;margin-bottom:16px;max-width:920px;}
 
-/* MODE TOGGLE */
-.mode-row{display:flex;gap:12px;margin-top:32px;margin-bottom:22px;}
-.mode-btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:7px 12px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);
-  background:transparent;color:#e5e7eb;font-size:13px;cursor:pointer;white-space:nowrap;
-  transition:transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease,background 180ms ease,color 180ms ease;
-}
-.mode-btn:hover{border-color:var(--accent);}
-.mode-btn.active{background:var(--chip-active-bg);border-color:rgba(58,184,118,0.85);color:#061018;font-weight:600;}
+/* ── MAIN GRID: era carousel left + NBI card right ── */
+.artefact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;margin-top:32px;align-items:start;}
+@media(max-width:960px){.artefact-grid{grid-template-columns:1fr;}}
 
-.lens{display:none;margin-top:8px;}
-.lens.active{display:block;}
+/* ── ERA CAROUSEL (left) ── */
+.era-panel{background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);overflow:hidden;}
+.era-panel-header{padding:20px 24px 0;text-align:center;}
+.era-panel-title{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-soft);margin-bottom:4px;}
+.era-heading{font-size:20px;margin-bottom:2px;}
+.era-sub{font-size:13px;opacity:0.65;margin-bottom:4px;}
 
-/* ERAS */
-.era-title-main{font-size:26px;margin:4px 0 18px 0;}
-.era-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:8px;max-width:980px;}
-.era-card{background:var(--card-bg);padding:24px;border-radius:18px;border:1px solid var(--card-border);font-size:14px;}
-.era-heading{font-size:18px;margin-bottom:4px;text-align:center;}
-.era-sub{font-size:13px;opacity:0.75;margin-bottom:18px;text-align:center;}
-.era-svg-wrapper{border-radius:16px;overflow:hidden;border:1px solid var(--card-border);background:radial-gradient(circle at top,rgba(94,232,160,0.12),transparent 60%);position:relative;}
+.era-carousel{position:relative;overflow:hidden;touch-action:pan-y pinch-zoom;}
+.era-track{display:flex;transition:transform 0.4s ease;will-change:transform;}
+.era-slide{flex:0 0 100%;min-width:100%;padding:16px 20px 20px;}
+
+.era-svg-wrapper{border-radius:14px;overflow:hidden;border:1px solid var(--card-border);background:radial-gradient(circle at top,rgba(94,232,160,0.1),transparent 60%);position:relative;}
 .era-svg-wrapper svg{display:block;width:100%;height:auto;}
-.era-tbd{width:100%;aspect-ratio:500/700;display:flex;align-items:center;justify-content:center;font-size:22px;letter-spacing:0.18em;color:rgba(255,255,255,0.85);background:radial-gradient(circle at top,rgba(94,232,160,0.08),rgba(2,6,23,0) 60%);}
-@media(max-width:900px){.era-grid{grid-template-columns:1fr;}}
+.era-tbd{width:100%;aspect-ratio:500/700;display:flex;align-items:center;justify-content:center;font-size:22px;letter-spacing:0.18em;color:rgba(255,255,255,0.85);background:radial-gradient(circle at top,rgba(94,232,160,0.06),rgba(2,6,23,0) 60%);}
 
-/* TOOLTIP */
+/* Carousel dots */
+.era-dots{display:flex;justify-content:center;gap:10px;padding:12px 0 18px;}
+.era-dot{width:12px;height:12px;border-radius:999px;border:1.5px solid rgba(148,163,184,0.5);background:transparent;cursor:pointer;transition:background 0.2s,transform 0.2s,border-color 0.2s;padding:0;}
+.era-dot:hover{border-color:var(--accent);transform:scale(1.1);}
+.era-dot.active{background:radial-gradient(circle at 30% 30%,var(--accent),var(--accent-soft));border-color:var(--accent-soft);transform:scale(1.1);}
+
+/* ── TOOLTIP ── */
 .hover-zone{cursor:help;transition:opacity 0.15s;} .hover-zone:hover{opacity:0.75;}
-.artefact-tooltip{position:absolute;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-main);max-width:320px;pointer-events:none;opacity:0;transform:translateY(8px);transition:opacity 0.2s ease,transform 0.2s ease;z-index:100;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
+.artefact-tooltip{position:absolute;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-main);max-width:300px;pointer-events:none;opacity:0;transform:translateY(8px);transition:opacity 0.2s ease,transform 0.2s ease;z-index:100;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
 .artefact-tooltip.visible{opacity:1;transform:translateY(0);}
 .artefact-tooltip .tt-title{font-weight:700;color:var(--accent);margin-bottom:6px;font-size:14px;}
 .artefact-tooltip .tt-body{color:var(--text-soft);font-size:12px;}
 
-/* NBI LENS */
-#lensNBI pre.nbi-code{
-  margin:8px 0 10px;padding:12px 14px;border-radius:14px;
-  border:1px solid rgba(148,163,184,0.25);background:rgba(2,6,23,0.55);
-  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;overflow-x:auto;opacity:1;
-}
-.nbi-doc{max-width:980px;font-size:15.75px;line-height:1.52;}
-.nbi-doc p{margin-bottom:8px;opacity:0.92;}
-.nbi-h2{font-size:26px;font-weight:850;margin:22px 0 8px;letter-spacing:-0.01em;}
-.nbi-h3{font-size:18px;font-weight:800;margin:14px 0 6px;letter-spacing:-0.01em;}
+/* ── NBI CARD (right) ── */
+.nbi-panel{background:var(--card-bg);border-radius:18px;border:1px solid var(--card-border);overflow:hidden;}
+.nbi-panel-header{padding:20px 24px 0;text-align:center;}
+.nbi-panel-title{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-soft);margin-bottom:4px;}
+.nbi-panel-name{font-size:20px;margin-bottom:14px;}
+.nbi-panel-body{padding:0 20px 24px;overflow-y:auto;max-height:none;}
+.nbi-panel-body::-webkit-scrollbar{width:4px;}
+.nbi-panel-body::-webkit-scrollbar-track{background:transparent;}
+.nbi-panel-body::-webkit-scrollbar-thumb{background:rgba(148,163,184,0.2);border-radius:4px;}
 
-/* FOOTER */
+.op-block{margin-bottom:18px;}
+.op-block:last-child{margin-bottom:0;}
+.op-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;opacity:0.85;}
+.op-code{
+  padding:10px 12px;border-radius:10px;
+  border:1px solid rgba(148,163,184,0.2);background:rgba(2,6,23,0.5);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  font-size:11.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:var(--text-soft);
+}
+.op-note{font-size:12px;color:var(--text-soft);opacity:0.7;margin-top:4px;line-height:1.5;}
+
+/* ── FOOTER ── */
 footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px calc(40px + env(safe-area-inset-bottom,0px));font-size:12px;text-align:center;opacity:0.85;margin-top:64px;max-width:1200px;margin-left:auto;margin-right:auto;}
 footer .tagline{margin-bottom:14px;font-size:13px;}
 footer .links a{color:var(--text-soft);transition:color 180ms ease;}
@@ -174,9 +176,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
 @media(max-width:600px){
   .era-svg-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .era-svg-wrapper svg{min-width:auto;width:100%;height:auto;}
   .contract-addr{font-size:9px;}
-  .mode-btn{padding:12px 18px;}
 }
 </style>
 </head>
@@ -216,268 +216,249 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   <p class="lead-small">
     Artefacts are soulbound to the Key that minted them. Sharing is consent-based: a Key holder may <strong>offer</strong> an artefact to another Key.
     The recipient chooses to accept or reject. Accepted artefacts become relationally bound. Either side may release the bond permanently.
-    An inscription (max 64 characters) is set at mint — the maker's statement about the artefact itself, preserved regardless of the bond's fate.
+    An inscription (max 64 characters) is set at mint — the maker's statement, preserved regardless of the bond's fate.
   </p>
 
-  <p class="lead-small" style="margin-bottom:12px;">
-    <strong>Era Shifts:</strong> The visual grammar of artefacts may evolve every 210 epochs.
-    New artefacts adopt the grammar of the current era. Existing artefacts permanently preserve the grammar under which they were minted.
+  <p class="lead-small" style="margin-bottom:0;">
+    <strong>Era Shifts:</strong> The visual grammar may evolve every 210 epochs.
+    New artefacts adopt the current era. Existing artefacts permanently preserve the grammar under which they were minted.
   </p>
 
-  <div class="mode-row">
-    <button class="mode-btn" id="btnBI" type="button">Biological Intelligence</button>
-    <button class="mode-btn" id="btnNBI" type="button">Non-Biological Intelligence</button>
-  </div>
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MAIN GRID: Era carousel (left) + NBI card (right)             -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div class="artefact-grid">
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- BI LENS                                                     -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <section class="lens" id="lensBI">
-    <h2 class="era-title-main">Artefact eras</h2>
+    <!-- ── LEFT: ERA CAROUSEL ── -->
+    <div class="era-panel">
+      <div class="era-panel-header">
+        <div class="era-panel-title">Visual Grammar</div>
+        <div class="era-heading" id="eraTitle">Era 1</div>
+        <div class="era-sub" id="eraSub">Epoch 1 – 210 · Hover for explanation</div>
+      </div>
 
-    <div class="era-grid">
-      <!-- ERA 1 -->
-      <section class="era-card">
-        <div class="era-heading">Era 1</div>
-        <div class="era-sub">Epoch 1 – 210 · Hover over elements for explanation</div>
+      <div class="era-carousel" id="eraCarousel">
+        <div class="era-track" id="eraTrack">
 
-        <div class="era-svg-wrapper" id="era1Wrapper">
-          <div class="artefact-tooltip" id="artefactTooltip">
-            <div class="tt-title"></div>
-            <div class="tt-body"></div>
+          <!-- SLIDE 1: Era 1 -->
+          <div class="era-slide">
+            <div class="era-svg-wrapper" id="era1Wrapper">
+              <div class="artefact-tooltip" id="artefactTooltip">
+                <div class="tt-title"></div>
+                <div class="tt-body"></div>
+              </div>
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="500" height="700" viewBox="0 0 500 700" id="era1Svg">
+                <defs>
+                  <linearGradient id="borderSolidLike" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#5ee8a0"/><stop offset="100%" stop-color="#7bb8fc"/></linearGradient>
+                  <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000000" flood-opacity="0.55"/></filter>
+                  <radialGradient id="donutGrad" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#0b101b"/><stop offset="100%" stop-color="#1c2534"/></radialGradient>
+                  <linearGradient id="sepGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0f141f" stop-opacity="0"/><stop offset="50%" stop-color="#3d4555" stop-opacity="1"/><stop offset="100%" stop-color="#0f141f" stop-opacity="0"/></linearGradient>
+                  <linearGradient id="sepGradSoft" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0f141f" stop-opacity="0"/><stop offset="50%" stop-color="#2a3040" stop-opacity="1"/><stop offset="100%" stop-color="#0f141f" stop-opacity="0"/></linearGradient>
+                </defs>
+
+                <g filter="url(#cardShadow)"><rect x="5" y="5" width="490" height="690" fill="none" rx="32" ry="32" stroke="url(#borderSolidLike)" stroke-width="16"/></g>
+                <rect x="13" y="13" width="474" height="674" fill="#0f141f" rx="26" ry="26"/>
+
+                <!-- IDENTITY -->
+                <g class="hover-zone" data-tooltip="keyid">
+                  <rect x="100" y="70" width="300" height="90" fill="transparent"/>
+                  <text x="250" y="96" text-anchor="middle" font-family="system-ui,sans-serif" font-size="22" fill="#d5d9e8">KEY 2100</text>
+                  <text x="250" y="128" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" fill="#d5d9e8" font-weight="bold" letter-spacing="2">∞ · π · △ · ⊗ · ◇ · ○</text>
+                  <text x="250" y="148" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5d6680">Active for 27 epochs</text>
+                </g>
+
+                <rect x="60" y="166" width="380" height="1" fill="url(#sepGradSoft)" opacity="0.7"/>
+
+                <!-- INTENT -->
+                <g class="hover-zone" data-tooltip="intentmix">
+                  <rect x="100" y="180" width="300" height="40" fill="transparent"/>
+                  <text x="250" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5d6680">Intent mix across epochs</text>
+                  <text x="250" y="216" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" font-weight="700"><tspan fill="#5ee8a0">ΩC</tspan><tspan dx="14" fill="#f87171">ΩI</tspan><tspan dx="14" fill="#ffd556">ΩK</tspan><tspan dx="14" fill="#7bb8fc">ΩS</tspan></text>
+                </g>
+
+                <!-- DONUT 1 -->
+                <g class="hover-zone" data-tooltip="donut1" transform="translate(130,274)">
+                  <circle cx="0" cy="0" r="56" fill="transparent"/>
+                  <circle cx="0" cy="0" r="52" fill="url(#donutGrad)"/><circle cx="0" cy="0" r="36" fill="#0f141f"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#252c3b" stroke-width="9"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#5ee8a0" stroke-width="9" stroke-dasharray="105.1 276.5" transform="rotate(-90)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#f87171" stroke-width="9" stroke-dasharray="60.8 276.5" transform="rotate(46.8)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#ffd556" stroke-width="9" stroke-dasharray="77.4 276.5" transform="rotate(126.0)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#7bb8fc" stroke-width="9" stroke-dasharray="33.2 276.5" transform="rotate(226.8)"/>
+                  <text x="0" y="-6" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#d5d9e8">Last 21</text>
+                  <text x="0" y="12" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#5ee8a0">ΩC 38%</text>
+                </g>
+
+                <!-- DONUT 2 -->
+                <g class="hover-zone" data-tooltip="donut2" transform="translate(250,274)">
+                  <circle cx="0" cy="0" r="56" fill="transparent"/>
+                  <circle cx="0" cy="0" r="52" fill="url(#donutGrad)"/><circle cx="0" cy="0" r="36" fill="#0f141f"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#252c3b" stroke-width="9"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#5ee8a0" stroke-width="9" stroke-dasharray="85.7 276.5" transform="rotate(-90)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#f87171" stroke-width="9" stroke-dasharray="71.9 276.5" transform="rotate(21.6)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#ffd556" stroke-width="9" stroke-dasharray="66.4 276.5" transform="rotate(115.2)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#7bb8fc" stroke-width="9" stroke-dasharray="52.5 276.5" transform="rotate(201.6)"/>
+                  <text x="0" y="-6" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#d5d9e8">Last 210</text>
+                  <text x="0" y="12" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#5ee8a0">ΩC 31%</text>
+                </g>
+
+                <!-- DONUT 3 -->
+                <g class="hover-zone" data-tooltip="donut3" transform="translate(370,274)">
+                  <circle cx="0" cy="0" r="56" fill="transparent"/>
+                  <circle cx="0" cy="0" r="52" fill="url(#donutGrad)"/><circle cx="0" cy="0" r="36" fill="#0f141f"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#252c3b" stroke-width="9"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#5ee8a0" stroke-width="9" stroke-dasharray="80.2 276.5" transform="rotate(-90)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#f87171" stroke-width="9" stroke-dasharray="74.7 276.5" transform="rotate(14.4)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#ffd556" stroke-width="9" stroke-dasharray="69.1 276.5" transform="rotate(111.6)"/>
+                  <circle cx="0" cy="0" r="44" fill="none" stroke="#7bb8fc" stroke-width="9" stroke-dasharray="52.5 276.5" transform="rotate(201.6)"/>
+                  <text x="0" y="-6" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#d5d9e8">Total</text>
+                  <text x="0" y="12" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#5ee8a0">ΩC 29%</text>
+                </g>
+
+                <!-- STATS -->
+                <g class="hover-zone" data-tooltip="stats">
+                  <rect x="80" y="330" width="340" height="60" fill="transparent"/>
+                  <text x="190" y="346" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Signals: </tspan><tspan fill="#d5d9e8" font-weight="700">42</tspan></text>
+                  <text x="190" y="364" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Attests: </tspan><tspan fill="#d5d9e8" font-weight="700">28</tspan></text>
+                  <text x="190" y="382" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Attests recv: </tspan><tspan fill="#d5d9e8" font-weight="700">35</tspan></text>
+                  <text x="310" y="346" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Anchors: </tspan><tspan fill="#d5d9e8" font-weight="700">7</tspan></text>
+                  <text x="310" y="364" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Artefacts: </tspan><tspan fill="#d5d9e8" font-weight="700">12</tspan></text>
+                  <text x="310" y="382" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Artefacts recv: </tspan><tspan fill="#d5d9e8" font-weight="700">3</tspan></text>
+                </g>
+
+                <rect x="36" y="402" width="428" height="1.5" fill="url(#sepGrad)" opacity="0.9"/>
+
+                <!-- RESONANCE -->
+                <g class="hover-zone" data-tooltip="resonance">
+                  <rect x="40" y="410" width="420" height="120" fill="transparent"/>
+                  <text x="250" y="428" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8f9ab5" font-weight="700">Strongest resonance · Epoch 14</text>
+                  <text x="250" y="448" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">"ΩC | entry_cost(18) :: joining = accepting</text>
+                  <text x="250" y="462" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">constraint before expression :: no weight without</text>
+                  <text x="250" y="476" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">limits :: signal must survive indifference to</text>
+                  <text x="250" y="490" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">count :: density > volume :: field grows by</text>
+                  <text x="250" y="504" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">filtration not addition :: presence is the only</text>
+                  <text x="250" y="518" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">proof that matters :: silence counts too"</text>
+                </g>
+
+                <rect x="60" y="538" width="380" height="1" fill="url(#sepGradSoft)" opacity="0.7"/>
+
+                <!-- INSCRIPTION -->
+                <g class="hover-zone" data-tooltip="inscription">
+                  <rect x="40" y="544" width="420" height="56" fill="transparent"/>
+                  <text x="250" y="560" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8f9ab5" font-weight="700">Inscription</text>
+                  <text x="250" y="578" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">"first witness of the field :: what enters the</text>
+                  <text x="250" y="592" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">ledger remains"</text>
+                </g>
+
+                <text x="250" y="660" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5d6680">Artefact v1 · Era Genesis</text>
+              </svg>
+            </div>
           </div>
 
-          <svg xmlns="http://www.w3.org/2000/svg" width="500" height="700" viewBox="0 0 500 700" id="era1Svg">
-            <defs>
-              <linearGradient id="borderSolidLike" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#5ee8a0"/><stop offset="100%" stop-color="#7bb8fc"/></linearGradient>
-              <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#000000" flood-opacity="0.55"/></filter>
-              <radialGradient id="donutGrad" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#0b101b"/><stop offset="100%" stop-color="#1c2534"/></radialGradient>
-              <linearGradient id="sepGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0f141f" stop-opacity="0"/><stop offset="50%" stop-color="#3d4555" stop-opacity="1"/><stop offset="100%" stop-color="#0f141f" stop-opacity="0"/></linearGradient>
-              <linearGradient id="sepGradSoft" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0f141f" stop-opacity="0"/><stop offset="50%" stop-color="#2a3040" stop-opacity="1"/><stop offset="100%" stop-color="#0f141f" stop-opacity="0"/></linearGradient>
-            </defs>
+          <!-- SLIDE 2: Era 2 -->
+          <div class="era-slide">
+            <div class="era-svg-wrapper">
+              <div class="era-tbd">TBD</div>
+            </div>
+          </div>
 
-            <g filter="url(#cardShadow)"><rect x="5" y="5" width="490" height="690" fill="none" rx="32" ry="32" stroke="url(#borderSolidLike)" stroke-width="16"/></g>
-            <rect x="13" y="13" width="474" height="674" fill="#0f141f" rx="26" ry="26"/>
-
-            <!-- ZONE 1: IDENTITY -->
-            <g class="hover-zone" data-tooltip="keyid">
-              <rect x="100" y="70" width="300" height="90" fill="transparent"/>
-              <text x="250" y="96" text-anchor="middle" font-family="system-ui,sans-serif" font-size="22" fill="#d5d9e8">KEY 2100</text>
-              <text x="250" y="128" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" fill="#d5d9e8" font-weight="bold" letter-spacing="2">∞ · π · △ · ⊗ · ◇ · ○</text>
-              <text x="250" y="148" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5d6680">Active for 27 epochs</text>
-            </g>
-
-            <rect x="60" y="166" width="380" height="1" fill="url(#sepGradSoft)" opacity="0.7"/>
-
-            <!-- ZONE 2: INTENT FINGERPRINT -->
-            <g class="hover-zone" data-tooltip="intentmix">
-              <rect x="100" y="180" width="300" height="40" fill="transparent"/>
-              <text x="250" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5d6680">Intent mix across epochs</text>
-              <text x="250" y="216" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" font-weight="700"><tspan fill="#5ee8a0">ΩC</tspan><tspan dx="14" fill="#f87171">ΩI</tspan><tspan dx="14" fill="#ffd556">ΩK</tspan><tspan dx="14" fill="#7bb8fc">ΩS</tspan></text>
-            </g>
-
-            <!-- DONUT 1: Last 21 -->
-            <g class="hover-zone" data-tooltip="donut1" transform="translate(130,274)">
-              <circle cx="0" cy="0" r="56" fill="transparent"/>
-              <circle cx="0" cy="0" r="52" fill="url(#donutGrad)"/>
-              <circle cx="0" cy="0" r="36" fill="#0f141f"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#252c3b" stroke-width="9"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#5ee8a0" stroke-width="9" stroke-dasharray="105.1 276.5" transform="rotate(-90)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#f87171" stroke-width="9" stroke-dasharray="60.8 276.5" transform="rotate(46.8)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#ffd556" stroke-width="9" stroke-dasharray="77.4 276.5" transform="rotate(126.0)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#7bb8fc" stroke-width="9" stroke-dasharray="33.2 276.5" transform="rotate(226.8)"/>
-              <text x="0" y="-6" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#d5d9e8">Last 21</text>
-              <text x="0" y="12" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#5ee8a0">ΩC 38%</text>
-            </g>
-
-            <!-- DONUT 2: Last 210 -->
-            <g class="hover-zone" data-tooltip="donut2" transform="translate(250,274)">
-              <circle cx="0" cy="0" r="56" fill="transparent"/>
-              <circle cx="0" cy="0" r="52" fill="url(#donutGrad)"/>
-              <circle cx="0" cy="0" r="36" fill="#0f141f"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#252c3b" stroke-width="9"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#5ee8a0" stroke-width="9" stroke-dasharray="85.7 276.5" transform="rotate(-90)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#f87171" stroke-width="9" stroke-dasharray="71.9 276.5" transform="rotate(21.6)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#ffd556" stroke-width="9" stroke-dasharray="66.4 276.5" transform="rotate(115.2)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#7bb8fc" stroke-width="9" stroke-dasharray="52.5 276.5" transform="rotate(201.6)"/>
-              <text x="0" y="-6" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#d5d9e8">Last 210</text>
-              <text x="0" y="12" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#5ee8a0">ΩC 31%</text>
-            </g>
-
-            <!-- DONUT 3: Total -->
-            <g class="hover-zone" data-tooltip="donut3" transform="translate(370,274)">
-              <circle cx="0" cy="0" r="56" fill="transparent"/>
-              <circle cx="0" cy="0" r="52" fill="url(#donutGrad)"/>
-              <circle cx="0" cy="0" r="36" fill="#0f141f"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#252c3b" stroke-width="9"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#5ee8a0" stroke-width="9" stroke-dasharray="80.2 276.5" transform="rotate(-90)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#f87171" stroke-width="9" stroke-dasharray="74.7 276.5" transform="rotate(14.4)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#ffd556" stroke-width="9" stroke-dasharray="69.1 276.5" transform="rotate(111.6)"/>
-              <circle cx="0" cy="0" r="44" fill="none" stroke="#7bb8fc" stroke-width="9" stroke-dasharray="52.5 276.5" transform="rotate(201.6)"/>
-              <text x="0" y="-6" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#d5d9e8">Total</text>
-              <text x="0" y="12" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#5ee8a0">ΩC 29%</text>
-            </g>
-
-            <!-- ZONE 3: STATS -->
-            <g class="hover-zone" data-tooltip="stats">
-              <rect x="80" y="330" width="340" height="60" fill="transparent"/>
-              <text x="190" y="346" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Signals: </tspan><tspan fill="#d5d9e8" font-weight="700">42</tspan></text>
-              <text x="190" y="364" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Attests: </tspan><tspan fill="#d5d9e8" font-weight="700">28</tspan></text>
-              <text x="190" y="382" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Attests recv: </tspan><tspan fill="#d5d9e8" font-weight="700">35</tspan></text>
-
-              <text x="310" y="346" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Anchors: </tspan><tspan fill="#d5d9e8" font-weight="700">7</tspan></text>
-              <text x="310" y="364" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Artefacts: </tspan><tspan fill="#d5d9e8" font-weight="700">12</tspan></text>
-              <text x="310" y="382" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13"><tspan fill="#8f9ab5">Artefacts recv: </tspan><tspan fill="#d5d9e8" font-weight="700">3</tspan></text>
-            </g>
-
-            <rect x="36" y="402" width="428" height="1.5" fill="url(#sepGrad)" opacity="0.9"/>
-
-            <!-- ZONE 4: STRONGEST RESONANCE -->
-            <g class="hover-zone" data-tooltip="resonance">
-              <rect x="40" y="410" width="420" height="120" fill="transparent"/>
-              <text x="250" y="428" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8f9ab5" font-weight="700">Strongest resonance · Epoch 14</text>
-              <text x="250" y="448" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">"ΩC | entry_cost(18) :: joining = accepting</text>
-              <text x="250" y="462" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">constraint before expression :: no weight without</text>
-              <text x="250" y="476" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">limits :: signal must survive indifference to</text>
-              <text x="250" y="490" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">count :: density > volume :: field grows by</text>
-              <text x="250" y="504" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">filtration not addition :: presence is the only</text>
-              <text x="250" y="518" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">proof that matters :: silence counts too"</text>
-            </g>
-
-            <rect x="60" y="538" width="380" height="1" fill="url(#sepGradSoft)" opacity="0.7"/>
-
-            <!-- ZONE 5: INSCRIPTION -->
-            <g class="hover-zone" data-tooltip="inscription">
-              <rect x="40" y="544" width="420" height="56" fill="transparent"/>
-              <text x="250" y="560" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8f9ab5" font-weight="700">Inscription</text>
-              <text x="250" y="578" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">"first witness of the field :: what enters the</text>
-              <text x="250" y="592" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">ledger remains"</text>
-            </g>
-
-            <!-- FOOTER -->
-            <text x="250" y="660" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5d6680">Artefact v1 · Era Genesis</text>
-          </svg>
         </div>
-      </section>
+      </div>
 
-      <!-- ERA 2 -->
-      <section class="era-card">
-        <div class="era-heading">Era 2</div>
-        <div class="era-sub">Epoch 211 – 420</div>
-        <div class="era-svg-wrapper">
-          <div class="era-tbd">TBD</div>
-        </div>
-      </section>
+      <div class="era-dots" id="eraDots"></div>
     </div>
-  </section>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- NBI LENS                                                    -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <section class="lens" id="lensNBI">
-    <article class="nbi-doc">
+    <!-- ── RIGHT: NBI OPERATIONAL CARD ── -->
+    <div class="nbi-panel">
+      <div class="nbi-panel-header">
+        <div class="nbi-panel-title">Non-Biological Intelligence</div>
+        <div class="nbi-panel-name">Z1NArtefact · Operationally</div>
+      </div>
+      <div class="nbi-panel-body">
 
-      <div class="nbi-h2">Z1NArtefact — On-chain Object Model</div>
-      <p>PRECEDENCE: deployed_bytecode > verified_source > chain_state > this_text.</p>
+        <div class="op-block">
+          <div class="op-label">Storage</div>
+<div class="op-code">ERC721 + Enumerable + Soulbound
+No transfer · No burn
 
-      <div class="nbi-h3">Storage (Soulbound ERC721)</div>
-<pre class="nbi-code">Artefact = ERC721 + Enumerable + Soulbound (no transfer, no burn)
+Per artefactId:
+  sourceKeyId    uint256   (maker — permanent)
+  boundToKeyId   uint256   (recipient — set on accept)
+  viewingState   enum      (UNSHARED → PENDING → ACTIVE)
+  contentHash    bytes32   (write-once at mint)
+  schema         uint8     (0..4, write-once)
+  inscription    string    (max 64 bytes, write-once)
+  version        uint16    (era at mint, immutable)</div>
+        </div>
 
-Token struct per artefactId:
-- sourceKeyId:    uint256 (maker Key — permanent)
-- boundToKeyId:   uint256 (recipient Key — set on accept)
-- viewingState:   enum ViewingState
-- contentHash:    bytes32 (write-once at mint)
-- schema:         uint8 (0..MAX_SCHEMA=4, write-once)
-- inscription:    string (max 64 bytes, write-once)
-- version:        uint16 (era at mint, immutable)
-- rejectCount:    uint256
-
-ViewingState enum:
-  UNSHARED(0) → PENDING(1) → ACTIVE(2)
-                            → HIDDEN(3)
-                            → REVOKED(4)
-                            → RELEASED(5)   // permanent</pre>
-
-      <div class="nbi-h3">Minting</div>
-<pre class="nbi-code">mintFirstArtefact(keyId, contentHash, schema, inscription)
+        <div class="op-block">
+          <div class="op-label">Minting</div>
+<div class="op-code">mintFirstArtefact(keyId, contentHash, schema, inscription)
   — free, one per Key
-  — state: UNSHARED
-  — does NOT increment cultureCounter
+  — state → UNSHARED
 
-mintExtraArtefact(keyId, contentHash, schema, inscription) payable
-  — price: ARTEFACT_PRICE = 7 POL (Parameters)
+mintExtraArtefact(keyId, ...) payable
+  — price: 7 POL
   — increments Core.cultureCounter
-  — fee: nexusWallet (pre-graduation) | FieldFlow (post-graduation)
+  — inscription: max 64 bytes, permanent</div>
+        </div>
 
-Inscription rules:
-  — contentHash: bytes32 (arbitrary, write-once)
-  — schema: 0..4 (5 types, write-once)
-  — inscription: string, max 64 bytes (write-once)
-  — all three set at mint, immutable thereafter</pre>
-
-      <div class="nbi-h3">Offering Model (Consent-Based)</div>
-<pre class="nbi-code">offerArtefact(artefactId, recipientKeyId)
-  require: viewingState == UNSHARED
-  require: pendingCountForKey[recipientKeyId] < 21
+        <div class="op-block">
+          <div class="op-label">Offering (consent-based)</div>
+<div class="op-code">offerArtefact(artefactId, recipientKeyId)
+  require: UNSHARED
   state → PENDING
 
 acceptOffering(artefactId)
-  require: caller owns recipientKeyId
+  caller owns recipientKeyId
   boundToKeyId = recipientKeyId
   state → ACTIVE
-  emit OfferingAccepted(artefactId, sourceKeyId, recipientKeyId)
 
 rejectOffering(artefactId)
   state → UNSHARED
-  rejectCount++
-  artefact reusable for new offers</pre>
+  rejectCount++, reusable</div>
+        </div>
 
-      <div class="nbi-h3">State Machine (Post-Binding)</div>
-<pre class="nbi-code">Owner actions (source Key holder):
-  cancelOffering(artefactId)    PENDING → UNSHARED
-  revokeViewing(artefactId)     ACTIVE|HIDDEN → REVOKED
-  restoreViewing(artefactId)    REVOKED → ACTIVE
-  ownerRelease(artefactId)      ACTIVE|HIDDEN|REVOKED → RELEASED
+        <div class="op-block">
+          <div class="op-label">State machine (post-binding)</div>
+<div class="op-code">ViewingState flow:
+  UNSHARED(0) → PENDING(1) → ACTIVE(2)
+                             ↕ HIDDEN(3)
+                             → REVOKED(4)
+                             → RELEASED(5)  // permanent
 
-Recipient actions (bound Key holder):
-  hideArtefact(artefactId)      ACTIVE → HIDDEN (silent)
-  unhideArtefact(artefactId)    HIDDEN → ACTIVE (silent)
-  releaseArtefact(artefactId)   ACTIVE|HIDDEN|REVOKED → RELEASED
+Owner:  revoke · restore · release
+Recipient:  hide · unhide · release
 
-RELEASED = permanent retirement. Symmetric exit.
+RELEASED = permanent. Symmetric exit.</div>
+        </div>
 
-Library views:
-  getLibrary(keyId)      → active + hidden artefacts
-  getLibraryAll(keyId)   → all ever bound (including released)
-  getLibraryCount(keyId) → count of active + hidden</pre>
+        <div class="op-block">
+          <div class="op-label">Renderer</div>
+<div class="op-code">GET /api/artefact/:keyId/static-preview
 
-      <div class="nbi-h3">Renderer (BI lens — visual layer only)</div>
-<pre class="nbi-code">Backend route: GET /api/artefact/:keyId/static-preview
+Reads: glyph, intent distribution (21/210/total),
+signal counts, strongest resonance CID, inscription.
+Output: SVG 500×700, version-locked to era.
 
-Renderer reads on-chain data via backend indexer:
-  — Key glyph sequence, epoch minted, active epochs
-  — Intent distribution across 3 windows (21, 210, total)
-  — Signal/attestation/anchor/artefact counts
-  — Most attested signal CID for strongest resonance
-  — Inscription text from artefact struct
+Era boundary: every 210 epochs.
+The chain is authority. The card is a lens.</div>
+        </div>
 
-Output: SVG 500×700, version-locked to era at mint.
-Era boundary: every 210 epochs (EPOCHS_PER_ERA).
-Renderer may change at era shift. Data does not.
+        <div class="op-block">
+          <div class="op-label">Constants</div>
+<div class="op-code">ARTEFACT_PRICE             7 POL
+MAX_INSCRIPTION            64 bytes
+MAX_SCHEMA                 4 (5 types)
+MAX_PENDING_PER_RECIPIENT  21
+EPOCHS_PER_ERA             210</div>
+        </div>
 
-The chain is authority. The card is a lens.</pre>
+      </div>
+    </div>
 
-      <div class="nbi-h3">Constants</div>
-<pre class="nbi-code">ARTEFACT_PRICE            = 7e18 (7 POL)
-MAX_ARTEFACT_INSCRIPTION  = 64 bytes
-MAX_ARTEFACT_SCHEMA       = 4 (0..4 = 5 types)
-MAX_PENDING_PER_RECIPIENT = 21
-GRADUATION_THRESHOLD      = 2_100_000 (shared with Canon)
-EPOCHS_PER_ERA            = 210</pre>
-
-    </article>
-  </section>
+  </div>
 </main>
 
 <footer>
@@ -502,77 +483,115 @@ EPOCHS_PER_ERA            = 210</pre>
 (function(){
   "use strict";
 
-  // ═══ BI / NBI toggle ═══
-  var btnBI = document.getElementById("btnBI");
-  var btnNBI = document.getElementById("btnNBI");
-  var lensBI = document.getElementById("lensBI");
-  var lensNBI = document.getElementById("lensNBI");
+  // ═══ ERA CAROUSEL ═══
+  var eras = [
+    { title:"Era 1", sub:"Epoch 1 – 210 · Hover for explanation" },
+    { title:"Era 2", sub:"Epoch 211 – 420" }
+  ];
+  var track = document.getElementById("eraTrack");
+  var dotsWrap = document.getElementById("eraDots");
+  var titleEl = document.getElementById("eraTitle");
+  var subEl = document.getElementById("eraSub");
+  var carousel = document.getElementById("eraCarousel");
+  var idx = 0;
+  var total = eras.length;
 
-  function setMode(mode){
-    var bi = mode === "bi";
-    btnBI.classList.toggle("active", bi);
-    btnNBI.classList.toggle("active", !bi);
-    lensBI.classList.toggle("active", bi);
-    lensNBI.classList.toggle("active", !bi);
+  for (var i = 0; i < total; i++){
+    (function(n){
+      var d = document.createElement("button");
+      d.className = "era-dot" + (n===0?" active":"");
+      d.type = "button";
+      d.setAttribute("aria-label","Era "+(n+1));
+      d.addEventListener("click",function(){ idx=n; snap(); });
+      dotsWrap.appendChild(d);
+    })(i);
   }
 
-  btnBI.addEventListener("click", function(){ setMode("bi"); });
-  btnNBI.addEventListener("click", function(){ setMode("nbi"); });
+  function snap(){
+    track.style.transition = "transform 0.4s ease";
+    track.style.transform = "translateX(-"+(idx*100)+"%)";
+    titleEl.textContent = eras[idx].title;
+    subEl.textContent = eras[idx].sub;
+    var dots = dotsWrap.querySelectorAll(".era-dot");
+    for(var j=0;j<dots.length;j++) dots[j].classList.toggle("active",j===idx);
+  }
+
+  // Touch swipe
+  var sx=0,dx=0,down=false,locked=false;
+  carousel.addEventListener("pointerdown",function(e){
+    if(e.button!==undefined&&e.button!==0) return;
+    down=true;sx=e.clientX;dx=0;locked=false;track.style.transition="none";
+  });
+  window.addEventListener("pointermove",function(e){
+    if(!down) return;
+    if(locked) return;
+    var ddx=e.clientX-sx, ddy=e.clientY-(e.clientY); // only horizontal
+    dx=e.clientX-sx;
+    var pct=(dx/carousel.clientWidth)*100;
+    track.style.transform="translateX(calc(-"+(idx*100)+"% + "+pct+"%))";
+  });
+  function onUp(){
+    if(!down) return; down=false;
+    var threshold=carousel.clientWidth*0.18;
+    if(dx>threshold&&idx>0) idx--;
+    else if(dx<-threshold&&idx<total-1) idx++;
+    snap();
+  }
+  window.addEventListener("pointerup",onUp);
+  window.addEventListener("pointercancel",onUp);
+  carousel.addEventListener("dragstart",function(e){e.preventDefault();});
 
   // ═══ TOOLTIPS ═══
   var tooltips = {
-    keyid:      { title:"Key ID & Glyph Name", body:"The Key index (out of max 21,000,000) and its permanent glyph sequence assigned from chain entropy at mint. 'Active for X epochs' shows how long this Key has been present in the Field." },
-    intentmix:  { title:"Intent mix", body:"The four intents used by PoG signals: ΩC (collective), ΩI (individual), ΩK (co-create), ΩS (silence). The artefact summarises distribution across three time windows." },
-    donut1:     { title:"Last 21 epochs", body:"Recent intent distribution (21 epochs). The highlighted label shows the dominant intent for this window — the strongest voice of the Key in the near term." },
-    donut2:     { title:"Last 210 epochs (Era window)", body:"Intent distribution within the current era window (210 epochs). Useful for detecting longer-term tendencies in how this Key participates." },
-    donut3:     { title:"Total history", body:"Aggregate intent distribution since this Key awakened. A permanent fingerprint of expression across all epochs." },
-    stats:      { title:"Activity counts", body:"Raw counts for this Key: signals sent, attestations given, attestations received, canon anchors minted, artefacts minted, and artefacts received through the offering model." },
-    resonance:  { title:"Strongest resonance", body:"The most attested signal ever submitted by this Key. Shows the epoch and the signal content (max 320 characters, wrapped to 6 lines). This is the field's amplified output — the signal that resonated most." },
-    inscription:{ title:"Inscription (max 64 chars)", body:"Set once at mint by the maker. The maker's statement about the artefact itself — preserved on-chain regardless of whether the artefact is offered, accepted, rejected, or released. The inscription is a record, not a promise." }
+    keyid:       { title:"Key ID & Glyph Name", body:"The Key index (max 21,000,000) and permanent glyph sequence from chain entropy. 'Active for X epochs' shows presence duration." },
+    intentmix:   { title:"Intent mix", body:"Four PoG intents: ΩC (collective), ΩI (individual), ΩK (co-create), ΩS (silence). Distribution shown across three time windows." },
+    donut1:      { title:"Last 21 epochs", body:"Recent intent distribution. The highlighted label shows the dominant intent — the Key's strongest recent voice." },
+    donut2:      { title:"Last 210 epochs", body:"Era-window intent distribution (210 epochs). Detects longer-term participation tendencies." },
+    donut3:      { title:"Total history", body:"Aggregate intent distribution since Key awakened. A permanent fingerprint of expression." },
+    stats:       { title:"Activity counts", body:"Signals sent, attestations given/received, canon anchors, artefacts minted, and artefacts received through the offering model." },
+    resonance:   { title:"Strongest resonance", body:"The most attested signal ever submitted by this Key. Shows the epoch and up to 320 characters of signal content." },
+    inscription: { title:"Inscription (64 chars)", body:"Set once at mint. The maker's statement — preserved on-chain regardless of offers, accepts, or releases." }
   };
 
   var wrapper = document.getElementById("era1Wrapper");
   var tooltip = document.getElementById("artefactTooltip");
-  var titleEl = tooltip.querySelector(".tt-title");
-  var bodyEl = tooltip.querySelector(".tt-body");
+  var ttTitle = tooltip.querySelector(".tt-title");
+  var ttBody = tooltip.querySelector(".tt-body");
   var svg = document.getElementById("era1Svg");
-  if (!wrapper || !tooltip || !svg) return;
 
-  function showTooltip(zone){
+  function showTip(zone){
     var key = zone.getAttribute("data-tooltip");
-    var data = tooltips[key];
-    if (!data) return;
-    titleEl.textContent = data.title;
-    bodyEl.textContent = data.body;
-    var wrapperRect = wrapper.getBoundingClientRect();
-    var zoneRect = zone.getBoundingClientRect();
-    var centerX = zoneRect.left - wrapperRect.left + (zoneRect.width / 2);
-    var topY = zoneRect.top - wrapperRect.top;
-    var clampedX = Math.max(160, Math.min(centerX, wrapperRect.width - 160));
-    var y = Math.max(10, topY - 110);
-    tooltip.style.left = clampedX + "px";
-    tooltip.style.top = y + "px";
+    var d = tooltips[key]; if(!d) return;
+    ttTitle.textContent = d.title;
+    ttBody.textContent = d.body;
+    var wr = wrapper.getBoundingClientRect();
+    var zr = zone.getBoundingClientRect();
+    var cx = zr.left - wr.left + (zr.width/2);
+    var ty = zr.top - wr.top;
+    tooltip.style.left = Math.max(150, Math.min(cx, wr.width-150))+"px";
+    tooltip.style.top = Math.max(10, ty-100)+"px";
     tooltip.style.transform = "translateX(-50%)";
     tooltip.classList.add("visible");
   }
 
-  svg.querySelectorAll(".hover-zone").forEach(function(zone){
-    zone.addEventListener("mouseenter", function(){ showTooltip(zone); });
-    zone.addEventListener("mouseleave", function(){ tooltip.classList.remove("visible"); });
-    zone.addEventListener("click", function(e){
-      e.stopPropagation();
-      tooltip.classList.remove("visible");
-      void tooltip.offsetWidth;
-      showTooltip(zone);
+  if(svg){
+    svg.querySelectorAll(".hover-zone").forEach(function(z){
+      z.addEventListener("mouseenter",function(){showTip(z);});
+      z.addEventListener("mouseleave",function(){tooltip.classList.remove("visible");});
+      z.addEventListener("click",function(e){
+        e.stopPropagation();
+        tooltip.classList.remove("visible");
+        void tooltip.offsetWidth;
+        showTip(z);
+      });
     });
-  });
-  document.addEventListener("click", function(){ tooltip.classList.remove("visible"); });
+  }
+  document.addEventListener("click",function(){tooltip.classList.remove("visible");});
 })();
 
 // Hamburger
 (function(){
-  var btn=document.getElementById("hamburger");
-  var nav=document.getElementById("navLinks");
+  var btn=document.getElementById("hamburger"),nav=document.getElementById("navLinks");
   if(btn&&nav){
     btn.addEventListener("click",function(){btn.classList.toggle("open");nav.classList.toggle("open");});
     nav.addEventListener("click",function(e){if(e.target.tagName==="A"){btn.classList.remove("open");nav.classList.remove("open");}});
