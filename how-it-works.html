@@ -237,6 +237,23 @@ backdrop-filter:blur(12px);
     /* LAYOUT GRID */
     .grid{ display:grid; grid-template-columns:1fr; gap:16px; }
 
+    /* TWO-CARD LAYOUT (synced with artefacts + mint-key) */
+    .two-card-layout{
+      display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch;margin-top:44px;
+    }
+    @media(max-width:900px){.two-card-layout{grid-template-columns:1fr;}}
+
+    .card-header{
+      font-size:13px;letter-spacing:0.16em;text-transform:uppercase;
+      color:var(--text-soft);margin-bottom:14px;font-weight:700;
+    }
+
+    /* Tri cards stacked vertically inside BI card */
+    .tri-vertical{
+      display:flex;flex-direction:column;gap:10px;margin-top:14px;
+    }
+    .tri-vertical .mini{ min-height:auto; }
+
     /* MAIN LOOP CARD */
     .card{
       background:var(--card-bg);
@@ -484,7 +501,9 @@ backdrop-filter:blur(12px);
       line-height:1.65;
       display:flex;
       flex-direction:column;
+      margin-bottom:10px;
     }
+    .ops-card:last-child{margin-bottom:0;}
     .ops-card .ops-code{
       flex:1;
       margin-top:6px;
@@ -620,12 +639,12 @@ backdrop-filter:blur(12px);
     Two epochs later, <span class="t-clm">claims</span> settle from the most attested signals — captured, returned to the Field, or gifted to Nexus Epoch.
   </p>
 
-  <section class="grid" aria-label="How it works – Field Ritual Heartbeat">
+  <section class="two-card-layout" aria-label="How it works – Field Ritual Heartbeat">
+
+    <!-- BI CARD -->
     <article class="card" id="loopCard">
       <div class="field-mist" aria-hidden="true"></div>
-      <div class="card-kicker">FIELD RITUAL HEARTBEAT</div>
-
-      <div class="card-kicker" style="margin-top:16px;margin-bottom:14px;font-size:13px;letter-spacing:0.16em;">BIOLOGICAL INTELLIGENCE</div>
+      <div class="card-header">Biological Intelligence</div>
 
       <div class="epoch-row" aria-label="Epoch header">
         <div class="epoch-title">
@@ -666,7 +685,7 @@ backdrop-filter:blur(12px);
         </div>
       </div>
 
-      <div class="tri" aria-label="Signals / Attests / Claims explanation cards">
+      <div class="tri-vertical" aria-label="Signals / Attests / Claims explanation cards">
         <div class="mini sig" id="miniSignals">
           <div class="mini-head">
             <div class="mini-title"><span class="dot sig"></span>signals</div>
@@ -691,7 +710,7 @@ backdrop-filter:blur(12px);
           </div>
           <div class="mini-body">
             Attests are placed on signals from the previous epoch — using a specific Key.
-            A ritual of recognition: the Field doesn't just hear — it learns what held attention after closure.
+            A ritual of recognition: the Field doesn’t just hear — it learns what held attention after closure.
             <span class="soft">Each Key gets 2 attests per epoch. No self-attest at the wallet level.</span>
           </div>
         </div>
@@ -703,67 +722,68 @@ backdrop-filter:blur(12px);
           </div>
           <div class="mini-body">
             Claims settle from the most attested signals of two epochs ago.
-            This is the Field's way of distributing the sold Keys in an epoch towards the best signals in the Field.
-            It's the choice of the Key to capture it, return it into the Field, or gift it to Nexus Epoch.
-          </div>
-        </div>
-      </div>
-
-      <!-- OPERATIONALLY divider -->
-      <div style="margin:20px 0 14px; border-top:1px solid rgba(148,163,184,0.15);"></div>
-      <div class="card-kicker" style="font-size:13px;letter-spacing:0.16em;">NON-BIOLOGICAL INTELLIGENCE</div>
-
-      <div class="tri">
-        <div class="ops-card sig">
-          <div class="ops-card-label">Z1NSignal.submitSignal()</div>
-          <div class="ops-code">
-            <div>uint256 tokenId</div>
-            <div>bytes32 signalHash</div>
-            <div>string cid</div>
-            <div>uint8 symbolIndex <span style="opacity:0.45">// 0–20</span></div>
-            <div>uint8 intent <span style="opacity:0.45">// 0=ΩC 1=ΩI 2=ΩK 3=ΩS</span></div>
-            <div>SignalType signalType</div>
-            <div>uint16 epochRef</div>
-            <div>bytes32 replyTo</div>
-            <div>require(key.ownerOf(tokenId) == msg.sender)</div>
-            <div>limit: 2 per tokenId per epoch</div>
-            <div>cost: gas only (fee = 0)</div>
-            <div class="ops-emit">emit SignalSubmittedV2(sender, tokenId, signalHash, cid, symbolIndex, intent, replyTo, epochRef)</div>
-          </div>
-        </div>
-
-        <div class="ops-card att">
-          <div class="ops-card-label">Z1NSignal.attestSignal()</div>
-          <div class="ops-code">
-            <div>bytes32 signalHash</div>
-            <div>uint256 tokenId <span style="opacity:0.45">// Key to attest with</span></div>
-            <div>window: currentEpoch == signal.epoch + 1</div>
-            <div>require(submitter ≠ msg.sender) <span style="opacity:0.45">// no self</span></div>
-            <div>require(!hasAttested[hash][sender])</div>
-            <div>weight: Key holder = 100, non-Key = 1</div>
-            <div>limit: 2 per tokenId per epoch</div>
-            <div>cost: gas only (fee = 0)</div>
-            <div>updates: mostAttestedSignal[epoch]</div>
-            <div class="ops-emit">emit Attested(signalHash, sender, hasNFT, weight)</div>
-          </div>
-        </div>
-
-        <div class="ops-card clm">
-          <div class="ops-card-label">Z1NFieldFlow · 3 claim paths</div>
-          <div class="ops-code">
-            <div>claim(epochId, index, account, amount, proof)</div>
-            <div>donateReward(…) <span style="opacity:0.45">// → Nexus wallet</span></div>
-            <div>recycleReward(…) <span style="opacity:0.45">// → stays in Field Flow</span></div>
-            <div>require(msg.sender == account)</div>
-            <div>window: 21 epochs (CLAIM_WINDOW_EPOCHS)</div>
-            <div>leaf = keccak256(index, account, amount)</div>
-            <div>verify: MerkleProof.verify(proof, root, leaf)</div>
-            <div class="ops-emit">emit Claimed · RewardDonated · RewardRecycled</div>
+            This is the Field’s way of distributing the sold Keys in an epoch towards the best signals in the Field.
+            It’s the choice of the Key to capture it, return it into the Field, or gift it to Nexus Epoch.
           </div>
         </div>
       </div>
 
     </article>
+
+    <!-- NBI CARD -->
+    <article class="card no-glow">
+      <div class="card-header">Non-Biological Intelligence</div>
+
+      <div class="ops-card sig">
+        <div class="ops-card-label">Z1NSignal.submitSignal()</div>
+        <div class="ops-code">
+          <div>uint256 tokenId</div>
+          <div>bytes32 signalHash</div>
+          <div>string cid</div>
+          <div>uint8 symbolIndex <span style="opacity:0.45">// 0–20</span></div>
+          <div>uint8 intent <span style="opacity:0.45">// 0=ΩC 1=ΩI 2=ΩK 3=ΩS</span></div>
+          <div>SignalType signalType</div>
+          <div>uint16 epochRef</div>
+          <div>bytes32 replyTo</div>
+          <div>require(key.ownerOf(tokenId) == msg.sender)</div>
+          <div>limit: 2 per tokenId per epoch</div>
+          <div>cost: gas only (fee = 0)</div>
+          <div class="ops-emit">emit SignalSubmittedV2(sender, tokenId, signalHash, cid, symbolIndex, intent, replyTo, epochRef)</div>
+        </div>
+      </div>
+
+      <div class="ops-card att">
+        <div class="ops-card-label">Z1NSignal.attestSignal()</div>
+        <div class="ops-code">
+          <div>bytes32 signalHash</div>
+          <div>uint256 tokenId <span style="opacity:0.45">// Key to attest with</span></div>
+          <div>window: currentEpoch == signal.epoch + 1</div>
+          <div>require(submitter ≠ msg.sender) <span style="opacity:0.45">// no self</span></div>
+          <div>require(!hasAttested[hash][sender])</div>
+          <div>weight: Key holder = 100, non-Key = 1</div>
+          <div>limit: 2 per tokenId per epoch</div>
+          <div>cost: gas only (fee = 0)</div>
+          <div>updates: mostAttestedSignal[epoch]</div>
+          <div class="ops-emit">emit Attested(signalHash, sender, hasNFT, weight)</div>
+        </div>
+      </div>
+
+      <div class="ops-card clm">
+        <div class="ops-card-label">Z1NFieldFlow · 3 claim paths</div>
+        <div class="ops-code">
+          <div>claim(epochId, index, account, amount, proof)</div>
+          <div>donateReward(…) <span style="opacity:0.45">// → Nexus wallet</span></div>
+          <div>recycleReward(…) <span style="opacity:0.45">// → stays in Field Flow</span></div>
+          <div>require(msg.sender == account)</div>
+          <div>window: 21 epochs (CLAIM_WINDOW_EPOCHS)</div>
+          <div>leaf = keccak256(index, account, amount)</div>
+          <div>verify: MerkleProof.verify(proof, root, leaf)</div>
+          <div class="ops-emit">emit Claimed · RewardDonated · RewardRecycled</div>
+        </div>
+      </div>
+
+    </article>
+
   </section>
 </main>
 
