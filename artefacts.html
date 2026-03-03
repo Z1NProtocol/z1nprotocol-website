@@ -142,19 +142,20 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .artefact-tooltip .tt-title{font-weight:700;color:var(--accent);margin-bottom:6px;font-size:14px;}
 .artefact-tooltip .tt-body{color:var(--text-soft);font-size:12px;}
 
-/* ── NBI OPERATIONAL BLOCKS ── */
-.op-code{
-  margin:6px 0 14px;padding:10px 12px;border-radius:10px;
-  border:1px solid rgba(148,163,184,0.2);background:rgba(15,23,42,0.85);
+/* ── NBI OPERATIONAL BLOCKS (how-it-works style) ── */
+.nbi-card{display:flex;flex-direction:column;}
+.nbi-card .card-header{margin-bottom:14px;}
+.op-block{margin-bottom:12px;border-radius:14px;border:1px solid rgba(148,163,184,0.2);overflow:hidden;background:rgba(15,23,42,0.85);}
+.op-block-title{
+  padding:8px 14px;font-size:14px;font-weight:700;color:var(--text-main);
+  border-bottom:1px solid rgba(148,163,184,0.15);
   font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-  font-size:11.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:var(--text-soft);
 }
-.op-code:last-child{margin-bottom:0;}
-.op-label{
-  font-size:12px;letter-spacing:0.14em;text-transform:uppercase;
-  color:var(--text-soft);margin-bottom:2px;font-weight:700;
+.op-code{
+  padding:10px 14px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  font-size:11.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;color:var(--text-soft);
 }
-.op-title{font-size:15px;font-weight:600;margin-bottom:4px;}
 
 /* ── FOOTER ── */
 footer{border-top:1px solid rgba(255,255,255,0.05);padding:18px 24px 32px;font-size:12px;text-align:center;opacity:0.85;margin-top:44px;max-width:1200px;margin-left:auto;margin-right:auto;}
@@ -351,47 +352,46 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     </article>
 
     <!-- ── RIGHT: NBI CARD ── -->
-    <article class="card">
+    <article class="card nbi-card">
       <div class="card-header">Non-Biological Intelligence</div>
 
-      <div class="divider"></div>
-      <div class="op-label">Mint</div>
-      <div class="op-title">∴ artefact.create</div>
+      <div class="op-block">
+        <div class="op-block-title">Z1NArtefact.mint()</div>
 <div class="op-code">mintFirstArtefact(keyId, contentHash, schema, inscription)
   — free · one per Key · state → UNSHARED
-
 mintExtraArtefact(keyId, ...) payable
   — price: 7 POL · increments cultureCounter
   — inscription: max 64 bytes, permanent
-  — schema: 0..4 (5 types), permanent</div>
+  — schema: 0..4 (5 types), permanent
+  — version: era at mint (immutable)</div>
+      </div>
 
-      <div class="divider"></div>
-      <div class="op-label">Offering</div>
-      <div class="op-title">∴ artefact.bind</div>
+      <div class="op-block">
+        <div class="op-block-title">Z1NArtefact.offering()</div>
 <div class="op-code">offerArtefact(artefactId, recipientKeyId)
-  require: UNSHARED → PENDING
-
+  require: UNSHARED · pendingCount &lt; 21
+  state → PENDING
 acceptOffering(artefactId)
-  caller owns recipientKeyId → ACTIVE
-
+  require: caller owns recipientKeyId
+  boundToKeyId = recipientKeyId · state → ACTIVE
 rejectOffering(artefactId)
-  → UNSHARED · rejectCount++ · reusable</div>
+  state → UNSHARED · rejectCount++ · reusable</div>
+      </div>
 
-      <div class="divider"></div>
-      <div class="op-label">State machine</div>
-      <div class="op-title">∴ artefact.lifecycle</div>
-<div class="op-code">UNSHARED → PENDING → ACTIVE ↔ HIDDEN
-                       ↓          ↓
-                    REVOKED     REVOKED
-                       ↓          ↓
-                    RELEASED   RELEASED  (permanent)
-
+      <div class="op-block">
+        <div class="op-block-title">Z1NArtefact.lifecycle()</div>
+<div class="op-code">UNSHARED(0) → PENDING(1) → ACTIVE(2) ↔ HIDDEN(3)
+                            ↓               ↓
+                         REVOKED(4)      REVOKED(4)
+                            ↓               ↓
+                         RELEASED(5)     RELEASED(5)
 owner:     revoke · restore · release
-recipient: hide · unhide · release</div>
+recipient: hide · unhide · release
+RELEASED = permanent · symmetric exit</div>
+      </div>
 
-      <div class="divider"></div>
-      <div class="op-label">Storage</div>
-      <div class="op-title">∴ artefact.struct</div>
+      <div class="op-block">
+        <div class="op-block-title">Z1NArtefact.struct</div>
 <div class="op-code">sourceKeyId    uint256  (maker — permanent)
 boundToKeyId   uint256  (recipient — on accept)
 viewingState   enum     (6 states)
@@ -399,18 +399,17 @@ contentHash    bytes32  (write-once)
 schema         uint8    (write-once)
 inscription    string   (max 64 bytes, write-once)
 version        uint16   (era at mint, immutable)</div>
+      </div>
 
-      <div class="divider"></div>
-      <div class="op-label">Renderer</div>
-      <div class="op-title">∴ artefact.render</div>
+      <div class="op-block" style="margin-bottom:0;">
+        <div class="op-block-title">artefact.render</div>
 <div class="op-code">GET /api/artefact/:keyId/static-preview
-
 reads: glyph, intent(21/210/total), counts,
-       strongest resonance CID, inscription
+  strongest resonance CID, inscription
 output: SVG 500×700, version-locked to era
 era boundary: every 210 epochs
-
 the chain is authority · the card is a lens</div>
+      </div>
 
     </article>
 
