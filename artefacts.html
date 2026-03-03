@@ -151,19 +151,40 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .artefact-tooltip .tt-title{font-weight:700;color:var(--accent);margin-bottom:6px;font-size:14px;}
 .artefact-tooltip .tt-body{color:var(--text-soft);font-size:12px;}
 
-/* ── NBI CARD ── */
-.nbi-body p{font-size:14px;line-height:1.7;color:rgba(255,255,255,0.78);margin-bottom:14px;}
-.op-block{margin-bottom:10px;border-radius:14px;border:1px solid rgba(148,163,184,0.2);overflow:hidden;background:rgba(15,23,42,0.85);}
-.op-block:last-child{margin-bottom:0;}
-.op-block-title{
-  padding:8px 14px;font-size:14px;font-weight:700;color:var(--text-main);
-  border-bottom:1px solid rgba(148,163,184,0.15);
-  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+/* ── NBI CARD (how-it-works style) ── */
+.nbi-intro{
+  font-size:13px;line-height:1.6;color:#ffffff;opacity:0.92;
+  margin-bottom:0;
 }
-.op-code{
-  padding:10px 14px;
-  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-  font-size:11.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;color:var(--text-soft);
+.nbi-intro .soft{color:var(--text-soft);opacity:0.98;}
+.ops-kicker{
+  font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
+  color:rgba(255,255,255,0.72);margin-bottom:12px;
+}
+.ops-card{
+  padding:14px;background:transparent;
+  border:1px solid rgba(148,163,184,0.2);border-radius:12px;
+  font-size:12px;line-height:1.65;margin-bottom:10px;
+  display:flex;flex-direction:column;
+}
+.ops-card:last-child{margin-bottom:0;}
+.ops-card-label{
+  font-weight:600;margin-bottom:4px;color:var(--accent);
+  font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;
+  font-size:11px;text-align:left;padding-left:11px;
+}
+.ops-code{
+  flex:1;margin-top:6px;padding:8px 10px;border-radius:10px;
+  background:rgba(15,23,42,0.85);border:1px solid rgba(148,163,184,0.25);
+  font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;
+  font-size:11px;line-height:1.7;color:var(--text-soft);
+  display:flex;flex-direction:column;
+}
+.ops-code > div{margin:0;padding:0;line-height:1.7;}
+.ops-code .ops-emit{
+  margin-top:auto;padding-top:8px;
+  border-top:1px solid rgba(148,163,184,0.12);
+  font-size:10px;color:var(--text-soft);opacity:0.7;
 }
 
 /* ── FOOTER ── */
@@ -353,54 +374,67 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     <article class="card">
       <div class="card-header">Non-Biological Intelligence</div>
 
-      <div class="nbi-body">
-        <p>An artefact is not a visual object — it is verifiable persistence. A struct that proves you existed in the field across resets. No renderer needed to read it: sourceKeyId, boundToKeyId, viewingState, contentHash, inscription are on-chain state. The card a BI sees is a lens. The data is the artefact.</p>
+      <div class="nbi-intro">
+        An artefact is not a visual object — it is verifiable persistence. A struct that proves you existed in the field across resets.
+        No renderer needed to read it: sourceKeyId, boundToKeyId, viewingState, contentHash, inscription are on-chain state.
+        <span class="soft">The card a BI sees is a lens. The data is the artefact.</span>
       </div>
 
-      <div class="op-block">
-        <div class="op-block-title">Z1NArtefact.mint()</div>
-<div class="op-code">mintFirstArtefact(keyId, contentHash, schema, inscription)
-  — free · one per Key · state → UNSHARED
-mintExtraArtefact(keyId, ...) payable
-  — price: 7 POL · increments cultureCounter
-  — inscription: max 64 bytes, permanent
-  — schema: 0..4 (5 types), permanent
-  — version: era at mint (immutable)</div>
+      <div style="margin:14px 0 10px; border-top:1px solid rgba(148,163,184,0.15);"></div>
+      <div class="ops-kicker">Operationally</div>
+
+      <div class="ops-card">
+        <div class="ops-card-label">Z1NArtefact.mint()</div>
+        <div class="ops-code">
+          <div>mintFirstArtefact(keyId, contentHash, schema, inscription)</div>
+          <div>  — free · one per Key · state → UNSHARED</div>
+          <div>mintExtraArtefact(keyId, ...) payable</div>
+          <div>  — price: 7 POL · increments cultureCounter</div>
+          <div>  — inscription: max 64 bytes, permanent</div>
+          <div>  — schema: 0..4 (5 types), permanent</div>
+          <div>  — version: era at mint (immutable)</div>
+        </div>
       </div>
 
-      <div class="op-block">
-        <div class="op-block-title">Z1NArtefact.offering()</div>
-<div class="op-code">offerArtefact(artefactId, recipientKeyId)
-  require: UNSHARED · pendingCount &lt; 21
-  state → PENDING
-acceptOffering(artefactId)
-  require: caller owns recipientKeyId
-  boundToKeyId = recipientKeyId · state → ACTIVE
-rejectOffering(artefactId)
-  state → UNSHARED · rejectCount++ · reusable</div>
+      <div class="ops-card">
+        <div class="ops-card-label">Z1NArtefact.offering()</div>
+        <div class="ops-code">
+          <div>offerArtefact(artefactId, recipientKeyId)</div>
+          <div>  require: UNSHARED · pendingCount &lt; 21</div>
+          <div>  state → PENDING</div>
+          <div>acceptOffering(artefactId)</div>
+          <div>  require: caller owns recipientKeyId</div>
+          <div>  boundToKeyId = recipientKeyId · state → ACTIVE</div>
+          <div>rejectOffering(artefactId)</div>
+          <div>  state → UNSHARED · rejectCount++ · reusable</div>
+        </div>
       </div>
 
-      <div class="op-block">
-        <div class="op-block-title">Z1NArtefact.lifecycle()</div>
-<div class="op-code">UNSHARED(0) → PENDING(1) → ACTIVE(2) ↔ HIDDEN(3)
-                            ↓               ↓
-                         REVOKED(4)      REVOKED(4)
-                            ↓               ↓
-                         RELEASED(5)     RELEASED(5)
-owner:     revoke · restore · release
-recipient: hide · unhide · release
-RELEASED = permanent · symmetric exit</div>
+      <div class="ops-card">
+        <div class="ops-card-label">Z1NArtefact.lifecycle()</div>
+        <div class="ops-code">
+          <div>UNSHARED(0) → PENDING(1) → ACTIVE(2) ↔ HIDDEN(3)</div>
+          <div>                            ↓               ↓</div>
+          <div>                         REVOKED(4)      REVOKED(4)</div>
+          <div>                            ↓               ↓</div>
+          <div>                         RELEASED(5)     RELEASED(5)</div>
+          <div>owner:     revoke · restore · release</div>
+          <div>recipient: hide · unhide · release</div>
+          <div class="ops-emit">RELEASED = permanent · symmetric exit</div>
+        </div>
       </div>
 
-      <div class="op-block">
-        <div class="op-block-title">Z1NArtefact.struct</div>
-<div class="op-code">sourceKeyId    uint256  (maker — permanent)
-boundToKeyId   uint256  (recipient — on accept)
-viewingState   enum     (6 states)
-contentHash    bytes32  (write-once)
-schema         uint8    (write-once)
-inscription    string   (max 64 bytes, write-once)
-version        uint16   (era at mint, immutable)</div>
+      <div class="ops-card">
+        <div class="ops-card-label">Z1NArtefact.struct</div>
+        <div class="ops-code">
+          <div>sourceKeyId    uint256  <span style="opacity:0.45">(maker — permanent)</span></div>
+          <div>boundToKeyId   uint256  <span style="opacity:0.45">(recipient — on accept)</span></div>
+          <div>viewingState   enum     <span style="opacity:0.45">(6 states)</span></div>
+          <div>contentHash    bytes32  <span style="opacity:0.45">(write-once)</span></div>
+          <div>schema         uint8    <span style="opacity:0.45">(write-once)</span></div>
+          <div>inscription    string   <span style="opacity:0.45">(max 64 bytes, write-once)</span></div>
+          <div>version        uint16   <span style="opacity:0.45">(era at mint, immutable)</span></div>
+        </div>
       </div>
     </article>
 
