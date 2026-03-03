@@ -301,7 +301,7 @@ backdrop-filter:blur(12px);
     }
     .epoch-title{ display:flex; align-items:baseline; gap:10px; }
     .epoch-title .epoch-label{
-      font-size:22px; font-weight:850; letter-spacing:-0.02em;
+      font-size:14px; font-weight:700; letter-spacing:-0.01em;
     }
     .ep-word{ color:rgba(148,163,184,0.78); margin-right:6px; }
     .ep-num{
@@ -401,7 +401,7 @@ backdrop-filter:blur(12px);
     .lane.att .lane-name{ color:var(--att); }
     .lane.clm .lane-name{ color:var(--clm); }
 
-    .lane-right{ font-size:12px; color:rgba(255,255,255,0.72); white-space:nowrap; }
+    .lane-right{ font-size:11px; color:var(--text-soft); white-space:nowrap; }
 
     .bar{
       height:10px; border-radius:999px;
@@ -481,15 +481,15 @@ backdrop-filter:blur(12px);
     .mini-epoch{ font-size:12px; white-space:nowrap; }
     .mini-epoch .ep-word{ color:rgba(148,163,184,0.78); font-weight:850; margin-right:6px; }
     .mini-body{ font-size:12px; line-height:1.6; color:var(--text-soft); }
-    .mini-body .soft{ color:var(--text-soft); opacity:0.98; }
-    .mini-body strong{ color:#ffffff; font-weight:700; }
+    .mini-body .soft{ color:var(--text-soft); opacity:0.7; }
+    .mini-body strong{ color:var(--text-soft); font-weight:700; }
 
     .intent-grid{
       margin-top:10px; display:grid;
-      grid-template-columns:1fr 1fr; gap:6px 14px;
-      font-size:12px; line-height:1.55; color:rgba(255,255,255,0.88);
+      display:flex; flex-wrap:wrap; gap:3px 10px;
+      font-size:11px; line-height:1.5; color:var(--text-soft);
     }
-    .intent-item b{ font-weight:900; color:#ffffff; margin-right:6px; }
+    .intent-item b{ font-weight:700; color:var(--text-soft); margin-right:3px; }
 
     /* OPERATIONALLY CARDS */
     .ops-card{
@@ -685,6 +685,7 @@ backdrop-filter:blur(12px);
         </div>
       </div>
 
+      <div style="margin:14px 0 10px;border-top:1px solid rgba(148,163,184,0.15);"></div>
       <div class="tri-vertical" aria-label="Signals / Attests / Claims explanation cards">
         <div class="mini sig" id="miniSignals">
           <div class="mini-head">
