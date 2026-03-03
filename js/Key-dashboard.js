@@ -714,12 +714,19 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
   function updateOverviewArtefactCounts() {
     var countEl = document.getElementById('overviewArtefactCounts');
     if (!countEl) return;
-    var minted = allLiveArtefacts ? allLiveArtefacts.filter(function(a) { return !a.isReceived && !a.receivedFromKeyId && !a.fromKeyId; }).length : 0;
+    var total = allLiveArtefacts ? allLiveArtefacts.length : 0;
     var received = allLiveArtefacts ? allLiveArtefacts.filter(function(a) { return a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId; }).length : 0;
-    if (minted === 0 && received === 0) {
-      countEl.textContent = allLiveArtefacts ? allLiveArtefacts.length + ' artefact(s)' : '0 artefacts';
+    var minted = total - received;
+    if (total === 0) {
+      countEl.textContent = '';
+    } else if (received > 0) {
+      countEl.textContent = 'Minted: ' + minted + ' · Received: ' + received;
     } else {
-      countEl.textContent = minted + ' minted · ' + received + ' received';
+      countEl.textContent = 'Current # of artefacts minted: ' + minted;
+    }
+    var overviewMintBtn = document.getElementById('btnMintLiveArtefactOverview');
+    if (overviewMintBtn && !overviewMintBtn.disabled) {
+      overviewMintBtn.textContent = hasFirstArtefact ? '+ Mint Artefact — 21 POL' : '+ Mint First Artefact — FREE';
     }
   }
 
@@ -770,7 +777,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       var totalLive = allLiveArtefacts.length;
       var activeLive = allLiveArtefacts.filter(function(a) { return a.status !== 'revoked'; }).length;
       if (badge) badge.textContent = totalLive;
-      if (status) status.textContent = activeLive > 0 ? activeLive + ' active artefact(s)' : 'No active artefacts';
+      if (status) status.textContent = '';
       if (totalLive === 0) { grid.innerHTML = '<div style="grid-column:span 4;padding:40px 20px;text-align:center;"><div style="font-size:48px;opacity:0.3;margin-bottom:16px;">◈</div><p style="color:var(--text-soft);font-size:13px;margin-bottom:16px;">No live artefacts yet</p><p style="color:var(--text-soft);font-size:11px;opacity:0.7;">Mint your first live artefact to create a dynamic mirror of your Key.</p></div>'; return; }
       grid.innerHTML = '';
       allLiveArtefacts.forEach(function(art) {
@@ -1523,7 +1530,7 @@ window.submitWhisper = async function() {
           document.getElementById('whisperCharCount').textContent = '0 / 500'; 
           st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✓ Whisper sent to K#' + to + '!</div>'; 
           showToast('✅ Whisper sent!', 4000); 
-          // v2.5.0: Add pending whisper to UI immediately
+          // v2.3.1: Add pending whisper to UI immediately
           allWhispers.push({
             fromKeyId: currentKeyId,
             toKeyId: to,
@@ -1603,7 +1610,7 @@ window.submitWhisper = async function() {
           await loadAttestableSignals(); 
           updateAttestBtn(); 
            showToast('Stealth attestation submitted!', 4000); 
-          await loadSentAttests(); // v2.5.0
+          await loadSentAttests(); // v2.3.1
           return;
         } catch (e) { 
           var errMsg = e.message || 'Unknown error';
@@ -1633,7 +1640,7 @@ window.submitWhisper = async function() {
           await loadAttestableSignals(); 
           updateAttestBtn(); 
           showToast('Attestation submitted!', 4000); 
-          await loadSentAttests(); // v2.5.0
+          await loadSentAttests(); // v2.3.1
           btn.textContent = orig;
           btn.disabled = false;
           return; 
@@ -2518,24 +2525,7 @@ function updateTabBadges() {
     artefactBadge.textContent = artefactBadgeCount;
     artefactBadge.classList.toggle('hidden', artefactBadgeCount === 0);
   }
-  // ALSO update the tab-nav button badge (separate element)
-  var artefactsTab = document.querySelector('.tab-btn[onclick*="artefacts"]');
-  if (artefactsTab) {
-    var existingTabBadge = artefactsTab.querySelector('.tab-badge');
-    if (artefactBadgeCount > 0) {
-      if (!existingTabBadge) {
-        var newBadge = document.createElement('span');
-        newBadge.className = 'tab-badge badge-artefacts';
-        newBadge.textContent = artefactBadgeCount;
-        artefactsTab.appendChild(newBadge);
-      } else {
-        existingTabBadge.textContent = artefactBadgeCount;
-        existingTabBadge.classList.remove('hidden');
-      }
-    } else if (existingTabBadge) {
-      existingTabBadge.classList.add('hidden');
-    }
-  }
+  // #artefactBadge IS the tab-nav button badge (already in HTML) — no duplicate needed
 
   // Canon badge — always hidden
   var canonBadge = document.getElementById('canonBadge');

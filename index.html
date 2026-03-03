@@ -495,7 +495,7 @@ backdrop-filter:blur(12px);
       </div>
     </div>
 
-    <!-- FIELD SNAPSHOT — live from backend -->
+    <!-- FIELD SNAPSHOT — live from backend /api/field -->
     <div class="field-glance">
       <div class="glance-card">
         <div class="glance-label">Keys awakened</div>
@@ -512,7 +512,7 @@ backdrop-filter:blur(12px);
       <div class="glance-card">
         <div class="glance-label">Signals total</div>
         <div class="glance-value loading" id="glanceSignals">–</div>
-        <div class="glance-sub">Proof of Glyph signals across all epochs.</div>
+        <div class="glance-sub">Proof of Gestalt signals across all epochs.</div>
       </div>
 
       <div class="glance-card">
@@ -550,6 +550,9 @@ backdrop-filter:blur(12px);
   var API_BASE = "https://z1n-backend-production.up.railway.app/api";
   var FALLBACK_API = "http://localhost:3001/api";
 
+  // Protocol constant — matches Parameters.sol TOTAL_EPOCHS
+  var TOTAL_EPOCHS = 8766;
+
   var INTENTS = {
     "ΩC": { name: "Collective", desc: "Collective consciousness leading this epoch.", color: "#5ee8a0" },
     "ΩI": { name: "Individual", desc: "Individual perspective dominated this epoch.", color: "#f87171" },
@@ -581,7 +584,6 @@ backdrop-filter:blur(12px);
     if (!el) return;
     if (isNaN(num)) { el.textContent = "–"; stopLoading(el); return; }
     stopLoading(el);
-    // Instant render if duration is 0
     if (duration <= 0) { el.textContent = fmtNum(num); return; }
     var startTime = null;
     function step(timestamp) {
@@ -595,8 +597,8 @@ backdrop-filter:blur(12px);
     requestAnimationFrame(step);
   }
 
-  // ═══ FETCH DATA ═══
-    function fetchWithTimeout(url, ms) {
+  // ═══ FETCH DATA — single endpoint, no RPC calls ═══
+  function fetchWithTimeout(url, ms) {
     if (window.AbortSignal && typeof AbortSignal.timeout === "function") {
       return fetch(url, { signal: AbortSignal.timeout(ms) });
     }
@@ -628,30 +630,30 @@ backdrop-filter:blur(12px);
   function render(data) {
     if (!data) { renderFallback(); return; }
 
-    var rawKeys = data.lensStats?.total?.keys ?? data.totalKeys ?? 0;
-    var rawSignals = data.lensStats?.total?.signals ?? data.totalSignals ?? 0;
-    var rawEpoch = data.currentEpoch ?? 0;
+    // Primary paths → fallbacks (all from /api/field, 0 RPC)
+    var totalKeys = data.lensStats?.total?.keys ?? data.totalKeys ?? 0;
+    var totalSignals = data.lensStats?.total?.signals ?? data.totalSignals ?? 0;
+    var currentEpoch = data.currentEpoch ?? 0;
 
-    var totalKeys = typeof rawKeys === 'number' ? rawKeys : (parseInt(String(rawKeys), 10) || 0);
-    var totalSignals = typeof rawSignals === 'number' ? rawSignals : (parseInt(String(rawSignals), 10) || 0);
-    var currentEpoch = typeof rawEpoch === 'number' ? rawEpoch : (parseInt(String(rawEpoch), 10) || 0);
+    totalKeys = typeof totalKeys === "number" ? totalKeys : (parseInt(String(totalKeys), 10) || 0);
+    totalSignals = typeof totalSignals === "number" ? totalSignals : (parseInt(String(totalSignals), 10) || 0);
+    currentEpoch = typeof currentEpoch === "number" ? currentEpoch : (parseInt(String(currentEpoch), 10) || 0);
 
-    // Remove all loading states at once
+    // Remove all loading states
     [elKeys, elEpoch, elSignals, elIntent].forEach(stopLoading);
 
-    // Count-up only on first load — 2 seconds
+    // Count-up only on first load
     var dur = hasRendered ? 0 : 2000;
 
     countUp(elKeys, totalKeys, dur);
     countUp(elEpoch, currentEpoch, dur);
     countUp(elSignals, totalSignals, dur);
 
-    // Epoch sub: protocol progress %
-    var TOTAL_EPOCHS = Math.floor((21 * 365.25 * 24) / 21);
+    // Epoch sub: protocol progress % (TOTAL_EPOCHS from Parameters.sol = 8766)
     var progress = currentEpoch > 0 ? ((currentEpoch / TOTAL_EPOCHS) * 100).toFixed(2) : "0.00";
     elEpochSub.textContent = progress + "% of protocol completed";
 
-    // Intent: render immediately — same moment as numbers
+    // Intent distribution from last closed epoch
     var dist = data.intentDistribution?.lastEpoch;
     if (dist) {
       var maxKey = null;
@@ -678,7 +680,7 @@ backdrop-filter:blur(12px);
     hasRendered = true;
   }
 
-    function renderFallback() {
+  function renderFallback() {
     [elKeys, elEpoch, elSignals, elIntent].forEach(function (el) {
       if (el) { el.textContent = "–"; stopLoading(el); }
     });

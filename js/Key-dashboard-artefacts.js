@@ -1,8 +1,8 @@
 /**
  * Z1N Protocol - Key Dashboard Artefacts Module
- * Version: 2.5.0-Ω
+ * Version: 2.3.1-Ω
  * 
- * FIXES v2.5.0:
+ * FIXES v2.3.1:
  * - Unseen artefact notifications (green glow + NEW badge)
  * - localStorage-based seen tracking per key
  * - Tab badge shows unseen count
@@ -136,7 +136,7 @@
       '  border-color: var(--card-border, rgba(148,163,184,0.25)) !important;',
       '}',
       '',
-      '/* v2.5.0: Unseen notification: green glow border */',
+      '/* v2.3.1: Unseen notification: green glow border */',
       '.artefact-card.unseen-artefact {',
       '  border-color: rgba(94,232,160,0.7) !important;',
       '  box-shadow: 0 0 8px rgba(94,232,160,0.3);',
@@ -386,7 +386,7 @@ var pendingArtefacts = [];
         }
       }
       
-      // v2.5.0: Detect unseen artefacts by comparing with localStorage
+      // v2.3.1: Detect unseen artefacts by comparing with localStorage
       detectUnseenArtefacts(sharedWithMe);
     } catch (e) {
       console.error('loadSharedWithMe error:', e);
@@ -398,7 +398,7 @@ var pendingArtefacts = [];
   }
 
   // =====================================================================
-  // v2.5.0: UNSEEN TRACKING — localStorage-based
+  // v2.3.1: UNSEEN TRACKING — localStorage-based
   // =====================================================================
 
   var unseenArtefactIds = {};
@@ -1227,7 +1227,7 @@ var pendingArtefacts = [];
       return;
     }
     
-    console.log('Z1NArtefacts v2.5.0: Initializing for Key #' + z.keyId);
+    console.log('Z1NArtefacts v2.3.1: Initializing for Key #' + z.keyId);
     
     isLoadingOwned = true;
     isLoadingShared = true;
@@ -1268,7 +1268,7 @@ var pendingArtefacts = [];
     updateBadgesAndFeed();
   }
 
-  // v2.5.0: Badge helper — applies and protects badge from main JS overwriting
+  // v2.3.1: Badge helper — applies and protects badge from main JS overwriting
   var _lastBadgeUnread = 0;
   
   function applyBadge(unreadCount) {
@@ -1305,7 +1305,7 @@ var pendingArtefacts = [];
   }
   watchBadge();
 
-  // v2.5.0: Standalone function to update badges + overview feed
+  // v2.3.1: Standalone function to update badges + overview feed
   // Can be called from refresh() AND from tab switches
   function updateBadgesAndFeed() {
     var unreadCount = getUnreadNotificationCount();
@@ -1385,7 +1385,7 @@ var pendingArtefacts = [];
     updateBadgesAndFeed: updateBadgesAndFeed
   };
 
-  // v2.5.0: Re-inject feed items whenever overview tab becomes visible
+  // v2.3.1: Re-inject feed items whenever overview tab becomes visible
   // The main JS may rebuild the activity feed on tab switch, wiping our items
   var _origSwitchTab = window.switchTab;
   if (typeof _origSwitchTab === 'function') {

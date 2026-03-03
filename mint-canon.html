@@ -775,7 +775,7 @@ if (storedReturn) {
         showToast('Ω Canon anchored — Epoch ' + selectedEpoch, 4000);
 
       // Go back to where we came from with refresh flag
-        // v2.5.0: Trigger reindex before redirect so data is ready
+        // v2.3.1: Trigger reindex before redirect so data is ready
         try {
           await fetch(API + '/reindex/canon', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
         } catch (e) { console.error('Canon reindex failed:', e); }
