@@ -268,11 +268,11 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="card-header">Biological Intelligence</div>
 
       <div class="bi-body">
-        <p><span class="bi-title">Offer, share, collect</span><span class="bi-desc">Your artefact is a relational gesture — a mirror of your participation that you can offer to another Key. The recipient chooses to accept or reject. This is consent-based intimacy, not ownership.</span></p>
+        <p><span class="bi-title">Offer, share, collect.</span><span class="bi-desc">Your artefact is a relational gesture — a mirror of your participation that you can offer to another Key. The recipient chooses to accept or reject. This is consent-based intimacy, not ownership.</span></p>
 
-        <p><span class="bi-title">Control viewing rights</span><span class="bi-desc">You can revoke viewing at any time. The bond remains on-chain — the relationship is permanent in the ledger — but the visual card becomes invisible to the recipient. Restore it later, or release permanently.</span></p>
+        <p><span class="bi-title">Control viewing rights.</span><span class="bi-desc">You can revoke viewing at any time. The bond remains on-chain — the relationship is permanent in the ledger — but the visual card becomes invisible to the recipient. Restore it later, or release permanently.</span></p>
 
-        <p><span class="bi-title">Collect from others</span><span class="bi-desc">Accept offerings from Keys whose presence you recognise. Hide artefacts you don’t want visible. Release bonds you’ve outgrown. Both sides have equal agency.</span></p>
+        <p><span class="bi-title">Collect from others.</span><span class="bi-desc">Accept offerings from Keys whose presence you recognise. Hide artefacts you don’t want visible. Release bonds you’ve outgrown. Both sides have equal agency.</span></p>
 
       </div>
 
@@ -374,7 +374,10 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
                   <text x="250" y="578" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">"first witness of the field :: what enters the</text>
                   <text x="250" y="592" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace" font-size="11" fill="#8f9ab5">ledger remains"</text>
                 </g>
-                <text x="250" y="660" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5d6680">Artefact v1 · Era Genesis</text>
+                <g class="hover-zone" data-tooltip="eraversion">
+                  <rect x="100" y="644" width="300" height="28" fill="transparent"/>
+                  <text x="250" y="660" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#5d6680">Artefact v1 · Era Genesis</text>
+                </g>
               </svg>
             </div>
             <div class="era-slide">
@@ -383,10 +386,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
           </div>
         </div>
       </div>
-      <div class="era-hint">
-        <span class="era-hint-icon">ℹ</span>
-        <span class="era-hint-text">Era shifts every 210 epochs. New artefacts adopt the current visual grammar. Existing artefacts permanently preserve the dialect of their origin.</span>
-      </div>
+
     </article>
 
     <!-- ── RIGHT: NBI CARD ── -->
@@ -546,7 +546,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     donut3:      { title:"Total history", body:"Aggregate intent distribution since Key awakened. A permanent fingerprint of expression." },
     stats:       { title:"Activity counts", body:"Signals sent, attestations given/received, canon anchors, artefacts minted, and artefacts received through offering." },
     resonance:   { title:"Strongest resonance", body:"Most attested signal ever submitted by this Key. Shows epoch and up to 320 characters of signal content." },
-    inscription: { title:"Inscription (64 chars)", body:"Set once at mint. The maker's statement — preserved on-chain regardless of offers, accepts, or releases." }
+    inscription: { title:"Inscription (64 chars)", body:"Set once at mint. The maker's statement — preserved on-chain regardless of offers, accepts, or releases." },
+    eraversion:  { title:"Era shifts every 210 epochs", body:"New artefacts adopt the current visual grammar. Existing artefacts permanently preserve the dialect of their origin — a fingerprint of when they entered the Field." }
   };
 
   var wrapper = document.getElementById("era1Wrapper");
@@ -582,7 +583,35 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       });
     });
   }
-  document.addEventListener("click",function(){tooltip.classList.remove("visible");});
+  document.addEventListener("click",function(e){
+    if(!eraLabel.contains(e.target)) tooltip.classList.remove("visible");
+  });
+
+  // Era label tooltip (same as eraversion in SVG)
+  var eraLabelEl = document.getElementById("eraLabel");
+  if(eraLabelEl){
+    eraLabelEl.style.cursor = "help";
+    function showEraTooltip(){
+      var d = tooltips.eraversion; if(!d) return;
+      ttTitle.textContent = d.title;
+      ttBody.textContent = d.body;
+      var wr = wrapper.getBoundingClientRect();
+      var lr = eraLabelEl.getBoundingClientRect();
+      var cx = lr.left - wr.left + (lr.width/2);
+      tooltip.style.left = Math.max(150, Math.min(cx, wr.width-150))+"px";
+      tooltip.style.top = "0px";
+      tooltip.style.transform = "translateX(-50%)";
+      tooltip.classList.add("visible");
+    }
+    eraLabelEl.addEventListener("mouseenter",showEraTooltip);
+    eraLabelEl.addEventListener("mouseleave",function(){tooltip.classList.remove("visible");});
+    eraLabelEl.addEventListener("click",function(e){
+      e.stopPropagation();
+      tooltip.classList.remove("visible");
+      void tooltip.offsetWidth;
+      showEraTooltip();
+    });
+  }
 })();
 
 (function(){
