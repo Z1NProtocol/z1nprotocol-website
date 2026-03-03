@@ -542,29 +542,14 @@ footer .links a:hover{color:var(--text-main);}
     return Math.round(val).toString();
   }
 
-  function getUnseenCount(tokenId) {
-    var API_BASE = 'https://z1n-backend-production.up.railway.app/api';
+  function getUnseenCount(tokenId, keyData) {
     var readCount = 0;
     try { var stored = localStorage.getItem('z1n_activity_read_' + tokenId); if (stored) readCount = JSON.parse(stored).length; } catch (e) {}
-    return Promise.all([
-      fetch(API_BASE + '/attestations?toKeyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; }),
-      fetch(API_BASE + '/pure?keyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; }),
-      fetch(API_BASE + '/pure?toKeyId=' + tokenId + '&limit=50').then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; })
-    ]).then(function(results) {
-      var totalReceived = 0;
-      totalReceived += (results[0].attestations || []).length;
-      var fromW = results[1].whispers || results[1].messages || results[1].pure || [];
-      var toW = results[2].whispers || results[2].messages || results[2].pure || [];
-      var allW = fromW.concat(toW);
-      var seen = {};
-      allW.forEach(function(w) {
-        var k = w.txHash || (w.fromKeyId + '-' + w.toKeyId + '-' + w.blockNumber);
-        if (seen[k]) return;
-        seen[k] = true;
-        if (w.toKeyId == tokenId && w.fromKeyId != tokenId) totalReceived++;
-      });
-      return Math.max(0, totalReceived - readCount);
-    }).catch(function() { return 0; });
+    if (keyData) {
+      var total = (keyData.totalAttestationsReceived || 0) + (keyData.repliesReceived || 0) + (keyData.directMessagesReceived || 0);
+      return Promise.resolve(Math.max(0, total - readCount));
+    }
+    return Promise.resolve(0);
   }
 
   function getTotalEarned(tokenId) {
@@ -835,24 +820,8 @@ footer .links a:hover{color:var(--text-main);}
       var data = await response.json();
       if (data.currentEpoch) currentEpochNum = data.currentEpoch;
       var keys = (data.keys || []).map(function(k) {
-        return { tokenId: k.tokenId, wallet: walletAddr, genesis: k.genesis, glyphSymbols: k.glyphSymbols, epoch: k.epoch, signalsUsed: k.signalsUsed || 0, attestsUsed: 0, liveArtefacts: k.liveArtefacts || 0, canonCount: k.canonCount || 0, unseenCount: 0, totalClaimed: 0, claimableEpochs: [] };
+        return { tokenId: k.tokenId, wallet: walletAddr, genesis: k.genesis, glyphSymbols: k.glyphSymbols, epoch: k.epoch, signalsUsed: k.signalsUsed || 0, attestsUsed: k.attestsUsed || 0, liveArtefacts: k.liveArtefacts || 0, canonCount: k.canonCount || 0, unseenCount: 0, totalClaimed: 0, claimableEpochs: [], totalAttestationsReceived: k.totalAttestationsReceived || 0, repliesReceived: k.repliesReceived || 0, directMessagesReceived: k.directMessagesReceived || 0 };
       });
-      // Fetch actual attest usage: API ignores epoch/fromKeyId params, so filter client-side
-      // In epoch N, you attest epoch N-1 signals, so count attests where epoch == N-1 AND fromKeyId matches
-      if (currentEpochNum > 0) {
-        var targetEpoch = currentEpochNum - 1;
-        await Promise.all(keys.map(function(k) {
-          return fetch(API_BASE + '/attestations?fromKeyId=' + k.tokenId)
-            .then(function(r) { return r.ok ? r.json() : {}; })
-            .then(function(d) {
-              var all = d.attestations || d.data || [];
-              k.attestsUsed = all.filter(function(a) {
-                return a.fromKeyId == k.tokenId && a.epoch == targetEpoch;
-              }).length;
-            })
-            .catch(function() {});
-        }));
-      }
       return keys;
     } catch (err) { console.error('Error loading keys for ' + walletAddr + ':', err); return []; }
   }
@@ -887,7 +856,7 @@ footer .links a:hover{color:var(--text-main);}
       Promise.all(allKeys.map(function(key) {
         return Promise.all([
           fetch(API_BASE + '/key/' + key.tokenId + '/claimable').then(function(r) { return r.ok ? r.json() : { epochs: [] }; }).catch(function() { return { epochs: [] }; }),
-          getUnseenCount(key.tokenId)
+          getUnseenCount(key.tokenId, key)
         ]).then(function(results) {
           key.unseenCount = results[1];
           key.claimableEpochs = (results[0].epochs || []).map(function(e) { return { epochId: e.epochId, amount: e.amountFormatted || '0' }; });
