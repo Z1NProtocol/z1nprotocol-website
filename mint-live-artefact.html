@@ -263,7 +263,7 @@
         Your first Live Artefact is free — a gift for joining the Field.
       </div>
       <div class="info-notice paid" id="infoPaid" style="display:none;">
-        Extra Live Artefacts cost 0.021 POL each.
+        Extra Artefacts cost 7 POL each.
       </div>
     </div>
 
@@ -300,11 +300,11 @@
 
   var API = 'https://z1n-backend-production.up.railway.app/api';
   var CHAIN_ID = '0x89';
-  var Z1N_KEY = '0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469';
-  var Z1N_ARTEFACT = '0xf1887e8D53bbb61F64bfD16Ec41598618053bd2c';
+  var Z1N_KEY = '0x31C5e078ad2CdB0FEAB703ED416DC9e90997b26C';
+  var Z1N_ARTEFACT = '0x405344149f95c1264AC6BA1d646D95e17957EB45';
   
-  var MINT_PRICE = '0x4a9b6384488000';
-  var MINT_PRICE_DISPLAY = '0.021 POL';
+  var MINT_PRICE = '0x6124FEE993BC0000';
+  var MINT_PRICE_DISPLAY = '7 POL';
 
   var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var currentRpcIndex = 0;
@@ -459,7 +459,7 @@
 
   async function checkHasFirstArtefact() {
     try {
-      var data = '0xff84f877' + enc256(keyId);
+      var data = '0x' + ethers.id('artefactOfKey(uint256)').slice(2, 10) + enc256(keyId);
       var result = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: data }, 'latest']);
       hasFirstArtefact = parseInt(result, 16) > 0;
       updatePriceDisplay();
@@ -582,11 +582,14 @@
     try {
       var functionName = hasFirstArtefact ? 'mintExtraArtefact' : 'mintFirstArtefact';
       var iface = new ethers.Interface([
-        'function mintFirstArtefact(uint256 keyId)',
-        'function mintExtraArtefact(uint256 keyId) payable'
+        'function mintFirstArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription)',
+        'function mintExtraArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription) payable'
       ]);
       
-      var encodedData = iface.encodeFunctionData(functionName, [BigInt(keyId)]);
+      var contentHash = '0x' + '0'.repeat(64);
+      var schema = 0;
+      var inscription = '';
+      var encodedData = iface.encodeFunctionData(functionName, [BigInt(keyId), contentHash, schema, inscription]);
 
       statusArea.innerHTML = '<div class="status-msg pending">Confirm in your wallet...</div>';
       mintBtn.textContent = 'Confirm in wallet...';

@@ -302,17 +302,17 @@
 
       <div class="commitment-section">
         <div class="commitment-header">
-          <span class="commitment-label">Link Hash</span>
-          <span class="optional-badge">Optional</span>
+          <span class="commitment-label">Inscription</span>
+          <span class="optional-badge">Required · max 64 chars</span>
         </div>
-        <input type="text" class="commitment-input" id="commitmentHash" placeholder="0x... or leave empty for pure epoch marker">
-        <div class="commitment-hint">Attach an off-chain reference, reflection hash, or verifiable proof to this anchor.</div>
+        <input type="text" class="commitment-input" id="commitmentText" maxlength="64" placeholder="Your on-chain inscription for this epoch...">
+        <div class="commitment-hint"><span id="charCount">0</span> / 64 characters — permanently engraved on-chain.</div>
       </div>
 
       <div class="mint-footer">
         <div class="price-row">
           <span class="price-label">Price</span>
-          <span class="price-value">7 POL</span>
+          <span class="price-value">3 POL</span>
         </div>
         <button class="mint-btn" id="anchorBtn">Mint Canon Anchor</button>
       </div>
@@ -335,9 +335,9 @@
 
   var API = 'https://z1n-backend-production.up.railway.app/api';
   var CHAIN_ID = '0x89';
-  var Z1N_KEY = '0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469';
-  var Z1N_CANON = '0x2bb85Ee047E86264311De540C7eBfF0CdD873DEB';
-  var CANON_PRICE = '0x6124fee993bc0000';
+  var Z1N_KEY = '0x31C5e078ad2CdB0FEAB703ED416DC9e90997b26C';
+  var Z1N_CANON = '0xb3a180549cBb28F0e47b252734e15d5F5650cc96';
+  var CANON_PRICE = '0x29a2241af62c0000';
   var EXPLORER = 'https://polygonscan.com';
   var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var currentRpcIndex = 0;
@@ -577,7 +577,7 @@ if (storedReturn) {
     anchorStatus.className = 'epoch-status checking';
     
     try {
-      var sig = ethers.keccak256(ethers.toUtf8Bytes('hasCanonForEpoch(uint256,uint256)')).slice(0, 10);
+      var sig = ethers.keccak256(ethers.toUtf8Bytes('hasCanon(uint256,uint256)')).slice(0, 10);
       var data = sig + enc256(keyId) + enc256(selectedEpoch);
       var result = await rpc('eth_call', [{ to: Z1N_CANON, data: data }, 'latest']);
       epochAnchored = parseInt(result, 16) === 1;
@@ -726,27 +726,32 @@ if (storedReturn) {
     statusArea.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
 
     try {
-      var commitment = commitmentHashInput.value.trim();
-      var commitmentBytes32;
-      
-      if (!commitment || commitment === '' || commitment === '0x') {
-        commitmentBytes32 = '0x' + '0'.repeat(64);
-      } else if (commitment.startsWith('0x') && commitment.length === 66) {
-        commitmentBytes32 = commitment;
-      } else if (commitment.startsWith('0x')) {
-        commitmentBytes32 = commitment.slice(0, 2) + commitment.slice(2).padStart(64, '0');
-      } else {
-        commitmentBytes32 = ethers.keccak256(ethers.toUtf8Bytes(commitment));
+      var commitmentText = document.getElementById('commitmentText').value.trim();
+      if (!commitmentText || commitmentText.length === 0) {
+        statusArea.innerHTML = '<div class="status-msg error">Inscription is required (1–64 characters).</div>';
+        anchorBtn.disabled = false;
+        anchorBtn.classList.remove('minting');
+        anchorBtn.textContent = 'Mint Canon Anchor';
+        return;
       }
+      if (new TextEncoder().encode(commitmentText).length > 64) {
+        statusArea.innerHTML = '<div class="status-msg error">Inscription exceeds 64 bytes.</div>';
+        anchorBtn.disabled = false;
+        anchorBtn.classList.remove('minting');
+        anchorBtn.textContent = 'Mint Canon Anchor';
+        return;
+      }
+      var commitmentHash = ethers.keccak256(ethers.toUtf8Bytes(commitmentText));
       
       var iface = new ethers.Interface([
-        'function anchorCanon(uint256 keyId, uint256 epochId, bytes32 commitmentHash) payable'
+        'function anchorCanon(uint256 tokenId, uint256 epochId, string commitment, bytes32 commitmentHash) payable'
       ]);
       
       var encodedData = iface.encodeFunctionData('anchorCanon', [
         BigInt(keyId),
         BigInt(selectedEpoch),
-        commitmentBytes32
+        commitmentText,
+        commitmentHash
       ]);
 
       statusArea.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
@@ -824,6 +829,15 @@ if (storedReturn) {
       } catch (e) {}
     }
     return false;
+  }
+
+  // Char counter
+  var commitmentTextEl = document.getElementById('commitmentText');
+  var charCountEl = document.getElementById('charCount');
+  if (commitmentTextEl && charCountEl) {
+    commitmentTextEl.addEventListener('input', function() {
+      charCountEl.textContent = this.value.length;
+    });
   }
 
   // Auto-connect

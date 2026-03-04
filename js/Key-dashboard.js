@@ -1,16 +1,16 @@
 /**
  * Z1N Protocol - Key Dashboard JavaScript
- * Version: 2.3.0-Ω
+ * Version: 2.3.1-Ω
  * FIXES: Tab parameter, key ID preservation, original canon design
  */
 (function(){
   'use strict';
 
   var CHAIN_ID = '0x89';
-  var Z1N_KEY = '0xe27C2De6e8F1090EEAe18E1Ce3f51F1D2FeAf469';
-  var Z1N_CORE = '0x4Ef6f1a53B7aE03F8eDEAB3EcD069692D1548e13';
-  var Z1N_SIGNAL = '0x3CD0DF7b0aC8fdF4dB1c65149741dB12F144e3bd';
-  var Z1N_ARTEFACT = '0xf1887e8D53bbb61F64bfD16Ec41598618053bd2c';
+  var Z1N_KEY = '0x31C5e078ad2CdB0FEAB703ED416DC9e90997b26C';
+  var Z1N_CORE = '0xE44C05dCd9cbFF28c4d08234A7c287b6845B0a72';
+  var Z1N_SIGNAL = '0xC69911509619B44b3A0fC0E72541dE454d69D4aF';
+  var Z1N_ARTEFACT = '0x405344149f95c1264AC6BA1d646D95e17957EB45';
   var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var currentRpcIndex = 0;
   var EXPLORER = 'https://polygonscan.com';
@@ -107,6 +107,19 @@ function showSafetyWarning(callback) {
   }
   return escaped; 
 }
+
+  function buildSignalContentHtml(content) {
+    if (!content || content === '[Silence]') return escapeHtml(content || '[Silence]');
+    var len = content.length;
+    if (len <= 256) return escapeHtml(content);
+    var white = content.slice(0, 256);
+    var orange = content.slice(256, Math.min(len, 304));
+    var red = content.slice(304, 320);
+    var html = escapeHtml(white);
+    if (orange) html += '<span style="color:#ffd556;">' + escapeHtml(orange) + '</span>';
+    if (red) html += '<span style="color:#f87171;font-weight:600;">' + escapeHtml(red) + '</span>';
+    return html;
+  }
   function showToast(message, duration, isError, isInfo) {
     var toast = document.getElementById('toast');
     if (!toast) return;
@@ -150,7 +163,7 @@ function showSafetyWarning(callback) {
   // ═══════════════════════════════════════════════════════════════
   
   window.switchTab = function(tabId) {
-  var tabs = ['overview', 'signals', 'attests', 'whispers', 'artefacts', 'canon', 'treasury'];
+  var tabs = ['overview', 'signals', 'attests', 'direct', 'artefacts', 'canon', 'treasury'];
   document.querySelectorAll('.tab-btn').forEach(function(btn, i) { btn.classList.toggle('active', tabs[i] === tabId); });
   document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
   var el = document.getElementById('tab-' + tabId); if (el) el.classList.add('active');
@@ -158,17 +171,9 @@ function showSafetyWarning(callback) {
   var eye = document.getElementById('globalStealthToggle');
   var tooltip = document.getElementById('stealthTooltip');
   
-  if (tabId === 'whispers') {
-    if (eye) {
-      eye.style.display = 'flex';
-      eye.classList.add('whisper-disabled');
-      eye.classList.remove('active');
-      eye.style.cursor = 'not-allowed';
-      eye.onclick = function() { showToast('Stealth not available for Whispers', 3000); };
-    }
-    if (tooltip) {
-      tooltip.innerHTML = '<div class="tt-title" style="color:#f87171;">Stealth Not Available</div><div class="tt-body">Whispers are always visible on-chain. Stealth mode only works for Signals and Attests.</div>';
-    }
+  if (tabId === 'direct') {
+    if (eye) { eye.style.display = 'none'; }
+    if (typeof loadDirectChannel === 'function') loadDirectChannel();
   } else if (tabId === 'signals' || tabId === 'attests') {
     if (eye) {
       eye.style.display = 'flex';
@@ -201,7 +206,11 @@ function showSafetyWarning(callback) {
       if (canonReturn) { sessionStorage.removeItem('canonReturnUrl'); }
       loadCanonData();
     }
-    if (tabId === 'artefacts') loadArtefactData();
+    if (tabId === 'artefacts') {
+  if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) {
+    window.Z1NArtefacts.refresh();
+  }
+}
     if (tabId === 'treasury') loadTreasuryData();
   }
 
@@ -213,7 +222,7 @@ function showSafetyWarning(callback) {
 
   function switchToUrlTab() {
     if (urlTab) {
-      var validTabs = ['overview', 'signals', 'attests', 'whispers', 'artefacts', 'canon', 'treasury'];
+      var validTabs = ['overview', 'signals', 'attests', 'direct', 'artefacts', 'canon', 'treasury'];
       if (validTabs.includes(urlTab)) {
         console.log('Switching to URL tab:', urlTab);
         switchTab(urlTab);
@@ -302,7 +311,28 @@ window.toggleGlobalStealth = function() {
   }
 };
 
-  window.updateCharCount = function() { var el = document.getElementById('charCount'), ta = document.getElementById('signalContent'); if (el && ta) el.textContent = ta.value.length + ' / 280'; };
+  window.updateCharCount = function() {
+    var el = document.getElementById('charCount');
+    var ta = document.getElementById('signalContent');
+    var indicator = document.getElementById('signalZoneIndicator');
+    if (!el || !ta) return;
+    var len = ta.value.length;
+    el.textContent = len + ' / 320';
+    el.classList.remove('zone-normal', 'zone-orange', 'zone-red');
+    ta.classList.remove('zone-orange', 'zone-red');
+    if (len > 304) {
+      el.classList.add('zone-red');
+      ta.classList.add('zone-red');
+      if (indicator) { indicator.style.display = 'block'; indicator.innerHTML = '<span style="color:#f87171;">⚠ Last ' + (320 - len) + ' chars — inscription zone (on-chain permanent)</span>'; }
+    } else if (len > 256) {
+      el.classList.add('zone-orange');
+      ta.classList.add('zone-orange');
+      if (indicator) { indicator.style.display = 'block'; indicator.innerHTML = '<span style="color:#ffd556;">◈ Extended field — ' + (304 - len) + ' chars until inscription zone</span>'; }
+    } else {
+      el.classList.add('zone-normal');
+      if (indicator) indicator.style.display = 'none';
+    }
+  };
   window.updateWhisperCharCount = function() { var el = document.getElementById('whisperCharCount'), ta = document.getElementById('whisperContent'); if (el && ta) el.textContent = ta.value.length + ' / 500'; };
 
   function updateDots() { var tsd = document.getElementById('tabSignalDots'), tad = document.getElementById('tabAttestDots'); var f = '<span class="tab-dot filled"></span>', o = '<span class="tab-dot open"></span>'; if (tsd) tsd.innerHTML = (signalsUsed >= 1 ? f : o) + (signalsUsed >= 2 ? f : o); if (tad) tad.innerHTML = (attestsUsed >= 1 ? f : o) + (attestsUsed >= 2 ? f : o); }
@@ -452,7 +482,11 @@ window.toggleGlobalStealth = function() {
     } catch (e) { hasFirstArtefact = false; }
   }
 
-  window.mintLiveArtefact = async function() {
+  window.mintLiveArtefactFromOverview = function() {
+if (window.Z1NArtefacts && window.Z1NArtefacts.mint) { window.Z1NArtefacts.mint(); }
+else { window.mintLiveArtefact(); }
+};
+window.mintLiveArtefact = async function() {
     if (!currentAccount || !provider || currentKeyId === null) { showToast('Connect wallet first', 3000); return; }
     var btn = document.getElementById('btnMintLiveArtefact');
     var statusEl = document.getElementById('mintArtefactStatus');
@@ -615,7 +649,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
   function formatTimeAgo(ts) { if (!ts) return ''; var now = Date.now(), t = typeof ts === 'number' ? (ts > 1e12 ? ts : ts * 1000) : new Date(ts).getTime(), d = Math.floor((now - t) / 1000); if (d < 60) return d + 's ago'; if (d < 3600) return Math.floor(d/60) + 'm ago'; if (d < 86400) return Math.floor(d/3600) + 'h ago'; return Math.floor(d/86400) + 'd ago'; }
 
   // ═══════════════════════════════════════════════════════════════
-  // KEY DATA LOADING - v2.3.0: Uses cached glyphs + indexed epoch
+  // KEY DATA LOADING - v2.3.1: Uses cached glyphs + indexed epoch
   // ═══════════════════════════════════════════════════════════════
   async function loadKeyData(keyId) {
     currentKeyId = keyId;
@@ -683,7 +717,8 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       
       var viewLink = document.getElementById('viewOnChainLink'); if (viewLink) viewLink.href = EXPLORER + '/token/' + Z1N_KEY + '?a=' + keyId;
       updateOverviewArtefactPreview();
-      await Promise.all([loadAttestableSignals(), loadSentSignals(), loadReceivedReplies(), loadSentAttests(), loadReceivedAttests(), loadWhisperData(), loadCanonData(), loadArtefactData(), loadTreasuryData()]);
+      await Promise.all([loadAttestableSignals(), loadSentSignals(), loadReceivedReplies(), loadSentAttests(), loadReceivedAttests(), loadCanonData(), loadTreasuryData()]);
+if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
       updateAttestBtn();
       initActivityFeed();
       initUnreadState();
@@ -698,6 +733,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
   // ARTEFACT DATA
   // ═══════════════════════════════════════════════════════════════
   function updateOverviewArtefactPreview() {
+    if (window.Z1NArtefacts && window.Z1NArtefacts.updateOverviewPreview) { window.Z1NArtefacts.updateOverviewPreview(); return; }
     var previewImg = document.getElementById('overviewArtefactPreview');
     if (previewImg && currentKeyId !== null) {
       previewImg.src = API_BASE + '/artefact/' + currentKeyId + '/static-preview?epoch=' + activeEpoch + '&t=' + Date.now();
@@ -726,7 +762,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
     }
     var overviewMintBtn = document.getElementById('btnMintLiveArtefactOverview');
     if (overviewMintBtn && !overviewMintBtn.disabled) {
-      overviewMintBtn.textContent = hasFirstArtefact ? '+ Mint Artefact — 21 POL' : '+ Mint First Artefact — FREE';
+      overviewMintBtn.textContent = hasFirstArtefact ? '+ Mint Artefact — 7 POL' : '+ Mint First Artefact — FREE';
     }
   }
 
@@ -752,7 +788,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       '</div>' +
       '<div style="margin-top:16px;display:flex;gap:8px;justify-content:center;">' +
         '<button onclick="switchTab(\'artefacts\');closeArtefactModal();" class="btn btn-primary" style="font-size:12px;padding:8px 16px;">View All Artefacts</button>' +
-        '<button onclick="mintLiveArtefact();closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? '+ Mint Extra — 21 POL' : '+ Mint First — FREE') + '</button>' +
+        '<button onclick="mintLiveArtefact();closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? '+ Mint Extra — 7 POL' : '+ Mint First — FREE') + '</button>' +
       '</div>' +
     '</div>';
     
@@ -768,7 +804,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
     grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">Loading artefacts...</div>';
     try {
       await checkHasFirstArtefact();
-      if (mintBtn) mintBtn.textContent = hasFirstArtefact ? '+ Mint Extra — 21 POL' : '+ Mint First — FREE';
+      if (mintBtn) mintBtn.textContent = hasFirstArtefact ? '+ Mint Extra — 7 POL' : '+ Mint First — FREE';
       var r = await fetch(API_BASE + '/key/' + currentKeyId + '/artefacts', {cache:'no-store'});
       if (!r.ok) { grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No artefacts found</div>'; if (badge) badge.textContent = '0'; if (status) status.textContent = 'No live artefact'; allLiveArtefacts = []; allStaticArtefacts = []; return; }
       var d = await r.json();
@@ -890,7 +926,8 @@ async function loadSentSignals() {
       var ic = ['oc','oi','ok','os'][sig.intent] || 'oc', isym = sig.intentSymbol || ['ΩC','ΩI','ΩK','ΩS'][sig.intent] || '?';
       var sg = getShortGlyphs(sig.keyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-      var content = sig.cid || '[Silence]';
+      var content = sig.cid || sig.content || '[Silence]';
+      var contentHtml = buildSignalContentHtml(content);
       var displayEpoch = sig.epoch || activeEpoch;
       var isReply = sig.replyTo && sig.replyTo !== '0x0000000000000000000000000000000000000000000000000000000000000000';
       // v5: Clean card layout — no typeBadge, no replyBadge, no Reply button
@@ -899,11 +936,11 @@ async function loadSentSignals() {
         var hasParentKey = parentKeyId !== undefined && parentKeyId !== null;
         var parentGlyphs = hasParentKey ? getShortGlyphs(parentKeyId) : '';
         var pgs = parentGlyphs ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + parentGlyphs + '</span>' : '';
-        var keyLine = hasParentKey ? '<span style="color:var(--keys-accent);font-weight:600;">K#' + parentKeyId + '</span>' + pgs : '';
+        var keyLine = hasParentKey ? '<span style="color:var(--keys-accent);font-weight:600;">↩ K#' + parentKeyId + '</span>' + pgs : '<span style="color:var(--text-soft);font-size:10px;">↩ Reply</span>';
         var whisperKeyId = hasParentKey ? parentKeyId : 0;
-        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header">' + keyLine + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span>' + (hasParentKey ? '<button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper(' + whisperKeyId + ')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button>' : '') + '</div>';
+        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header">' + keyLine + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + contentHtml + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span>'  + '</div>';
       } else {
-        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ic + '">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span></div>';
+        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ic + '">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + contentHtml + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span></div>';
       }
       
       list.appendChild(it);
@@ -922,22 +959,16 @@ async function loadReceivedReplies() {
   list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-soft);font-size:12px;">Loading...</div>';
   
   try {
-    // v2.3.0: Server-side reply filter — single fetch, no client-side matching
-    var repliesRes = await fetch(API_BASE + '/signals?replyToKeyId=' + currentKeyId + '&limit=100&sort=recent', {cache:'no-store'});
+    var params = new URLSearchParams();
+    params.set('replyToKeyId', String(currentKeyId));
+    params.set('limit', '100');
+    var sortSelect = document.getElementById('repliesSortSelect');
+    params.set('sort', sortSelect ? sortSelect.value : 'recent');
+    var intentFilter = document.getElementById('repliesIntentFilter');
+    if (intentFilter && intentFilter.value) params.set('intents', intentFilter.value);
+    var repliesRes = await fetch(API_BASE + '/signals?' + params.toString(), {cache:'no-store'});
     var repliesData = await repliesRes.json();
     var replies = repliesData.signals || [];
-    
-    // Apply intent filter
-    var intentFilter = document.getElementById('repliesIntentFilter');
-    if (intentFilter && intentFilter.value) {
-      replies = replies.filter(function(s) { return String(s.intent) === intentFilter.value; });
-    }
-    
-    // Apply sort
-    var sortSelect = document.getElementById('repliesSortSelect');
-    if (sortSelect && sortSelect.value === 'attested') {
-      replies.sort(function(a, b) { return (b.attestCount || 0) - (a.attestCount || 0); });
-    }
     
     allReceivedReplies = replies;
     var receivedRepliesCountEl = document.getElementById('receivedRepliesCount');
@@ -959,7 +990,8 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
       var isym = sig.intentSymbol || ['ΩC','ΩI','ΩK','ΩS'][sig.intent] || '?';
       var sg = getShortGlyphs(sig.keyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-      var content = sig.cid || '[Silence]';
+      var content = sig.cid || sig.content || '[Silence]';
+      var contentHtml = buildSignalContentHtml(content);
       
      // Check unread state
       var activityId = 'reply_recv_' + sig.hash;
@@ -973,7 +1005,7 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
       if (parentHash && parentHash !== '0x0000000000000000000000000000000000000000000000000000000000000000') {
         replyBadge = '<span style="font-size:9px;padding:2px 6px;background:rgba(255,213,86,0.2);color:#ffd556;border-radius:4px;margin-left:4px;cursor:pointer;" onclick="showParentSignal(\'' + parentHash + '\')">\u21a9 ' + parentHash.slice(0,10) + '...</span>';
       }
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + sig.keyId + '</span>' + gs + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyToSignal(\'' + sig.hash + '\', ' + sig.keyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(255,213,86,0.2);color:#ffd556;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper(' + sig.keyId + ')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';// Click to mark as read
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + sig.keyId + '</span>' + gs + '<span class="intent-tag ' + ic + '" style="margin-left:6px;">' + isym + '</span><span class="signal-attests" style="margin-left:6px;">✓' + (sig.attestCount||0) + '</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + displayEpoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + contentHtml + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (sig.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyToSignal(\'' + sig.hash + '\', ' + sig.keyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(255,213,86,0.2);color:#ffd556;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';// Click to mark as read
       it.addEventListener('click', function(e) {
         if (e.target.classList.contains('reply-btn')) return;
         markTabItemRead(activityId, it);
@@ -1080,7 +1112,7 @@ if (sentAttestsCountEl) sentAttestsCountEl.textContent = '(' + attests.length + 
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
       var content = att.signalContent || att.signalCid || '[Signal]';
       
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'direct\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       list.appendChild(it);
     });
   } catch (e) { list.innerHTML = '<div style="padding:20px;text-align:center;color:#f87171;font-size:11px;">Error loading attestations</div>'; }
@@ -1137,7 +1169,7 @@ if (receivedAttestsCountTitleEl) receivedAttestsCountTitleEl.textContent = '(' +
       it.dataset.activityId = activityId;
       
       var fromKeyDisplay = att.fromKeyId !== null ? 'K#' + att.fromKeyId : (att.fromWallet ? att.fromWallet.slice(0,6) + '...' : '?');
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'whispers\');setTimeout(function(){replyWhisper('+(att.fromKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'direct\');setTimeout(function(){replyWhisper('+(att.fromKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       
       // Click to mark as read
       it.addEventListener('click', function() {
@@ -1216,247 +1248,6 @@ window.downloadReceivedAttestsCSV = function() {
   showToast('CSV downloaded', 2000);
 };
 
-// ═══════════════════════════════════════════════════════════════
-  // WHISPERS - NEW LAYOUT v2
-  // ═══════════════════════════════════════════════════════════════
-  var allSentWhispers = [];
-  var allReceivedWhispers = [];
-  var allWhispers = [];
-
-  async function loadWhisperData() {
-    try {
-      // Fetch whispers FROM this key
-      var r1 = await fetch(API_BASE + '/pure?keyId=' + currentKeyId + '&limit=200', {cache:'no-store'});
-      var fromWhispers = [];
-      if (r1.ok) {
-        var d1 = await r1.json();
-        fromWhispers = d1.whispers || d1.messages || d1.pure || [];
-      }
-      
-      // Fetch whispers TO this key
-      var r2 = await fetch(API_BASE + '/pure?toKeyId=' + currentKeyId + '&limit=200', {cache:'no-store'});
-      var toWhispers = [];
-      if (r2.ok) {
-        var d2 = await r2.json();
-        toWhispers = d2.whispers || d2.messages || d2.pure || [];
-      }
-      
-      // Combine and deduplicate
-      var combined = fromWhispers.concat(toWhispers);
-      var seen = {};
-      allWhispers = combined.filter(function(w) {
-        var key = w.txHash || (w.fromKeyId + '-' + w.toKeyId + '-' + w.blockNumber);
-        if (seen[key]) return false;
-        seen[key] = true;
-        return true;
-      });
-      
-    } catch (e) {
-      allWhispers = [];
-    }
-    await Promise.all([loadSentWhispers(), loadReceivedWhispers()]);
-    updateTabBadges();
-  }
-
-  async function loadSentWhispers() {
-    var list = document.getElementById('sentWhispersList');
-    var badge = document.getElementById('sentWhispersCount');
-    if (!list || currentKeyId === null) return;
-    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-soft);font-size:12px;">Loading...</div>';
-    try {
-      var sent = allWhispers.filter(function(w) { return w.fromKeyId === currentKeyId && w.toKeyId > 0; });
-      var sortSelect = document.getElementById('sentWhispersSortSelect');
-      if (sortSelect && sortSelect.value === 'oldest') {
-        sent.sort(function(a, b) { return (a.blockNumber || 0) - (b.blockNumber || 0); });
-      } else {
-        sent.sort(function(a, b) { return (b.blockNumber || 0) - (a.blockNumber || 0); });
-      }
-      allSentWhispers = sent;
-      var sentWhispersCountTitleEl = document.getElementById('sentWhispersCountTitle');
-if (sentWhispersCountTitleEl) sentWhispersCountTitleEl.textContent = '(' + sent.length + ')';
-      if (badge) badge.textContent = sent.length;
-      if (sent.length === 0) {
-        list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;"><div style="font-size:24px;opacity:0.3;margin-bottom:8px;">📤</div>No whispers sent yet</div>';
-        return;
-      }
-      await fetchKeyGlyphs(sent.map(function(w) { return w.toKeyId; }));
-      list.innerHTML = '';
-      sent.forEach(function(w) {
-        var it = document.createElement('div');
-        it.className = 'signal-item';
-        it.style.cursor = 'pointer';
-        var sg = getShortGlyphs(w.toKeyId);
-        var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-        var content = w.cid || w.content || '[Empty]';
-        if (content.length > 80) content = content.slice(0, 80) + '...';
-        var epoch = w.epoch || '—';
-        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-size:11px;">→ To:</span><span style="color:var(--keys-accent);font-weight:600;margin-left:4px;">K#' + w.toKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">Epoch ' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><span class="signal-time">' + (w.timeAgo || '') + '</span>';
-        it.onclick = function() { showWhisperHistory(w.toKeyId); };
-        list.appendChild(it);
-      });
-    } catch (e) {
-      if (badge) badge.textContent = '0';
-      list.innerHTML = '<div style="padding:20px;text-align:center;color:#f87171;font-size:11px;">Error loading whispers</div>';
-      allSentWhispers = [];
-    }
-  }
-  window.loadSentWhispers = loadSentWhispers;
-
-  async function loadReceivedWhispers() {
-    var list = document.getElementById('receivedWhispersList');
-    var badge = document.getElementById('receivedWhispersCount');
-    if (!list || currentKeyId === null) return;
-    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-soft);font-size:12px;">Loading...</div>';
-    try {
-      var received = allWhispers.filter(function(w) { return w.toKeyId === currentKeyId; });
-      var sortSelect = document.getElementById('receivedWhispersSortSelect');
-      if (sortSelect && sortSelect.value === 'oldest') {
-        received.sort(function(a, b) { return (a.blockNumber || 0) - (b.blockNumber || 0); });
-      } else {
-        received.sort(function(a, b) { return (b.blockNumber || 0) - (a.blockNumber || 0); });
-      }
-      allReceivedWhispers = received;
-      var receivedWhispersCountTitleEl = document.getElementById('receivedWhispersCountTitle');
-if (receivedWhispersCountTitleEl) receivedWhispersCountTitleEl.textContent = '(' + received.length + ')';
-      if (badge) badge.textContent = received.length;
-      if (received.length === 0) {
-        list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;"><div style="font-size:24px;opacity:0.3;margin-bottom:8px;">📥</div>No whispers received yet</div>';
-        return;
-      }
-      await fetchKeyGlyphs(received.map(function(w) { return w.fromKeyId; }));
-      list.innerHTML = '';
-      received.forEach(function(w) {
-        var it = document.createElement('div');
-        it.className = 'signal-item';
-        it.style.cursor = 'pointer';
-        var sg = getShortGlyphs(w.fromKeyId);
-        var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-        var content = w.cid || w.content || '[Empty]';
-        if (content.length > 100) content = content.slice(0, 100) + '...';
-        var epoch = w.epoch || '—';
-       // Check unread state
-        var activityId = 'whisper_recv_' + (w.txHash || w.blockNumber || '');
-        var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
-        if (isUnread) it.classList.add('unread-glow');
-        it.dataset.activityId = activityId;
-        
-        it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">Epoch ' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;background:rgba(148,163,184,0.08);border-radius:4px;border-left:2px solid rgba(148,163,184,0.3);font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(255,213,86,0.2);color:#ffd556;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
-        it.onclick = function(e) { 
-          if (!e.target.classList.contains('reply-btn')) {
-            markTabItemRead(activityId, it);
-          }
-          showWhisperHistory(w.fromKeyId); 
-        };
-        list.appendChild(it);
-      });
-    } catch (e) {
-      if (badge) badge.textContent = '0';
-      list.innerHTML = '<div style="padding:20px;text-align:center;color:#f87171;font-size:11px;">Error loading whispers</div>';
-      allReceivedWhispers = [];
-    }
-  }
-  window.loadReceivedWhispers = loadReceivedWhispers;
-
-  window.showWhisperHistory = function(otherKeyId) {
-  showSafetyWarning(function() {
-    var history = allWhispers.filter(function(w) {
-      return (w.fromKeyId === currentKeyId && w.toKeyId === otherKeyId) ||
-             (w.fromKeyId === otherKeyId && w.toKeyId === currentKeyId);
-    });
-    history.sort(function(a, b) { return (a.blockNumber || 0) - (b.blockNumber || 0); });
-    history = history.slice(-10);
-    if (history.length === 0) { showToast('No chat history with K#' + otherKeyId, 2000); return; }
-    var chatHtml = '<div style="max-height:400px;overflow-y:auto;padding:10px;">';
-    chatHtml += '<div style="text-align:center;margin-bottom:12px;font-size:12px;color:var(--text-soft);">Chat with K#' + otherKeyId + ' (last ' + history.length + ' messages)</div>';
-    history.forEach(function(w) {
-      var isMe = w.fromKeyId === currentKeyId;
-      var align = isMe ? 'flex-end' : 'flex-start';
-      var bg = isMe ? 'rgba(255,213,86,0.15)' : 'rgba(94,232,160,0.15)';
-      var border = isMe ? 'var(--keys-accent)' : 'var(--accent)';
-      var label = isMe ? 'You' : 'K#' + w.fromKeyId;
-      var epoch = w.epoch || '—';
-      var content = w.cid || w.content || '[Empty]';
-      chatHtml += '<div style="display:flex;justify-content:' + align + ';margin-bottom:8px;"><div style="max-width:80%;padding:8px 12px;background:' + bg + ';border-left:2px solid ' + border + ';border-radius:6px;"><div style="font-size:10px;color:var(--text-soft);margin-bottom:4px;">' + label + ' · Epoch ' + epoch + ' · ' + (w.timeAgo || '') + '</div><div style="font-size:12px;word-break:break-word;">' + escapeHtml(content) + '</div></div></div>';
-    });
-    chatHtml += '</div><div style="padding:10px;border-top:1px solid var(--card-border);text-align:center;"><button onclick="replyWhisper(' + otherKeyId + ');closeWhisperHistoryModal();" style="padding:8px 16px;background:rgba(255,213,86,0.2);border:1px solid #ffd556;border-radius:6px;color:#ffd556;cursor:pointer;font-size:12px;">↩ Reply to K#' + otherKeyId + '</button></div>';
-    var modal = document.getElementById('artefactModal');
-    var title = document.getElementById('artefactModalTitle');
-    var body = document.getElementById('artefactModalBody');
-    if (modal && title && body) { title.textContent = '💬 Whisper History'; body.innerHTML = chatHtml; modal.classList.add('active'); }
-  });
-};
-
-  window.closeWhisperHistoryModal = function() {
-    var modal = document.getElementById('artefactModal');
-    if (modal) modal.classList.remove('active');
-  };
-
-  window.filterSentWhispers = function() {
-    var search = (document.getElementById('sentWhispersSearchKey')?.value || '').trim();
-    if (!search) { loadSentWhispers(); return; }
-    var list = document.getElementById('sentWhispersList');
-    var filtered = allSentWhispers.filter(function(w) { return String(w.toKeyId) === search; });
-    if (filtered.length === 0) { list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No whispers to K#' + search + '</div>'; return; }
-    list.innerHTML = '';
-    filtered.forEach(function(w) {
-      var it = document.createElement('div'); it.className = 'signal-item'; it.style.cursor = 'pointer';
-      var sg = getShortGlyphs(w.toKeyId);
-      var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-      var content = w.cid || w.content || '[Empty]';
-      if (content.length > 80) content = content.slice(0, 80) + '...';
-      var epoch = w.epoch || '—';
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-size:11px;">→ To:</span><span style="color:var(--keys-accent);font-weight:600;margin-left:4px;">K#' + w.toKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">Epoch ' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><span class="signal-time">' + (w.timeAgo || '') + '</span>';
-      it.onclick = function() { showWhisperHistory(w.toKeyId); };
-      list.appendChild(it);
-    });
-  };
-
-  window.filterReceivedWhispers = function() {
-    var search = (document.getElementById('receivedWhispersSearchKey')?.value || '').trim();
-    if (!search) { loadReceivedWhispers(); return; }
-    var list = document.getElementById('receivedWhispersList');
-    var filtered = allReceivedWhispers.filter(function(w) { return String(w.fromKeyId) === search; });
-    if (filtered.length === 0) { list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No whispers from K#' + search + '</div>'; return; }
-    list.innerHTML = '';
-    filtered.forEach(function(w) {
-      var it = document.createElement('div'); it.className = 'signal-item'; it.style.cursor = 'pointer';
-      var sg = getShortGlyphs(w.fromKeyId);
-      var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-      var content = w.cid || w.content || '[Empty]';
-      if (content.length > 100) content = content.slice(0, 100) + '...';
-      var epoch = w.epoch || '—';
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#' + w.fromKeyId + '</span>' + gs + '<span style="color:var(--text-soft);margin-left:8px;font-size:10px;">Epoch ' + epoch + '</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;margin-top:4px;padding:6px 8px;background:rgba(148,163,184,0.08);border-radius:4px;border-left:2px solid rgba(148,163,184,0.3);font-size:11px;opacity:0.8;">' + escapeHtml(content) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">' + (w.timeAgo || '') + '</span><button class="reply-btn" onclick="event.stopPropagation();replyWhisper(' + w.fromKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(255,213,86,0.2);color:#ffd556;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button></div>';
-      it.onclick = function() { showWhisperHistory(w.fromKeyId); };
-      list.appendChild(it);
-    });
-  };
-
-  window.replyWhisper = function(fromKeyId) {
-    var recipientInput = document.getElementById('whisperRecipient');
-    if (recipientInput) { recipientInput.value = fromKeyId; validateWhisperRecipient(); }
-    var contentInput = document.getElementById('whisperContent');
-    if (contentInput) contentInput.focus();
-    var whisperTab = document.getElementById('tab-whispers');
-    if (whisperTab) whisperTab.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    showToast('Reply to K#' + fromKeyId, 2000);
-  };
-
-  window.downloadSentWhispersCSV = function() {
-    if (allSentWhispers.length === 0) { showToast('No whispers to export', 2000); return; }
-    var rows = [['To Key ID','To Glyphs','Content','Epoch','Time']];
-    allSentWhispers.forEach(function(w) { rows.push([w.toKeyId, keyGlyphsCache[w.toKeyId] || '', w.cid || w.content || '', w.epoch || '', w.timeAgo || '']); });
-    downloadCSV(rows, 'z1n_sent_whispers_' + new Date().toISOString().slice(0,10) + '.csv');
-    showToast('CSV downloaded', 2000);
-  };
-
-  window.downloadReceivedWhispersCSV = function() {
-    if (allReceivedWhispers.length === 0) { showToast('No whispers to export', 2000); return; }
-    var rows = [['From Key ID','From Glyphs','Content','Epoch','Time']];
-    allReceivedWhispers.forEach(function(w) { rows.push([w.fromKeyId, keyGlyphsCache[w.fromKeyId] || '', w.cid || w.content || '', w.epoch || '', w.timeAgo || '']); });
-    downloadCSV(rows, 'z1n_received_whispers_' + new Date().toISOString().slice(0,10) + '.csv');
-    showToast('CSV downloaded', 2000);
-  };
-
   var whisperValidationTimer = null;
   window.validateWhisperRecipient = function() {
     var input = document.getElementById('whisperRecipient');
@@ -1531,7 +1322,7 @@ window.submitWhisper = async function() {
           st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✓ Whisper sent to K#' + to + '!</div>'; 
           showToast('✅ Whisper sent!', 4000); 
           // v2.3.1: Add pending whisper to UI immediately
-          allWhispers.push({
+          /* allWhispers removed - Direct Channel handles this */ var _w = ({
             fromKeyId: currentKeyId,
             toKeyId: to,
             cid: ct,
@@ -1542,7 +1333,7 @@ window.submitWhisper = async function() {
             timeAgo: 'just now',
             _pending: true
           });
-          await Promise.all([loadSentWhispers(), loadReceivedWhispers()]);
+          // loadSentWhispers/loadReceivedWhispers removed
           updateTabBadges();
           return;
         } 
@@ -1578,7 +1369,7 @@ window.submitWhisper = async function() {
     st.innerHTML = '<div class="status-msg pending">Preparing...</div>';
     try {
       await loadEthers();
-      var hash = '0x' + (Date.now().toString(16) + Math.random().toString(16).slice(2)).padEnd(64, '0').slice(0, 64), cid = selectedIntent === 3 ? '' : ct.slice(0, 250), sym = 0, intent = selectedIntent, stype = selectedIntent === 3 ? 3 : 2, eref = 0;
+      var hash = '0x' + (Date.now().toString(16) + Math.random().toString(16).slice(2)).padEnd(64, '0').slice(0, 64), cid = selectedIntent === 3 ? '' : ct.slice(0, 320), sym = 0, intent = selectedIntent, stype = selectedIntent === 3 ? 3 : 2, eref = 0;
       var reply = '0x' + '0'.repeat(64);
       var replyHashEl = document.getElementById('replyToHash');
       if (signalType === 'reply' && replyHashEl) { var ri = replyHashEl.value.trim(); if (ri && ri.startsWith('0x') && ri.length >= 66) { reply = ri.slice(0, 66); stype = 1; eref = activeEpoch > 0 ? activeEpoch - 1 : 0; } }
@@ -1711,7 +1502,7 @@ window.submitWhisper = async function() {
 };
 
   // ═══════════════════════════════════════════════════════════════
-  // WALLET CONNECTION - v2.3.0: Uses indexed API instead of RPC
+  // WALLET CONNECTION - v2.3.1: Uses indexed API instead of RPC
   // ═══════════════════════════════════════════════════════════════
   async function connect() {
     var eth = getProvider(); if (!eth) { alert('Install a Web3 wallet (MetaMask/Coinbase/Phantom).'); return; }
@@ -1856,8 +1647,8 @@ icons: {
     signal: '📡',
     attest_sent: '✓',
     attest_received: '✓',
-    whisper_sent: '💬',
-    whisper_received: '💬',
+    direct_sent: '💬',
+    direct_received: '💬',
     canon_mint: 'Ω',
     reply_sent: '↩',
     reply_received: '↩',
@@ -1951,8 +1742,9 @@ async function loadActivityFeed() {
       });
     });
 
-    // ─── WHISPERS (from allWhispers) ───
-    (allWhispers || []).forEach(function(w) {
+    // ─── DIRECT CHANNEL handled by Key-dashboard-direct.js ───
+    // (allWhispers removed)
+    ([]).forEach(function(w) {
       var isSent = w.fromKeyId === currentKeyId;
       var isReceived = w.toKeyId === currentKeyId;
       
@@ -2052,7 +1844,7 @@ function renderActivityFeed() {
 ActivityFeed.activities.forEach(function(a) {
     if (ActivityFeed.readItems.has(a.id)) return;
     
-   if (a.type === 'whisper_received' || a.type === 'reply_received' || a.type === 'attest_received') {
+   if (a.type === 'reply_received' || a.type === 'attest_received') {
       countSignals++;
     } else if (a.type.includes('artefact')) {
       countArtefacts++;
@@ -2100,7 +1892,7 @@ ActivityFeed.activities.forEach(function(a) {
     if (presenceFilter === 'all') return true;
     
    if (presenceFilter === 'signals') {
-      return a.type === 'whisper_received' || a.type === 'reply_received' || a.type === 'attest_received';
+      return a.type === 'reply_received' || a.type === 'attest_received';
     }
     if (presenceFilter === 'artefacts') return a.type.includes('artefact');
     if (presenceFilter === 'canon') return false;
@@ -2341,9 +2133,9 @@ window.handleActivityClick = function(id, type) {
     case 'attest_received':
       switchTab('attests');
       break;
-    case 'whisper_sent':
-    case 'whisper_received':
-      switchTab('whispers');
+    case 'direct_sent':
+    case 'direct_received':
+      switchTab('direct');
       break;
     case 'canon_mint':
       switchTab('canon');
@@ -2384,7 +2176,7 @@ window.markTabItemRead = function(activityId, element) {
   var countSignals = 0, countArtefacts = 0, countTreasury = 0;
   ActivityFeed.activities.forEach(function(a) {
     if (a.direction !== 'received' || ActivityFeed.readItems.has(a.id)) return;
-    if (a.type === 'whisper_received' || a.type === 'reply_received' || a.type === 'attest_received') countSignals++;
+    if (a.type === 'reply_received' || a.type === 'attest_received') countSignals++;
     else if (a.type.includes('artefact')) countArtefacts++;
     else if (a.type.includes('treasury')) countTreasury++;
   });
@@ -2460,7 +2252,7 @@ function getActivityTimeAgo(timestamp) {
 // ─────────────────────────────────────────────────────────────────
 
 var UnreadState = {
-  lastSeenWhispers: 0,
+  
   lastSeenAttests: 0,
   lastSeenReplies: 0,
   lastSeenArtefacts: 0
@@ -2502,10 +2294,10 @@ function updateTabBadges() {
   }).length;
 
   // Whispers badge (inside tab content)
-  var whisperBadge = document.getElementById('whisperBadge');
-  if (whisperBadge) {
-    whisperBadge.textContent = unreadWhispers;
-    whisperBadge.classList.toggle('hidden', unreadWhispers === 0);
+  var directBadge = document.getElementById('directBadge');
+  if (directBadge) {
+    directBadge.textContent = unreadWhispers;
+    directBadge.classList.toggle('hidden', unreadWhispers === 0);
   }
 
   // Artefacts tab-nav badge — write badge into BOTH #artefactBadge AND the tab-nav button
@@ -2600,7 +2392,7 @@ function updateTabBadges() {
   }
 
   // Whispers tab-nav badge
-  var whispersTab = document.querySelector('.tab-btn[onclick*="whispers"]');
+  var whispersTab = document.querySelector('.tab-btn[onclick*="direct"]');
   if (whispersTab) {
     var existingBadge = whispersTab.querySelector('.tab-badge');
     if (unreadWhispers > 0) {
