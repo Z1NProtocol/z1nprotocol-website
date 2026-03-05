@@ -305,6 +305,8 @@
           '<div>' +
             '<div style="font-size:12px;font-weight:600;color:#5ee8a0;margin-bottom:3px;">🔒 Encrypted messaging locked</div>' +
             '<div style="font-size:11px;color:var(--text-soft);">Sign once per session to unlock encrypted message reading. Plaintext messages are always visible.</div>' +
+'<div style="font-size:10px;color:var(--text-soft);margin-top:6px;opacity:0.8;">🔐 Encrypted messages are private — only the fact that two Keys interacted is visible on-chain, never the content. Open field messages are readable by anyone.</div>' +
+'<div style="font-size:10px;color:var(--text-soft);margin-top:4px;opacity:0.6;">✓ Unlocking is free — no gas, just a wallet signature.</div>' +
 '<div style="font-size:10px;color:var(--text-soft);margin-top:4px;opacity:0.7;">✓ Free — no gas. Just a wallet signature, nothing goes on-chain.</div>' +
           '</div>' +
           '<button class="btn btn-green" onclick="unlockDirectChannel()" style="white-space:nowrap;padding:8px 16px;font-size:12px;">Unlock encryption</button>' +
