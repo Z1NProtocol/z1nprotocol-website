@@ -163,7 +163,7 @@ function showSafetyWarning(callback) {
   // ═══════════════════════════════════════════════════════════════
   
   window.switchTab = function(tabId) {
-  var tabs = ['overview', 'signals', 'attests', 'direct', 'artefacts', 'canon', 'treasury'];
+  var tabs = ['overview', 'signals', 'attests', 'direct', 'canon', 'artefacts', 'treasury'];
   document.querySelectorAll('.tab-btn').forEach(function(btn, i) { btn.classList.toggle('active', tabs[i] === tabId); });
   document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
   var el = document.getElementById('tab-' + tabId); if (el) el.classList.add('active');
@@ -559,6 +559,26 @@ var encodedData = iface.encodeFunctionData(functionName, [BigInt(currentKeyId), 
       
       var d = await r.json();
       canonAnchors = d.markers || d.anchors || [];
+
+      // Inject optimistic entries not yet in indexer
+      try {
+        var pending = JSON.parse(localStorage.getItem('z1n_canon_pending') || '[]');
+        var filtered = pending.filter(function(p) {
+          return p.keyId == currentKeyId && !canonAnchors.some(function(a) {
+            return (a.epochId || a.epoch) === p.epochId;
+          });
+        });
+        if (filtered.length > 0) {
+          canonAnchors = canonAnchors.concat(filtered);
+        }
+        // Clean up entries that made it into indexer
+        var stillPending = pending.filter(function(p) {
+          return !canonAnchors.some(function(a) {
+            return (a.epochId || a.epoch) === p.epochId && !a._optimistic;
+          });
+        });
+        localStorage.setItem('z1n_canon_pending', JSON.stringify(stillPending));
+      } catch (e) {}
       
       var total = canonAnchors.length;
       var latestMintedEpoch = 0;
@@ -624,10 +644,11 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       var shortHash = txHash ? txHash.slice(0, 10) + '...' + txHash.slice(-4) : '';
       var txLink = txHash ? EXPLORER + '/tx/' + txHash : '#';
       
+      var inscription = anc.commitment || anc.inscription || '';
       html += '<div class="canon-card">' +
         '<div class="canon-card-epoch">E' + epochId + '</div>' +
+        (inscription ? '<div class="canon-card-inscription">' + escapeHtml(inscription) + '</div>' : '') +
         '<div class="canon-card-time">Minted in Epoch ' + epochId + '</div>' +
-        // Green clickable hash - original design
         (txHash ? '<a href="' + txLink + '" target="_blank" class="canon-card-tx">' + shortHash + '</a>' : '') +
       '</div>';
     });
