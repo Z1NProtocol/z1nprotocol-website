@@ -66,11 +66,11 @@
     return new Promise(function (resolve, reject) {
       if (naclLib && naclUtil) return resolve();
       var s1 = document.createElement('script');
-      s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/tweetnacl/1.0.3/nacl-fast.min.js';
+      s1.src = '/js/nacl-fast.min.js';
       s1.onload = function () {
         naclLib = window.nacl;
         var s2 = document.createElement('script');
-        s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/tweetnacl-util/0.15.1/nacl-util.min.js';
+        s2.src = '/js/nacl-util.min.js';
         s2.onload = function () {
           naclUtil = window.nacl.util || window.naclUtil;
           if (!naclUtil) {

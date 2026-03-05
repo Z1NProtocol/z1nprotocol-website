@@ -2450,6 +2450,7 @@ var claimedEpochsData = [];
 var isClaimingAll = false;
 var claimableSortAsc = false;
 var claimedSortAsc = false;
+var totalClaimable = 0; // ← module-level zodat loadClaimedEpochs er bij kan
 
 async function loadTreasuryData() {
   var claimableEl = document.getElementById('treasuryClaimable');
@@ -2459,49 +2460,49 @@ async function loadTreasuryData() {
   var claimedList = document.getElementById('claimedEpochsList');
   var claimAllSection = document.getElementById('claimAllSection');
   var claimableBox = document.getElementById('treasuryClaimableBox');
-  
+
   if (!claimableList || currentKeyId === null) return;
-  
+
   claimableList.innerHTML = '<div class="treasury-loading">Loading claimable rewards...</div>';
-  
+
   try {
     var response = await fetch(API_BASE + '/key/' + currentKeyId + '/claimable', {cache: 'no-store'});
-    
+
     if (!response.ok) {
       var errorText = await response.text();
       console.error('Treasury API error:', response.status, errorText);
       throw new Error('API returned ' + response.status);
     }
-    
+
     var data = await response.json();
     claimableEpochsData = data.epochs || [];
-    
+
     // Calculate deadline: claimable while activeEpoch <= epochId + 21
     claimableEpochsData.forEach(function(epoch) {
       epoch.deadlineEpoch = epoch.epochId + CLAIM_WINDOW_EPOCHS;
       epoch.epochsRemaining = epoch.deadlineEpoch - activeEpoch + 1;
       if (epoch.epochsRemaining < 0) epoch.epochsRemaining = 0;
     });
-    
-    var totalClaimable = parseFloat(data.totalClaimableFormatted || '0');
-if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
+
+    totalClaimable = parseFloat(data.totalClaimableFormatted || '0');
+    if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
     if (claimableCountEl) claimableCountEl.textContent = '(' + claimableEpochsData.length + ')';
-    
+
     if (claimableBox) claimableBox.classList.toggle('has-claimable', totalClaimable > 0);
     if (claimAllSection) claimAllSection.style.display = claimableEpochsData.length > 1 ? 'block' : 'none';
-    
+
     var badge = document.getElementById('treasuryBadge');
     if (badge) {
       badge.textContent = claimableEpochsData.length;
       badge.style.display = claimableEpochsData.length > 0 ? 'inline-flex' : 'none';
       badge.classList.toggle('has-claimable', claimableEpochsData.length > 0);
     }
-    
-   renderClaimableEpochs();
+
+    renderClaimableEpochs();
     await loadClaimedEpochs();
     updateTabBadges();
     if (ActivityFeed.loaded) { loadActivityFeed(); }
-    
+
   } catch (e) {
     console.error('Treasury load error:', e);
     claimableList.innerHTML = '<div class="treasury-empty-small" style="color:#f87171;">Error: ' + e.message + '</div>';
@@ -2515,7 +2516,7 @@ async function loadClaimedEpochs() {
   } else {
     claimedEpochsData = [];
   }
-  
+
   // Cross-check: if an epoch appears in claimable, remove it from claimed (wasn't actually claimed)
   var claimableIds = claimableEpochsData.map(function(e) { return e.epochId; });
   var beforeCount = claimedEpochsData.length;
@@ -2524,37 +2525,32 @@ async function loadClaimedEpochs() {
     try { localStorage.setItem('z1n_claimed_epochs_' + currentKeyId, JSON.stringify(claimedEpochsData)); } catch (e) {}
     console.log('Treasury: removed ' + (beforeCount - claimedEpochsData.length) + ' false claims from history');
   }
-  
-  var totalEl = document.getElementById('treasuryTotal');
-  if (totalEl && claimedEpochsData.length === 0) {
-    totalEl.textContent = '0';
-  }
-  
+
   var claimedCountEl = document.getElementById('treasuryClaimedCount');
   if (claimedCountEl) claimedCountEl.textContent = '(' + claimedEpochsData.length + ')';
-  
+
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl) {
     var totalEarned = claimedEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amount || '0'); }, 0);
-totalEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
+    totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '—';
   }
-  
+
   renderClaimedEpochs();
 }
 
 function renderClaimableEpochs() {
   var listEl = document.getElementById('claimableEpochsList');
   if (!listEl) return;
-  
+
   if (claimableEpochsData.length === 0) {
     listEl.innerHTML = '<div class="treasury-empty"><div class="treasury-empty-icon">⬡</div><div class="treasury-empty-text">No claimable rewards</div><div class="treasury-empty-sub">Participate in epochs to earn rewards</div></div>';
     return;
   }
-  
+
   var sorted = claimableEpochsData.slice().sort(function(a, b) {
     return claimableSortAsc ? a.epochId - b.epochId : b.epochId - a.epochId;
   });
-  
+
   var html = '';
   sorted.forEach(function(epoch) {
     var amount = parseFloat(epoch.amountFormatted || '0').toFixed(2);
@@ -2563,46 +2559,46 @@ function renderClaimableEpochs() {
     var status = epoch._status || '';
     var statusClass = epoch._statusClass || '';
     var epochsRemaining = epoch.epochsRemaining;
-    
+
     var deadlineClass = '';
     var deadlineText = '';
     if (epochsRemaining <= 0) { deadlineClass = 'danger'; deadlineText = '⚠️ Expires soon!'; }
     else if (epochsRemaining <= 3) { deadlineClass = 'danger'; deadlineText = epochsRemaining + ' Epoch' + (epochsRemaining === 1 ? '' : 's') + ' left to claim!'; }
     else if (epochsRemaining <= 7) { deadlineClass = 'warning'; deadlineText = epochsRemaining + ' Epochs left to claim'; }
     else { deadlineText = epochsRemaining + ' Epochs left to claim'; }
-    
+
     var itemClass = 'treasury-epoch-item';
     if (epochsRemaining <= 3 && epochsRemaining > 0) itemClass += ' urgent';
     if (status) itemClass += ' claiming';
-    
+
     html += '<div class="' + itemClass + '" id="epoch-item-' + epoch.epochId + '">';
     html += '<div class="epoch-item-header"><span class="epoch-item-id">Epoch ' + epoch.epochId + (status ? ' <span class="epoch-status ' + statusClass + '">' + status + '</span>' : '') + '</span><span class="epoch-item-amount">' + amount + ' POL</span></div>';
     html += '<div class="epoch-item-breakdown"><span class="breakdown-item">Presence: ' + presence + '<span class="info-icon" style="position:relative;">ⓘ<span class="breakdown-tooltip" style="left:0;right:auto;transform:none;">Base share: Equal for all 21 winners</span></span></span><span class="breakdown-item">Attention: ' + attention + '<span class="info-icon">ⓘ</span><span class="breakdown-tooltip">Weighted: attestations × layer multiplier</span></span><span class="epoch-deadline ' + deadlineClass + '">⏱ ' + deadlineText + '</span></div>';
-  html += '<div class="epoch-item-actions"><button class="btn-epoch claim" onclick="claimSingleReward(' + epoch.epochId + ',\'self\')" ' + (status ? 'disabled' : '') + '>Claim Self</button><button class="btn-epoch recycle" onclick="claimSingleReward(' + epoch.epochId + ',\'recycle\')" ' + (status ? 'disabled' : '') + ' title="Recycle to next epoch">Field</button><button class="btn-epoch nexus" onclick="claimSingleReward(' + epoch.epochId + ',\'nexus\')" ' + (status ? 'disabled' : '') + ' title="Donate to Nexus">Nexus</button></div>';
+    html += '<div class="epoch-item-actions"><button class="btn-epoch claim" onclick="claimSingleReward(' + epoch.epochId + ',\'self\')" ' + (status ? 'disabled' : '') + '>Claim Self</button><button class="btn-epoch recycle" onclick="claimSingleReward(' + epoch.epochId + ',\'recycle\')" ' + (status ? 'disabled' : '') + ' title="Recycle to next epoch">Field</button><button class="btn-epoch nexus" onclick="claimSingleReward(' + epoch.epochId + ',\'nexus\')" ' + (status ? 'disabled' : '') + ' title="Donate to Nexus">Nexus</button></div>';
     html += '</div>';
   });
-  
+
   listEl.innerHTML = html;
 }
 
 function renderClaimedEpochs() {
   var listEl = document.getElementById('claimedEpochsList');
   if (!listEl) return;
-  
+
   var dataToRender = claimedEpochsData;
   if (claimedFilterType) {
     dataToRender = claimedEpochsData.filter(function(e) { return e.claimType === claimedFilterType; });
   }
-  
+
   if (dataToRender.length === 0) {
     listEl.innerHTML = '<div class="treasury-empty-small">No claimed rewards yet</div>';
     return;
   }
-  
+
   var sorted = dataToRender.slice().sort(function(a, b) {
     return claimedSortAsc ? a.epochId - b.epochId : b.epochId - a.epochId;
   });
-  
+
   var html = '';
   sorted.forEach(function(epoch) {
     var amount = parseFloat(epoch.amount || '0').toFixed(2);
@@ -2611,10 +2607,10 @@ function renderClaimedEpochs() {
     var typeLabel = 'Self';
     if (claimType === 'recycle') { typeLabel = 'Field'; }
     else if (claimType === 'nexus') { typeLabel = 'Nexus'; }
-    
+
     html += '<div class="treasury-epoch-item claimed"><div class="epoch-item-header"><span class="epoch-item-id">E' + epoch.epochId + '</span><span class="epoch-item-amount">' + amount + ' POL</span></div><div class="claimed-info"><span class="claimed-date">Won: E' + epoch.epochId + ' · Claimed: E' + (epoch.claimedEpoch || '—') + '</span><span class="claimed-type">' + typeLabel + '</span></div></div>';
   });
-  
+
   listEl.innerHTML = html;
 }
 
@@ -2640,7 +2636,7 @@ function saveClaimedEpoch(epochId, amount, claimType) {
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl) {
     var totalEarned = claimedEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amount || '0'); }, 0);
-totalEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
+    totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '—';
   }
   renderClaimedEpochs();
 }
@@ -2660,7 +2656,7 @@ async function claimSingleReward(epochId, claimType) {
     updateEpochStatus(epochId, 'Confirm...', 'pending');
     var estimatedGas;
     try { estimatedGas = await provider.request({ method: 'eth_estimateGas', params: [{ from: currentAccount, to: claimData.to, data: claimData.data }] }); estimatedGas = '0x' + (Math.floor(parseInt(estimatedGas, 16) * 1.3)).toString(16); } catch (eg) { estimatedGas = '0x7A120'; }
-    var txHash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: currentAccount, to: claimData.to, data: claimData.data, gas: estimatedGas }] });
+    var txHash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: currentAccount, to: claimData.to, data: claimData.data}] });
     updateEpochStatus(epochId, 'Confirming...', 'pending');
     var confirmed = await waitForTransaction(txHash, 60);
     if (confirmed) {
@@ -2724,7 +2720,7 @@ async function executeClaimAll(claimType) {
       updateEpochStatus(epoch.epochId, 'Confirm...', 'pending');
       var estimatedGas;
     try { estimatedGas = await provider.request({ method: 'eth_estimateGas', params: [{ from: currentAccount, to: claimData.to, data: claimData.data }] }); estimatedGas = '0x' + (Math.floor(parseInt(estimatedGas, 16) * 1.1)).toString(16); } catch (eg) { estimatedGas = '0x30D40'; }
-    var txHash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: currentAccount, to: claimData.to, data: claimData.data, gas: estimatedGas }] });
+    var txHash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: currentAccount, to: claimData.to, data: claimData.data}] });
       updateEpochStatus(epoch.epochId, 'Confirming...', 'pending');
       var confirmed = await waitForTransaction(txHash, 60);
     if (confirmed) { updateEpochStatus(epoch.epochId, '<a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank" style="color:#93c5fd">✓ tx</a>', 'success'); saveClaimedEpoch(epoch.epochId, epoch.amountFormatted, claimType); completed++; }
