@@ -398,7 +398,7 @@ window.toggleGlobalStealth = function() {
       if (!append) allReplySignals = sigs; else allReplySignals = allReplySignals.concat(sigs);
       sigs.forEach(function(sig) {
         var card = document.createElement('div'); card.className = 'signal-card'; card.dataset.hash = sig.hash;
-        var ic = (sig.intentSymbol || '').toLowerCase().replace('ω','o'), sg = getShortGlyphs(sig.keyId), gs = sg ? '<span style="font-size:11px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
+        var ic = (sig.intentSymbol || '').toLowerCase().replace('Ω','O'), sg = getShortGlyphs(sig.keyId), gs = sg ? '<span style="font-size:11px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
         card.innerHTML = '<div class="signal-header"><div class="signal-meta"><span class="signal-key">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'">'+(sig.intentSymbol||'')+'</span><span class="signal-epoch">E'+sig.epoch+'</span><span style="color:#fbbf24;">✓'+(sig.attestCount||0)+'</span></div><span class="signal-time">'+(sig.timeAgo||'')+'</span></div><div class="signal-content">'+escapeHtml(sig.cid||'[Silence]')+'</div><div class="signal-hash">'+sig.hash.slice(0,18)+'...</div>';
         card.onclick = function() { document.querySelectorAll('#replySignalsList .signal-card.selected').forEach(function(el){ el.classList.remove('selected'); }); card.classList.add('selected'); replySelectedSignal = sig; if (selectBtn) selectBtn.disabled = false; };
         list.appendChild(card);
