@@ -2484,7 +2484,7 @@ async function loadTreasuryData() {
     });
     
     var totalClaimable = parseFloat(data.totalClaimableFormatted || '0');
-if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '0';
+if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
     if (claimableCountEl) claimableCountEl.textContent = '(' + claimableEpochsData.length + ')';
     
     if (claimableBox) claimableBox.classList.toggle('has-claimable', totalClaimable > 0);
@@ -2536,7 +2536,7 @@ async function loadClaimedEpochs() {
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl) {
     var totalEarned = claimedEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amount || '0'); }, 0);
-totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '0';
+totalEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
   }
   
   renderClaimedEpochs();
@@ -2640,7 +2640,7 @@ function saveClaimedEpoch(epochId, amount, claimType) {
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl) {
     var totalEarned = claimedEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amount || '0'); }, 0);
-totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '0';
+totalEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
   }
   renderClaimedEpochs();
 }
