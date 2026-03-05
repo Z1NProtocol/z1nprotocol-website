@@ -590,10 +590,10 @@
       
       <div class="input-label">Intent</div>
       <div class="intent-grid">
-        <div class="intent-btn selected" data-intent="0" onclick="selectIntent(0)"><div class="intent-symbol">OC</div><div class="intent-name">Collective</div></div>
-        <div class="intent-btn" data-intent="1" onclick="selectIntent(1)"><div class="intent-symbol">OI</div><div class="intent-name">Individual</div></div>
-        <div class="intent-btn" data-intent="2" onclick="selectIntent(2)"><div class="intent-symbol">OK</div><div class="intent-name">Co-Create</div></div>
-        <div class="intent-btn" data-intent="3" onclick="selectIntent(3)"><div class="intent-symbol">OS</div><div class="intent-name">Silence</div></div>
+        <div class="intent-btn selected" data-intent="0" onclick="selectIntent(0)"><div class="intent-symbol">ΩC</div><div class="intent-name">Collective</div></div>
+        <div class="intent-btn" data-intent="1" onclick="selectIntent(1)"><div class="intent-symbol">ΩI</div><div class="intent-name">Individual</div></div>
+        <div class="intent-btn" data-intent="2" onclick="selectIntent(2)"><div class="intent-symbol">ΩK</div><div class="intent-name">Co-Create</div></div>
+        <div class="intent-btn" data-intent="3" onclick="selectIntent(3)"><div class="intent-symbol">ΩS</div><div class="intent-name">Silence</div></div>
       </div>
       
       <div class="input-group" id="signalContentCard">
@@ -619,10 +619,10 @@
           </select>
           <select class="filter-select" id="repliesIntentFilter" onchange="loadReceivedReplies()">
             <option value="">All Intents</option>
-            <option value="0">OC</option>
-            <option value="1">OI</option>
-            <option value="2">OK</option>
-            <option value="3">OS</option>
+            <option value="0">ΩC</option>
+            <option value="1">ΩI</option>
+            <option value="2">ΩK</option>
+            <option value="3">ΩS</option>
           </select>
           <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedRepliesCSV()">↓ CSV</button>
         </div>
@@ -648,10 +648,10 @@
         </select>
         <select class="filter-select" id="sentIntentFilter" onchange="loadSentSignals()">
           <option value="">All Intents</option>
-          <option value="0">OC</option>
-          <option value="1">OI</option>
-          <option value="2">OK</option>
-          <option value="3">OS</option>
+          <option value="0">ΩC</option>
+          <option value="1">ΩI</option>
+          <option value="2">ΩK</option>
+          <option value="3">ΩS</option>
         </select>
         <select class="filter-select" id="sentTypeFilter" onchange="loadSentSignals()">
           <option value="">All Types</option>
@@ -692,10 +692,10 @@
         </select>
         <select class="filter-select" id="attestIntentFilter" onchange="loadAttestableSignals()">
           <option value="">All Intents</option>
-          <option value="0">OC</option>
-          <option value="1">OI</option>
-          <option value="2">OK</option>
-          <option value="3">OS</option>
+          <option value="0">ΩC</option>
+          <option value="1">ΩI</option>
+          <option value="2">ΩK</option>
+          <option value="3">ΩS</option>
         </select>
         <button onclick="loadAttestableSignals()" style="padding:6px 10px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--text-soft);font-size:11px;cursor:pointer;">↻</button>
         <button class="filter-select" style="cursor:pointer;" onclick="downloadAttestableCSV()">↓ CSV</button>
@@ -724,10 +724,10 @@
           </select>
           <select class="filter-select" id="receivedAttestsIntentFilter" onchange="loadReceivedAttests()">
             <option value="">All Intents</option>
-            <option value="0">OC</option>
-            <option value="1">OI</option>
-            <option value="2">OK</option>
-            <option value="3">OS</option>
+            <option value="0">ΩC</option>
+            <option value="1">ΩI</option>
+            <option value="2">ΩK</option>
+            <option value="3">ΩS</option>
           </select>
           <button class="filter-select" style="cursor:pointer;" onclick="downloadReceivedAttestsCSV()">↓ CSV</button>
         </div>
@@ -753,10 +753,10 @@
         </select>
         <select class="filter-select" id="sentAttestsIntentFilter" onchange="loadSentAttests()">
           <option value="">All Intents</option>
-          <option value="0">OC</option>
-          <option value="1">OI</option>
-          <option value="2">OK</option>
-          <option value="3">OS</option>
+          <option value="0">ΩC</option>
+          <option value="1">ΩI</option>
+          <option value="2">ΩK</option>
+          <option value="3">ΩS</option>
         </select>
         <button class="filter-select" style="cursor:pointer;" onclick="downloadSentAttestsCSV()">↓ CSV</button>
       </div>
@@ -916,10 +916,10 @@
         </select>
       </div>
       <div class="filter-group intent-filters">
-        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentC" checked onchange="immediateReplyFilter()"><span class="intent-tag oc">OC</span></label>
-        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentI" checked onchange="immediateReplyFilter()"><span class="intent-tag oi">OI</span></label>
-        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentK" checked onchange="immediateReplyFilter()"><span class="intent-tag ok">OK</span></label>
-        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentS" checked onchange="immediateReplyFilter()"><span class="intent-tag os">OS</span></label>
+        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentC" checked onchange="immediateReplyFilter()"><span class="intent-tag oc">ΩC</span></label>
+        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentI" checked onchange="immediateReplyFilter()"><span class="intent-tag oi">ΩI</span></label>
+        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentK" checked onchange="immediateReplyFilter()"><span class="intent-tag ok">ΩK</span></label>
+        <label class="intent-checkbox"><input type="checkbox" id="replyFilterIntentS" checked onchange="immediateReplyFilter()"><span class="intent-tag os">ΩS</span></label>
       </div>
       <button class="filter-btn" onclick="resetReplyFilters()">↺ Clear</button>
     </div>
