@@ -803,16 +803,17 @@
     } else if (libraryViewMode === 'list') {
     html += '<div class="artefact-list-grid">';
     filtered.forEach(function(art) {
-      var isRevoked = art.status === 'revoked' || !art.viewingActive;
-      var statusClass = isRevoked ? 'status-revoked' : 'status-received';
-      var statusLabel = isRevoked ? 'Revoked' : 'Received';
+      var isPending = art.status === 'pending';
+      var isRevoked = !isPending && (art.status === 'revoked' || !art.viewingActive);
+      var statusClass = isPending ? 'status-pending' : isRevoked ? 'status-revoked' : 'status-received';
+      var statusLabel = isPending ? 'Pending' : isRevoked ? 'Revoked' : 'Received';
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId +
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId +
         '&artefactTokenId=' + art.tokenId;
       var hasNotif = hasUnreadNotification(art.tokenId);
       html += '<div class="artefact-list-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
         '<div class="list-card-preview">' +
-          (isRevoked ? '<div class="list-placeholder shared" style="color:#f87171;">\u25C8</div>' : artImg(previewUrl, 'From Key #' + art.sourceKeyId)) +
+          (isPending ? '<div class="list-placeholder shared" style="color:#ffd556;">\u25C8</div>' : isRevoked ? '<div class="list-placeholder shared" style="color:#f87171;">\u25C8</div>' : artImg(previewUrl, 'From Key #' + art.sourceKeyId)) +
         '</div>' +
         '<div class="list-card-meta">' +
           '<div class="list-card-id">From #' + art.sourceKeyId + '</div>' +
@@ -824,9 +825,10 @@
   } else {
       html += '<div class="artefact-grid" id="sharedArtefactGrid">';
       filtered.forEach(function(art) {
-        var isRevoked = art.status === 'revoked' || !art.viewingActive;
-        var statusClass = isRevoked ? 'status-revoked' : 'status-received';
-        var statusLabel = isRevoked ? 'Revoked' : 'Received';
+        var isPending = art.status === 'pending';
+        var isRevoked = !isPending && (art.status === 'revoked' || !art.viewingActive);
+        var statusClass = isPending ? 'status-pending' : isRevoked ? 'status-revoked' : 'status-received';
+        var statusLabel = isPending ? 'Pending' : isRevoked ? 'Revoked' : 'Received';
         
         var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
           '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
@@ -835,7 +837,7 @@
         var hasNotif = hasUnreadNotification(art.tokenId);
         html += '<div class="artefact-card library-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" style="position:relative;" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
           '<div class="artefact-preview">' +
-            (isRevoked ? '<div class="artefact-placeholder shared" style="color:#f87171;">\u25C8</div>' : artImg(previewUrl, 'From Key #' + art.sourceKeyId)) +
+            (isPending ? '<div class="artefact-placeholder shared" style="color:#ffd556;">\u25C8</div>' : isRevoked ? '<div class="artefact-placeholder shared" style="color:#f87171;">\u25C8</div>' : artImg(previewUrl, 'From Key #' + art.sourceKeyId)) +
             '<div class="library-badge">\u2190 #' + art.sourceKeyId + '</div>' +
           '</div>' +
           '<div class="artefact-info-row">' +
