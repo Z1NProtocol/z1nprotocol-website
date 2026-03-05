@@ -2723,7 +2723,7 @@ async function executeClaimAll(claimType) {
       if (claimData.error) throw new Error(claimData.error);
       updateEpochStatus(epoch.epochId, 'Confirm...', 'pending');
       var estimatedGas;
-    try { estimatedGas = await provider.request({ method: 'eth_estimateGas', params: [{ from: currentAccount, to: claimData.to, data: claimData.data }] }); estimatedGas = '0x' + (Math.floor(parseInt(estimatedGas, 16) * 1.3)).toString(16); } catch (eg) { estimatedGas = '0x7A120'; }
+    try { estimatedGas = await provider.request({ method: 'eth_estimateGas', params: [{ from: currentAccount, to: claimData.to, data: claimData.data }] }); estimatedGas = '0x' + (Math.floor(parseInt(estimatedGas, 16) * 1.1)).toString(16); } catch (eg) { estimatedGas = '0x30D40'; }
     var txHash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: currentAccount, to: claimData.to, data: claimData.data, gas: estimatedGas }] });
       updateEpochStatus(epoch.epochId, 'Confirming...', 'pending');
       var confirmed = await waitForTransaction(txHash, 60);
