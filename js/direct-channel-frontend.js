@@ -390,8 +390,12 @@
     var plainActive = !isEncryptedMode ? 'style="background:rgba(255,213,86,0.15);border-color:rgba(255,213,86,0.4);color:var(--keys-accent);"' : 'style="background:transparent;border-color:rgba(148,163,184,0.3);color:var(--text-soft);"';
 
     return '<div style="display:flex;gap:4px;">' +
+      '<div title="Content is encrypted on-chain. Key IDs sending and receiving are recorded, but message content is private.">' +
       '<button onclick="setDirectMode(true)" ' + encActive + ' style="padding:4px 10px;font-size:10px;font-weight:600;border-radius:5px;border:1px solid;cursor:pointer;transition:all 0.2s;">🔐 Encrypted</button>' +
+      '</div>' +
+      '<div title="Both Key IDs and message content are visible on-chain — like a normal signal directed at a specific Key.">' +
       '<button onclick="setDirectMode(false)" ' + plainActive + ' style="padding:4px 10px;font-size:10px;font-weight:600;border-radius:5px;border:1px solid;cursor:pointer;transition:all 0.2s;">📡 Open field</button>' +
+      '</div>' +
     '</div>';
   }
 
