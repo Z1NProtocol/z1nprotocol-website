@@ -30,7 +30,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@Z1N_AI" />
   <meta name="twitter:title" content="Z1N Protocol – Key Dashboard" />
-  <meta name="twitter:description" content="Signals · Attests · Artefacts · Canon · Treasury" />
+  <meta name="twitter:description" content="Signals · Attests · Artefacts · Canon · Field Flow" />
   <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
 
   <script type="application/ld+json">
@@ -148,7 +148,7 @@
     .tab-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;border:1px solid transparent;background:transparent;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap}
     .tab-btn:hover{background:rgba(255,255,255,0.05)}
     .tab-btn[onclick*="overview"]{color:var(--text-main);font-weight:600}
-    .tab-btn[onclick*="signals"],.tab-btn[onclick*="attests"],.tab-btn[onclick*="direct"]{color:#5ee8a0}
+    .tab-btn[onclick*="signals"],.tab-btn[onclick*="attests"],.tab-btn[onclick*="direct"]{color:#ffd556}
     .tab-btn[onclick*="artefacts"]{color:#5ee8a0}
     .tab-btn[onclick*="canon"]{color:#c084fc}
     .tab-btn[onclick*="treasury"]{color:#93c5fd}
@@ -175,7 +175,7 @@
     .tab-badge.badge-canon{background:rgba(192,132,252,0.3);color:#c084fc}
     .tab-btn.active .tab-badge.badge-canon{background:#c084fc;color:#000}
     
-    /* Treasury badge - blauw */
+    /* FieldFlow badge - blauw */
     .tab-badge.badge-treasury{background:rgba(147,197,253,0.3);color:#93c5fd}
     .tab-btn.active .tab-badge.badge-treasury{background:#93c5fd;color:#000}
     
@@ -258,7 +258,7 @@
     /* Canon - paars */
     .activity-icon.canon{background:rgba(192,132,252,0.15);color:#c084fc}
     
-    /* Treasury - blauw */
+    /* FieldFlow - blauw */
     .activity-icon.treasury{background:rgba(147,197,253,0.15);color:#93c5fd}
     
     /* ACTIVITY CONTENT */
@@ -338,6 +338,15 @@
 .canon-card-tx{font-family:monospace;font-size:10px;color:#5ee8a0;opacity:0.7;text-decoration:none;display:block}
 .canon-card-tx:hover{opacity:1;text-decoration:underline}
 
+.canon-card-inscription {
+  font-size: 11px;
+  color: #c084fc;
+  font-style: italic;
+  margin: 4px 0 6px 0;
+  line-height: 1.4;
+  word-break: break-word;
+  opacity: 0.85;
+}
 
     /* ARTEFACT MODAL SPECIFIC */
     .artefact-modal-content{text-align:center;padding:20px 0}.artefact-modal-img{max-width:200px;max-height:200px;border-radius:12px;margin:0 auto 16px;display:block}.artefact-modal-info{text-align:left;background:rgba(15,23,42,0.4);border-radius:8px;padding:12px 16px;margin-top:16px}.artefact-modal-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px}.artefact-modal-row:last-child{border-bottom:none}.artefact-modal-label{color:var(--text-soft)}.artefact-modal-value{color:var(--text-main);font-weight:500}.artefact-modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:center;flex-wrap:wrap}
@@ -375,7 +384,7 @@
 .artefact-section-header .header-actions{display:flex;align-items:center;gap:8px}
 .artefact-section-header .btn.btn-green{height:32px;border-radius:6px;padding:0 14px;margin:0}
 
-/* Treasury Styles */
+/* FieldFlow Styles */
 .treasury-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 .treasury-box.claimable { background: rgba(96, 165, 250, 0.25); border-color: rgba(96, 165, 250, 0.4); }
 .treasury-box.claimable .treasury-amount { color: #93c5fd; font-weight: 700; }
@@ -501,10 +510,10 @@
   <button class="tab-btn" onclick="switchTab('direct')">🔐 Direct<span class="tab-badge" id="directBadge">0</span></button>
   <button class="tab-btn" onclick="switchTab('artefacts')">Artefacts<span class="tab-badge badge-artefacts" id="artefactBadge">0</span></button>
   <button class="tab-btn" onclick="switchTab('canon')">Canon<span class="tab-badge badge-canon" id="canonBadge">0</span></button>
-  <button class="tab-btn" onclick="switchTab('treasury')">Treasury<span class="tab-badge badge-treasury" id="treasuryBadge">0</span></button>
-  <div style="margin-left:auto;display:flex;align-items:center;"><div class="stealth-eye-tab" id="globalStealthToggle" onclick="toggleGlobalStealth()"><svg id="globalStealthIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+  <button class="tab-btn" onclick="switchTab('treasury')">Field Flow<span class="tab-badge badge-treasury" id="treasuryBadge">0</span></button>
+  
 </div>
-<div class="stealth-tooltip" id="stealthTooltip"><div class="tt-title">Stealth Mode</div><div class="tt-body">When active (red), your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.</div></div>
+
 
 <!-- OVERVIEW TAB -->
 <div id="tab-overview" class="tab-content active">
@@ -531,7 +540,7 @@
             <span class="presence-badge yellow" id="badgeSignals" onclick="filterPresence('signals')" title="Signals/Attests/Whispers">0</span>
             <span class="presence-badge green" id="badgeArtefacts" onclick="filterPresence('artefacts')" title="Artefacts">0</span>
             <span class="presence-badge purple" id="badgeCanon" onclick="filterPresence('canon')" title="Canon" style="display:none;">0</span>
-            <span class="presence-badge blue" id="badgeTreasury" onclick="filterPresence('treasury')" title="Treasury">0</span>
+            <span class="presence-badge blue" id="badgeFieldFlow" onclick="filterPresence('treasury')" title="Field Flow">0</span>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
@@ -817,7 +826,7 @@
 
 </div>
 
-<!-- TREASURY TAB -->
+<!-- FIELD FLOW TAB -->
 <div id="tab-treasury" class="tab-content">
   
   <!-- Summary Cards -->
@@ -975,8 +984,8 @@
 </footer>
 
 <script>
-  window.Z1N_KEY_REGISTRY = '0x_KEY_REGISTRY_ADDRESS_AFTER_DEPLOY_';
-  window.Z1N_DIRECT_CHANNEL = '0x_DIRECT_CHANNEL_ADDRESS_AFTER_DEPLOY_';
+  window.Z1N_KEY_REGISTRY = '0x3b480ca7F5dB11fF57331A73136b85fA22CA18a1';
+  window.Z1N_DIRECT_CHANNEL = '0x3EA5EB55a28F96b4Affb796bc73CB594e1D686A8';
 </script>
 <script src="js/Key-dashboard.js"></script>
 <script src="js/Key-dashboard-artefacts.js"></script>

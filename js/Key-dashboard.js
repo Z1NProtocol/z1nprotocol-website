@@ -29,7 +29,7 @@
   var provider = null, currentAccount = null, currentKeyId = null, walletKeyIds = [], activeEpoch = 0, selectedIntent = 0, signalType = 'new', signalsUsed = 0, attestsUsed = 0, ethersLib = null, selectedAttestSignal = null, allAttestableSignals = [], allSentSignals = [], keyGlyphsCache = {};
   var pogStealthEnabled = false, attestStealthEnabled = false, stealthRelayerAvailable = false;
   var replyModalOffset = 0, replyModalLimit = 20, replySelectedSignal = null, replyFilterTimer = null, allReplySignals = [];
-  var hasFirstArtefact = false, allLiveArtefacts = [], allStaticArtefacts = [], allSentAttests = [];
+  var hasFirstArtefact = false, allLiveArtefacts = [], allSentAttests = [];
   var presenceFilter = 'all';
 
 
@@ -465,7 +465,7 @@ window.toggleGlobalStealth = function() {
     var statusText = artefact.isRevoked ? 'Revoked' : 'Active';
     var statusClass = artefact.isRevoked ? 'revoked' : 'active';
     var ownerText = artefact.isSent ? 'Sent to ' + shortAddr(artefact.owner) : 'You own this';
-    body.innerHTML = '<div class="artefact-modal-preview"><img src="' + API_BASE + '/artefact/' + currentKeyId + '/static-preview?epoch=' + activeEpoch + '&t=' + Date.now() + '" alt="Artefact Preview" onerror="this.style.display=\'none\'"></div><div class="artefact-modal-info"><div class="artefact-info-row"><span class="label">Token ID</span><span class="value">#' + artefact.tokenId + '</span></div><div class="artefact-info-row"><span class="label">Status</span><span class="value status-' + statusClass + '">' + statusText + '</span></div><div class="artefact-info-row"><span class="label">Owner</span><span class="value">' + ownerText + '</span></div><div class="artefact-info-row"><span class="label">Transferable</span><span class="value">' + (artefact.isTransferable ? 'Yes' : 'No') + '</span></div></div><div class="artefact-modal-actions">' + (artefact.isSent && !artefact.isRevoked ? '<button class="btn btn-danger" onclick="revokeArtefact(' + artefact.tokenId + ')">Revoke</button>' : '') + (artefact.isRevoked ? '<button class="btn btn-green" onclick="restoreArtefact(' + artefact.tokenId + ')">Restore</button>' : '') + (!artefact.isSent ? '<button class="btn btn-primary" onclick="openSendArtefactModal(' + artefact.tokenId + ')">Send to Key</button>' : '') + '<a href="' + EXPLORER + '/token/' + Z1N_ARTEFACT + '?a=' + artefact.tokenId + '" target="_blank" class="btn btn-secondary">View on Chain ↗</a></div>';
+    body.innerHTML = '<div class="artefact-modal-preview"><img src="' + API_BASE + '/artefact/' + currentKeyId + '/static-preview?epoch=' + activeEpoch + '&t=' + Date.now() + '" alt="Artefact Preview" onerror="this.style.display=\'none\'"></div><div class="artefact-modal-info"><div class="artefact-info-row"><span class="label">Token ID</span><span class="value">#' + artefact.tokenId + '</span></div><div class="artefact-info-row"><span class="label">Status</span><span class="value status-' + statusClass + '">' + statusText + '</span></div><div class="artefact-info-row"><span class="label">Owner</span><span class="value">' + ownerText + '</span></div></div><div class="artefact-modal-actions">' + (artefact.isSent && !artefact.isRevoked ? '<button class="btn btn-danger" onclick="revokeArtefact(' + artefact.tokenId + ')">Revoke</button>' : '') + (artefact.isRevoked ? '<button class="btn btn-green" onclick="restoreArtefact(' + artefact.tokenId + ')">Restore</button>' : '') + (!artefact.isSent ? '<button class="btn btn-primary" onclick="openSendArtefactModal(' + artefact.tokenId + ')">Send to Key</button>' : '') + '<a href="' + EXPLORER + '/token/' + Z1N_ARTEFACT + '?a=' + artefact.tokenId + '" target="_blank" class="btn btn-secondary">View on Chain ↗</a></div>';
     modal.classList.add('active');
   };
   window.closeArtefactModal = function() { var modal = document.getElementById('artefactModal'); if (modal) modal.classList.remove('active'); };
@@ -498,8 +498,8 @@ window.mintLiveArtefact = async function() {
       await loadEthers();
       await checkHasFirstArtefact();
       var functionName = hasFirstArtefact ? 'mintExtraArtefact' : 'mintFirstArtefact';
-      var iface = new ethersLib.Interface(['function mintFirstArtefact(uint256 keyId)','function mintExtraArtefact(uint256 keyId) payable']);
-      var encodedData = iface.encodeFunctionData(functionName, [BigInt(currentKeyId)]);
+      var iface = new ethersLib.Interface(['function mintFirstArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription)','function mintExtraArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription) payable']);
+var encodedData = iface.encodeFunctionData(functionName, [BigInt(currentKeyId), ethersLib.ZeroHash, 0, '']);
       if (statusEl) statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
       btn.textContent = 'Confirm in wallet...';
       var txParams = { from: currentAccount, to: Z1N_ARTEFACT, data: encodedData };
@@ -809,7 +809,7 @@ if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefact
       if (!r.ok) { grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No artefacts found</div>'; if (badge) badge.textContent = '0'; if (status) status.textContent = 'No live artefact'; allLiveArtefacts = []; allStaticArtefacts = []; return; }
       var d = await r.json();
       allLiveArtefacts = d.liveArtefacts || [];
-      allStaticArtefacts = d.staticArtefacts || [];
+      
       var totalLive = allLiveArtefacts.length;
       var activeLive = allLiveArtefacts.filter(function(a) { return a.status !== 'revoked'; }).length;
       if (badge) badge.textContent = totalLive;
