@@ -19,7 +19,7 @@
   var SILENCE_FEE = '0';
   var ATTEST_FEE = '0';
   var MINT_PRICE = '0x1236efcbcbb340000';
-  var SEL = { balanceOf: '0x70a08231', tokenOfOwnerByIndex: '0x2f745c59', ownerOf: '0x6352211e', glyphs: '0x887296c3', activeEpoch: '0x76671808', signalCount: '0xfd68f0e5', attestCount: '0xfe6569d7', hasFirstArtefact: '0xff84f877' };
+  var SEL = { balanceOf: '0x70a08231', tokenOfOwnerByIndex: '0x2f745c59', ownerOf: '0x6352211e', glyphs: '0x887296c3', activeEpoch: '0x76671808', signalCount: '0xfd68f0e5', attestCount: '0xfe6569d7' };
   var GLYPHS = ['∞','π','⋮','⊕','⊗','∴','∵','↔','↻','△','◇','○','●','□','☰','☷','⚑','✱','⊥','≡','◊'];
   
   var canonSortMode = 'latest';
@@ -465,7 +465,7 @@ window.toggleGlobalStealth = function() {
     var statusText = artefact.isRevoked ? 'Revoked' : 'Active';
     var statusClass = artefact.isRevoked ? 'revoked' : 'active';
     var ownerText = artefact.isSent ? 'Sent to ' + shortAddr(artefact.owner) : 'You own this';
-    body.innerHTML = '<div class="artefact-modal-preview"><img src="' + API_BASE + '/artefact/' + currentKeyId + '/static-preview?epoch=' + activeEpoch + '&t=' + Date.now() + '" alt="Artefact Preview" onerror="this.style.display=\'none\'"></div><div class="artefact-modal-info"><div class="artefact-info-row"><span class="label">Token ID</span><span class="value">#' + artefact.tokenId + '</span></div><div class="artefact-info-row"><span class="label">Status</span><span class="value status-' + statusClass + '">' + statusText + '</span></div><div class="artefact-info-row"><span class="label">Owner</span><span class="value">' + ownerText + '</span></div></div><div class="artefact-modal-actions">' + (artefact.isSent && !artefact.isRevoked ? '<button class="btn btn-danger" onclick="revokeArtefact(' + artefact.tokenId + ')">Revoke</button>' : '') + (artefact.isRevoked ? '<button class="btn btn-green" onclick="restoreArtefact(' + artefact.tokenId + ')">Restore</button>' : '') + (!artefact.isSent ? '<button class="btn btn-primary" onclick="openSendArtefactModal(' + artefact.tokenId + ')">Send to Key</button>' : '') + '<a href="' + EXPLORER + '/token/' + Z1N_ARTEFACT + '?a=' + artefact.tokenId + '" target="_blank" class="btn btn-secondary">View on Chain ↗</a></div>';
+    body.innerHTML = '<div class="artefact-modal-preview"><img src="' + API_BASE + '/artefact/' + currentKeyId + '/static-preview?epoch=' + activeEpoch + '&t=' + Date.now() + '" alt="Artefact Preview" onerror="this.style.display=\'none\'"></div><div class="artefact-modal-info"><div class="artefact-info-row"><span class="label">Token ID</span><span class="value">#' + artefact.tokenId + '</span></div><div class="artefact-info-row"><span class="label">Status</span><span class="value status-' + statusClass + '">' + statusText + '</span></div><div class="artefact-info-row"><span class="label">Owner</span><span class="value">' + ownerText + '</span></div></div><div class="artefact-modal-actions">' + (artefact.state === 'ACTIVE' ? '<button class="btn btn-danger" onclick="releaseArtefact(' + artefact.tokenId + ')">Release</button>' : '') + (!artefact.isSent ? '<button class="btn btn-primary" onclick="openSendArtefactModal(' + artefact.tokenId + ')">Send to Key</button>' : '') + '<a href="' + EXPLORER + '/token/' + Z1N_ARTEFACT + '?a=' + artefact.tokenId + '" target="_blank" class="btn btn-secondary">View on Chain ↗</a></div>';
     modal.classList.add('active');
   };
   window.closeArtefactModal = function() { var modal = document.getElementById('artefactModal'); if (modal) modal.classList.remove('active'); };
@@ -476,9 +476,10 @@ window.toggleGlobalStealth = function() {
   async function checkHasFirstArtefact() {
     if (currentKeyId === null) return;
     try {
-      var data = SEL.hasFirstArtefact + enc256(currentKeyId);
+      // primaryArtefactOf(keyId) — selector: keccak256("primaryArtefactOf(uint256)") = 0x8e2f2e4d
+      var data = '0x8e2f2e4d' + enc256(currentKeyId);
       var result = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: data }, 'latest']);
-      hasFirstArtefact = parseInt(result, 16) > 0;
+      hasFirstArtefact = BigInt(result) > BigInt(0);
     } catch (e) { hasFirstArtefact = false; }
   }
 
@@ -497,9 +498,9 @@ window.mintLiveArtefact = async function() {
     try {
       await loadEthers();
       await checkHasFirstArtefact();
-      var functionName = hasFirstArtefact ? 'mintExtraArtefact' : 'mintFirstArtefact';
-      var iface = new ethersLib.Interface(['function mintFirstArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription)','function mintExtraArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription) payable']);
-var encodedData = iface.encodeFunctionData(functionName, [BigInt(currentKeyId), ethersLib.ZeroHash, 0, '']);
+      var functionName = hasFirstArtefact ? 'mintExtra' : 'mint';
+      var iface = new ethersLib.Interface(['function mint(uint256 keyId, string inscription)','function mintExtra(uint256 keyId, string inscription) payable']);
+var encodedData = iface.encodeFunctionData(functionName, [BigInt(currentKeyId), '']);
       if (statusEl) statusEl.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
       btn.textContent = 'Confirm in wallet...';
       var txParams = { from: currentAccount, to: Z1N_ARTEFACT, data: encodedData };
@@ -521,6 +522,46 @@ var encodedData = iface.encodeFunctionData(functionName, [BigInt(currentKeyId), 
       if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
       if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg.slice(0, 150) + '</div>';
       btn.textContent = origText; btn.disabled = false;
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // RELEASE ARTEFACT - v2.3.1-Ω: release(artefactId, message)
+  // ═══════════════════════════════════════════════════════════════════
+  window.releaseArtefact = async function(artefactId) {
+    if (!currentAccount || !provider || currentKeyId === null) { showToast('Connect wallet first', 3000); return; }
+    
+    var message = prompt('Release message (optional, max 64 bytes):', '') || '';
+    if (message.length > 64) { showToast('Message too long (max 64 bytes)', 3000, true); return; }
+    
+    var confirmed = confirm('Release Artefact #' + artefactId + '? This is permanent and cannot be undone.');
+    if (!confirmed) return;
+    
+    showToast('Preparing release...', 2000);
+    try {
+      await loadEthers();
+      var iface = new ethersLib.Interface(['function release(uint256 artefactId, string message)']);
+      var data = iface.encodeFunctionData('release', [BigInt(artefactId), message]);
+      var txHash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: currentAccount, to: Z1N_ARTEFACT, data: data }] });
+      showToast('Confirming...', 2000);
+      for (var i = 0; i < 60; i++) {
+        await new Promise(function(r) { setTimeout(r, 2000); });
+        try {
+          var rc = await rpc('eth_getTransactionReceipt', [txHash]);
+          if (rc && rc.status === '0x1') {
+            showToast('✅ Artefact #' + artefactId + ' released!', 4000);
+            closeArtefactModal();
+            if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
+            return;
+          }
+          if (rc && rc.status === '0x0') { showToast('Transaction reverted', 3000, true); return; }
+        } catch (e) {}
+      }
+      showToast('Timeout — check Polygonscan', 4000, true);
+    } catch (e) {
+      var msg = e.message || 'Unknown error';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      showToast('Failed: ' + msg.slice(0, 80), 4000, true);
     }
   };
 
@@ -825,7 +866,7 @@ if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefact
     grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">Loading artefacts...</div>';
     try {
       await checkHasFirstArtefact();
-      if (mintBtn) mintBtn.textContent = hasFirstArtefact ? '+ Mint Extra — 7 POL' : '+ Mint First — FREE';
+      if (mintBtn) mintBtn.textContent = hasFirstArtefact ? '+ Mint Extra (mintExtra) — 7 POL' : '+ Mint First (mint) — FREE';
       var r = await fetch(API_BASE + '/key/' + currentKeyId + '/artefacts', {cache:'no-store'});
       if (!r.ok) { grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No artefacts found</div>'; if (badge) badge.textContent = '0'; if (status) status.textContent = 'No live artefact'; allLiveArtefacts = []; allStaticArtefacts = []; return; }
       var d = await r.json();
@@ -1390,21 +1431,30 @@ window.submitWhisper = async function() {
     st.innerHTML = '<div class="status-msg pending">Preparing...</div>';
     try {
       await loadEthers();
-      var hashBytes = ethersLib.randomBytes(32);
-var hash = ethersLib.hexlify(hashBytes);
-var cid = selectedIntent === 3 ? '' : ct.slice(0, 320), sym = 0, intent = selectedIntent, stype = selectedIntent === 3 ? 3 : 2, eref = 0;
+      var clientTimestamp = Math.floor(Date.now() / 1000);
+      var contentRef = selectedIntent === 3 ? '' : ct.slice(0, 320);
+      var sym = 0;
+      var glyphEl = document.getElementById('selectedGlyphIndex');
+      if (glyphEl && glyphEl.value !== '') sym = parseInt(glyphEl.value) || 0;
+      var intent = selectedIntent;
       var reply = '0x' + '0'.repeat(64);
       var replyHashEl = document.getElementById('replyToHash');
-      if (signalType === 'reply' && replyHashEl) { var ri = replyHashEl.value.trim(); if (ri && ri.startsWith('0x') && ri.length >= 66) { reply = ri.slice(0, 66); stype = 1; eref = activeEpoch > 0 ? activeEpoch - 1 : 0; } }
+      if (signalType === 'reply' && replyHashEl) { var ri = replyHashEl.value.trim(); if (ri && ri.startsWith('0x') && ri.length >= 66) { reply = ri.slice(0, 66); } }
+      var abiCoder = ethersLib.AbiCoder.defaultAbiCoder();
+      var hash = ethersLib.keccak256(abiCoder.encode(
+          ['uint256', 'string', 'uint8', 'uint8', 'bytes32', 'uint64'],
+          [BigInt(currentKeyId), contentRef, sym, intent, reply, BigInt(clientTimestamp)]
+      ));
       if (pogStealthEnabled && stealthRelayerAvailable) {
         st.innerHTML = '<div class="status-msg pending">🔒 Stealth mode: Sign message...</div>';
-        try { var result = await submitStealthSignal(currentKeyId, hash, intent, sym, eref, reply); signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">🔒 Stealth signal submitted! <a href="' + EXPLORER + '/tx/' + result.txHash + '" target="_blank">View tx</a></div>'; showToast('🔒 Stealth signal submitted!', 4000); allSentSignals.unshift({ hash: result.txHash || hash, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: ct || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }); await loadSentSignals(); return; } catch (e) { st.innerHTML = '<div class="status-msg error">Stealth failed: ' + (e.message || 'Unknown error').slice(0, 150) + '</div>'; return; }
+        try { var result = await submitStealthSignal(currentKeyId, hash, intent, sym, 0, reply); signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">🔒 Stealth signal submitted! <a href="' + EXPLORER + '/tx/' + result.txHash + '" target="_blank">View tx</a></div>'; showToast('🔒 Stealth signal submitted!', 4000); allSentSignals.unshift({ hash: result.txHash || hash, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: contentRef || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }); await loadSentSignals(); return; } catch (e) { st.innerHTML = '<div class="status-msg error">Stealth failed: ' + (e.message || 'Unknown error').slice(0, 150) + '</div>'; return; }
       }
-      var iface = new ethersLib.Interface(['function submitSignal(uint256 tokenId, bytes32 signalHash, string cid, uint8 symbolIndex, uint8 intent, uint8 signalType, uint16 epochRef, bytes32 replyTo)']); var data = iface.encodeFunctionData('submitSignal', [currentKeyId, hash, cid, sym, intent, stype, eref, reply]);
+      var iface = new ethersLib.Interface(['function submitSignal(uint256 tokenId, bytes32 signalHash, string contentRef, uint8 symbolIndex, uint8 intent, bytes32 replyTo, uint64 clientTimestamp)']);
+      var data = iface.encodeFunctionData('submitSignal', [BigInt(currentKeyId), hash, contentRef, sym, intent, reply, BigInt(clientTimestamp)]);
       st.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
       var txParams = { from: currentAccount, to: Z1N_SIGNAL, data: data };
       var tx = await provider.request({method:'eth_sendTransaction', params:[txParams]}); st.innerHTML = '<div class="status-msg pending">Transaction sent...</div>';
-      for (var i = 0; i < 60; i++) { await new Promise(function(r){ setTimeout(r, 2000); }); var rc = await rpc('eth_getTransactionReceipt', [tx]); if (rc && rc.status === '0x1') { signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✅ Signal submitted! <a href="' + EXPLORER + '/tx/' + tx + '" target="_blank">View tx</a></div>'; showToast('✅ Signal submitted!', 4000); var pendingSignal = { hash: tx, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: ct || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }; await loadSentSignals(); if (!allSentSignals.find(function(s) { return s.hash === tx; })) { allSentSignals.unshift(pendingSignal); } var sentSignalsCountEl = document.getElementById('sentSignalsCount'); if (sentSignalsCountEl) sentSignalsCountEl.textContent = '(' + allSentSignals.length + ')'; var list = document.getElementById('sentSignalsList'); if (list && pendingSignal._pending) { var it = document.createElement('div'); it.className = 'signal-item'; it.style.borderLeft = '2px solid var(--keys-accent)'; it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ['oc','oi','ok','os'][selectedIntent] + '">' + pendingSignal.intentSymbol + '</span><span class="signal-attests" style="margin-left:6px;">✓0</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + activeEpoch + '</span><span style="margin-left:6px;font-size:9px;color:var(--keys-accent);">⏳ pending</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(pendingSignal.cid) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">just now</span></div>'; list.insertBefore(it, list.firstChild); } return; } if (rc && rc.status === '0x0') { st.innerHTML = '<div class="status-msg error">Transaction reverted.</div>'; return; } }
+      for (var i = 0; i < 60; i++) { await new Promise(function(r){ setTimeout(r, 2000); }); var rc = await rpc('eth_getTransactionReceipt', [tx]); if (rc && rc.status === '0x1') { signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✅ Signal submitted! <a href="' + EXPLORER + '/tx/' + tx + '" target="_blank">View tx</a></div>'; showToast('✅ Signal submitted!', 4000); var pendingSignal = { hash: tx, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: contentRef || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }; await loadSentSignals(); if (!allSentSignals.find(function(s) { return s.hash === tx; })) { allSentSignals.unshift(pendingSignal); } var sentSignalsCountEl = document.getElementById('sentSignalsCount'); if (sentSignalsCountEl) sentSignalsCountEl.textContent = '(' + allSentSignals.length + ')'; var list = document.getElementById('sentSignalsList'); if (list && pendingSignal._pending) { var it = document.createElement('div'); it.className = 'signal-item'; it.style.borderLeft = '2px solid var(--keys-accent)'; it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ['oc','oi','ok','os'][selectedIntent] + '">' + pendingSignal.intentSymbol + '</span><span class="signal-attests" style="margin-left:6px;">✓0</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + activeEpoch + '</span><span style="margin-left:6px;font-size:9px;color:var(--keys-accent);">⏳ pending</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(pendingSignal.cid) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">just now</span></div>'; list.insertBefore(it, list.firstChild); } return; } if (rc && rc.status === '0x0') { st.innerHTML = '<div class="status-msg error">Transaction reverted.</div>'; return; } }
       st.innerHTML = '<div class="status-msg error">Timeout waiting for receipt.</div>';
     } catch (e) { st.innerHTML = '<div class="status-msg error">' + (e.message || 'Failed').slice(0, 200) + '</div>'; }
   };
@@ -1440,8 +1490,8 @@ var cid = selectedIntent === 3 ? '' : ct.slice(0, 320), sym = 0, intent = select
         } 
       }
       await loadEthers(); 
-      var iface = new ethersLib.Interface(['function attestSignal(bytes32 signalHash)']); 
-      var data = iface.encodeFunctionData('attestSignal', [hash]);
+      var iface = new ethersLib.Interface(['function attestSignal(bytes32 signalHash, uint256 tokenId)']); 
+      var data = iface.encodeFunctionData('attestSignal', [hash, BigInt(currentKeyId)]);
       var txParams = { from: currentAccount, to: Z1N_SIGNAL, data: data };
       var tx = await provider.request({method:'eth_sendTransaction',params:[txParams]}); 
       btn.textContent = 'Confirming...';

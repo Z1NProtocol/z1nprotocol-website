@@ -522,7 +522,11 @@
       return;
     }
 
-    var useEncryption = isEncryptedMode && isUnlocked;
+    if (isEncryptedMode && !isUnlocked) {
+      if (status) status.innerHTML = '<div class="status-msg error">🔒 Unlock encryption first — click "Unlock encryption" above before sending.</div>';
+      return;
+    }
+    var useEncryption = isEncryptedMode;
 
     var payload;
 

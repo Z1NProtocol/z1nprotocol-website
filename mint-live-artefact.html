@@ -459,9 +459,9 @@
 
   async function checkHasFirstArtefact() {
     try {
-      var data = '0x' + ethers.id('artefactOfKey(uint256)').slice(2, 10) + enc256(keyId);
+      var data = '0x8e2f2e4d' + enc256(keyId);
       var result = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: data }, 'latest']);
-      hasFirstArtefact = parseInt(result, 16) > 0;
+      hasFirstArtefact = BigInt(result) > BigInt(0);
       updatePriceDisplay();
     } catch (e) {
       console.warn('Could not check artefact status:', e);
@@ -580,16 +580,14 @@
     statusArea.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
 
     try {
-      var functionName = hasFirstArtefact ? 'mintExtraArtefact' : 'mintFirstArtefact';
+     var functionName = hasFirstArtefact ? 'mintExtra' : 'mint';
       var iface = new ethers.Interface([
-        'function mintFirstArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription)',
-        'function mintExtraArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription) payable'
+        'function mint(uint256 keyId, string inscription)',
+        'function mintExtra(uint256 keyId, string inscription) payable'
       ]);
-      
-      var contentHash = '0x' + '0'.repeat(64);
-      var schema = 0;
+
       var inscription = '';
-      var encodedData = iface.encodeFunctionData(functionName, [BigInt(keyId), contentHash, schema, inscription]);
+      var encodedData = iface.encodeFunctionData(functionName, [BigInt(keyId), inscription]);
 
       statusArea.innerHTML = '<div class="status-msg pending">Confirm in your wallet...</div>';
       mintBtn.textContent = 'Confirm in wallet...';
@@ -632,7 +630,8 @@
       } else if (msg.includes('insufficient')) {
         msg = 'Insufficient funds for gas';
       } else {
-        msg = 'Error: ' + msg.slice(0, 150);
+        if (msg.includes('FirstArtefactAlreadyMinted')) msg = 'First artefact already minted — use mintExtra';
+        else msg = 'Error: ' + msg.slice(0, 150);
       }
       
       statusArea.innerHTML = '<div class="status-msg error">' + msg + '</div>';
