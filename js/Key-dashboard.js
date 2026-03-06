@@ -1390,7 +1390,9 @@ window.submitWhisper = async function() {
     st.innerHTML = '<div class="status-msg pending">Preparing...</div>';
     try {
       await loadEthers();
-      var hash = '0x' + (Date.now().toString(16) + Math.random().toString(16).slice(2)).padEnd(64, '0').slice(0, 64), cid = selectedIntent === 3 ? '' : ct.slice(0, 320), sym = 0, intent = selectedIntent, stype = selectedIntent === 3 ? 3 : 2, eref = 0;
+      var hashBytes = ethersLib.randomBytes(32);
+var hash = ethersLib.hexlify(hashBytes);
+var cid = selectedIntent === 3 ? '' : ct.slice(0, 320), sym = 0, intent = selectedIntent, stype = selectedIntent === 3 ? 3 : 2, eref = 0;
       var reply = '0x' + '0'.repeat(64);
       var replyHashEl = document.getElementById('replyToHash');
       if (signalType === 'reply' && replyHashEl) { var ri = replyHashEl.value.trim(); if (ri && ri.startsWith('0x') && ri.length >= 66) { reply = ri.slice(0, 66); stype = 1; eref = activeEpoch > 0 ? activeEpoch - 1 : 0; } }
