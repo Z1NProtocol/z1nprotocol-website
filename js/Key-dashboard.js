@@ -1442,7 +1442,7 @@ window.submitWhisper = async function() {
       if (signalType === 'reply' && replyHashEl) { var ri = replyHashEl.value.trim(); if (ri && ri.startsWith('0x') && ri.length >= 66) { reply = ri.slice(0, 66); } }
       var abiCoder = ethersLib.AbiCoder.defaultAbiCoder();
       var hash = ethersLib.keccak256(abiCoder.encode(
-          ['uint256', 'string', 'uint8', 'uint8', 'bytes32', 'uint256'],
+          ['uint256', 'string', 'uint8', 'uint8', 'bytes32', 'uint64'],
           [BigInt(currentKeyId), contentRef, sym, intent, reply, BigInt(clientTimestamp)]
       ));
       if (pogStealthEnabled && stealthRelayerAvailable) {
@@ -1452,7 +1452,7 @@ window.submitWhisper = async function() {
       var iface = new ethersLib.Interface(['function submitSignal(uint256 tokenId, bytes32 signalHash, string contentRef, uint8 symbolIndex, uint8 intent, bytes32 replyTo, uint64 clientTimestamp)']);
       var data = iface.encodeFunctionData('submitSignal', [BigInt(currentKeyId), hash, contentRef, sym, intent, reply, BigInt(clientTimestamp)]);
       st.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
-      var txParams = { from: currentAccount, to: Z1N_SIGNAL, data: data, gas: '0x493E0', gasPrice: '0x' + Math.floor(103 * 1e9).toString(16) };
+      var txParams = { from: currentAccount, to: Z1N_SIGNAL, data: data };
       var tx = await provider.request({method:'eth_sendTransaction', params:[txParams]}); st.innerHTML = '<div class="status-msg pending">Transaction sent...</div>';
       for (var i = 0; i < 60; i++) { await new Promise(function(r){ setTimeout(r, 2000); }); var rc = await rpc('eth_getTransactionReceipt', [tx]); if (rc && rc.status === '0x1') { signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✅ Signal submitted! <a href="' + EXPLORER + '/tx/' + tx + '" target="_blank">View tx</a></div>'; showToast('✅ Signal submitted!', 4000); var pendingSignal = { hash: tx, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: contentRef || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }; await loadSentSignals(); if (!allSentSignals.find(function(s) { return s.hash === tx; })) { allSentSignals.unshift(pendingSignal); } var sentSignalsCountEl = document.getElementById('sentSignalsCount'); if (sentSignalsCountEl) sentSignalsCountEl.textContent = '(' + allSentSignals.length + ')'; var list = document.getElementById('sentSignalsList'); if (list && pendingSignal._pending) { var it = document.createElement('div'); it.className = 'signal-item'; it.style.borderLeft = '2px solid var(--keys-accent)'; it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ['oc','oi','ok','os'][selectedIntent] + '">' + pendingSignal.intentSymbol + '</span><span class="signal-attests" style="margin-left:6px;">✓0</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + activeEpoch + '</span><span style="margin-left:6px;font-size:9px;color:var(--keys-accent);">⏳ pending</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(pendingSignal.cid) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">just now</span></div>'; list.insertBefore(it, list.firstChild); } return; } if (rc && rc.status === '0x0') { st.innerHTML = '<div class="status-msg error">Transaction reverted.</div>'; return; } }
       st.innerHTML = '<div class="status-msg error">Timeout waiting for receipt.</div>';
@@ -1492,7 +1492,7 @@ window.submitWhisper = async function() {
       await loadEthers(); 
       var iface = new ethersLib.Interface(['function attestSignal(bytes32 signalHash, uint256 tokenId)']); 
       var data = iface.encodeFunctionData('attestSignal', [hash, BigInt(currentKeyId)]);
-      var txParams = { from: currentAccount, to: Z1N_SIGNAL, data: data, gas: '0x493E0', gasPrice: '0x' + Math.floor(103 * 1e9).toString(16) };
+      var txParams = { from: currentAccount, to: Z1N_SIGNAL, data: data };
       var tx = await provider.request({method:'eth_sendTransaction',params:[txParams]}); 
       btn.textContent = 'Confirming...';
       for (var i = 0; i < 30; i++) { 
