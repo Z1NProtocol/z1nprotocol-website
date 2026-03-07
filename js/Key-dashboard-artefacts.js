@@ -882,14 +882,13 @@
     var contentHtml = '';
     
     if (art.status === 'in_my_view') {
-      contentHtml = '<div class="share-layout">' +
-        '<div class="share-column"><div class="share-column-title">Recipient View After Accepting</div><div class="share-preview">' + artImg(previewUrl, 'Artefact Preview') + '</div></div>' +
-        '<div class="share-column"><div class="share-column-title">Your View After Accepting</div><div class="share-preview grayed"><div class="share-preview-placeholder" style="color:var(--accent);font-size:64px;">\u25C8</div></div></div>' +
-      '</div>' +
+      contentHtml = '<div class="modal-preview large">' + artImg(previewUrl, 'Artefact Preview') + '</div>' +
       '<div class="share-form">' +
         '<label>Offer to Key ID:</label>' +
         '<input type="number" id="shareTargetKeyId" placeholder="Enter Key ID" min="0">' +
         '<div id="shareKeyValidation" class="validation-msg"></div>' +
+'<label style="margin-top:10px;display:block;font-size:12px;color:var(--text-soft);">Message <span style="font-size:11px;">(optional — max 64 chars)</span></label>' +
+'<input type="text" id="shareOfferMessage" maxlength="64" placeholder="Optional message..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text-main);font-family:inherit;margin-bottom:8px;">' +
         '<div class="warning-box" style="border-color:rgba(94,232,160,0.4);background:rgba(94,232,160,0.08);">' +
           '<span class="warning-icon" style="filter:hue-rotate(90deg);">\u26A0\uFE0F</span><div><strong>Offering</strong><p>The recipient must accept this offering before the artefact becomes bound. Once accepted, you can revoke and restore viewing, but you can never offer it to a different Key.</p></div>' +
         '</div>' +
@@ -1075,7 +1074,9 @@
       await loadEthersLib();
       // v2.3.1-Ω: offer(artefactId, recipientKeyId, message)
       var iface = new ethers.Interface(['function offer(uint256 artefactId, uint256 recipientKeyId, string message)']);
-      var data = iface.encodeFunctionData('offer', [BigInt(artefactId), BigInt(targetKeyId), '']);
+      var msgInput = document.getElementById('shareOfferMessage');
+var offerMsg = msgInput ? msgInput.value.trim().slice(0, 64) : '';
+var data = iface.encodeFunctionData('offer', [BigInt(artefactId), BigInt(targetKeyId), offerMsg]);
       if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Confirm in wallet...</div>';
       var tx = await z.provider.request({ method: 'eth_sendTransaction', params: [{ from: z.wallet, to: Z1N_ARTEFACT, data: data, gas: '0x30D40' }] });
       if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);color:#5ee8a0;">Waiting for confirmation...</div>';
