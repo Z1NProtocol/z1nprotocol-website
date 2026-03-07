@@ -79,37 +79,32 @@
 
     try {
       // Check of eerste artefact al gemint is (on-chain)
-      var Z1N_ARTEFACT = '0x405344149f95c1264AC6BA1d646D95e17957EB45'; // mainnet adres uit Key-dashboard.js
+      var Z1N_ARTEFACT = '0xCd6eA01b66978a0F7CF65452777Dc7192A724C28'; // mainnet adres uit Key-dashboard.js
       var hasFirst = false;
       try {
-        var SEL_hasFirst = '0xff84f877';
+        // primaryArtefactOf(keyId) — selector: 0x8e2f2e4d
         var enc256 = function (v) { return BigInt(v).toString(16).padStart(64, '0'); };
         var rpcResult = await window.Z1N.rpc('eth_call', [
-          { to: Z1N_ARTEFACT, data: SEL_hasFirst + enc256(currentKeyId) },
+          { to: Z1N_ARTEFACT, data: '0x8e2f2e4d' + enc256(currentKeyId) },
           'latest'
         ]);
-        hasFirst = parseInt(rpcResult, 16) > 0;
+        hasFirst = BigInt(rpcResult) > BigInt(0);
       } catch (e) {
         console.warn('hasFirstArtefact check failed, assuming false:', e.message);
       }
 
-      var functionName = hasFirst ? 'mintExtraArtefact' : 'mintFirstArtefact';
+      var functionName = hasFirst ? 'mintExtra' : 'mint';
 
       // v2.3.1-Ω ABI — met contentHash, schema, inscription
       var iface = new ethersLib.Interface([
-        'function mintFirstArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription)',
-        'function mintExtraArtefact(uint256 keyId, bytes32 contentHash, uint8 schema, string inscription) payable'
+        'function mint(uint256 keyId, string inscription)',
+        'function mintExtra(uint256 keyId, string inscription) payable'
       ]);
 
-      // Defaults: geen off-chain doc, schema 0, lege inscriptie
-      var contentHash  = '0x' + '00'.repeat(32); // bytes32(0)
-      var schema       = 0;
       var inscription  = '';
 
       var encodedData = iface.encodeFunctionData(functionName, [
         BigInt(currentKeyId),
-        contentHash,
-        schema,
         inscription
       ]);
 
@@ -144,7 +139,7 @@
               await window.Z1NArtefacts.refresh();
             }
             setTimeout(function () {
-              btn.textContent = hasFirst ? '+ Mint Artefact — 7 POL' : '+ Mint First Artefact — FREE';
+              btn.textContent = hasFirst ? '+ Mint Extra — 7 POL' : '+ Mint First — FREE';
               btn.disabled = false;
             }, 5000);
             return;
@@ -159,7 +154,7 @@
     } catch (e) {
       var msg = e.message || 'Unknown error';
       if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
-      if (msg.includes('FirstArtefactAlreadyMinted')) msg = 'First artefact already minted — use Mint Extra';
+      if (msg.includes('FirstArtefactAlreadyMinted')) msg = 'First artefact already minted — use mintExtra';
       if (statusEl) statusEl.innerHTML =
         '<div class="status-msg error" style="font-size:11px;margin-top:8px;">' + msg.slice(0, 150) + '</div>';
       btn.textContent = origText;

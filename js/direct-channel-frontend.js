@@ -304,11 +304,12 @@
         '<div style="background:rgba(94,232,160,0.08);border:1px solid rgba(94,232,160,0.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
           '<div>' +
             '<div style="font-size:12px;font-weight:600;color:#5ee8a0;margin-bottom:3px;">🔒 Encrypted messaging locked</div>' +
-            '<div style="font-size:11px;color:var(--text-soft);">Sign once per session to unlock encrypted message reading. Plaintext messages are always visible.</div>' +
-'<div style="font-size:10px;color:var(--text-soft);margin-top:6px;opacity:0.8;">🔐 Encrypted messages are private — only the fact that two Keys interacted is visible on-chain, never the content. Open field messages are readable by anyone.</div>' +
-'<div style="font-size:10px;color:var(--text-soft);margin-top:4px;opacity:0.6;">✓ Unlocking is free — no gas, just a wallet signature.</div>' +
-'<div style="font-size:10px;color:var(--text-soft);margin-top:4px;opacity:0.7;">✓ Free — no gas. Just a wallet signature, nothing goes on-chain.</div>' +
-          '</div>' +
+            '<div style="font-size:11px;color:var(--text-soft);line-height:1.6;">Your encryption key is derived from your wallet — never stored, never leaves your browser.</div>' +
+'<div style="font-size:10px;color:var(--text-soft);margin-top:8px;display:flex;flex-direction:column;gap:4px;">' +
+  '<span>🔑 Each session: one free wallet signature recreates it. No gas, nothing on-chain.</span>' +
+  '<span>🔒 Without unlocking: encrypted messages stay private — even to you.</span>' +
+  '<span>📡 Open field messages are always readable without unlocking.</span>' +
+'</div>' +          '</div>' +
           '<button class="btn btn-green" onclick="unlockDirectChannel()" style="white-space:nowrap;padding:8px 16px;font-size:12px;">Unlock encryption</button>' +
         '</div>' +
         '<div id="directUnlockStatus"></div>';
@@ -675,8 +676,7 @@
       it.innerHTML =
         '<div style="flex:1;">' +
           '<div class="signal-item-header">' +
-            '<span style="color:var(--keys-accent);font-size:11px;">→ To:</span>' +
-            '<span style="color:var(--keys-accent);font-weight:600;margin-left:4px;">K#' + m.recipientKeyId + '</span>' +
+            '<span style="color:#ffd556;font-size:11px;font-weight:600;">→ K#' + m.recipientKeyId + '</span>' +
             typeBadge +
           '</div>' +
           '<div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(displayContent) + '</div>' +
