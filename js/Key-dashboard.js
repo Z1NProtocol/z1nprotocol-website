@@ -339,7 +339,7 @@ window.toggleGlobalStealth = function() {
 
    setInterval(function() { 
   var EPOCH_DURATION = 75600; // 21 hours mainnet
-  var EPOCH_GENESIS = 1772625987; // Mainnet genesis — verified
+  var EPOCH_GENESIS = 1772841944; // Mainnet genesis — contract verified
   var now = Math.floor(Date.now() / 1000);
   var timeSinceGenesis = now - EPOCH_GENESIS;
   var rem = EPOCH_DURATION - (timeSinceGenesis % EPOCH_DURATION);
