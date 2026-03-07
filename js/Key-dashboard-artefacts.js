@@ -165,8 +165,8 @@
   // CONSTANTS
   // =====================================================================
   
-  var Z1N_ARTEFACT = '0x405344149f95c1264AC6BA1d646D95e17957EB45';
-  var Z1N_KEY = '0x31C5e078ad2CdB0FEAB703ED416DC9e90997b26C';
+  var Z1N_ARTEFACT = '0xCd6eA01b66978a0F7CF65452777Dc7192A724C28';
+  var Z1N_KEY = '0x0d0FC5a49722c9DEc3EF50053ecCC380dfEBE85f';
   
   var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var currentRpcIndex = 0;
