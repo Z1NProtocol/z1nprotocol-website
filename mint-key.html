@@ -927,7 +927,7 @@
     try {
       var priceResult = await rpcCall('eth_call', [{ to: ISSUANCE_CONTROLLER, data: '0x9d1b464a' }, 'latest']);
       currentPriceWei = BigInt(priceResult).toString();
-      var priceWithBuffer = (BigInt(currentPriceWei) * BigInt(101)) / BigInt(100);
+      var priceWithBuffer = BigInt(currentPriceWei);
       updatePriceDisplay(Number(BigInt(currentPriceWei)) / 1e18);
 
       if (mintStatus) { mintStatus.textContent = "Confirm transaction in wallet..."; mintStatus.className = "status-text"; }
