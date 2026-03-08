@@ -975,7 +975,9 @@ async function loadSentSignals() {
       });
     }
     
-    allSentSignals = sigs;
+    // Behoud pending items die de API nog niet heeft geïndexeerd
+    var pendingItems = allSentSignals.filter(function(s) { return s._pending && !sigs.find(function(x) { return x.hash === s.hash; }); });
+    allSentSignals = pendingItems.concat(sigs);
     var sentSignalsCountEl = document.getElementById('sentSignalsCount');
     if (sentSignalsCountEl) sentSignalsCountEl.textContent = '(' + sigs.length + ')';
     if (sigs.length === 0) { list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No signals sent yet</div>'; return; }
@@ -1158,7 +1160,8 @@ var r = await fetch(API_BASE + '/attestations?fromKeyIds=' + keyIdsParam + '&lim
       attests.sort(function(a, b) { return (b.epoch || 0) - (a.epoch || 0); });
     }
     
-    allSentAttests = attests;
+    var pendingAttests = allSentAttests.filter(function(a) { return a._pending && !attests.find(function(x) { return x.signalHash === a.signalHash; }); });
+    allSentAttests = pendingAttests.concat(attests);
     var sentAttestsCountEl = document.getElementById('sentAttestsCount');
 if (sentAttestsCountEl) sentAttestsCountEl.textContent = '(' + attests.length + ')';
     if (attests.length === 0) { list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No attestations sent yet</div>'; return; }
@@ -1454,7 +1457,12 @@ window.submitWhisper = async function() {
       st.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
       var txParams = { from: currentAccount, to: Z1N_SIGNAL, data: data };
       var tx = await provider.request({method:'eth_sendTransaction', params:[txParams]}); st.innerHTML = '<div class="status-msg pending">Transaction sent...</div>';
-      for (var i = 0; i < 60; i++) { await new Promise(function(r){ setTimeout(r, 2000); }); var rc = await rpc('eth_getTransactionReceipt', [tx]); if (rc && rc.status === '0x1') { signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✅ Signal submitted! <a href="' + EXPLORER + '/tx/' + tx + '" target="_blank">View tx</a></div>'; showToast('✅ Signal submitted!', 4000); var pendingSignal = { hash: tx, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: contentRef || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }; await loadSentSignals(); if (!allSentSignals.find(function(s) { return s.hash === tx; })) { allSentSignals.unshift(pendingSignal); } var sentSignalsCountEl = document.getElementById('sentSignalsCount'); if (sentSignalsCountEl) sentSignalsCountEl.textContent = '(' + allSentSignals.length + ')'; var list = document.getElementById('sentSignalsList'); if (list && pendingSignal._pending) { var it = document.createElement('div'); it.className = 'signal-item'; it.style.borderLeft = '2px solid var(--keys-accent)'; it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ['oc','oi','ok','os'][selectedIntent] + '">' + pendingSignal.intentSymbol + '</span><span class="signal-attests" style="margin-left:6px;">✓0</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + activeEpoch + '</span><span style="margin-left:6px;font-size:9px;color:var(--keys-accent);">⏳ pending</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(pendingSignal.cid) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">just now</span></div>'; list.insertBefore(it, list.firstChild); } return; } if (rc && rc.status === '0x0') { st.innerHTML = '<div class="status-msg error">Transaction reverted.</div>'; return; } }
+      for (var i = 0; i < 60; i++) { await new Promise(function(r){ setTimeout(r, 2000); }); var rc = await rpc('eth_getTransactionReceipt', [tx]); if (rc && rc.status === '0x1') { signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✅ Signal submitted! <a href="' + EXPLORER + '/tx/' + tx + '" target="_blank">View tx</a></div>'; showToast('✅ Signal submitted!', 4000); var pendingSignal = { hash: tx, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: contentRef || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true };
+allSentSignals.unshift(pendingSignal);
+await loadSentSignals();
+var sentSignalsCountEl = document.getElementById('sentSignalsCount'); if (sentSignalsCountEl) sentSignalsCountEl.textContent = '(' + allSentSignals.length + ')';
+var list = document.getElementById('sentSignalsList');
+if (list && !list.querySelector('[data-hash="' + tx + '"]')) { var it = document.createElement('div'); it.className = 'signal-item'; it.dataset.hash = tx; it.style.borderLeft = '2px solid var(--keys-accent)'; it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span class="intent-tag ' + ['oc','oi','ok','os'][selectedIntent] + '">' + pendingSignal.intentSymbol + '</span><span class="signal-attests" style="margin-left:6px;">✓0</span><span style="color:var(--text-soft);margin-left:6px;">Epoch ' + activeEpoch + '</span><span style="margin-left:6px;font-size:9px;color:var(--keys-accent);">⏳ pending</span></div><div class="signal-content-preview" style="white-space:pre-wrap;word-break:break-word;font-size:11px;opacity:0.8;">' + escapeHtml(pendingSignal.cid) + '</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">just now</span></div>'; list.insertBefore(it, list.firstChild); } return; } if (rc && rc.status === '0x0') { st.innerHTML = '<div class="status-msg error">Transaction reverted.</div>'; return; } }
       st.innerHTML = '<div class="status-msg error">Timeout waiting for receipt.</div>';
     } catch (e) { st.innerHTML = '<div class="status-msg error">' + (e.message || 'Failed').slice(0, 200) + '</div>'; }
   };
@@ -1468,13 +1476,15 @@ window.submitWhisper = async function() {
       if (attestStealthEnabled && stealthRelayerAvailable) { 
         btn.textContent = 'Signing...'; 
         try { 
-          var result = await submitStealthAttestation(currentKeyId, hash); 
-          attestsUsed++; 
-          updateDots(); 
-          await loadAttestableSignals(); 
-          updateAttestBtn(); 
-           showToast('Stealth attestation submitted!', 4000); 
-          await loadSentAttests(); // v2.3.1
+          var result = await submitStealthAttestation(currentKeyId, hash);
+          attestsUsed++;
+          updateDots();
+          var pendingAttest = { signalHash: hash, signalKeyId: selectedAttestSignal.keyId, signalIntent: selectedAttestSignal.intent, signalIntentSymbol: selectedAttestSignal.intentSymbol, signalContent: selectedAttestSignal.cid || '[Silence]', signalCid: selectedAttestSignal.cid || '[Silence]', epoch: activeEpoch, timeAgo: 'just now', _pending: true };
+          allSentAttests.unshift(pendingAttest);
+          await loadAttestableSignals();
+          updateAttestBtn();
+          showToast('Stealth attestation submitted!', 4000);
+          await loadSentAttests();
           return;
         } catch (e) { 
           var errMsg = e.message || 'Unknown error';
@@ -1499,12 +1509,14 @@ window.submitWhisper = async function() {
         await new Promise(function(r){ setTimeout(r, 2000); }); 
         var rc = await rpc('eth_getTransactionReceipt', [tx]); 
         if (rc && rc.status === '0x1') { 
-          attestsUsed++; 
-          updateDots(); 
-          await loadAttestableSignals(); 
-          updateAttestBtn(); 
-          showToast('Attestation submitted!', 4000); 
-          await loadSentAttests(); // v2.3.1
+          attestsUsed++;
+          updateDots();
+          var pendingAttest = { signalHash: hash, signalKeyId: selectedAttestSignal.keyId, signalIntent: selectedAttestSignal.intent, signalIntentSymbol: selectedAttestSignal.intentSymbol, signalContent: selectedAttestSignal.cid || '[Silence]', signalCid: selectedAttestSignal.cid || '[Silence]', epoch: activeEpoch, timeAgo: 'just now', _pending: true };
+          allSentAttests.unshift(pendingAttest);
+          await loadAttestableSignals();
+          updateAttestBtn();
+          showToast('Attestation submitted!', 4000);
+          await loadSentAttests();
           btn.textContent = orig;
           btn.disabled = false;
           return; 
