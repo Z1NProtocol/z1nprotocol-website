@@ -725,7 +725,7 @@
       it.innerHTML =
         '<div style="flex:1;">' +
           '<div class="signal-item-header">' +
-            '<span style="color:var(--keys-accent);font-weight:600;">K#' + m.senderKeyId + '</span>' +
+            '<span style="color:#ffd556;font-weight:600;">K#' + m.senderKeyId + '</span>' +
             typeBadge +
           '</div>' +
           '<div class="signal-content-preview" style="margin-top:4px;padding:6px 8px;background:rgba(148,163,184,0.08);border-radius:4px;border-left:2px solid rgba(94,232,160,0.3);' + contentStyle + '">' +
@@ -739,6 +739,25 @@
 
       list.appendChild(it);
     });
+
+    // Push to ActivityFeed for tab badge
+    if (typeof ActivityFeed !== 'undefined' && typeof updateTabBadges === 'function') {
+      ActivityFeed.activities = ActivityFeed.activities.filter(function(a) {
+        return a.type !== 'direct_received';
+      });
+      messages.forEach(function(m) {
+        var msgId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
+        ActivityFeed.activities.push({
+          id: msgId,
+          type: 'direct_received',
+          direction: 'received',
+          timestamp: m.blockNumber || 0,
+          fromKeyId: m.senderKeyId,
+          content: m.messageType === 'encrypted' ? '[Encrypted]' : (m.decodedContent || '')
+        });
+      });
+      updateTabBadges();
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════

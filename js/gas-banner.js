@@ -1,6 +1,6 @@
 /**
  * Z1N Protocol — Gas Price Banner
- * v1.1.0-Ω
+ * v2.3.1-Ω
  *
  * Self-injecting gas monitor. Add to any page:
  *   <script src="gas-banner.js"></script>
@@ -56,14 +56,14 @@
         'opacity: 1;' +
       '}' +
       '.z1n-gas-banner.warn {' +
-        'background: rgba(250, 204, 21, 0.15);' +
-        'border-bottom: 1px solid rgba(250, 204, 21, 0.3);' +
-        'color: #facc15;' +
+        'background: rgba(255, 213, 86, 0.15);' +
+        'border-bottom: 1px solid rgba(255, 213, 86, 0.3);' +
+        'color: #ffd556;' +
       '}' +
       '.z1n-gas-banner.danger {' +
-        'background: rgba(249, 115, 115, 0.15);' +
-        'border-bottom: 1px solid rgba(249, 115, 115, 0.3);' +
-        'color: #f97373;' +
+        'background: rgba(248, 113, 113, 0.15);' +
+        'border-bottom: 1px solid rgba(248, 113, 113, 0.3);' +
+        'color: #f87171;' +
       '}' +
       '.z1n-gas-banner .gas-icon { font-size: 14px; }' +
       '.z1n-gas-banner .gas-value { font-weight: 700; }' +
