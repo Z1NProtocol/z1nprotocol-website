@@ -695,9 +695,9 @@
                         art.status === 'released' ? 'Released' : art.status;
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
-        '/static-preview?epoch=' + (z.epoch || 0);
+        '/static-preview?epoch=' + (z.epoch || 0) + '&artefactTokenId=' + art.tokenId;
       if (art.status !== 'in_my_view') {
-        previewUrl += '&viewerKeyId=' + z.keyId + '&artefactTokenId=' + art.tokenId;
+        previewUrl += '&viewerKeyId=' + z.keyId;
       }
       
       var hasPending = pendingViewChanges[art.tokenId];
@@ -748,9 +748,9 @@
                         art.status === 'released' ? 'Released' : art.status;
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
-        '/static-preview?epoch=' + (z.epoch || 0);
+        '/static-preview?epoch=' + (z.epoch || 0) + '&artefactTokenId=' + art.tokenId;
       if (art.status !== 'in_my_view') {
-        previewUrl += '&viewerKeyId=' + z.keyId + '&artefactTokenId=' + art.tokenId;
+        previewUrl += '&viewerKeyId=' + z.keyId;
       }
       
       html += '<div class="artefact-list-card ' + statusClass + '" onclick="Z1NArtefacts.openOwnedModal(' + art.tokenId + ')">' +
