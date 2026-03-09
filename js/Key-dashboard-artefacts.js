@@ -930,9 +930,9 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
                       art.status === 'released' ? 'status-released' : '';
     
     var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
-      '/static-preview?epoch=' + (z.epoch || 0) + '&t=' + Date.now();
+      '/static-preview?epoch=' + (z.epoch || 0) + '&artefactTokenId=' + art.tokenId + '&t=' + Date.now();
     if (art.status !== 'in_my_view') {
-      previewUrl += '&viewerKeyId=' + z.keyId + '&artefactTokenId=' + art.tokenId;
+      previewUrl += '&viewerKeyId=' + z.keyId;
     }
 
     // Load inscription
