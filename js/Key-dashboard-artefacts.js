@@ -190,6 +190,7 @@
   var ownedViewMode = 'card';
   var libraryViewMode = 'card';
   var pendingArtefacts = [];
+  var initiatorNotifications = {};
   var pendingViewChanges = {};
   var lastOwnedSig = '';
   var lastSharedSig = '';
@@ -360,18 +361,19 @@
     
     ownedArtefacts = [];
     
+    var data = null;
     try {
       var apiBase = z.API_BASE || 'https://z1n-backend-production.up.railway.app/api';
       var response = await fetch(apiBase + '/key/' + keyId + '/artefacts', { cache: 'no-store' });
       
       if (!response.ok) return;
       
-      var data = await response.json();
+      data = await response.json();
       var liveArtefacts = data.liveArtefacts || [];
       
       for (var i = 0; i < liveArtefacts.length; i++) {
         var art = liveArtefacts[i];
-        art.sourceKeyId = art.sourceKeyId || keyId;
+        art.sourceKeyId = (art.sourceKeyId !== undefined && art.sourceKeyId !== null) ? art.sourceKeyId : keyId;
         art.boundToKeyId = art.boundToKeyId || 0;
         art.viewingActive = art.viewingActive || false;
         art.status = art.status || 'in_my_view';
@@ -380,10 +382,23 @@
           await getKeyGlyphs(art.boundToKeyId);
         }
         
+        // Mark who released
+        if (art.status === 'released' && art.releasedBy) {
+          var z2 = getZ1N();
+          art.releasedByRecipient = art.releasedBy !== (z2.wallet || '').toLowerCase();
+        }
         ownedArtefacts.push(art);
       }
     } catch (e) {
       console.error('loadOwnedArtefacts error:', e);
+      data = null;
+    }
+    
+    // Store initiator notifications
+    if (data && data.notifications) {
+      data.notifications.forEach(function(n) {
+        initiatorNotifications[n.artefactId + ':' + n.type] = n;
+      });
     }
   }
 
@@ -393,6 +408,7 @@
     if (keyId === null || keyId === undefined) return;
     
     sharedWithMe = [];
+    unseenArtefactIds = {};
     
     try {
       var apiBase = z.API_BASE || 'https://z1n-backend-production.up.railway.app/api';
@@ -412,9 +428,13 @@
       
       for (var i = 0; i < sharedWithMe.length; i++) {
         var art = sharedWithMe[i];
-        if (art.sourceKeyId) {
+        if (art.sourceKeyId !== undefined && art.sourceKeyId !== null) {
           await getKeyGlyphs(art.sourceKeyId);
           art.sourceGlyphs = art.sourceGlyphs || getShortGlyphs(art.sourceKeyId);
+        }
+        if (art.status === 'released' && art.releasedBy) {
+          var z3 = getZ1N();
+          art.releasedByInitiator = art.releasedBy !== (z3.wallet || '').toLowerCase();
         }
       }
       
@@ -437,9 +457,9 @@
   var offerMessages = {};
 
   function getSeenKey() {
-    var z = getZ1N();
-    return 'z1n_seen_library_' + (z.keyId || 0);
-  }
+  var z = getZ1N();
+  return 'z1n_seen_library_' + (z.keyId !== null && z.keyId !== undefined ? z.keyId : 'none');
+}
 
   function loadSeenState() {
     try {
@@ -486,6 +506,17 @@
 
   function getUnreadNotificationCount() {
     return Object.keys(unseenArtefactIds).length;
+  }
+
+  function getInitiatorUnreadCount() {
+    return Object.values(initiatorNotifications).filter(function(n) { return !n.seen; }).length;
+  }
+
+  function markInitiatorNotificationSeen(artefactId, type) {
+    var key = artefactId + ':' + type;
+    if (initiatorNotifications[key]) {
+      initiatorNotifications[key].seen = true;
+    }
   }
 
   // =====================================================================
@@ -596,6 +627,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
     var z = getZ1N();
     var filtered = ownedArtefacts.filter(function(art) {
       if (ownedFilter.status !== 'all' && art.status !== ownedFilter.status) return false;
+      if (ownedFilter.hideReleased && art.status === 'released') return false;
       if (ownedFilter.search && !String(art.tokenId).includes(ownedFilter.search)) return false;
       return true;
     });
@@ -634,6 +666,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
           (countPending > 0 ? '<button class="filter-pill' + (ownedFilter.status === 'pending' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'pending\')">Offered <span class="pill-count">' + countPending + '</span></button>' : '') +
           '<button class="filter-pill' + (ownedFilter.status === 'shared' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'shared\')">Bounded <span class="pill-count">' + countShared + '</span></button>' +
           (countReleased > 0 ? '<button class="filter-pill' + (ownedFilter.status === 'released' ? ' active' : '') + '" onclick="Z1NArtefacts.setOwnedFilter(\'released\')">Released <span class="pill-count">' + countReleased + '</span></button>' : '') +
+          (countReleased > 0 ? '<button class="filter-pill' + (ownedFilter.hideReleased ? ' active' : '') + '" onclick="Z1NArtefacts.toggleHideReleased()" style="opacity:0.7;">Hide Released</button>' : '') +
         '</div>' +
         '<input type="text" class="filter-search" id="ownedSearchInput" placeholder="Search ID..." value="' + (ownedFilter.search || '') + '" onkeyup="Z1NArtefacts.filterOwned()">' +
       '</div>';
@@ -694,7 +727,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       var statusLabel = art.status === 'in_my_view' ? 'Personal' :
                         art.status === 'pending' ? 'Offered' :
                         art.status === 'shared' ? 'Bounded' :
-                        art.status === 'released' ? 'Released' : art.status;
+                        art.status === 'released' ? (art.releasedByRecipient ? 'Released by recipient' : 'Released by you') :
+                        art.status === 'rejected' ? 'Rejected' : art.status;
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
         '/static-preview?epoch=' + (z.epoch || 0) + '&artefactTokenId=' + art.tokenId;
@@ -785,6 +819,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
     var z = getZ1N();
     var filtered = sharedWithMe.filter(function(art) {
       if (libraryFilter.status !== 'all' && art.status !== libraryFilter.status) return false;
+      if (libraryFilter.hideReleased && (art.status === 'released' || art.stateNum === 3)) return false;
+      if (libraryFilter.hideRejected && art.status === 'rejected') return false;
       if (libraryFilter.search && !String(art.sourceKeyId).includes(libraryFilter.search)) return false;
       return true;
     });
@@ -814,6 +850,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
           '<button class="filter-pill' + (libraryFilter.status === 'active' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'active\')">Bounded <span class="pill-count">' + countBounded + '</span></button>' +
           (countRejected > 0 ? '<button class="filter-pill' + (libraryFilter.status === 'rejected' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'rejected\')">Rejected <span class="pill-count">' + countRejected + '</span></button>' : '') +
           (countReleased > 0 ? '<button class="filter-pill' + (libraryFilter.status === 'released' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'released\')">Released <span class="pill-count">' + countReleased + '</span></button>' : '') +
+          (countReleased > 0 ? '<button class="filter-pill' + (libraryFilter.hideReleased ? ' active' : '') + '" onclick="Z1NArtefacts.toggleHideReleased()" style="opacity:0.7;">Hide Released</button>' : '') +
+          (countRejected > 0 ? '<button class="filter-pill' + (libraryFilter.hideRejected ? ' active' : '') + '" onclick="Z1NArtefacts.toggleHideRejected()" style="opacity:0.7;">Hide Rejected</button>' : '') +
         '</div>' +
         '<input type="text" class="filter-search" id="librarySearchInput" placeholder="Search Key ID..." value="' + (libraryFilter.search || '') + '" onkeyup="Z1NArtefacts.filterLibrary()">' +
       '</div>';
@@ -845,7 +883,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       var isBounded = !isPending && !isReleased && !isRejected;
       
       var statusClass = isPending ? 'status-pending' : isRejected ? 'status-rejected' : isReleased ? 'status-released' : 'status-bounded';
-      var statusLabel = isPending ? 'Pending' : isRejected ? 'Rejected' : isReleased ? 'Released' : 'Bounded';
+      var statusLabel = isPending ? 'Pending' : isRejected ? 'Rejected' : 
+                        isReleased ? (art.releasedByInitiator ? 'Released by sender' : 'Released by you') : 'Bounded';
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
@@ -1530,6 +1569,18 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
     renderSharedSection();
   }
 
+  function toggleHideReleased() {
+    ownedFilter.hideReleased = !ownedFilter.hideReleased;
+    lastOwnedSig = '';
+    renderOwnedSection();
+  }
+
+  function toggleHideRejected() {
+    libraryFilter.hideRejected = !libraryFilter.hideRejected;
+    lastSharedSig = '';
+    renderSharedSection();
+  }
+
   // =====================================================================
   // INIT & REFRESH
   // =====================================================================
@@ -1641,7 +1692,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
   watchBadge();
 
   function updateBadgesAndFeed() {
-    var unreadCount = getUnreadNotificationCount();
+    var unreadCount = getUnreadNotificationCount() + getInitiatorUnreadCount();
     applyBadge(unreadCount);
     
     var feed = document.getElementById('activityFeed');
@@ -1650,6 +1701,37 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       
       if (unreadCount > 0) {
         var z = getZ1N();
+
+        // Initiator notifications (accept / reject / release by recipient)
+        Object.values(initiatorNotifications).forEach(function(n) {
+          if (n.seen) return;
+          var msg = '';
+          var color = 'var(--accent)';
+          if (n.type === 'offering_accepted') {
+            msg = '<strong style="color:var(--accent);">K#' + n.byKeyId + '</strong> accepted your artefact offer';
+            color = 'var(--accent)';
+          } else if (n.type === 'offering_rejected') {
+            msg = '<strong style="color:#f87171;">K#' + n.byKeyId + '</strong> rejected your artefact offer';
+            color = '#f87171';
+          } else if (n.type === 'artefact_released') {
+            var who = n.releasedBy === 'recipient' ? 'K#' + n.byKeyId + ' released' : 'You released';
+            msg = '<strong style="color:#f87171;">' + who + '</strong> artefact #' + n.artefactId;
+            color = '#f87171';
+          }
+          if (!msg) return;
+          var item = document.createElement('div');
+          item.className = 'activity-item unread artefact-notif';
+          item.style.cursor = 'pointer';
+          item.style.borderLeft = '3px solid ' + color;
+          item.onclick = function() { if (typeof switchTab === 'function') switchTab('artefacts'); };
+          item.innerHTML = '<div class="activity-icon artefact">◈</div>' +
+            '<div class="activity-content">' +
+              '<div class="activity-title" style="color:' + color + ';">' + msg + '</div>' +
+            '</div>';
+          if (feed.firstChild) feed.insertBefore(item, feed.firstChild);
+          else feed.appendChild(item);
+        });
+
         sharedWithMe.forEach(function(art) {
           if (!unseenArtefactIds[art.tokenId]) return;
           var type = unseenArtefactIds[art.tokenId];
@@ -1721,7 +1803,9 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
     ownerRelease: ownerRelease,
     recipientRelease: recipientRelease,
     updateOverviewPreview: updateOverviewPreview,
-    updateBadgesAndFeed: updateBadgesAndFeed
+    updateBadgesAndFeed: updateBadgesAndFeed,
+    toggleHideReleased: toggleHideReleased,
+    toggleHideRejected: toggleHideRejected
   };
 
   // Re-inject feed items on overview tab switch
