@@ -399,7 +399,7 @@ window.toggleGlobalStealth = function() {
       sigs.forEach(function(sig) {
         var card = document.createElement('div'); card.className = 'signal-card'; card.dataset.hash = sig.hash;
         var ic = (sig.intentSymbol || '').toLowerCase().replace('Ω','O'), sg = getShortGlyphs(sig.keyId), gs = sg ? '<span style="font-size:11px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-        card.innerHTML = '<div class="signal-header"><div class="signal-meta"><span class="signal-key">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'">'+(sig.intentSymbol||'')+'</span><span class="signal-epoch">E'+sig.epoch+'</span><span style="color:#fbbf24;">✓'+(sig.attestCount||0)+'</span></div><span class="signal-time">'+(sig.timeAgo||'')+'</span></div><div class="signal-content">'+escapeHtml(sig.cid||'[Silence]')+'</div><div class="signal-hash">'+sig.hash.slice(0,18)+'...</div>';
+        card.innerHTML = '<div class="signal-header"><div class="signal-meta"><span class="signal-key">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'">'+(sig.intentSymbol||'')+'</span><span class="signal-epoch">E'+sig.epoch+'</span><span style="color:#fbbf24;">✓'+(sig.attestCount||0)+'</span></div><span class="signal-time">'+(sig.timeAgo||'')+'</span></div><div class="signal-content">'+escapeHtml(sig.cid||sig.contentRef||'[Silence]')+'</div><div class="signal-hash">'+sig.hash.slice(0,18)+'...</div>';
         card.onclick = function() { document.querySelectorAll('#replySignalsList .signal-card.selected').forEach(function(el){ el.classList.remove('selected'); }); card.classList.add('selected'); replySelectedSignal = sig; if (selectBtn) selectBtn.disabled = false; };
         list.appendChild(card);
       });
@@ -943,7 +943,7 @@ window.filterAttestSignals = function() {
       var it = document.createElement('div'); it.className = 'attest-signal-item';
       it.onclick = function() { document.querySelectorAll('#attestSignalsListInline .attest-signal-item.selected').forEach(function(el){ el.classList.remove('selected'); }); it.classList.add('selected'); selectedAttestSignal = sig; if (info) info.innerHTML = 'Selected: <strong style="color:var(--keys-accent);">K#' + sig.keyId + '</strong>'; updateAttestBtn(); };
       var ic = ['oc','oi','ok','os'][sig.intent] || 'oc', isym = sig.intentSymbol || ['ΩC','ΩI','ΩK','ΩS'][sig.intent] || '?', sg = getShortGlyphs(sig.keyId), gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">'+sg+'</span>' : '';
-      it.innerHTML = '<div class="signal-top"><span style="color:var(--keys-accent);font-weight:600;font-size:11px;">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'" style="font-size:9px;">'+isym+'</span><span style="color:#fbbf24;font-size:10px;">✓'+(sig.attestCount||0)+'</span><span style="font-size:9px;color:var(--text-soft);">'+(sig.timeAgo||'')+'</span></div><div class="signal-content" style="color:#fff;">'+escapeHtml(sig.cid||'[Silence]')+'</div>';
+      it.innerHTML = '<div class="signal-top"><span style="color:var(--keys-accent);font-weight:600;font-size:11px;">K#'+sig.keyId+'</span>'+gs+'<span class="intent-tag '+ic+'" style="font-size:9px;">'+isym+'</span><span style="color:#fbbf24;font-size:10px;">✓'+(sig.attestCount||0)+'</span><span style="font-size:9px;color:var(--text-soft);">'+(sig.timeAgo||'')+'</span></div><div class="signal-content" style="color:#fff;">'+escapeHtml(sig.cid||sig.contentRef||'[Silence]')+'</div>';
       list.appendChild(it);
     });
   }
@@ -990,7 +990,7 @@ async function loadSentSignals() {
       var ic = ['oc','oi','ok','os'][sig.intent] || 'oc', isym = sig.intentSymbol || ['ΩC','ΩI','ΩK','ΩS'][sig.intent] || '?';
       var sg = getShortGlyphs(sig.keyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-      var content = sig.cid || sig.content || '[Silence]';
+      var content = sig.cid || sig.contentRef || sig.content || '[Silence]';
       var contentHtml = buildSignalContentHtml(content);
       var displayEpoch = sig.epoch || activeEpoch;
       var isReply = sig.replyTo && sig.replyTo !== '0x0000000000000000000000000000000000000000000000000000000000000000';
@@ -1054,7 +1054,7 @@ if (receivedRepliesCountEl) receivedRepliesCountEl.textContent = '(' + replies.l
       var isym = sig.intentSymbol || ['ΩC','ΩI','ΩK','ΩS'][sig.intent] || '?';
       var sg = getShortGlyphs(sig.keyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-      var content = sig.cid || sig.content || '[Silence]';
+      var content = sig.cid || sig.contentRef || sig.content || '[Silence]';
       var contentHtml = buildSignalContentHtml(content);
       
      // Check unread state
@@ -1175,7 +1175,7 @@ if (sentAttestsCountEl) sentAttestsCountEl.textContent = '(' + attests.length + 
       var isym = att.signalIntentSymbol || ['ΩC','ΩI','ΩK','ΩS'][att.signalIntent] || '?';
       var sg = getShortGlyphs(att.signalKeyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-      var content = att.signalContent || att.signalCid || '[Signal]';
+      var content = att.signalContent || att.signalCid || att.signalContentRef || '[Signal]';
       
       it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">K#'+(att.signalKeyId||'?')+'</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'direct\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
       list.appendChild(it);
@@ -1226,7 +1226,7 @@ if (receivedAttestsCountTitleEl) receivedAttestsCountTitleEl.textContent = '(' +
       var isym = att.signalIntentSymbol || ['ΩC','ΩI','ΩK','ΩS'][att.signalIntent] || '?';
       var sg = getShortGlyphs(att.fromKeyId);
       var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-      var content = att.signalContent || att.signalCid || '[Your signal]';
+      var content = att.signalContent || att.signalCid || att.signalContentRef || '[Your signal]';
       // Check unread state
       var activityId = 'attest_recv_' + (att.signalHash || '') + '_' + (att.fromKeyId || '') + '_' + (att.blockNumber || '');
       var isUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(activityId);
@@ -1260,7 +1260,7 @@ window.filterReceivedAttests = function() {
     var isym = att.signalIntentSymbol || ['ΩC','ΩI','ΩK','ΩS'][att.signalIntent] || '?';
     var sg = getShortGlyphs(att.fromKeyId);
     var gs = sg ? '<span style="font-size:10px;color:var(--text-soft);margin-left:4px;">' + sg + '</span>' : '';
-    var content = att.signalContent || att.signalCid || '[Your signal]';
+    var content = att.signalContent || att.signalCid || att.signalContentRef || '[Your signal]';
     var fromKeyDisplay = att.fromKeyId !== null ? 'K#' + att.fromKeyId : (att.fromWallet ? att.fromWallet.slice(0,6) + '...' : '?');
       it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;">'+escapeHtml(content)+'</div></div><span class="signal-time">'+(att.timeAgo||'')+'</span>';
     list.appendChild(it);
