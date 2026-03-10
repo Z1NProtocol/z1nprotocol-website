@@ -728,7 +728,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         '<span class="info-status ' + statusClass + '">' + statusLabel + '</span>' +
         (art.boundToKeyId > 0 ? '<span class="info-bound">→ #' + art.boundToKeyId + '</span>' : '') +
       '</div>' +
-      (art.inscription ? '<div style="font-size:10px;color:var(--text-soft);font-style:italic;padding:2px 6px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(art.inscription) + '">' + escapeHtml(art.inscription) + '</div>' : '');
+      (art.inscription ? '<div style="font-size:8px;color:var(--text-soft);font-style:italic;padding:2px 6px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(art.inscription) + '">' + escapeHtml(art.inscription) + '</div>' : '');
       html += '</div>';
     });
     
