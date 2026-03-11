@@ -397,8 +397,12 @@
     // Store initiator notifications
     if (data && data.notifications) {
       data.notifications.forEach(function(n) {
-        initiatorNotifications[n.artefactId + ':' + n.type] = n;
+        var key = n.artefactId + ':' + n.type;
+        if (!initiatorNotifications[key]) {
+          initiatorNotifications[key] = n;
+        }
       });
+      setTimeout(updateBadgesAndFeed, 100);
     }
   }
 
@@ -748,7 +752,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       var statusLabel = art.status === 'in_my_view' ? 'Personal' :
                         art.status === 'pending' ? 'Offered' :
                         art.status === 'shared' ? 'Bounded' :
-                        art.status === 'released' ? (art.releasedByRecipient ? 'Released by recipient' : 'Released by you') :
+                        art.status === 'released' ? (art.releasedBy === 'recipient' ? 'Released by recipient' : 'Released by you') :
                         art.status === 'rejected' ? 'Rejected' : art.status;
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
@@ -1712,7 +1716,24 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       badge.style.cssText = badgeStyle;
     }
 
-    // Tab nav badge
+    // Tab nav badge — zoek de tab-btn voor artefacts en update/create .tab-badge
+    var artefactsTabBtn = document.querySelector('.tab-btn[onclick*="artefacts"]');
+    if (artefactsTabBtn) {
+      var existingTabNavBadge = artefactsTabBtn.querySelector('.tab-badge');
+      if (unreadCount > 0) {
+        if (!existingTabNavBadge) {
+          var newNavBadge = document.createElement('span');
+          newNavBadge.className = 'tab-badge';
+          newNavBadge.textContent = String(unreadCount);
+          artefactsTabBtn.appendChild(newNavBadge);
+        } else {
+          existingTabNavBadge.textContent = String(unreadCount);
+          existingTabNavBadge.classList.remove('hidden');
+        }
+      } else if (existingTabNavBadge) {
+        existingTabNavBadge.classList.add('hidden');
+      }
+    }
     if (tabBadge) {
       tabBadge.textContent = unreadCount > 0 ? String(unreadCount) : '';
       tabBadge.style.cssText = unreadCount > 0 ? 'background:rgba(94,232,160,0.5);color:#fff;display:inline-block;' : 'display:none;';
@@ -1764,7 +1785,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
             color = '#f87171';
           } else if (n.type === 'artefact_released') {
             var who = n.releasedBy === 'recipient' ? 'K#' + n.byKeyId + ' released' : 'You released';
-            msg = '<strong style="color:#f87171;">' + who + '</strong> artefact #' + n.artefactId;
+            msg = '<strong style="color:#f87171;">' + who + '</strong> artefact #' + n.artefactId +
+              (n.message ? ' <span style="font-style:italic;color:rgba(248,113,113,0.7);">"' + escapeHtml(n.message.slice(0,40)) + '"</span>' : '');
             color = '#f87171';
           }
           if (!msg) return;
@@ -1836,6 +1858,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
   window.Z1NArtefacts = {
     init: init,
     refresh: refresh,
+    getUnseenCount: function() { return getUnreadNotificationCount() + getInitiatorUnreadCount(); },
     mint: mint,
     filterOwned: filterOwned,
     setOwnedFilter: setOwnedFilter,

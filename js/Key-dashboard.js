@@ -2420,7 +2420,10 @@ function updateTabBadges() {
 
   // Artefacts tab-nav badge — write badge into BOTH #artefactBadge AND the tab-nav button
   var artefactBadgeCount = unreadArtefacts;
-  if (artefactBadgeCount === 0 && typeof allLiveArtefacts !== 'undefined' && allLiveArtefacts.length > 0) {
+  // Also count unseen from Z1NArtefacts module (pending offers, initiator notifs)
+  if (window.Z1NArtefacts && window.Z1NArtefacts.getUnseenCount) {
+    artefactBadgeCount += window.Z1NArtefacts.getUnseenCount();
+  } else if (artefactBadgeCount === 0 && typeof allLiveArtefacts !== 'undefined' && allLiveArtefacts.length > 0) {
     allLiveArtefacts.forEach(function(a) {
       var isReceived = a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId;
       if (isReceived) {
