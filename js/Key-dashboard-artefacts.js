@@ -145,9 +145,9 @@
       '}',
       '.info-status.status-rejected { color: #f87171; }',
       '.artefact-card.status-released {',
-      '  opacity: 0.45; border-color: rgba(143,154,181,0.15) !important;',
+      '  opacity: 0.55; border-color: rgba(248,113,113,0.3) !important;',
       '}',
-      '.info-status.status-released { color: var(--text-soft, #9aa3bb); }',
+      '.info-status.status-released { color: #f87171; }',
       '.info-status.status-bounded { color: var(--accent, #5ee8a0); }'
     ].join('\n');
     document.head.appendChild(styleEl);
@@ -790,7 +790,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       if (art.status === 'in_my_view' || art.status === 'shared') {
         html += artImg(previewUrl, 'Artefact #' + artefactIndex);
       } else if (art.status === 'released') {
-        html += '<div class="artefact-placeholder shared" style="color:var(--text-soft);opacity:0.4;">◈</div>';
+        html += '<div class="artefact-placeholder shared" style="color:#f87171;opacity:0.5;">◈</div>';
       } else {
         // pending/offered — yellow triangle
         html += '<div class="artefact-placeholder shared" style="color:#ffd556;">◈</div>';
