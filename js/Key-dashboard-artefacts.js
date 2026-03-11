@@ -782,8 +782,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         ' onclick="Z1NArtefacts.openOwnedModal(' + art.tokenId + ')">';
 
       if (hasInitiatorNotif && !hasPending) {
-        var notifBg = initiatorNotifLabel.includes('released') ? 'rgba(248,113,113,0.85)' : 'rgba(94,232,160,0.85)';
-        var notifColor = initiatorNotifLabel.includes('released') ? '#fff' : '#000';
+        var notifBg = (initiatorNotifLabel.includes('released') || initiatorNotifLabel.includes('rejected')) ? 'rgba(248,113,113,0.85)' : 'rgba(94,232,160,0.85)';
+        var notifColor = (initiatorNotifLabel.includes('released') || initiatorNotifLabel.includes('rejected')) ? '#fff' : '#000';
         html += '<div style="position:absolute;top:6px;left:6px;z-index:3;background:' + notifBg + ';color:' + notifColor + ';font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">' + initiatorNotifLabel + '</div>';
       }
       
@@ -1011,6 +1011,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
     markInitiatorNotificationsReadForArtefact(artefactId);
     lastOwnedSig = '';
     lastSharedSig = '';
+    renderOwnedSection();
+    updateBadgesAndFeed();
 
     var art = ownedArtefacts.find(function(a) { return a.tokenId === artefactId; });
     if (!art) return;
