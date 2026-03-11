@@ -715,6 +715,26 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
   // ═══════════════════════════════════════════════════════════════
   async function loadKeyData(keyId) {
     currentKeyId = keyId;
+
+    // CACHE: Toon vorige data direct bij key switch / refresh
+    var cacheKey = 'z1n_keydata_' + keyId;
+    var cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        var c = JSON.parse(cached);
+        if (c.glyphLine) {
+          document.getElementById('keyIdDisplay').textContent = 'Key #' + keyId;
+          document.getElementById('keyGlyphs').textContent = c.glyphLine;
+        }
+        if (c.signalsUsed !== undefined) { signalsUsed = c.signalsUsed; updateDots(); }
+        if (c.attestsUsed !== undefined) { attestsUsed = c.attestsUsed; updateDots(); }
+        if (c.activeEpoch) { activeEpoch = c.activeEpoch; }
+        if (c.allSentSignals) { allSentSignals = c.allSentSignals; }
+        if (c.allSentAttests) { allSentAttests = c.allSentAttests; }
+        if (c.allReceivedReplies) { allReceivedReplies = c.allReceivedReplies; }
+      } catch (e) {}
+    }
+
     // Pre-load readItems so unread checks work during initial data loading
     try { var _stored = localStorage.getItem('z1n_activity_read_' + keyId); if (_stored) { ActivityFeed.readItems = new Set(JSON.parse(_stored)); } else { ActivityFeed.readItems = new Set(); } } catch(e) { ActivityFeed.readItems = new Set(); }
     // Pre-load readItems so unread checks work during initial data loading
@@ -787,7 +807,20 @@ if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefact
       
       // Switch to URL tab AFTER data loads
       switchToUrlTab();
-      
+
+      // CACHE: Sla geladen data op voor volgende keer
+      try {
+        sessionStorage.setItem('z1n_keydata_' + keyId, JSON.stringify({
+          glyphLine: keyGlyphsCache[keyId] || '',
+          signalsUsed: signalsUsed,
+          attestsUsed: attestsUsed,
+          activeEpoch: activeEpoch,
+          allSentSignals: allSentSignals.slice(0, 20),
+          allSentAttests: allSentAttests.slice(0, 20),
+          allReceivedReplies: allReceivedReplies.slice(0, 20)
+        }));
+      } catch (e) {}
+
     } catch (e) { console.error('loadKeyData error:', e); }
   }
 
