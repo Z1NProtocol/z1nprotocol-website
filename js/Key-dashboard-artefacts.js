@@ -942,7 +942,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       } else if (isRejected) {
         previewContent = '<div class="artefact-placeholder shared" style="color:#f87171;font-size:48px;">◈</div>';
       } else {
-        previewContent = '<div class="artefact-placeholder shared" style="color:var(--text-soft);opacity:0.4;font-size:48px;">◈</div>';
+        previewContent = '<div class="artefact-placeholder shared" style="color:#f87171;opacity:0.5;font-size:48px;">◈</div>';
       }
       
       var subText = isReleased && art.releaseMessage ? art.releaseMessage :
