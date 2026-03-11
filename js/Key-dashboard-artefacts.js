@@ -408,7 +408,6 @@
     if (keyId === null || keyId === undefined) return;
     
     sharedWithMe = [];
-    unseenArtefactIds = {};
     
     try {
       var apiBase = z.API_BASE || 'https://z1n-backend-production.up.railway.app/api';
@@ -477,13 +476,17 @@
     unseenArtefactIds = {};
     libraryItems.forEach(function(art) {
       var id = art.tokenId;
-      var stateLabel = art.stateNum === 1 ? 'pending' : art.stateNum === 2 ? 'active' : art.stateNum === 3 ? 'released' : (art.status || 'other');
+      var stateLabel = art.status === 'rejected' ? 'rejected' :
+                       art.stateNum === 1 ? 'pending' :
+                       art.stateNum === 2 ? 'active' :
+                       art.stateNum === 3 ? 'released' : (art.status || 'other');
       var currentSig = art.sourceKeyId + ':' + stateLabel;
       if (!seen[id]) {
-        unseenArtefactIds[id] = art.stateNum === 1 ? 'offered' : 'changed';
+        unseenArtefactIds[id] = stateLabel === 'pending' ? 'offered' :
+                                stateLabel === 'rejected' ? 'rejected' : 'changed';
       } else if (seen[id] !== currentSig) {
-        // State changed since last seen
         if (stateLabel === 'released') unseenArtefactIds[id] = 'released';
+        else if (stateLabel === 'rejected') unseenArtefactIds[id] = 'rejected';
         else unseenArtefactIds[id] = 'changed';
       }
     });
@@ -499,7 +502,10 @@
     if (!art) return;
     delete unseenArtefactIds[artefactId];
     var seen = loadSeenState();
-    var stateLabel = art.stateNum === 1 ? 'pending' : art.stateNum === 2 ? 'active' : art.stateNum === 3 ? 'released' : (art.status || 'other');
+    var stateLabel = art.status === 'rejected' ? 'rejected' :
+                     art.stateNum === 1 ? 'pending' :
+                     art.stateNum === 2 ? 'active' :
+                     art.stateNum === 3 ? 'released' : (art.status || 'other');
     seen[artefactId] = art.sourceKeyId + ':' + stateLabel;
     saveSeenState(seen);
   }
@@ -510,6 +516,21 @@
 
   function getInitiatorUnreadCount() {
     return Object.values(initiatorNotifications).filter(function(n) { return !n.seen; }).length;
+  }
+
+  function getInitiatorNotificationsForArtefact(artefactId) {
+    return Object.values(initiatorNotifications).filter(function(n) {
+      return n.artefactId === artefactId && !n.seen;
+    });
+  }
+
+  function markInitiatorNotificationsReadForArtefact(artefactId) {
+    Object.keys(initiatorNotifications).forEach(function(key) {
+      if (initiatorNotifications[key].artefactId === artefactId) {
+        initiatorNotifications[key].seen = true;
+      }
+    });
+    updateBadgesAndFeed();
   }
 
   function markInitiatorNotificationSeen(artefactId, type) {
@@ -738,8 +759,23 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       
       var hasPending = pendingViewChanges[art.tokenId];
       var pendingLabel = hasPending === 'offering' ? 'Offering...' : hasPending === 'cancelling' ? 'Cancelling...' : hasPending === 'accepting' ? 'Accepting...' : hasPending === 'rejecting' ? 'Rejecting...' : hasPending === 'releasing' ? 'Releasing...' : '';
-      
-      html += '<div class="artefact-card ' + statusClass + '"' + (hasPending ? ' style="position:relative;pointer-events:none;opacity:0.6;"' : '') + ' onclick="Z1NArtefacts.openOwnedModal(' + art.tokenId + ')">';
+      var initiatorNotifs = getInitiatorNotificationsForArtefact(art.tokenId);
+      var hasInitiatorNotif = initiatorNotifs.length > 0;
+      var initiatorNotifLabel = '';
+      if (hasInitiatorNotif) {
+        var n = initiatorNotifs[initiatorNotifs.length - 1];
+        if (n.type === 'offering_accepted') initiatorNotifLabel = 'K#' + n.byKeyId + ' accepted';
+        else if (n.type === 'offering_rejected') initiatorNotifLabel = 'K#' + n.byKeyId + ' rejected';
+        else if (n.type === 'artefact_released') initiatorNotifLabel = 'K#' + n.byKeyId + ' released';
+      }
+
+      html += '<div class="artefact-card ' + statusClass + (hasInitiatorNotif ? ' unseen-artefact' : '') + '"' +
+        (hasPending ? ' style="position:relative;pointer-events:none;opacity:0.6;"' : ' style="position:relative;"') +
+        ' onclick="Z1NArtefacts.openOwnedModal(' + art.tokenId + ')">';
+
+      if (hasInitiatorNotif && !hasPending) {
+        html += '<div style="position:absolute;top:6px;left:6px;z-index:3;background:rgba(94,232,160,0.85);color:#000;font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">' + initiatorNotifLabel + '</div>';
+      }
       
       if (hasPending) {
         html += '<div class="pending-change-overlay"><div class="pending-change-spinner"></div><span style="color:var(--accent);font-size:11px;">' + pendingLabel + '</span></div>';
@@ -951,6 +987,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
   // =====================================================================
   
   function openOwnedModal(artefactId) {
+    markInitiatorNotificationsReadForArtefact(artefactId);
+    lastOwnedSig = '';
     var art = ownedArtefacts.find(function(a) { return a.tokenId === artefactId; });
     if (!art) return;
     
@@ -1025,11 +1063,22 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
           '<button class="btn" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:12px;" onclick="Z1NArtefacts.ownerRelease(' + artefactId + ')">Release Permanently</button>' +
         '</div>';
     } else if (art.status === 'released') {
+      var relNotifs = Object.values(initiatorNotifications).filter(function(n) { return n.artefactId === artefactId; });
+      var relNotifHtml = '';
+      relNotifs.forEach(function(n) {
+        var label = n.type === 'offering_accepted' ? 'K#' + n.byKeyId + ' accepted this artefact' :
+                    n.type === 'offering_rejected' ? 'K#' + n.byKeyId + ' rejected this artefact' :
+                    n.type === 'artefact_released' ? 'K#' + n.byKeyId + ' released — "' + escapeHtml(n.message || '') + '"' : '';
+        if (!label) return;
+        var color = n.type === 'offering_accepted' ? 'var(--accent)' : '#f87171';
+        relNotifHtml += '<div class="info-row"><span class="label" style="color:' + color + ';">◈</span><span class="value" style="color:' + color + ';">' + label + '</span></div>';
+      });
       contentHtml = '<div class="modal-preview large" style="opacity:0.4;">' + artImg(previewUrl, 'Artefact Preview') + '</div>' +
         '<div id="modalInscription_' + artefactId + '"></div>' +
         '<div class="modal-info">' +
           '<div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--text-soft);">Released — retired</span></div>' +
           (art.boundToKeyId > 0 ? '<div class="info-row"><span class="label">Was bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div>' : '') +
+          relNotifHtml +
         '</div>' +
         '<div style="padding:12px 0;color:var(--text-soft);font-size:13px;">This artefact has been permanently released and cannot be used again.</div>';
     }
@@ -1745,16 +1794,19 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
             msgLine = ' <span style="color:#f87171;">— released</span>';
           }
           
-          var actionText = type === 'released' ? 'released an artefact' : 'offered an artefact to you';
+          var actionText = type === 'released' ? 'released an artefact' :
+                           type === 'rejected' ? 'you rejected their artefact offer' :
+                           'offered an artefact to you';
           
           var item = document.createElement('div');
           item.className = 'activity-item unread artefact-notif';
           item.style.cursor = 'pointer';
-          item.style.borderLeft = type === 'released' ? '3px solid #f87171' : '3px solid var(--accent)';
+          var feedColor = type === 'released' ? '#f87171' : type === 'rejected' ? '#f87171' : 'var(--accent)';
+          item.style.borderLeft = '3px solid ' + feedColor;
           item.onclick = function() { if (typeof switchTab === 'function') switchTab('artefacts'); };
           item.innerHTML = '<div class="activity-icon artefact">◈</div>' +
             '<div class="activity-content">' +
-              '<div class="activity-title" style="color:' + (type === 'released' ? '#f87171' : 'var(--accent)') + ';"><strong style="color:' + (type === 'released' ? '#f87171' : 'var(--accent)') + ';">K#' + art.sourceKeyId + '</strong> ' + actionText + msgLine + '</div>' +
+              '<div class="activity-title" style="color:' + feedColor + ';"><strong style="color:' + feedColor + ';">K#' + art.sourceKeyId + '</strong> ' + actionText + msgLine + '</div>' +
             '</div>';
           
           if (feed.firstChild) {
