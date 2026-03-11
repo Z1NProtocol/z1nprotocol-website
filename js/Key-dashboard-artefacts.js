@@ -143,8 +143,8 @@
       '.info-status.status-pending { color: #ffd556; }',
       '.artefact-card.status-rejected,',
       '.artefact-card.status-rejected:hover {',
-      '  border-color: rgba(248,113,113,0.35) !important;',
-      '  opacity: 0.7;',
+      '  border-color: rgba(248,113,113,0.6) !important;',
+      '  opacity: 0.8;',
       '}',
       '.info-status.status-rejected { color: #f87171; }',
       '.artefact-card.status-released {',
@@ -929,7 +929,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       var isRejected = art.status === 'rejected';
       var isBounded = !isPending && !isReleased && !isRejected;
       
-      var statusClass = isPending ? 'status-pending' : isRejected ? 'status-rejected' : isReleased ? 'status-released' : 'status-bounded';
+      var hasBeenSeen = !hasUnreadNotification(art.tokenId);
+      var statusClass = isPending ? 'status-pending' : (isRejected && hasBeenSeen) ? 'status-personal' : isRejected ? 'status-rejected' : isReleased ? 'status-released' : 'status-bounded';
       var statusLabel = isPending ? 'Pending' : isRejected ? 'Rejected' : 
                         isReleased ? (art.releasedByInitiator ? 'Released by sender' : 'Released by you') : 'Bounded';
       
@@ -981,7 +982,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       var isReleased = art.status === 'released' || art.stateNum === 3;
       var isRejected = art.status === 'rejected';
       var isBounded = !isPending && !isReleased && !isRejected;
-      var statusClass = isPending ? 'status-pending' : isRejected ? 'status-rejected' : isReleased ? 'status-released' : 'status-bounded';
+      var hasBeenSeen = !hasUnreadNotification(art.tokenId);
+      var statusClass = isPending ? 'status-pending' : (isRejected && hasBeenSeen) ? 'status-personal' : isRejected ? 'status-rejected' : isReleased ? 'status-released' : 'status-bounded';
       var statusLabel = isPending ? 'Pending' : isRejected ? 'Rejected' : isReleased ? 'Released' : 'Bounded';
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId +
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId +
@@ -1008,6 +1010,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
   function openOwnedModal(artefactId) {
     markInitiatorNotificationsReadForArtefact(artefactId);
     lastOwnedSig = '';
+    lastSharedSig = '';
+
     var art = ownedArtefacts.find(function(a) { return a.tokenId === artefactId; });
     if (!art) return;
     
@@ -1116,6 +1120,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
   function openLibraryModal(artefactId, sourceKeyId) {
     markNotificationRead(artefactId);
     lastSharedSig = '';
+    lastOwnedSig = '';
     renderSharedSection();
     
     var z = getZ1N();
