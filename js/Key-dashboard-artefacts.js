@@ -1803,6 +1803,24 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
           else feed.appendChild(item);
         });
 
+        // Local state changes (own actions this session)
+        stateChangeLog.forEach(function(entry) {
+          var color = (entry.type === 'released' || entry.type === 'cancelled' || entry.type === 'rejected') ? '#f87171' : 'var(--accent)';
+          var actionText = entry.type === 'offered' ? 'You offered artefact #' + entry.artefactId + ' to K#' + entry.targetKeyId :
+                           entry.type === 'cancelled' ? 'You cancelled offering of artefact #' + entry.artefactId :
+                           entry.type === 'accepted' ? 'You accepted artefact #' + entry.artefactId :
+                           entry.type === 'rejected' ? 'You rejected artefact #' + entry.artefactId :
+                           entry.type === 'released' ? 'You released artefact #' + entry.artefactId + (entry.message ? ' — "' + escapeHtml(entry.message.slice(0,40)) + '"' : '') : '';
+          if (!actionText) return;
+          var item = document.createElement('div');
+          item.className = 'activity-item artefact-notif';
+          item.style.borderLeft = '3px solid ' + color;
+          item.innerHTML = '<div class="activity-icon artefact">◈</div>' +
+            '<div class="activity-content"><div class="activity-title" style="color:' + color + ';">' + actionText + '</div></div>';
+          if (feed.firstChild) feed.insertBefore(item, feed.firstChild);
+          else feed.appendChild(item);
+        });
+
         sharedWithMe.forEach(function(art) {
           if (!unseenArtefactIds[art.tokenId]) return;
           var type = unseenArtefactIds[art.tokenId];
