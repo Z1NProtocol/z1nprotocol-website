@@ -773,7 +773,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         var n = initiatorNotifs[initiatorNotifs.length - 1];
         if (n.type === 'offering_accepted') initiatorNotifLabel = 'K#' + n.byKeyId + ' accepted';
         else if (n.type === 'offering_rejected') initiatorNotifLabel = 'K#' + n.byKeyId + ' rejected';
-        else if (n.type === 'artefact_released') initiatorNotifLabel = 'K#' + n.byKeyId + ' released';
+        else if (n.type === 'artefact_released') initiatorNotifLabel = n.releasedBy === 'initiator' ? 'Released by you' : 'K#' + n.byKeyId + ' released';
       }
 
       html += '<div class="artefact-card ' + statusClass + (hasInitiatorNotif ? ' unseen-artefact' : '') + '"' +
