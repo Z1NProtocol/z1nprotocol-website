@@ -752,7 +752,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       var statusLabel = art.status === 'in_my_view' ? 'Personal' :
                         art.status === 'pending' ? 'Offered' :
                         art.status === 'shared' ? 'Bounded' :
-                        art.status === 'released' ? (art.releasedBy === 'recipient' ? 'Released by recipient' : 'Released by you') :
+                        art.status === 'released' ? (art.releasedByRecipient ? 'Released by K#' + art.releasedFromKeyId : 'Released by you') :
                         art.status === 'rejected' ? 'Rejected' : art.status;
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
@@ -925,7 +925,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       
       var statusClass = isPending ? 'status-pending' : isRejected ? 'status-rejected' : isReleased ? 'status-released' : 'status-bounded';
       var statusLabel = isPending ? 'Pending' : isRejected ? 'Rejected' : 
-                        isReleased ? (art.releasedBy === 'initiator' ? 'Released by sender' : 'Released by you') : 'Bounded';
+                        isReleased ? (art.releasedByInitiator ? 'Released by sender' : 'Released by you') : 'Bounded';
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
