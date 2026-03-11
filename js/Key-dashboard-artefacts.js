@@ -801,7 +801,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         '<span class="info-id">#' + artefactIndex + '</span>' +
         '<span class="info-status ' + statusClass + '">' + statusLabel + '</span>' +
         (art.boundToKeyId > 0 ? '<span class="info-bound">→ #' + art.boundToKeyId + '</span>' : '') +
-      '</div>' +
+      '</div>';
       var cardSubText = (art.status === 'released' && art.releaseMessage) ? art.releaseMessage : (art.inscription || '');
       html += (cardSubText ? '<div style="font-size:8px;color:var(--text-soft);font-style:italic;padding:2px 6px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(cardSubText) + '">' + escapeHtml(cardSubText) + '</div>' : '');
       html += '</div>';
