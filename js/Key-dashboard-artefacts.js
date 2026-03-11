@@ -781,7 +781,9 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         ' onclick="Z1NArtefacts.openOwnedModal(' + art.tokenId + ')">';
 
       if (hasInitiatorNotif && !hasPending) {
-        html += '<div style="position:absolute;top:6px;left:6px;z-index:3;background:rgba(94,232,160,0.85);color:#000;font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">' + initiatorNotifLabel + '</div>';
+        var notifBg = initiatorNotifLabel.includes('released') ? 'rgba(248,113,113,0.85)' : 'rgba(94,232,160,0.85)';
+        var notifColor = initiatorNotifLabel.includes('released') ? '#fff' : '#000';
+        html += '<div style="position:absolute;top:6px;left:6px;z-index:3;background:' + notifBg + ';color:' + notifColor + ';font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">' + initiatorNotifLabel + '</div>';
       }
       
       if (hasPending) {
@@ -951,7 +953,9 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       var subText = isReleased && art.releaseMessage ? art.releaseMessage :
                     isPending && art.offerMessage ? art.offerMessage :
                     art.inscription || '';
+      var releasedLabel = isReleased ? (art.releasedByInitiator ? 'K#' + art.sourceKeyId + ' released' : 'You released') : '';
       html += '<div class="artefact-card library-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" style="position:relative;" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
+        (isReleased ? '<div style="position:absolute;top:6px;left:6px;z-index:3;background:rgba(248,113,113,0.85);color:#fff;font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">' + releasedLabel + '</div>' : '') +
         '<div class="artefact-preview">' +
           previewContent +
           '<div class="library-badge">← #' + art.sourceKeyId + '</div>' +
