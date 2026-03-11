@@ -802,7 +802,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         '<span class="info-status ' + statusClass + '">' + statusLabel + '</span>' +
         (art.boundToKeyId > 0 ? '<span class="info-bound">→ #' + art.boundToKeyId + '</span>' : '') +
       '</div>' +
-      (art.inscription ? '<div style="font-size:8px;color:var(--text-soft);font-style:italic;padding:2px 6px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(art.inscription) + '">' + escapeHtml(art.inscription) + '</div>' : '');
+      var cardSubText = (art.status === 'released' && art.releaseMessage) ? art.releaseMessage : (art.inscription || '');
+      html += (cardSubText ? '<div style="font-size:8px;color:var(--text-soft);font-style:italic;padding:2px 6px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(cardSubText) + '">' + escapeHtml(cardSubText) + '</div>' : '');
       html += '</div>';
     });
     
@@ -924,7 +925,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       
       var statusClass = isPending ? 'status-pending' : isRejected ? 'status-rejected' : isReleased ? 'status-released' : 'status-bounded';
       var statusLabel = isPending ? 'Pending' : isRejected ? 'Rejected' : 
-                        isReleased ? (art.releasedByInitiator ? 'Released by sender' : 'Released by you') : 'Bounded';
+                        isReleased ? (art.releasedBy === 'initiator' ? 'Released by sender' : 'Released by you') : 'Bounded';
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
@@ -944,6 +945,9 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         previewContent = '<div class="artefact-placeholder shared" style="color:var(--text-soft);opacity:0.4;font-size:48px;">◈</div>';
       }
       
+      var subText = isReleased && art.releaseMessage ? art.releaseMessage :
+                    isPending && art.offerMessage ? art.offerMessage :
+                    art.inscription || '';
       html += '<div class="artefact-card library-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" style="position:relative;" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
         '<div class="artefact-preview">' +
           previewContent +
@@ -953,6 +957,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
           '<span class="info-id">From #' + art.sourceKeyId + '</span>' +
           '<span class="info-status ' + statusClass + '">' + statusLabel + '</span>' +
         '</div>' +
+        (subText ? '<div style="font-size:8px;color:var(--text-soft);font-style:italic;padding:2px 6px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(subText) + '">' + escapeHtml(subText) + '</div>' : '') +
       '</div>';
     });
     html += '</div>';
@@ -1312,6 +1317,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       var success = await waitForReceipt(tx);
       if (success) {
         showToast('✅ Artefact accepted — now bounded', 3000);
+        // Auto-mark the incoming offer as read — it's been handled
+        markNotificationRead(artefactId);
         addStateChangeNotification('accepted', artefactId, z.keyId, null, '');
         pendingViewChanges[artefactId] = 'accepting'; closeModal(); lastSharedSig = ''; renderSharedSection();
         try {
@@ -1731,6 +1738,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
           existingTabNavBadge.classList.remove('hidden');
         }
       } else if (existingTabNavBadge) {
+        existingTabNavBadge.style.display = 'none';
         existingTabNavBadge.classList.add('hidden');
       }
     }
@@ -1763,6 +1771,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
 
   function updateBadgesAndFeed() {
     var unreadCount = getUnreadNotificationCount() + getInitiatorUnreadCount();
+    // stateChangeLog entries are own actions — don't count toward badge
     applyBadge(unreadCount);
     
     var feed = document.getElementById('activityFeed');
@@ -1812,6 +1821,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
                            entry.type === 'rejected' ? 'You rejected artefact #' + entry.artefactId :
                            entry.type === 'released' ? 'You released artefact #' + entry.artefactId + (entry.message ? ' — "' + escapeHtml(entry.message.slice(0,40)) + '"' : '') : '';
           if (!actionText) return;
+          // Skip 'released' entries for initiator — own action, not a notification
+          if (entry.type === 'released') return;
           var item = document.createElement('div');
           item.className = 'activity-item artefact-notif';
           item.style.borderLeft = '3px solid ' + color;
