@@ -446,6 +446,16 @@
       }
       
       detectUnseenArtefacts(sharedWithMe);
+
+      if (data && data.notifications) {
+        data.notifications.forEach(function(n) {
+          var key = n.artefactId + ':' + n.type;
+          if (!initiatorNotifications[key]) {
+            initiatorNotifications[key] = n;
+          }
+        });
+        setTimeout(updateBadgesAndFeed, 100);
+      }
     } catch (e) {
       console.error('loadSharedWithMe error:', e);
     }
@@ -1121,9 +1131,11 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
 
   function openLibraryModal(artefactId, sourceKeyId) {
     markNotificationRead(artefactId);
+    markInitiatorNotificationsReadForArtefact(artefactId);
     lastSharedSig = '';
     lastOwnedSig = '';
     renderSharedSection();
+    updateBadgesAndFeed();
     
     var z = getZ1N();
     var modal = document.getElementById('artefactSharingModal');
