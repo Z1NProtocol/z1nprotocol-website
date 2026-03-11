@@ -438,9 +438,10 @@
           await getKeyGlyphs(art.sourceKeyId);
           art.sourceGlyphs = art.sourceGlyphs || getShortGlyphs(art.sourceKeyId);
         }
-        if (art.status === 'released' && art.releasedBy) {
+        if (art.status === 'released') {
           var z3 = getZ1N();
-          art.releasedByInitiator = art.releasedBy !== (z3.wallet || '').toLowerCase();
+          // Compare on keyId — wallet comparison fails when same wallet owns multiple keys
+          art.releasedByInitiator = art.sourceKeyId !== z3.keyId;
         }
       }
       
