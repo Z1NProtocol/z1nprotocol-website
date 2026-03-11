@@ -130,8 +130,11 @@
       '.artefact-card.unseen-artefact::after {',
       '  content: "NEW"; position: absolute; top: 6px; right: 6px;',
       '  font-size: 8px; font-weight: 700; letter-spacing: 0.05em;',
-      '  color: #000; background: var(--accent, #5ee8a0);',
+      '  color: #fff; background: var(--accent, #5ee8a0);',
       '  padding: 2px 6px; border-radius: 4px;',
+      '}',
+      '.artefact-card.status-released.unseen-artefact::after {',
+      '  background: #f87171; color: #fff;',
       '}',
       '.artefact-card.status-pending,',
       '.artefact-card.status-pending:hover {',
@@ -931,7 +934,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
         '&artefactTokenId=' + art.tokenId;
       
-      var hasNotif = hasUnreadNotification(art.tokenId);
+      var hasNotif = hasUnreadNotification(art.tokenId) || (isReleased && art.releasedByInitiator);
       
       // Icon for non-preview states
       var previewContent;
