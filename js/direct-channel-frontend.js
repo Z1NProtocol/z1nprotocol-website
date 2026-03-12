@@ -248,6 +248,102 @@
   // MAIN ENTRY POINT
   // ═══════════════════════════════════════════════════════════════
 
+  var directPollInterval = null;
+
+  function startDirectPolling() {
+    if (directPollInterval) return; // already running
+    directPollInterval = setInterval(async function() {
+      // Only poll if Direct tab is active OR to keep badge updated
+      var prevReceivedCount = allDirectReceived.length;
+      var messages = await fetchMessages(getKeyId());
+      if (!messages || messages.length === 0) return;
+
+      var received = messages.filter(function(m) { return m.direction === 'received'; });
+
+      // Check if there are new messages
+      if (received.length > prevReceivedCount) {
+        var allKeyIds = messages.map(function(m) {
+          return m.direction === 'sent' ? m.recipientKeyId : m.senderKeyId;
+        }).filter(function(id, i, arr) { return arr.indexOf(id) === i; });
+        await batchFetchPublicKeys(allKeyIds);
+
+        var sent = messages.filter(function(m) { return m.direction === 'sent'; });
+        received.forEach(function(m) {
+          var decoded = (function() {
+            if (!m.encryptedPayload) return { text: '[No payload]', type: 'unknown' };
+            var payloadType = detectPayloadType(m.encryptedPayload);
+            if (payloadType === 'plain') return { text: readPlaintextPayload(m.encryptedPayload) || '[Read error]', type: 'plain' };
+            if (payloadType === 'encrypted') {
+              if (!isUnlocked || !secretKey) return { text: '[Locked — unlock encryption to read]', type: 'locked' };
+              var otherPkHex = publicKeyCache[m.senderKeyId];
+              if (!otherPkHex) return { text: '[Cannot decrypt — missing public key]', type: 'error' };
+              var decrypted = decryptMessage(m.encryptedPayload, hexToBytes(otherPkHex));
+              if (!decrypted) return { text: '[Decryption failed]', type: 'error' };
+              return { text: decrypted, type: 'encrypted' };
+            }
+            return { text: '[Unknown payload format]', type: 'unknown' };
+          })();
+          m.decodedContent = decoded.text;
+          m.messageType = decoded.type;
+        });
+
+        // Update badge regardless of which tab is active
+        allDirectReceived = received;
+        var directTabActive = document.getElementById('tab-direct') &&
+          document.getElementById('tab-direct').style.display !== 'none';
+        if (directTabActive) {
+          // Also merge sent: keep optimistic entries not yet in indexer
+          var indexedTxHashes = sent.map(function(m) { return m.txHash; });
+          var stillOptimistic = allDirectSent.filter(function(m) {
+            return m._optimistic && !indexedTxHashes.includes(m.txHash);
+          });
+          allDirectSent = stillOptimistic.concat(sent);
+          sent.forEach(function(m) {
+            var decoded = (function() {
+              if (!m.encryptedPayload) return { text: '[No payload]', type: 'unknown' };
+              var payloadType = detectPayloadType(m.encryptedPayload);
+              if (payloadType === 'plain') return { text: readPlaintextPayload(m.encryptedPayload) || '[Read error]', type: 'plain' };
+              return { text: '[Encrypted]', type: 'encrypted' };
+            })();
+            m.decodedContent = decoded.text;
+            m.messageType = decoded.type;
+          });
+          renderDirectSent(allDirectSent);
+          renderDirectReceived(allDirectReceived);
+        } else {
+          // Tab not active — just update badge via ActivityFeed
+          if (typeof ActivityFeed !== 'undefined' && typeof updateTabBadges === 'function') {
+            ActivityFeed.activities = ActivityFeed.activities.filter(function(a) {
+              return a.type !== 'direct_received';
+            });
+            var lastSeenBlock = parseInt(localStorage.getItem('z1n_direct_lastseen_' + getKeyId()) || '0');
+            received.forEach(function(m) {
+              var msgId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
+              var msgBlock = m.blockNumber || 0;
+              ActivityFeed.activities.push({
+                id: msgId,
+                type: 'direct_received',
+                direction: 'received',
+                timestamp: msgBlock,
+                fromKeyId: m.senderKeyId,
+                unseen: msgBlock > lastSeenBlock,
+                content: m.messageType === 'encrypted' ? '[Encrypted]' : (m.decodedContent || '')
+              });
+            });
+            updateTabBadges();
+          }
+        }
+      }
+    }, 30000); // poll every 30s
+  }
+
+  function stopDirectPolling() {
+    if (directPollInterval) {
+      clearInterval(directPollInterval);
+      directPollInterval = null;
+    }
+  }
+
   window.loadDirectChannel = async function () {
     var container = document.getElementById('tab-direct');
     if (!container || getKeyId() === null) return;
@@ -278,6 +374,7 @@
     }
 
     await loadDirectMessages();
+    startDirectPolling();
   };
 
   // ═══════════════════════════════════════════════════════════════
@@ -574,7 +671,24 @@
       if (status) status.innerHTML = '<div class="status-msg" style="background:rgba(94,232,160,0.15);border:1px solid #5ee8a0;color:#5ee8a0;">✅ ' + modeLabel + ' sent to K#' + toKeyId + '!</div>';
       toast(modeLabel + ' sent!', 4000);
 
-      await loadDirectMessages();
+      // Optimistic UI: add sent message immediately before indexer catches up
+      var optimisticMsg = {
+        direction: 'sent',
+        recipientKeyId: toKeyId,
+        senderKeyId: getKeyId(),
+        encryptedPayload: bytesToHex(payload),
+        timestamp: Math.floor(Date.now() / 1000),
+        blockNumber: 0,
+        txHash: txHash,
+        decodedContent: content,
+        messageType: useEncryption ? 'encrypted' : 'plain',
+        _optimistic: true
+      };
+      allDirectSent = [optimisticMsg].concat(allDirectSent);
+      renderDirectSent(allDirectSent);
+
+      // Background refresh after indexer delay
+      setTimeout(function() { loadDirectMessages(); }, 8000);
     } catch (e) {
       var msg = e.message || 'Failed';
       if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
