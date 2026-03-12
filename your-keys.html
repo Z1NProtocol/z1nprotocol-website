@@ -857,13 +857,12 @@ footer .links a:hover{color:var(--text-main);}
         return Promise.all([
           fetch(API_BASE + '/key/' + key.tokenId + '/claimable').then(function(r) { return r.ok ? r.json() : { epochs: [] }; }).catch(function() { return { epochs: [] }; }),
           getUnseenCount(key.tokenId, key),
-          fetch(API_BASE + '/attestations?fromKeyId=' + key.tokenId + '&limit=10').then(function(r) { return r.ok ? r.json() : { attestations: [] }; }).catch(function() { return { attestations: [] }; })
+          fetch('https://polygon-mainnet.g.alchemy.com/v2/' + ALCHEMY_KEY, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',params:[{to:'0xaB9D716c2799A95aE2A3640faAcc0148FC37F52D',data:'0xfe6569d7'+('0000000000000000000000000000000000000000000000000000000000000000'+key.tokenId.toString(16)).slice(-64)+('0000000000000000000000000000000000000000000000000000000000000000'+currentEpochNum.toString(16)).slice(-64)},'latest']})}).then(function(r){return r.json();}).catch(function(){return{result:'0x0'};})
         ]).then(function(results) {
           key.unseenCount = results[1];
           key.claimableEpochs = (results[0].epochs || []).map(function(e) { return { epochId: e.epochId, amount: e.amountFormatted || '0' }; });
           // Count attests in current epoch (same logic as dashboard)
-          var atts = (results[2].attestations || []).filter(function(a) { return a.epoch === currentEpochNum; });
-          key.attestsUsed = Math.min(atts.length, 2);
+          key.attestsUsed = Math.min(parseInt(results[2].result || '0x0', 16) || 0, 2);
         });
       })).then(function() { renderKeys(); }).catch(function() {});
     } catch (err) {
