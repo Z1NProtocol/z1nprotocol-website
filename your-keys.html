@@ -856,10 +856,14 @@ footer .links a:hover{color:var(--text-main);}
       Promise.all(allKeys.map(function(key) {
         return Promise.all([
           fetch(API_BASE + '/key/' + key.tokenId + '/claimable').then(function(r) { return r.ok ? r.json() : { epochs: [] }; }).catch(function() { return { epochs: [] }; }),
-          getUnseenCount(key.tokenId, key)
+          getUnseenCount(key.tokenId, key),
+          fetch(API_BASE + '/attestations?fromKeyId=' + key.tokenId + '&limit=10').then(function(r) { return r.ok ? r.json() : { attestations: [] }; }).catch(function() { return { attestations: [] }; })
         ]).then(function(results) {
           key.unseenCount = results[1];
           key.claimableEpochs = (results[0].epochs || []).map(function(e) { return { epochId: e.epochId, amount: e.amountFormatted || '0' }; });
+          // Count attests in current epoch (same logic as dashboard)
+          var atts = (results[2].attestations || []).filter(function(a) { return a.epoch === currentEpochNum; });
+          key.attestsUsed = Math.min(atts.length, 2);
         });
       })).then(function() { renderKeys(); }).catch(function() {});
     } catch (err) {
