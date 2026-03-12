@@ -397,14 +397,8 @@
       data = null;
     }
     
-    // Store initiator notifications
     if (data && data.notifications) {
-      data.notifications.forEach(function(n) {
-        var key = n.artefactId + ':' + n.type;
-        if (!initiatorNotifications[key]) {
-          initiatorNotifications[key] = n;
-        }
-      });
+      ingestNotifications(data.notifications);
       setTimeout(updateBadgesAndFeed, 100);
     }
   }
@@ -445,15 +439,8 @@
         }
       }
       
-      detectUnseenArtefacts(sharedWithMe);
-
       if (data && data.notifications) {
-        data.notifications.forEach(function(n) {
-          var key = n.artefactId + ':' + n.type;
-          if (!initiatorNotifications[key]) {
-            initiatorNotifications[key] = n;
-          }
-        });
+        ingestNotifications(data.notifications);
         setTimeout(updateBadgesAndFeed, 100);
       }
     } catch (e) {
@@ -466,97 +453,58 @@
   }
 
   // =====================================================================
-  // UNSEEN TRACKING
+  // UNIFIED NOTIFICATION SYSTEM
   // =====================================================================
 
-  var unseenArtefactIds = {};
+  // Single source of truth — keyed by artefactId:type
+  // Populated from backend notifications array (both /artefacts and /library)
+  var notifications = {};
+
   // Store offer messages locally for feed display
   var offerMessages = {};
 
-  function getSeenKey() {
-  var z = getZ1N();
-  return 'z1n_seen_library_' + (z.keyId !== null && z.keyId !== undefined ? z.keyId : 'none');
-}
-
-  function loadSeenState() {
-    try {
-      var raw = localStorage.getItem(getSeenKey());
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) { return {}; }
-  }
-
-  function saveSeenState(state) {
-    try { localStorage.setItem(getSeenKey(), JSON.stringify(state)); } catch (e) {}
-  }
-
-  function detectUnseenArtefacts(libraryItems) {
-    var seen = loadSeenState();
-    unseenArtefactIds = {};
-    libraryItems.forEach(function(art) {
-      var id = art.tokenId;
-      var stateLabel = art.status === 'rejected' ? 'rejected' :
-                       art.stateNum === 1 ? 'pending' :
-                       art.stateNum === 2 ? 'active' :
-                       art.stateNum === 3 ? 'released' : (art.status || 'other');
-      var currentSig = art.sourceKeyId + ':' + stateLabel;
-      if (!seen[id]) {
-        unseenArtefactIds[id] = stateLabel === 'pending' ? 'offered' :
-                                stateLabel === 'rejected' ? 'rejected' : 'changed';
-      } else if (seen[id] !== currentSig) {
-        if (stateLabel === 'released') unseenArtefactIds[id] = 'released';
-        else if (stateLabel === 'rejected') unseenArtefactIds[id] = 'rejected';
-        else unseenArtefactIds[id] = 'changed';
+  function ingestNotifications(arr) {
+    if (!arr) return;
+    arr.forEach(function(n) {
+      var key = n.artefactId + ':' + n.type;
+      if (!notifications[key]) {
+        notifications[key] = { seen: false };
       }
-    });
-    return Object.keys(unseenArtefactIds).length;
-  }
-
-  function hasUnreadNotification(artefactId) {
-    return !!unseenArtefactIds[artefactId];
-  }
-
-  function markNotificationRead(artefactId) {
-    var art = sharedWithMe.find(function(a) { return a.tokenId === artefactId; });
-    if (!art) return;
-    delete unseenArtefactIds[artefactId];
-    var seen = loadSeenState();
-    var stateLabel = art.status === 'rejected' ? 'rejected' :
-                     art.stateNum === 1 ? 'pending' :
-                     art.stateNum === 2 ? 'active' :
-                     art.stateNum === 3 ? 'released' : (art.status || 'other');
-    seen[artefactId] = art.sourceKeyId + ':' + stateLabel;
-    saveSeenState(seen);
-  }
-
-  function getUnreadNotificationCount() {
-    return Object.keys(unseenArtefactIds).length;
-  }
-
-  function getInitiatorUnreadCount() {
-    return Object.values(initiatorNotifications).filter(function(n) { return !n.seen; }).length;
-  }
-
-  function getInitiatorNotificationsForArtefact(artefactId) {
-    return Object.values(initiatorNotifications).filter(function(n) {
-      return n.artefactId === artefactId && !n.seen;
+      // Merge fields but preserve seen state
+      Object.assign(notifications[key], n);
     });
   }
 
-  function markInitiatorNotificationsReadForArtefact(artefactId) {
-    Object.keys(initiatorNotifications).forEach(function(key) {
-      if (initiatorNotifications[key].artefactId === artefactId) {
-        initiatorNotifications[key].seen = true;
+  function markRead(artefactId) {
+    Object.keys(notifications).forEach(function(key) {
+      if (notifications[key].artefactId === artefactId) {
+        notifications[key].seen = true;
       }
     });
     updateBadgesAndFeed();
   }
 
-  function markInitiatorNotificationSeen(artefactId, type) {
-    var key = artefactId + ':' + type;
-    if (initiatorNotifications[key]) {
-      initiatorNotifications[key].seen = true;
-    }
+  function getUnreadCount() {
+    return Object.values(notifications).filter(function(n) { return !n.seen; }).length;
   }
+
+  function getUnreadForArtefact(artefactId) {
+    return Object.values(notifications).filter(function(n) {
+      return n.artefactId === artefactId && !n.seen;
+    });
+  }
+
+  function hasUnread(artefactId) {
+    return getUnreadForArtefact(artefactId).length > 0;
+  }
+
+  // Legacy aliases — keep these so existing render calls still work
+  function hasUnreadNotification(artefactId) { return hasUnread(artefactId); }
+  function markNotificationRead(artefactId) { markRead(artefactId); }
+  function markInitiatorNotificationsReadForArtefact(artefactId) { markRead(artefactId); }
+  function getUnreadNotificationCount() { return getUnreadCount(); }
+  function getInitiatorUnreadCount() { return 0; } // merged into getUnreadCount
+  function getInitiatorNotificationsForArtefact(artefactId) { return getUnreadForArtefact(artefactId); }
 
   // =====================================================================
   // LOADING SKELETON
@@ -1799,8 +1747,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
   watchBadge();
 
   function updateBadgesAndFeed() {
-    var unreadCount = getUnreadNotificationCount() + getInitiatorUnreadCount();
-    // stateChangeLog entries are own actions — don't count toward badge
+    var unreadCount = getUnreadCount();
     applyBadge(unreadCount);
     
     var feed = document.getElementById('activityFeed');
@@ -1810,11 +1757,12 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       if (unreadCount > 0) {
         var z = getZ1N();
 
-        // Initiator notifications (accept / reject / release by recipient)
-        Object.values(initiatorNotifications).forEach(function(n) {
+        // Unified notifications feed — one loop, one system
+        Object.values(notifications).forEach(function(n) {
           if (n.seen) return;
           var msg = '';
           var color = 'var(--accent)';
+
           if (n.type === 'offering_accepted') {
             msg = '<strong style="color:var(--accent);">K#' + n.byKeyId + '</strong> accepted your artefact offer';
             color = 'var(--accent)';
@@ -1822,11 +1770,17 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
             msg = '<strong style="color:#f87171;">K#' + n.byKeyId + '</strong> rejected your artefact offer';
             color = '#f87171';
           } else if (n.type === 'artefact_released') {
-            var who = n.releasedBy === 'recipient' ? 'K#' + n.byKeyId + ' released' : 'You released';
+            var who = n.releasedBy === 'initiator' ? 'K#' + n.byKeyId + ' released' : 'You released';
             msg = '<strong style="color:#f87171;">' + who + '</strong> artefact #' + n.artefactId +
               (n.message ? ' <span style="font-style:italic;color:rgba(248,113,113,0.7);">"' + escapeHtml(n.message.slice(0,40)) + '"</span>' : '');
             color = '#f87171';
+          } else if (n.type === 'offering_received') {
+            var offerMsg = n.message || '';
+            msg = '<strong style="color:var(--accent);">K#' + n.byKeyId + '</strong> offered an artefact to you' +
+              (offerMsg ? ' <span style="font-style:italic;color:rgba(94,232,160,0.8);">"' + escapeHtml(offerMsg.slice(0,40)) + '"</span>' : '');
+            color = 'var(--accent)';
           }
+
           if (!msg) return;
           var item = document.createElement('div');
           item.className = 'activity-item unread artefact-notif';
@@ -1841,17 +1795,15 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
           else feed.appendChild(item);
         });
 
-        // Local state changes (own actions this session)
+        // Local state changes (own actions this session — offered/accepted/cancelled only)
         stateChangeLog.forEach(function(entry) {
-          var color = (entry.type === 'released' || entry.type === 'cancelled' || entry.type === 'rejected') ? '#f87171' : 'var(--accent)';
+          if (entry.type === 'released') return;
+          var color = (entry.type === 'cancelled' || entry.type === 'rejected') ? '#f87171' : 'var(--accent)';
           var actionText = entry.type === 'offered' ? 'You offered artefact #' + entry.artefactId + ' to K#' + entry.targetKeyId :
                            entry.type === 'cancelled' ? 'You cancelled offering of artefact #' + entry.artefactId :
                            entry.type === 'accepted' ? 'You accepted artefact #' + entry.artefactId :
-                           entry.type === 'rejected' ? 'You rejected artefact #' + entry.artefactId :
-                           entry.type === 'released' ? 'You released artefact #' + entry.artefactId + (entry.message ? ' — "' + escapeHtml(entry.message.slice(0,40)) + '"' : '') : '';
+                           entry.type === 'rejected' ? 'You rejected artefact #' + entry.artefactId : '';
           if (!actionText) return;
-          // Skip 'released' entries for initiator — own action, not a notification
-          if (entry.type === 'released') return;
           var item = document.createElement('div');
           item.className = 'activity-item artefact-notif';
           item.style.borderLeft = '3px solid ' + color;
@@ -1859,41 +1811,6 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
             '<div class="activity-content"><div class="activity-title" style="color:' + color + ';">' + actionText + '</div></div>';
           if (feed.firstChild) feed.insertBefore(item, feed.firstChild);
           else feed.appendChild(item);
-        });
-
-        sharedWithMe.forEach(function(art) {
-          if (!unseenArtefactIds[art.tokenId]) return;
-          var type = unseenArtefactIds[art.tokenId];
-          
-          // Use offer message if available, otherwise describe state
-          var offerMsg = art.offerMessage || offerMessages[art.tokenId] || '';
-          var msgLine = '';
-          if (type === 'offered' && offerMsg) {
-            msgLine = ' <span style="color:var(--accent);font-style:italic;">"' + escapeHtml(offerMsg.slice(0, 40)) + '"</span>';
-          } else if (type === 'released') {
-            msgLine = ' <span style="color:#f87171;">— released</span>';
-          }
-          
-          var actionText = type === 'released' ? 'released an artefact' :
-                           type === 'rejected' ? 'you rejected their artefact offer' :
-                           'offered an artefact to you';
-          
-          var item = document.createElement('div');
-          item.className = 'activity-item unread artefact-notif';
-          item.style.cursor = 'pointer';
-          var feedColor = type === 'released' ? '#f87171' : type === 'rejected' ? '#f87171' : 'var(--accent)';
-          item.style.borderLeft = '3px solid ' + feedColor;
-          item.onclick = function() { if (typeof switchTab === 'function') switchTab('artefacts'); };
-          item.innerHTML = '<div class="activity-icon artefact">◈</div>' +
-            '<div class="activity-content">' +
-              '<div class="activity-title" style="color:' + feedColor + ';"><strong style="color:' + feedColor + ';">K#' + art.sourceKeyId + '</strong> ' + actionText + msgLine + '</div>' +
-            '</div>';
-          
-          if (feed.firstChild) {
-            feed.insertBefore(item, feed.firstChild);
-          } else {
-            feed.appendChild(item);
-          }
         });
       }
       
