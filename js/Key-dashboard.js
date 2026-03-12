@@ -2130,6 +2130,12 @@ function renderActivityItem(activity) {
       title = 'Whisper from <span class="key-link">K#' + (activity.fromKeyId || '?') + '</span>';
       preview = truncateActivityContent(activity.content);
       break;
+
+    case 'direct_received':
+      var isEncryptedDm = activity.content === '[Encrypted]';
+      title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> sent you ' + (isEncryptedDm ? 'an encrypted message' : 'an on-chain message');
+      preview = isEncryptedDm ? '' : truncateActivityContent(activity.content);
+      break;
       
    case 'canon_mint':
       title = 'Anchored <strong>E' + (activity.epoch || '?') + '</strong>';
@@ -2398,6 +2404,8 @@ function updateTabBadges() {
   var unreadWhispers = ActivityFeed.activities.filter(function(a) {
     return (a.type === 'whisper_received' || a.type === 'direct_received') && !ActivityFeed.readItems.has(a.id);
   }).length;
+  var overviewDmEl = document.getElementById('overview-unseen-dm');
+  if (overviewDmEl) overviewDmEl.textContent = unreadWhispers > 0 ? unreadWhispers : '';
   
   var unreadAttests = ActivityFeed.activities.filter(function(a) {
     return a.type === 'attest_received' && !ActivityFeed.readItems.has(a.id);

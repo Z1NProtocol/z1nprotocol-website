@@ -293,24 +293,19 @@
       encryptionBanner =
         '<div style="background:rgba(94,232,160,0.08);border:1px solid rgba(94,232,160,0.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
           '<div>' +
-            '<div style="font-size:12px;font-weight:600;color:#5ee8a0;margin-bottom:3px;">🔐 Encrypted messaging not set up</div>' +
-            '<div style="font-size:11px;color:var(--text-soft);">Register an encryption key to send and receive encrypted messages. Plaintext messages work without setup.</div>' +
+            '<div style="font-size:12px;font-weight:600;color:#5ee8a0;margin-bottom:3px;">🔐 Enable encryption</div>' +
+            '<div style="font-size:11px;color:var(--text-soft);">Encrypt your messages so only the recipient can read them. One wallet signature registers your key — no gas after setup. Without encryption, message content is visible on-chain.</div>' +
           '</div>' +
-          '<button class="btn btn-green" onclick="registerEncryptionKey()" style="white-space:nowrap;padding:8px 16px;font-size:12px;">Set up encryption</button>' +
+          '<button class="btn btn-green" onclick="registerEncryptionKey()" style="white-space:nowrap;padding:8px 16px;font-size:12px;">Enable encryption</button>' +
         '</div>' +
         '<div id="directSetupStatus"></div>';
     } else if (encryptionState === 'locked') {
       encryptionBanner =
         '<div style="background:rgba(94,232,160,0.08);border:1px solid rgba(94,232,160,0.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
           '<div>' +
-            '<div style="font-size:12px;font-weight:600;color:#5ee8a0;margin-bottom:3px;">🔒 Encrypted messaging locked</div>' +
-            '<div style="font-size:11px;color:var(--text-soft);line-height:1.6;">Your encryption key is derived from your wallet — never stored, never leaves your browser.</div>' +
-'<div style="font-size:10px;color:var(--text-soft);margin-top:8px;display:flex;flex-direction:column;gap:4px;">' +
-  '<span>🔑 Each session: one free wallet signature recreates it. No gas, nothing on-chain.</span>' +
-  '<span>🔒 Without unlocking: encrypted messages stay private — even to you.</span>' +
-  '<span>📡 Open field messages are always readable without unlocking.</span>' +
-'</div>' +          '</div>' +
-          '<button class="btn btn-green" onclick="unlockDirectChannel()" style="white-space:nowrap;padding:8px 16px;font-size:12px;">Unlock encryption</button>' +
+            '<div style="font-size:12px;font-weight:600;color:#5ee8a0;margin-bottom:3px;">🔒 Enable encryption</div>' +
+            '<div style="font-size:11px;color:var(--text-soft);line-height:1.6;">By enabling encryption, your messages are end-to-end encrypted on-chain. One free wallet signature per session — no gas, nothing stored. Without encryption, message content is readable by anyone on-chain.</div>' +          '</div>' +
+          '<button class="btn btn-green" onclick="unlockDirectChannel()" style="white-space:nowrap;padding:8px 16px;font-size:12px;">Enable encryption</button>' +
         '</div>' +
         '<div id="directUnlockStatus"></div>';
     }
@@ -322,7 +317,7 @@
         // LEFT: Compose
         '<div class="section-card">' +
           '<div class="section-header" style="margin-bottom:16px;">' +
-            '<span class="section-title" style="color:#5ee8a0;">Send Direct Message</span>' +
+            '<span class="section-title" style="color:#ffd556;">SEND DIRECT MESSAGE</span>' +
             renderModeToggle(encryptionState) +
           '</div>' +
 
@@ -346,7 +341,7 @@
         // RIGHT: Sent
         '<div class="section-card">' +
           '<div class="section-header" style="margin-bottom:16px;">' +
-            '<span class="section-title" style="color:#5ee8a0;">Sent <span id="directSentCount" style="font-weight:400;opacity:0.8;">(0)</span></span>' +
+            '<span class="section-title" style="color:#ffd556;">SENT <span id="directSentCount" style="font-weight:400;opacity:0.8;">(0)</span></span>' +
             '<div style="display:flex;gap:6px;align-items:center;">' +
               '<input type="text" id="directSentSearchKey" placeholder="To Key..." style="width:70px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterDirectSent()">' +
               '<button class="filter-select" style="cursor:pointer;" onclick="downloadDirectSentCSV()">↓ CSV</button>' +
@@ -362,7 +357,7 @@
       // RECEIVED — full width
       '<div class="section-card" style="margin-top:20px;">' +
         '<div class="section-header" style="margin-bottom:12px;">' +
-          '<span class="section-title" style="color:#5ee8a0;">Received <span id="directReceivedCount" style="font-weight:400;opacity:0.8;">(0)</span></span>' +
+          '<span class="section-title" style="color:#ffd556;">RECEIVED <span id="directReceivedCount" style="font-weight:400;opacity:0.8;">(0)</span></span>' +
           '<div style="display:flex;gap:6px;align-items:center;">' +
             '<input type="text" id="directReceivedSearchKey" placeholder="From Key..." style="width:80px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterDirectReceived()">' +
             '<button class="filter-select" style="cursor:pointer;" onclick="downloadDirectReceivedCSV()">↓ CSV</button>' +
@@ -707,6 +702,11 @@
       var it = document.createElement('div');
       it.className = 'signal-item';
 
+      var dmActivityId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
+      var isDmUnread = typeof ActivityFeed !== 'undefined' && ActivityFeed.readItems && !ActivityFeed.readItems.has(dmActivityId);
+      if (isDmUnread) it.classList.add('unread-glow');
+      it.dataset.activityId = dmActivityId;
+
       var typeBadge = m.messageType === 'encrypted'
         ? '<span style="font-size:10px;padding:2px 6px;background:rgba(94,232,160,0.15);color:#5ee8a0;border-radius:3px;margin-left:6px;">🔐</span>'
         : '<span style="font-size:10px;padding:2px 6px;background:rgba(255,213,86,0.15);color:#ffd556;border-radius:3px;margin-left:6px;">📡</span>';
@@ -737,22 +737,38 @@
           '<button onclick="event.stopPropagation();replyDirect(' + m.senderKeyId + ')" style="font-size:10px;padding:3px 8px;background:rgba(94,232,160,0.2);color:#5ee8a0;border:none;border-radius:4px;cursor:pointer;">↩ Reply</button>' +
         '</div>';
 
+      it.addEventListener('click', function (e) {
+        if (e.target.tagName === 'BUTTON') return;
+        if (typeof markTabItemRead === 'function') markTabItemRead(dmActivityId, it);
+        var msgBlock = m.blockNumber || 0;
+        var lastSeenBlock = parseInt(localStorage.getItem('z1n_direct_lastseen_' + getKeyId()) || '0');
+        if (msgBlock > lastSeenBlock) {
+          localStorage.setItem('z1n_direct_lastseen_' + getKeyId(), String(msgBlock));
+        }
+      });
+
       list.appendChild(it);
     });
 
-    // Push to ActivityFeed for tab badge
+    // Push to ActivityFeed for tab badge + Unseen Presence
     if (typeof ActivityFeed !== 'undefined' && typeof updateTabBadges === 'function') {
       ActivityFeed.activities = ActivityFeed.activities.filter(function(a) {
         return a.type !== 'direct_received';
       });
+      var lastSeenBlock = parseInt(localStorage.getItem('z1n_direct_lastseen_' + getKeyId()) || '0');
+      var unseenCount = 0;
       messages.forEach(function(m) {
         var msgId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
+        var msgBlock = m.blockNumber || 0;
+        var isUnseen = msgBlock > lastSeenBlock;
+        if (isUnseen) unseenCount++;
         ActivityFeed.activities.push({
           id: msgId,
           type: 'direct_received',
           direction: 'received',
-          timestamp: m.blockNumber || 0,
+          timestamp: msgBlock,
           fromKeyId: m.senderKeyId,
+          unseen: isUnseen,
           content: m.messageType === 'encrypted' ? '[Encrypted]' : (m.decodedContent || '')
         });
       });
