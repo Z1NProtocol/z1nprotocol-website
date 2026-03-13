@@ -353,6 +353,12 @@ footer .links a:hover{color:var(--text-main);}
     .no-claims-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.5; }
 
     @media(prefers-reduced-motion:reduce){.wallet-loading,.toast,.modal-overlay,.claim-modal{transition:none;}}
+
+    .key-card-draft { border: 1px dashed rgba(255,213,86,0.4); background: rgba(255,213,86,0.04); display: flex; align-items: center; justify-content: center; min-height: 200px; border-radius: 14px; }
+    .draft-inner { text-align: center; }
+    .draft-spinner { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,213,86,0.2); border-top-color: var(--keys-accent); animation: spin 0.9s linear infinite; margin: 0 auto 10px; }
+    .draft-label { font-size: 13px; color: var(--keys-accent); font-weight: 600; }
+    .draft-sub { font-size: 11px; color: var(--text-soft); margin-top: 3px; }
   </style>
 </head>
 
@@ -813,7 +819,25 @@ footer .links a:hover{color:var(--text-main);}
     var noResults = document.getElementById('noResultsState');
     container.innerHTML = '';
     if (!filtered.length && allKeys.length > 0) { noResults.style.display = 'block'; container.style.display = 'none'; }
-    else { noResults.style.display = 'none'; container.style.display = 'grid'; filtered.forEach(function(key) { container.appendChild(renderKeyCard(key)); }); }
+    else {
+      noResults.style.display = 'none'; container.style.display = 'grid';
+      filtered.forEach(function(key) { container.appendChild(renderKeyCard(key)); });
+      // ─── PENDING MINT DRAFT CARDS ───
+      try {
+        var pendingKeys = JSON.parse(localStorage.getItem('z1n_pending_keys') || '[]');
+        var now = Date.now();
+        pendingKeys = pendingKeys.filter(function(p) { return now - p.ts < 300000; });
+        localStorage.setItem('z1n_pending_keys', JSON.stringify(pendingKeys));
+        var existingTxHashes = allKeys.map(function(k) { return k.txHash; });
+        pendingKeys.forEach(function(p) {
+          if (!primaryWallet || p.wallet.toLowerCase() !== primaryWallet.toLowerCase()) return;
+          var wrapper = document.createElement('div'); wrapper.className = 'key-card-wrapper';
+          var draft = document.createElement('div'); draft.className = 'key-card key-card-draft';
+          draft.innerHTML = '<div class="draft-inner"><div class="draft-spinner"></div><div class="draft-label">Minting…</div><div class="draft-sub">Indexing on-chain</div></div>';
+          wrapper.appendChild(draft); container.appendChild(wrapper);
+        });
+      } catch(e) {}
+    }
   }
 
   async function loadKeysForWallet(walletAddr) {
