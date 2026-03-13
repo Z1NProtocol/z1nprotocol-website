@@ -2004,7 +2004,7 @@ function renderActivityFeed() {
 ActivityFeed.activities.forEach(function(a) {
     if (ActivityFeed.readItems.has(a.id)) return;
     
-   if (a.type === 'reply_received' || a.type === 'attest_received') {
+   if (a.type === 'reply_received' || a.type === 'attest_received' || a.type === 'direct_received') {
       countSignals++;
     } else if (a.type.includes('artefact')) {
       countArtefacts++;
