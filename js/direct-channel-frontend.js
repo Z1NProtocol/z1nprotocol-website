@@ -330,6 +330,10 @@
                 content: m.messageType === 'encrypted' ? '[Encrypted]' : (m.decodedContent || '')
               });
             });
+            try {
+              var _ri = localStorage.getItem('z1n_direct_seen_' + getKeyId());
+              if (_ri) ActivityFeed.readItems = new Set(JSON.parse(_ri));
+            } catch(e) {}
             updateTabBadges();
           }
         }
@@ -886,6 +890,10 @@
           content: m.messageType === 'encrypted' ? '[Encrypted]' : (m.decodedContent || '')
         });
       });
+      try {
+        var _ri = localStorage.getItem('z1n_direct_seen_' + getKeyId());
+        if (_ri) ActivityFeed.readItems = new Set(JSON.parse(_ri));
+      } catch(e) {}
       updateTabBadges();
     }
   }
