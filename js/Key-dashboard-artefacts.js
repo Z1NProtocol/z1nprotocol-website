@@ -607,7 +607,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
       return;
     }
     
-    var sig = ownedArtefacts.map(function(a) { return a.tokenId + ':' + a.status; }).join(',') + '|' + pendingArtefacts.length + '|' + JSON.stringify(pendingViewChanges);
+    var unreadKeysOwned = Object.keys(notifications).filter(function(k) { return !notifications[k].seen; }).join(',');
+var sig = ownedArtefacts.map(function(a) { return a.tokenId + ':' + a.status; }).join(',') + '|' + pendingArtefacts.length + '|' + JSON.stringify(pendingViewChanges) + '|' + unreadKeysOwned;
     if (sig === lastOwnedSig && container.innerHTML !== '') { return; }
     lastOwnedSig = sig;
     
@@ -817,7 +818,8 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
     var container = document.getElementById('sharedWithMeSection');
     if (!container) return;
     
-    var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':' + (a.stateNum || 0); }).join(',');
+    var unreadKeysShared = Object.keys(notifications).filter(function(k) { return !notifications[k].seen; }).join(',');
+var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':' + (a.stateNum || 0); }).join(',') + '|' + unreadKeysShared;
     if (sig === lastSharedSig && container.innerHTML !== '') { return; }
     lastSharedSig = sig;
     
