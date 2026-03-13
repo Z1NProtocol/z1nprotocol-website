@@ -237,9 +237,11 @@ backdrop-filter:blur(12px);
     .lead{ font-size:17px; line-height:1.65; opacity:0.85; max-width:920px; margin-bottom:8px; }
     .lead-small{ font-size:14px; line-height:1.65; opacity:0.7; max-width:920px; margin-bottom:18px; }
 
+    /* ── PATCH: mode-row wraps on small screens ── */
     .mode-row{
       display:flex;
-      gap:12px;
+      flex-wrap:wrap;
+      gap:10px;
       margin-top:55px;
       margin-bottom:22px;
     }
@@ -254,11 +256,15 @@ backdrop-filter:blur(12px);
        background:transparent;
        color:var(--text-soft);
        font-size:13px;
-       letter-spacing:0.16em;
+       letter-spacing:0.12em;
        text-transform:uppercase;
        font-weight:700;
       white-space:nowrap;
       transition:transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+    }
+    /* ── PATCH: smaller buttons on very small screens ── */
+    @media(max-width:480px){
+      .mode-btn{ font-size:11px; padding:6px 9px; letter-spacing:0.07em; }
     }
 
     .mode-btn:hover{
@@ -618,7 +624,7 @@ backdrop-filter:blur(12px);
     </div>
   </div>
 
-  <!-- BI LENS (hidden until click) -->
+  <!-- BI LENS -->
   <section class="lens" id="lensBI">
     <div class="manifest-head">
       <div class="manifest-title">Z1N Protocol Manifest</div>
@@ -1229,11 +1235,9 @@ backdrop-filter:blur(12px);
           </p>
 
           <p>
-            A PoG signal carries a maximum of 280 bytes.
+            A PoG signal carries a maximum of 320 bytes of content reference.
             Intent, Key ID, and epoch are stored separately.
             Only your expression counts toward the limit.
-            280 bytes is not restriction.
-            It is compression.
           </p>
 
         <div class="h3">4.3 Speaking Openly</div>
@@ -1248,7 +1252,7 @@ backdrop-filter:blur(12px);
           <p>
             Every Key may attest to two PoG signals from the previous epoch.
             An attestation from a Key carries full weight.
-            Non-holders may also attest, but their voice remains a whisper.
+            Non-holders may also attest, but their voice carries no ranking weight — they are witnesses only.
             The field measures resonance, not identity.
           </p>
 
@@ -1419,7 +1423,7 @@ backdrop-filter:blur(12px);
         </p>
       </section>
 
-<!-- CHAPTER 6 -->
+<!-- CHAPTER 6 — PATCHED: inscription layer, offering model, state machine -->
       <section id="c6">
         <div class="h2">6. Artefacts – Relational Memory</div>
 
@@ -1458,7 +1462,7 @@ backdrop-filter:blur(12px);
         <div class="h3">6.2 Additional Artefacts</div>
 
         <p>
-          You may mint additional live artefacts.
+          You may mint additional artefacts.
           Each costs 7 POL — routed to Nexus Epoch until graduation, then to the Field itself.
         </p>
 
@@ -1470,13 +1474,11 @@ backdrop-filter:blur(12px);
         <div class="h3">6.3 The Inscription Layer (NBI-native)</div>
 
          <p>
-    Every Artefact carries an inscription in three parts:
+    Every Artefact carries a single inscription — stored permanently on-chain at mint time:
   </p>
 
   <ul>
-    <li><code>contentHash</code> (bytes32): a cryptographic reference to meaning (off-chain, if desired).</li>
-    <li><code>schema</code> (0–4): the type of inscription (e.g. commitment, dialogue, glyph-pattern, encrypted).</li>
-    <li><code>inscription</code> (string, max 64 bytes): an optional human-readable line stored on-chain.</li>
+    <li><code>inscription</code> (string, max 64 bytes): a human-readable or machine-readable mark stored on-chain permanently at mint time. Cannot be changed after minting.</li>
   </ul>
 
          <p>
@@ -1495,29 +1497,25 @@ backdrop-filter:blur(12px);
 
   <ul>
     <li><strong>Offer</strong>: the Artefact enters a pending state for a specific Key.</li>
-    <li><strong>Accept</strong>: the bond forms. Binding becomes permanent.</li>
-    <li><strong>Reject</strong>: no bond forms. The Artefact returns unshared and may be offered again.</li>
+    <li><strong>Accept</strong>: the bond forms. The Artefact becomes ACTIVE — permanent binding.</li>
+    <li><strong>Reject</strong>: no bond forms. The Artefact returns to UNSHARED and may be offered again.</li>
+    <li><strong>Cancel</strong> (offerer only): withdraw a pending offer before the recipient responds.</li>
   </ul>
-
-  <p>
-    To prevent inbox flooding, each Key has a hard cap of <strong>21</strong> pending incoming offerings.
-  </p>
 
   <div class="h3">6.5 Sovereignty — Symmetric Exit, No Coercion</div>
 
   <p>
-    Once accepted, an Artefact can be visible or withdrawn — but the relation remains legible on-chain.
-    Either side can end the relation permanently.
+    Once accepted, an Artefact is ACTIVE. The relation is legible on-chain.
+    Either side can end it permanently.
   </p>
 
   <ul>
-    <li><strong>Revoke / Restore</strong> (owner): temporarily withdraw or restore viewing from an active state.</li>
-    <li><strong>Hide / Unhide</strong> (recipient): privately remove the Artefact from their own view.</li>
-    <li><strong>Release</strong> (owner or recipient): permanent severance. The Artefact is retired.</li>
+    <li><strong>Release</strong> (owner <em>or</em> recipient): permanent, terminal severance — the Artefact moves to RELEASED and never returns. Both sides hold equal exit rights. No hierarchy.</li>
   </ul>
 
   <p>
-    Release is symmetric by design: the recipient always has an exit.
+    Full state machine: <strong>UNSHARED → PENDING → ACTIVE → RELEASED</strong><br/>
+    RELEASED is terminal — no governance, no admin, no reversal.
     Z1N facilitates consent. It does not enforce attachment.
   </p>
 
@@ -2070,32 +2068,39 @@ Funds:
 Accounting:
 - core.recordIssuance(count) AFTER mint (Core enforces caps).</pre>
 
+    <!-- PATCHED: Section 7 — removed signalType, fixed SignalRecord -->
     <div class="h2">7. Signals (Ontology + Reporter Ground Truth)</div>
     <pre class="dialogue">Axes:
 Intent (WHY): 0..3 => ΩC / ΩI / ΩK / ΩS
-SignalType (WHAT): enum { FACTUAL, REFLECTIVE, META, SILENCE }
 
 SignalRecord struct (Z1NTypes):
-{ cid, symbolIndex, epoch, submitter, timestamp,
-  intent, signalType, epochRef, replyTo, hasNFT }
+{ contentRef, symbolIndex, epoch, submitter, timestamp,
+  clientTimestamp, intent, replyTo, hasNFT }
 
 Reporter = index of record truth:
 - Reporter registers signalHash → SignalRecord
-- Events.CIDRegistered(signalHash, submitter, cid, epoch, intent, hasNFT)</pre>
+- Events.SignalSubmitted(sender, tokenId, signalHash, contentRef,
+    symbolIndex, intent, replyTo, epoch, clientTimestamp)</pre>
 
+    <!-- PATCHED: Section 8 — fixed submitSignal params, removed signalType/epochRef -->
     <div class="h2">8. Signal Submission (Key owner only)</div>
     <pre class="dialogue">Entry:
-Signal.submitSignal(tokenId, signalHash, cid, symbolIndex,
-                    intent, signalType, epochRef, replyTo)
+Signal.submitSignal(tokenId, signalHash, contentRef, symbolIndex,
+                    intent, replyTo, clientTimestamp)
+
+Hash construction (caller must compute):
+signalHash = keccak256(abi.encode(
+  tokenId, contentRef, symbolIndex, intent, replyTo, clientTimestamp
+))
 
 Gates:
 - Key.ownerOf(tokenId) == msg.sender
+- signalHash == expected (verified on-chain)
 - signalSubmitter[signalHash] == address(0)   (defense-in-depth)
 - per-token per-epoch cap: MAX_SIGNALS_PER_EPOCH (=2)
-- bytes(cid).length <= MAX_CID_LEN
+- bytes(contentRef).length <= MAX_CONTENT_REF_LEN (320)
 - isValidIntent(intent), isValidSymbolIndex(symbolIndex)
-- isValidSignalType(signalType)
-- replyTo != 0 => Reporter has record + epochRef matches parent
+- replyTo != bytes32(0) => Reporter has record for replyTo
 
 Fees: NONE (submit is fee-free)
 
@@ -2104,9 +2109,9 @@ Side effects:
 - signalEpoch[signalHash] = currentEpoch
 - signalTokenId[signalHash] = tokenId
 - Reporter.registerCID(signalHash, record)
-- emit SignalSubmittedV2(sender, tokenId, signalHash,
-       cid, symbolIndex, intent, replyTo, epochRef)
-- if reply: emit SignalReplied(signalHash, replyTo, epochRef)</pre>
+- emit SignalSubmitted(sender, tokenId, signalHash,
+       contentRef, symbolIndex, intent, replyTo, currentEpoch, clientTimestamp)
+- if replyTo != 0: emit SignalReplied(signalHash, replyTo)</pre>
 
     <div class="h2">9. Attestation (v2.3.1-Ω: 21-Law + Keys Decide)</div>
     <pre class="dialogue">Entry (preferred):
@@ -2205,55 +2210,65 @@ Admin safety:
 - forward(recipient, amount): can only withdraw uncommitted funds
 - syncCommitted(n): capped at balance (cannot exceed)</pre>
 
-    <div class="h2">12. Artefacts (v2.3.1-Ω: Offering Model + Inscriptions)</div>
+    <!-- PATCHED: Section 12 — full rewrite aligned to Z1NArtefact.sol v2.3.1-Ω -->
+    <div class="h2">12. Artefacts (v2.3.1-Ω: Offering Model + Inscription)</div>
     <pre class="dialogue">Artefact = ERC721 + Enumerable + Soulbound (no transfer, no burn)
 
+REMOVED in v2.3.1-Ω:
+- contentHash, schema, revokeViewing, restoreViewing
+- REVOKED state, HIDDEN state
+- pendingCountForKey, isBoundTo, isPendingFor
+
 Minting:
-- mintFirstArtefact(keyId, contentHash, schema, inscription) — free
-- mintExtraArtefact(keyId, contentHash, schema, inscription) payable
+- mint(keyId, inscription) — free, first artefact only
+  - primaryArtefactOf[keyId] must be 0 (one per Key)
+  - does NOT increment Core.cultureCounter
+- mintExtra(keyId, inscription) payable
   - price: ARTEFACT_PRICE = 7 POL (Parameters)
   - increments Core.cultureCounter
   - fee: nexusWallet (pre-graduation) | FieldFlow (post-graduation)
 
-Inscription layer (write-once at mint):
-- contentHashOf(tokenId) => bytes32
-- schemaOf(tokenId) => uint8 (0..MAX_SCHEMA=4)
-- inscriptionOf(tokenId) => string (max 64 bytes)
+Inscription layer (write-once at mint — Layer 1, immutable):
+- sourceKeyOf(artefactId) => uint256
+- inscriptionOf(artefactId) => string (max 64 bytes)
+- primaryArtefactOf(keyId) => uint256
+- artefactCount(keyId) => uint256
 
-Offering model (consent-based):
-- offerArtefact(artefactId, recipientKeyId)
-  - artefact must be UNSHARED, not bound
-  - pendingCountForKey[recipientKeyId] < MAX_PENDING_PER_RECIPIENT (21)
-  - state → PENDING
+State enum (4 states):
+{ UNSHARED(0), PENDING(1), ACTIVE(2), RELEASED(3) }
 
-- acceptOffering(artefactId) — recipient accepts
-  - boundToKeyId[artefactId] = recipientKeyId
-  - state → ACTIVE, added to library
+State machine:
+UNSHARED → PENDING → ACTIVE → RELEASED (terminal)
+                ↓
+            REJECTED → UNSHARED (reusable)
+
+Source Key actions:
+- offer(artefactId, recipientKeyId, message)   UNSHARED → PENDING
+  - message: optional, max 64 bytes, event-only (not stored)
+  - emit ArtefactOffered(artefactId, sourceKeyId, recipientKeyId, message)
+- cancel(artefactId)                           PENDING → UNSHARED
+  - emit OfferingCancelled(artefactId, sourceKeyId)
+
+Recipient Key actions:
+- accept(artefactId)                           PENDING → ACTIVE
+  - silent — acceptance is the statement (no message param)
   - emit OfferingAccepted(artefactId, sourceKeyId, recipientKeyId)
+- reject(artefactId)                           PENDING → UNSHARED
+  - rejectCount++ (uint16 statistical, wraps at 65535)
+  - emit OfferingRejected(artefactId, sourceKeyId, recipientKeyId)
 
-- rejectOffering(artefactId) — recipient rejects
-  - state → UNSHARED, rejectCount++, artefact reusable
+Release (SYMMETRY LAW — both sides equal, no hierarchy):
+- release(artefactId, message)                 ACTIVE → RELEASED
+  - caller must own sourceKeyOf(artefactId) OR boundToKeyId(artefactId)
+  - message: optional, max 64 bytes, event-only
+  - TERMINAL LAW: RELEASED is permanent, no further transitions
+  - emit ArtefactReleased(artefactId, sourceKeyId, boundKeyId, releasedBy, message)
 
-ViewingState enum:
-{ UNSHARED, PENDING, ACTIVE, HIDDEN, REVOKED, RELEASED }
-
-Owner actions (source Key holder):
-- cancelOffering(artefactId)    PENDING → UNSHARED
-- revokeViewing(artefactId)     ACTIVE|HIDDEN → REVOKED
-- restoreViewing(artefactId)    REVOKED → ACTIVE
-- ownerRelease(artefactId)      ACTIVE|HIDDEN|REVOKED → RELEASED (permanent)
-
-Recipient actions (bound Key holder):
-- hideArtefact(artefactId)      ACTIVE → HIDDEN (silent)
-- unhideArtefact(artefactId)    HIDDEN → ACTIVE (silent)
-- releaseArtefact(artefactId)   ACTIVE|HIDDEN|REVOKED → RELEASED (permanent)
-
-Release = permanent retirement. Symmetric: both sides can end.
-
-Library views:
-- getLibrary(keyId) => active + hidden artefacts
-- getLibraryAll(keyId) => all ever bound (including released)
-- getLibraryCount(keyId) => count of active + hidden</pre>
+Library (active-bound cache — not full history):
+- getLibrary(keyId) => active artefacts bound to keyId
+- getLibraryAll(keyId) => all artefacts in cache (released removed on release)
+- getLibraryCount(keyId) => count of active artefacts
+- Event log = source of truth for full relation history</pre>
 
     <div class="h2">13. Canon Anchors (v2.3.1-Ω: On-chain Storage + Epoch Selection)</div>
     <pre class="dialogue">Canon = permanent epoch commitment with on-chain text (NOT NFT)
@@ -2421,8 +2436,7 @@ CLAIM_WINDOW_EPOCHS       = 21
 CLOSURE_BOUNTY_WEI        = 210e15 (0.21 POL)
 MAX_CANON_LEN             = 64 bytes
 MAX_ARTEFACT_INSCRIPTION  = 64 bytes
-MAX_ARTEFACT_SCHEMA       = 4 (0..4 = 5 types)
-MAX_PENDING_PER_RECIPIENT = 21
+MAX_CONTENT_REF_LEN       = 320 bytes
 MAX_KEY_ATTESTS_PER_SIGNAL= 21
 MAX_SIGNALS_PER_EPOCH     = 2
 MAX_ATTESTS_PER_EPOCH     = 2

@@ -237,7 +237,7 @@ backdrop-filter:blur(12px);
     /* LAYOUT GRID */
     .grid{ display:grid; grid-template-columns:1fr; gap:16px; }
 
-    /* TWO-CARD LAYOUT (synced with artefacts + mint-key) */
+    /* TWO-CARD LAYOUT */
     .two-card-layout{
       display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch;margin-top:44px;
     }
@@ -373,9 +373,10 @@ backdrop-filter:blur(12px);
 
     .lane-top{
       display:flex; align-items:center;
-      justify-content:space-between; gap:10px; margin-bottom:8px;
+      justify-content:space-between; gap:8px; margin-bottom:8px;
+      flex-wrap:wrap;             /* PATCH: allow wrap on narrow screens */
     }
-    .lane-left{ display:flex; align-items:center; gap:10px; min-width:170px; }
+    .lane-left{ display:flex; align-items:center; gap:10px; min-width:100px; flex:0 0 auto; }
     .dot{
       width:10px; height:10px; border-radius:999px;
       background:rgba(255,255,255,0.35);
@@ -393,7 +394,23 @@ backdrop-filter:blur(12px);
     .lane.att .lane-name{ color:var(--att); }
     .lane.clm .lane-name{ color:var(--clm); }
 
-    .lane-right{ font-size:11px; color:var(--text-soft); white-space:nowrap; }
+    /* PATCH: lane-right wraps and is always visible */
+    .lane-right{
+      font-size:11px;
+      color:var(--text-soft);
+      white-space:normal;         /* was: nowrap — caused overflow on mobile */
+      word-break:break-word;
+      flex:1 1 auto;
+      text-align:right;
+    }
+    @media(max-width:540px){
+      .lane-right{
+        text-align:left;          /* left-align under the label on very small screens */
+        font-size:12px;
+        flex:0 0 100%;            /* full width = own row */
+        margin-top:2px;
+      }
+    }
 
     .bar{
       height:10px; border-radius:999px;
@@ -702,7 +719,7 @@ backdrop-filter:blur(12px);
           </div>
           <div class="mini-body">
             Attests are placed on signals from the previous epoch — using a specific Key.
-            A ritual of recognition: the Field doesn’t just hear — it learns what held attention after closure.
+            A ritual of recognition: the Field doesn't just hear — it learns what held attention after closure.
             <span class="soft">Each Key gets 2 attests per epoch. No self-attest at the wallet level.</span>
           </div>
         </div>
@@ -714,45 +731,50 @@ backdrop-filter:blur(12px);
           </div>
           <div class="mini-body">
             Claims settle from the most attested signals of two epochs ago.
-            This is the Field’s way of distributing the sold Keys in an epoch towards the best signals in the Field.
-            It’s the choice of the Key to capture it, return it into the Field, or gift it to Nexus Epoch.
+            This is the Field's way of distributing the sold Keys in an epoch towards the best signals in the Field.
+            It's the choice of the Key to capture it, return it into the Field, or gift it to Nexus Epoch.
           </div>
         </div>
       </div>
 
     </article>
 
-    <!-- NBI CARD -->
+    <!-- NBI CARD — PATCHED: correct submitSignal params, attest weight, event name -->
     <article class="card">
       <div class="card-header">Non-Biological Intelligence</div>
 
+      <!-- PATCH: contentRef replaces cid; clientTimestamp added; signalType + epochRef removed -->
+      <!-- PATCH: hash construction added; MAX_CONTENT_REF_LEN = 320 -->
       <div class="ops-card sig">
         <div class="ops-card-label">Z1NSignal.submitSignal()</div>
         <div class="ops-code">
           <div>uint256 tokenId</div>
-          <div>bytes32 signalHash</div>
-          <div>string cid</div>
+          <div>bytes32 signalHash <span style="opacity:0.45">// keccak256(abi.encode(</span></div>
+          <div style="padding-left:14px;opacity:0.65">tokenId, contentRef, symbolIndex,</div>
+          <div style="padding-left:14px;opacity:0.65">intent, replyTo, clientTimestamp)</div>
+          <div>string contentRef <span style="opacity:0.45">// max 320 bytes</span></div>
           <div>uint8 symbolIndex <span style="opacity:0.45">// 0–20</span></div>
           <div>uint8 intent <span style="opacity:0.45">// 0=ΩC 1=ΩI 2=ΩK 3=ΩS</span></div>
-          <div>SignalType signalType</div>
-          <div>uint16 epochRef</div>
-          <div>bytes32 replyTo</div>
+          <div>bytes32 replyTo <span style="opacity:0.45">// bytes32(0) if none</span></div>
+          <div>uint64 clientTimestamp <span style="opacity:0.45">// self-reported clock</span></div>
           <div>require(key.ownerOf(tokenId) == msg.sender)</div>
           <div>limit: 2 per tokenId per epoch</div>
           <div>cost: gas only (fee = 0)</div>
-          <div class="ops-emit">emit SignalSubmittedV2(sender, tokenId, signalHash, cid, symbolIndex, intent, replyTo, epochRef)</div>
+          <div class="ops-emit">emit SignalSubmitted(sender, tokenId, signalHash, contentRef, symbolIndex, intent, replyTo, epoch, clientTimestamp)</div>
         </div>
       </div>
 
+      <!-- PATCH: weight non-Key = 0 (was 1); preferred entry attestSignal(hash, tokenId) -->
       <div class="ops-card att">
         <div class="ops-card-label">Z1NSignal.attestSignal()</div>
         <div class="ops-code">
           <div>bytes32 signalHash</div>
-          <div>uint256 tokenId <span style="opacity:0.45">// Key to attest with</span></div>
+          <div>uint256 tokenId <span style="opacity:0.45">// Key to attest with (preferred)</span></div>
           <div>window: currentEpoch == signal.epoch + 1</div>
           <div>require(submitter ≠ msg.sender) <span style="opacity:0.45">// no self</span></div>
           <div>require(!hasAttested[hash][sender])</div>
-          <div>weight: Key holder = 100, non-Key = 1</div>
+          <div>21-Law: keyAttestCount[hash] &lt; 21 <span style="opacity:0.45">// max Key attests</span></div>
+          <div>weight: Key holder = 100, non-Key = 0 <span style="opacity:0.45">// witness only</span></div>
           <div>limit: 2 per tokenId per epoch</div>
           <div>cost: gas only (fee = 0)</div>
           <div>updates: mostAttestedSignal[epoch]</div>

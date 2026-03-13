@@ -536,9 +536,9 @@ if (storedReturn) {
     mintEpochDisplay.textContent = keyMintEpoch;
     minEpoch = keyMintEpoch;
     
-    // Ensure valid range - ALWAYS allow from minEpoch to maxEpoch
-    minEpoch = 0;
-    if (minEpoch > maxEpoch) minEpoch = 1; // Safety: if something went wrong, allow all
+    // Ensure valid range — clamp to key's birth epoch
+    if (minEpoch < 1) minEpoch = 1;
+    if (minEpoch > maxEpoch) minEpoch = maxEpoch;
     
     // Set slider range
     epochSlider.min = minEpoch;
