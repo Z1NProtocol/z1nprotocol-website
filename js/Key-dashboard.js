@@ -1860,7 +1860,28 @@ async function loadActivityFeed() {
       });
     });
 
-    // ─── DIRECT CHANNEL handled by Key-dashboard-direct.js ───
+    // ─── DIRECT CHANNEL: laad badge-data zonder full tab render ───
+    try {
+      var dmResp = await fetch(getAPI ? getAPI() : (window.Z1N ? window.Z1N.API_BASE : API_BASE) + '/direct-channel/key/' + currentKeyId + '?limit=100', {cache:'no-store'});
+      if (dmResp.ok) {
+        var dmData = await dmResp.json();
+        var dmReceived = (dmData.messages || []).filter(function(m) { return m.direction === 'received'; });
+        var seenIds = JSON.parse(localStorage.getItem('z1n_direct_seen_' + currentKeyId) || '[]');
+        var seenSet = new Set(seenIds);
+        dmReceived.forEach(function(m) {
+          var msgId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
+          activities.push({
+            id: msgId,
+            type: 'direct_received',
+            direction: 'received',
+            timestamp: m.blockNumber || m.timestamp || 0,
+            fromKeyId: m.senderKeyId,
+            content: m.messageType === 'encrypted' ? '[Encrypted]' : ''
+          });
+        });
+      }
+    } catch(e) {}
+
     // (allWhispers removed)
     ([]).forEach(function(w) {
       var isSent = w.fromKeyId === currentKeyId;
