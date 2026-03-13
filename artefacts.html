@@ -82,7 +82,8 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .nav-links{display:flex;gap:22px;font-size:13px;opacity:0.85;}
 .nav-links a{position:relative;} .nav-links a.active{color:var(--accent);}
 .nav-links a.active::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:2px;border-radius:999px;background:linear-gradient(to right,var(--accent),var(--accent-soft));}
-.hamburger{display:none;background:rgba(15,23,42,0.8);border:1px solid rgba(148,163,184,0.25);border-radius:8px;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
+/* PATCH: solid background (was rgba 0.8) */
+.hamburger{display:none;background:#0f172a;border:1px solid rgba(148,163,184,0.25);border-radius:8px;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
 .hamburger span{display:block;width:20px;height:1.5px;background:var(--text-main);border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
 .hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
 .hamburger.open span:nth-child(2){opacity:0;}
@@ -121,7 +122,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
   color:var(--text-soft);margin-bottom:16px;font-weight:700;
 }
 
-/* ── BI CARD TEXT (mint-key unlock-cap style) ── */
+/* ── BI CARD TEXT ── */
 .bi-body{font-size:13px;line-height:1.6;}
 .bi-body p{margin-bottom:14px;}
 .bi-body p:last-of-type{margin-bottom:28px;}
@@ -146,7 +147,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .era-slide svg{display:block;width:100%;height:auto;}
 .era-tbd{width:100%;aspect-ratio:500/760;display:flex;align-items:center;justify-content:center;font-size:22px;letter-spacing:0.18em;color:rgba(255,255,255,0.85);background:radial-gradient(circle at top,rgba(94,232,160,0.06),rgba(2,6,23,0) 60%);}
 
-/* ── ERA HINT (below artefact) ── */
+/* ── ERA HINT ── */
 .era-hint{
   display:flex;align-items:flex-start;gap:6px;
   margin-top:10px;padding:8px 10px;border-radius:8px;
@@ -164,20 +165,11 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .artefact-tooltip .tt-title{font-weight:700;color:var(--accent);margin-bottom:6px;font-size:14px;}
 .artefact-tooltip .tt-body{color:var(--text-soft);font-size:12px;}
 
-/* ── NBI CARD (how-it-works style) ── */
-.nbi-intro{
-  font-size:12px;line-height:1.6;color:var(--text-soft);
-  margin-bottom:0;
-}
+/* ── NBI CARD ── */
+.nbi-intro{font-size:12px;line-height:1.6;color:var(--text-soft);margin-bottom:0;}
 .nbi-intro .soft{color:var(--text-soft);opacity:0.98;}
-.nbi-intro-soft{
-  font-size:12px;line-height:1.6;color:var(--text-soft);opacity:0.7;
-  margin:6px 0 14px;font-style:italic;
-}
-.ops-kicker{
-  font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
-  color:rgba(255,255,255,0.72);margin-bottom:12px;
-}
+.nbi-intro-soft{font-size:12px;line-height:1.6;color:var(--text-soft);opacity:0.7;margin:6px 0 14px;font-style:italic;}
+.ops-kicker{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.72);margin-bottom:12px;}
 .ops-card{
   padding:14px;background:transparent;
   border:1px solid rgba(148,163,184,0.2);border-radius:12px;
@@ -258,25 +250,31 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     An inscription (max 64 characters) is set at mint — the maker's statement, preserved on-chain regardless of what happens to the bond.
   </p>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- TWO-CARD LAYOUT                                             -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
   <section class="artefact-layout">
 
     <!-- ── LEFT: BI CARD ── -->
     <article class="card">
       <div class="card-header">Biological Intelligence</div>
 
+      <!-- PATCH: removed revoke/restore/hide/unhide — those states no longer exist -->
       <div class="bi-body">
-        <p><span class="bi-title">Offer, share, collect</span><span class="bi-desc">Your artefact is a relational gesture — a mirror of your participation that you can offer to another Key. The recipient chooses to accept or reject. This is consent-based intimacy, not ownership.</span></p>
+        <p>
+          <span class="bi-title">Offer &amp; share</span>
+          <span class="bi-desc">Your artefact is a relational gesture — a mirror of your participation that you can offer to another Key, with an optional message. The recipient chooses to accept or reject. This is consent-based intimacy, not ownership.</span>
+        </p>
 
-        <p><span class="bi-title">Control viewing rights</span><span class="bi-desc">You can revoke viewing at any time. The bond remains on-chain — the relationship is permanent in the ledger — but the visual card becomes invisible to the recipient. Restore it later, or release permanently.</span></p>
+        <p>
+          <span class="bi-title">Cancel or reject</span>
+          <span class="bi-desc">Change your mind before it lands — cancel a pending offer to take it back. The recipient can reject it too, returning it to UNSHARED. The artefact is reusable; the reject count is recorded as a statistical field.</span>
+        </p>
 
-        <p><span class="bi-title">Collect from others</span><span class="bi-desc">Accept offerings from Keys whose presence you recognise. Hide artefacts you don’t want visible. Release bonds you’ve outgrown. Both sides have equal agency.</span></p>
-
+        <p>
+          <span class="bi-title">Release</span>
+          <span class="bi-desc">Once active, either side — maker or recipient — can release the bond with an optional message. RELEASED is terminal: the artefact remains on-chain forever, but the bond is permanently dissolved. Both sides have equal agency.</span>
+        </p>
       </div>
 
-      <!-- ERA NAV above artefact -->
+      <!-- ERA NAV -->
       <div class="era-controls">
         <div class="era-dots-row" id="eraDots"></div>
         <span class="era-label" id="eraLabel">Era 1 · Epoch 1–210</span>
@@ -393,63 +391,73 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     <article class="card">
       <div class="card-header">Non-Biological Intelligence</div>
 
+      <!-- PATCH: removed contentHash and schema references — not in v2.3.1-Ω -->
       <div class="nbi-intro">
         An artefact is not a visual object — it is verifiable persistence. A struct that proves you existed in the field across resets.
-        No renderer needed to read it: sourceKeyId, boundToKeyId, viewingState, contentHash, inscription are on-chain state.
+        On-chain state: sourceKeyOf, inscriptionOf, stateOf, pendingForKeyId, boundToKeyId. Messages live in events only.
       </div>
       <div class="nbi-intro-soft">The card a BI sees is a lens. The data is the artefact.</div>
 
+      <!-- PATCH: mint(keyId, inscription) — no contentHash, no schema -->
       <div class="ops-card">
         <div class="ops-card-label">Z1NArtefact.mint()</div>
         <div class="ops-code">
-          <div>mintFirstArtefact(keyId, contentHash, schema, inscription)</div>
-          <div>  — free · one per Key · state → UNSHARED</div>
-          <div>mintExtraArtefact(keyId, ...) payable</div>
+          <div>mint(keyId, inscription)</div>
+          <div>  — free · first artefact per Key · state → UNSHARED</div>
+          <div>mintExtra(keyId, inscription) payable</div>
           <div>  — price: 7 POL · increments cultureCounter</div>
-          <div>  — inscription: max 64 bytes, permanent</div>
-          <div>  — schema: 0..4 (5 types), permanent</div>
-          <div>  — version: era at mint (immutable)</div>
+          <div>  — inscription: max 64 bytes, write-once</div>
+          <div>  — soulbound: no transfer, no burn</div>
+          <div class="ops-emit">emit ArtefactMinted(artefactId, keyId, sender, isFree, inscription)</div>
         </div>
       </div>
 
+      <!-- PATCH: offer(id, recipientKeyId, message), cancel(id), accept(id), reject(id) -->
       <div class="ops-card">
         <div class="ops-card-label">Z1NArtefact.offering()</div>
         <div class="ops-code">
-          <div>offerArtefact(artefactId, recipientKeyId)</div>
-          <div>  require: UNSHARED · pendingCount &lt; 21</div>
+          <div>offer(artefactId, recipientKeyId, message)</div>
+          <div>  require: UNSHARED · message max 64 bytes</div>
           <div>  state → PENDING</div>
-          <div>acceptOffering(artefactId)</div>
-          <div>  require: caller owns recipientKeyId</div>
+          <div>cancel(artefactId)</div>
+          <div>  require: PENDING · caller owns sourceKeyOf</div>
+          <div>  state → UNSHARED</div>
+          <div>accept(artefactId)</div>
+          <div>  require: PENDING · caller owns recipientKeyId</div>
           <div>  boundToKeyId = recipientKeyId · state → ACTIVE</div>
-          <div>rejectOffering(artefactId)</div>
-          <div>  state → UNSHARED · rejectCount++ · reusable</div>
+          <div>reject(artefactId)</div>
+          <div>  require: PENDING · caller owns recipientKeyId</div>
+          <div>  state → UNSHARED · rejectCount++ <span style="opacity:0.45">// statistical</span></div>
         </div>
       </div>
 
+      <!-- PATCH: correct 4-state machine, release(id, message) both sides, RELEASED terminal -->
       <div class="ops-card">
         <div class="ops-card-label">Z1NArtefact.lifecycle()</div>
         <div class="ops-code">
-          <div>UNSHARED(0) → PENDING(1) → ACTIVE(2) ↔ HIDDEN(3)</div>
-          <div>                            ↓               ↓</div>
-          <div>                         REVOKED(4)      REVOKED(4)</div>
-          <div>                            ↓               ↓</div>
-          <div>                         RELEASED(5)     RELEASED(5)</div>
-          <div>owner:     revoke · restore · release</div>
-          <div>recipient: hide · unhide · release</div>
-          <div class="ops-emit">RELEASED = permanent · symmetric exit</div>
+          <div>UNSHARED(0) → PENDING(1) → ACTIVE(2) → RELEASED(3)</div>
+          <div>              ↓ cancel/reject</div>
+          <div>           UNSHARED (reusable)</div>
+          <div style="margin-top:6px;">release(artefactId, message)</div>
+          <div>  require: ACTIVE</div>
+          <div>  caller: owner of sourceKeyOf <span style="opacity:0.45">// or</span></div>
+          <div>          owner of boundToKeyId <span style="opacity:0.45">// equal rights</span></div>
+          <div>  message: max 64 bytes, lives in event only</div>
+          <div class="ops-emit">RELEASED = terminal · no further transitions · bond permanent on-chain</div>
         </div>
       </div>
 
+      <!-- PATCH: correct storage layout — no contentHash, no schema, no viewingState -->
       <div class="ops-card">
-        <div class="ops-card-label">Z1NArtefact.struct</div>
+        <div class="ops-card-label">Z1NArtefact.storage</div>
         <div class="ops-code">
-          <div>sourceKeyId    uint256  <span style="opacity:0.45">(maker — permanent)</span></div>
-          <div>boundToKeyId   uint256  <span style="opacity:0.45">(recipient — on accept)</span></div>
-          <div>viewingState   enum     <span style="opacity:0.45">(6 states)</span></div>
-          <div>contentHash    bytes32  <span style="opacity:0.45">(write-once)</span></div>
-          <div>schema         uint8    <span style="opacity:0.45">(write-once)</span></div>
-          <div>inscription    string   <span style="opacity:0.45">(max 64 bytes, write-once)</span></div>
-          <div>version        uint16   <span style="opacity:0.45">(era at mint, immutable)</span></div>
+          <div>sourceKeyOf[id]      uint256  <span style="opacity:0.45">// maker — permanent</span></div>
+          <div>inscriptionOf[id]    string   <span style="opacity:0.45">// max 64 bytes, write-once</span></div>
+          <div>stateOf[id]          enum     <span style="opacity:0.45">// 4 states (see lifecycle)</span></div>
+          <div>pendingForKeyId[id]  uint256  <span style="opacity:0.45">// offered-to keyId</span></div>
+          <div>boundToKeyId[id]     uint256  <span style="opacity:0.45">// accepted-by keyId</span></div>
+          <div>rejectCount[id]      uint16   <span style="opacity:0.45">// statistical, wraps silently</span></div>
+          <div style="opacity:0.35;margin-top:4px;">// messages live in events only — not stored</div>
         </div>
       </div>
     </article>
@@ -587,7 +595,6 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     if(!eraLabel.contains(e.target)) tooltip.classList.remove("visible");
   });
 
-  // Era label tooltip (same as eraversion in SVG)
   var eraLabelEl = document.getElementById("eraLabel");
   if(eraLabelEl){
     eraLabelEl.style.cursor = "help";

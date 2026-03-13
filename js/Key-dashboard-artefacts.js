@@ -467,11 +467,8 @@
     if (!arr) return;
     arr.forEach(function(n) {
       var key = n.artefactId + ':' + n.type;
-      if (!notifications[key]) {
-        notifications[key] = { seen: false };
-      }
-      // Merge fields but preserve seen state
-      Object.assign(notifications[key], n);
+      var wasSeen = notifications[key] ? notifications[key].seen : false;
+      notifications[key] = Object.assign({}, n, { seen: wasSeen });
     });
   }
 
