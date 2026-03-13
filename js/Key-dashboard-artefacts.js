@@ -439,10 +439,32 @@
         }
       }
       
+      // Generate offering_received notifications for pending items not yet seen
+      var z2 = getZ1N();
+      var seenKey = 'z1n_notif_seen_' + z2.keyId;
+      var seenIds = [];
+      try { seenIds = JSON.parse(localStorage.getItem(seenKey) || '[]'); } catch(e) {}
+      var seenSet = new Set(seenIds);
+      var syntheticNotifs = [];
+      sharedWithMe.forEach(function(art) {
+        if (art.status === 'pending') {
+          var pid = art.tokenId + ':offering_received:' + art.tokenId;
+          syntheticNotifs.push({
+            type: 'offering_received',
+            artefactId: art.tokenId,
+            byKeyId: art.sourceKeyId,
+            blockNumber: art.tokenId,
+            message: art.offerMessage || '',
+            seen: seenSet.has(pid)
+          });
+        }
+      });
       if (data && data.notifications) {
-        ingestNotifications(data.notifications);
-        setTimeout(updateBadgesAndFeed, 100);
+        ingestNotifications(data.notifications.concat(syntheticNotifs));
+      } else {
+        ingestNotifications(syntheticNotifs);
       }
+      setTimeout(updateBadgesAndFeed, 100);
     } catch (e) {
       console.error('loadSharedWithMe error:', e);
     }
@@ -909,7 +931,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
         '&artefactTokenId=' + art.tokenId;
       
-      var hasNotif = hasUnreadNotification(art.tokenId) || (isReleased && art.releasedByInitiator);
+      var hasNotif = hasUnreadNotification(art.tokenId);
       
       // Icon for non-preview states
       var previewContent;
