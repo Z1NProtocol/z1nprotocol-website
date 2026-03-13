@@ -1909,6 +1909,18 @@ async function loadActivityFeed() {
       }
     });
 
+    // ─── ARTEFACTS IN MY VIEW (badge only) ───
+    try {
+      var arR = await fetch(API_BASE + '/key/' + currentKeyId + '/artefacts', {cache:'no-store'});
+      if (arR.ok) {
+        var arD = await arR.json();
+        (arD.liveArtefacts || []).filter(function(a){ return a.status === 'in_my_view'; }).forEach(function(a) {
+          var msgId = 'artefact_recv_' + a.tokenId;
+          activities.push({ id: msgId, type: 'artefact_received', timestamp: a.tokenId, content: '' });
+        });
+      }
+    } catch(e) {}
+
     // ─── DIRECT RECEIVED (badge only) ───
     try {
       var dmR = await fetch(API_BASE + '/direct-channel/key/' + currentKeyId + '?limit=100', {cache:'no-store'});
@@ -2004,7 +2016,7 @@ function renderActivityFeed() {
 ActivityFeed.activities.forEach(function(a) {
     if (ActivityFeed.readItems.has(a.id)) return;
     
-   if (a.type === 'reply_received' || a.type === 'attest_received' || a.type === 'direct_received') {
+   if (a.type === 'reply_received' || a.type === 'attest_received' || a.type === 'direct_received' || a.type === 'artefact_received') {
       countSignals++;
     } else if (a.type.includes('artefact')) {
       countArtefacts++;

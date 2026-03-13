@@ -465,19 +465,33 @@
 
   function ingestNotifications(arr) {
     if (!arr) return;
+    var z = getZ1N();
+    var seenKey = 'z1n_notif_seen_' + z.keyId;
+    var seenIds = [];
+    try { seenIds = JSON.parse(localStorage.getItem(seenKey) || '[]'); } catch(e) {}
+    var seenSet = new Set(seenIds);
     arr.forEach(function(n) {
       var key = n.artefactId + ':' + n.type;
-      var wasSeen = notifications[key] ? notifications[key].seen : false;
+      var persistentId = n.artefactId + ':' + n.type + ':' + n.blockNumber;
+      var wasSeen = seenSet.has(persistentId) || (notifications[key] ? notifications[key].seen : false);
       notifications[key] = Object.assign({}, n, { seen: wasSeen });
     });
   }
 
   function markRead(artefactId) {
+    var z = getZ1N();
+    var seenKey = 'z1n_notif_seen_' + z.keyId;
+    var seenIds = [];
+    try { seenIds = JSON.parse(localStorage.getItem(seenKey) || '[]'); } catch(e) {}
+    var seenSet = new Set(seenIds);
     Object.keys(notifications).forEach(function(key) {
       if (notifications[key].artefactId === artefactId) {
         notifications[key].seen = true;
+        var persistentId = artefactId + ':' + notifications[key].type + ':' + notifications[key].blockNumber;
+        seenSet.add(persistentId);
       }
     });
+    try { localStorage.setItem(seenKey, JSON.stringify([...seenSet])); } catch(e) {}
     updateBadgesAndFeed();
   }
 
