@@ -316,17 +316,17 @@
             ActivityFeed.activities = ActivityFeed.activities.filter(function(a) {
               return a.type !== 'direct_received';
             });
-            var lastSeenBlock = parseInt(localStorage.getItem('z1n_direct_lastseen_' + getKeyId()) || '0');
+            var seenIds = JSON.parse(localStorage.getItem('z1n_direct_seen_' + getKeyId()) || '[]');
+            var seenSet = new Set(seenIds);
             received.forEach(function(m) {
               var msgId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
-              var msgBlock = m.blockNumber || 0;
               ActivityFeed.activities.push({
                 id: msgId,
                 type: 'direct_received',
                 direction: 'received',
-                timestamp: msgBlock,
+                timestamp: m.blockNumber || m.timestamp || 0,
                 fromKeyId: m.senderKeyId,
-                unseen: msgBlock > lastSeenBlock,
+                unseen: !seenSet.has(msgId),
                 content: m.messageType === 'encrypted' ? '[Encrypted]' : (m.decodedContent || '')
               });
             });
@@ -854,11 +854,13 @@
       it.addEventListener('click', function (e) {
         if (e.target.tagName === 'BUTTON') return;
         if (typeof markTabItemRead === 'function') markTabItemRead(dmActivityId, it);
-        var msgBlock = m.blockNumber || 0;
-        var lastSeenBlock = parseInt(localStorage.getItem('z1n_direct_lastseen_' + getKeyId()) || '0');
-        if (msgBlock > lastSeenBlock) {
-          localStorage.setItem('z1n_direct_lastseen_' + getKeyId(), String(msgBlock));
+        var seenIds = JSON.parse(localStorage.getItem('z1n_direct_seen_' + getKeyId()) || '[]');
+        if (!seenIds.includes(dmActivityId)) {
+          seenIds.push(dmActivityId);
+          localStorage.setItem('z1n_direct_seen_' + getKeyId(), JSON.stringify(seenIds));
         }
+        it.classList.remove('unread-glow');
+        if (typeof updateTabBadges === 'function') updateTabBadges();
       });
 
       list.appendChild(it);
@@ -869,18 +871,16 @@
       ActivityFeed.activities = ActivityFeed.activities.filter(function(a) {
         return a.type !== 'direct_received';
       });
-      var lastSeenBlock = parseInt(localStorage.getItem('z1n_direct_lastseen_' + getKeyId()) || '0');
-      var unseenCount = 0;
+      var seenIds = JSON.parse(localStorage.getItem('z1n_direct_seen_' + getKeyId()) || '[]');
+      var seenSet = new Set(seenIds);
       messages.forEach(function(m) {
         var msgId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
-        var msgBlock = m.blockNumber || 0;
-        var isUnseen = msgBlock > lastSeenBlock;
-        if (isUnseen) unseenCount++;
+        var isUnseen = !seenSet.has(msgId);
         ActivityFeed.activities.push({
           id: msgId,
           type: 'direct_received',
           direction: 'received',
-          timestamp: msgBlock,
+          timestamp: m.blockNumber || m.timestamp || 0,
           fromKeyId: m.senderKeyId,
           unseen: isUnseen,
           content: m.messageType === 'encrypted' ? '[Encrypted]' : (m.decodedContent || '')
