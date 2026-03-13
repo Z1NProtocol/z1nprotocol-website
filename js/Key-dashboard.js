@@ -1756,7 +1756,7 @@ await loadKeyData(currentKeyId);
 // ACTIVITY FEED STATE
 // ─────────────────────────────────────────────────────────────────
 
-var ActivityFeed = {
+window.ActivityFeed = {
   currentTab: 'all',
   activities: [],
   readItems: new Set(),
