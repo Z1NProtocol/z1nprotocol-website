@@ -512,7 +512,7 @@ var encodedData = iface.encodeFunctionData(functionName, [BigInt(currentKeyId), 
         await new Promise(function(r) { setTimeout(r, 2000); });
         try {
           var rc = await rpc('eth_getTransactionReceipt', [txHash]);
-          if (rc && rc.status === '0x1') { if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✅ Live Artefact minted! <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View tx</a></div>'; btn.textContent = '✅ Minted!'; showToast('✅ Live Artefact minted!', 4000); await loadArtefactData(); return; }
+          if (rc && rc.status === '0x1') { if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">✅ Live Artefact minted! <a href="' + EXPLORER + '/tx/' + txHash + '" target="_blank">View tx</a></div>'; btn.textContent = '✅ Minted!'; showToast('✅ Live Artefact minted!', 4000, false, false); await loadArtefactData(); return; }
           if (rc && rc.status === '0x0') throw new Error('Transaction reverted');
         } catch (e) {}
       }
