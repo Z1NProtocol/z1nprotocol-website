@@ -858,11 +858,6 @@
       it.addEventListener('click', function (e) {
         if (e.target.tagName === 'BUTTON') return;
         if (typeof markTabItemRead === 'function') markTabItemRead(dmActivityId, it);
-        var seenIds = JSON.parse(localStorage.getItem('z1n_direct_seen_' + getKeyId()) || '[]');
-        if (!seenIds.includes(dmActivityId)) {
-          seenIds.push(dmActivityId);
-          localStorage.setItem('z1n_direct_seen_' + getKeyId(), JSON.stringify(seenIds));
-        }
         it.classList.remove('unread-glow');
         if (typeof updateTabBadges === 'function') updateTabBadges();
       });

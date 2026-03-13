@@ -799,7 +799,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       
       var viewLink = document.getElementById('viewOnChainLink'); if (viewLink) viewLink.href = EXPLORER + '/token/' + Z1N_KEY + '?a=' + keyId;
       updateOverviewArtefactPreview();
-      await Promise.all([loadAttestableSignals(), loadSentSignals(), loadReceivedReplies(), loadSentAttests(), loadReceivedAttests(), loadCanonData(), loadTreasuryData(), loadDirectBadge()]);
+      await Promise.all([loadAttestableSignals(), loadSentSignals(), loadReceivedReplies(), loadSentAttests(), loadReceivedAttests(), loadCanonData(), loadTreasuryData()]);
 if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
       updateAttestBtn();
       initActivityFeed();
@@ -1779,31 +1779,6 @@ icons: {
 // INIT - Call this from loadKeyData()
 // ─────────────────────────────────────────────────────────────────
 
-async function loadDirectBadge() {
-  if (currentKeyId === null) return;
-  try {
-    var r = await fetch(API_BASE + '/direct-channel/key/' + currentKeyId + '?limit=100', {cache:'no-store'});
-    if (!r.ok) return;
-    var d = await r.json();
-    var received = (d.messages || []).filter(function(m) { return m.direction === 'received'; });
-    var seenIds = JSON.parse(localStorage.getItem('z1n_direct_seen_' + currentKeyId) || '[]');
-    var seenSet = new Set(seenIds);
-    received.forEach(function(m) {
-      var msgId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
-      if (!ActivityFeed.activities.find(function(a) { return a.id === msgId; })) {
-        ActivityFeed.activities.push({
-          id: msgId,
-          type: 'direct_received',
-          direction: 'received',
-          timestamp: m.blockNumber || m.timestamp || 0,
-          fromKeyId: m.senderKeyId,
-          content: ''
-        });
-      }
-    });
-  } catch(e) {}
-}
-
 function initActivityFeed() {
   if (currentKeyId === null) return;
 
@@ -1933,6 +1908,27 @@ async function loadActivityFeed() {
         });
       }
     });
+
+    // ─── DIRECT RECEIVED (badge only) ───
+    try {
+      var dmR = await fetch(API_BASE + '/direct-channel/key/' + currentKeyId + '?limit=100', {cache:'no-store'});
+      if (dmR.ok) {
+        var dmD = await dmR.json();
+        var dmSeenIds = JSON.parse(localStorage.getItem('z1n_direct_seen_' + currentKeyId) || '[]');
+        var dmSeenSet = new Set(dmSeenIds);
+        (dmD.messages || []).filter(function(m){ return m.direction === 'received'; }).forEach(function(m) {
+          var msgId = 'direct_recv_' + (m.txHash || m.blockNumber || m.senderKeyId + '_' + m.timestamp);
+          activities.push({
+            id: msgId,
+            type: 'direct_received',
+            direction: 'received',
+            timestamp: m.blockNumber || m.timestamp || 0,
+            fromKeyId: m.senderKeyId,
+            content: ''
+          });
+        });
+      }
+    } catch(e) {}
 
     // ─── ARTEFACTS RECEIVED (from allLiveArtefacts) ───
     (allLiveArtefacts || []).forEach(function(art) {
