@@ -457,11 +457,12 @@ window.handleMint=async function(){
     showS('Waiting for confirmation...','pending');btn.textContent='Confirming...';
     var ok=await waitReceipt(txHash);
     if(ok){
-      showS('✅ Minted! <a href="https://polygonscan.com/tx/'+txHash+'" target="_blank" style="color:var(--accent)">View tx ↗</a>','success');
+      showS('✅ Minted! Redirecting to dashboard in 5 seconds... <a href="https://polygonscan.com/tx/'+txHash+'" target="_blank" style="color:var(--accent)">View tx ↗</a>','success');
       showToast('✅ Artefact minted!');btn.textContent='✅ Minted!';
       ii.value='';ic.textContent='0 / 64';hasFirst=true;updateBtn();btn.disabled=false;
       try{await fetch(API+'/reindex/artefacts',{method:'POST',headers:{'Content-Type':'application/json'}});}catch(e){}
-      setTimeout(function(){window.location.href='key-dashboard.html?key='+keyId+'#artefacts';},3000);
+      // Wacht 5 seconden zodat indexer tijd heeft de eerste mint te verwerken
+      setTimeout(function(){window.location.href='key-dashboard.html?key='+keyId+'&tab=artefacts&refresh='+Date.now();},5000);
     } else { throw new Error('Transaction failed on-chain'); }
   }catch(e){
     var msg=e.message||'Unknown error';
