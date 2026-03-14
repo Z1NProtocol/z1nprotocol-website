@@ -1289,6 +1289,12 @@ footer .links a:hover{color:var(--text-main);}
         primaryWallet = accounts[0].toLowerCase();
         accounts.forEach(function(a) { Z1NWallets.register(a); });
         allConnectedAccounts = accounts;
+        // Sla wallet type op
+        var walletType = 'metamask';
+        if (eth === window.phantom?.ethereum) walletType = 'phantom';
+        else if (eth?.isCoinbaseWallet) walletType = 'coinbase';
+        else if (eth?.isBraveWallet) walletType = 'brave';
+        localStorage.setItem('z1n_preferred_wallet', walletType);
         await loadAllKeys();
       }
     } catch (e) { console.error(e); hideLoading(); }
@@ -1340,7 +1346,13 @@ footer .links a:hover{color:var(--text-main);}
 
   // Auto-connect on load
   (async function() {
-    var eth = getProvider();
+    var preferred = localStorage.getItem('z1n_preferred_wallet') || 'metamask';
+    var eth = null;
+    if (preferred === 'phantom' && window.phantom && window.phantom.ethereum) {
+      eth = window.phantom.ethereum;
+    } else {
+      eth = getProvider();
+    }
     if (eth) { try { var accounts = await eth.request({ method: 'eth_accounts' }); if (accounts && accounts.length) { primaryWallet = accounts[0].toLowerCase(); accounts.forEach(function(a) { Z1NWallets.register(a); }); allConnectedAccounts = accounts; showLoading('Loading your Keys...'); loadAllKeys(); } } catch (e) {} }
   })();
 })();
