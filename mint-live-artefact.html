@@ -449,7 +449,23 @@ function getEth(){
 }
 
 async function connectWallet(){
-  var eth=getEth(); if(!eth){showS('No wallet found. Install MetaMask.','error');return false;}
+  // Als provider al gezet is (door auto-connect), gebruik die
+  var eth = provider || getEth();
+  if(!eth){showS('No wallet found. Install MetaMask.','error');return false;}
+  
+  // Als URL wallet Phantom is, forceer Phantom
+  var wpLower = wp ? wp.toLowerCase() : '';
+  if(wpLower && window.phantom && window.phantom.ethereum && eth !== window.phantom.ethereum){
+    try{
+      var testAccs = await window.phantom.ethereum.request({method:'eth_accounts'});
+      if(!testAccs || !testAccs.length){
+        testAccs = await window.phantom.ethereum.request({method:'eth_requestAccounts'});
+      }
+      if(testAccs && testAccs.some(function(a){return a.toLowerCase()===wpLower;})){
+        eth = window.phantom.ethereum;
+      }
+    }catch(e){}
+  }
   provider=eth;
   try{
     var a=await provider.request({method:'eth_accounts'});
