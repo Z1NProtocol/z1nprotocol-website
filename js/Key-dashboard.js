@@ -2499,8 +2499,7 @@ function updateTabBadges() {
   if (artefactBadge) {
     artefactBadge.textContent = artefactBadgeCount;
     artefactBadge.classList.toggle('hidden', artefactBadgeCount === 0);
-    if (artefactBadgeCount > 0) artefactBadge.style.cssText = 'background:rgba(94,232,160,0.5);color:#fff;';
-    else artefactBadge.style.cssText = '';
+    artefactBadge.style.cssText = artefactBadgeCount > 0 ? 'background:rgba(94,232,160,0.4);color:#5ee8a0;font-weight:700;' : '';
   }
   // #artefactBadge IS the tab-nav button badge (already in HTML) — no duplicate needed
 
