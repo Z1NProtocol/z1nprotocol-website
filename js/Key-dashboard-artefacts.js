@@ -686,17 +686,10 @@ var sig = ownedArtefacts.map(function(a) { return a.tokenId + ':' + a.status; })
       '<div class="header-actions" style="display:flex;align-items:center;gap:8px;">' +
         '<button class="view-toggle' + (ownedViewMode === 'card' ? ' active' : '') + '" onclick="Z1NArtefacts.setViewMode(\'card\')" title="Card view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">▦</button>' +
         '<button class="view-toggle' + (ownedViewMode === 'list' ? ' active' : '') + '" onclick="Z1NArtefacts.setViewMode(\'list\')" title="List view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">☰</button>' +
-        '<button class="btn btn-green" id="btnMintInSection" onclick="window.location.href=\'mint-live-artefact.html?key=\'+(window.Z1N&&window.Z1N.keyId||0)"' + (isMinting ? ' disabled' : '') + ' style="height:32px;display:flex;align-items:center;">' + mintText + '</button>' +
       '</div>' +
     '</div>';
     
-    html += '<div id="mintArtefactStatus" style="margin-bottom: 12px;"></div>';
-    
-    html += '<div id="mintInscriptionRow" style="margin-bottom:12px;display:flex;align-items:center;gap:8px;">' +
-      '<label style="font-size:12px;color:var(--text-soft);white-space:nowrap;">Inscription</label>' +
-      '<input type="text" id="mintInscriptionInput" maxlength="64" placeholder="Optional — max 64 characters" style="flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text-main);font-family:inherit;">' +
-      '<span id="mintInscriptionCount" style="font-size:10px;color:var(--text-soft);min-width:32px;text-align:right;">0/64</span>' +
-    '</div>';
+    html += '<div id="mintArtefactStatus" style="margin-bottom: 8px;"></div>';
     
     if (showFilters) {
       html += '<div class="artefact-filter-bar">' +
@@ -728,15 +721,7 @@ var sig = ownedArtefacts.map(function(a) { return a.tokenId + ':' + a.status; })
     
     container.innerHTML = html;
     
-    var inscInput = document.getElementById('mintInscriptionInput');
-    var inscCount = document.getElementById('mintInscriptionCount');
-    if (inscInput && inscCount) {
-      inscInput.addEventListener('input', function() {
-        var len = this.value.length;
-        inscCount.textContent = len + '/64';
-        inscCount.style.color = len > 56 ? 'var(--danger, #f87171)' : 'var(--text-soft)';
-      });
-    }
+    // inscription input lives above sub-tabs in key-dashboard.html
   }
 
   function renderCardView(filtered, z) {
@@ -1530,7 +1515,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     isMinting = true;
 
     var btn = document.getElementById('btnMintInSection');
-    var statusEl = document.getElementById('mintArtefactStatus');
+    var statusEl = document.getElementById('mintArtefactStatusTop') || document.getElementById('mintArtefactStatus');
     var overviewBtn = document.getElementById('btnMintLiveArtefactOverview');
     
     if (btn) { btn.disabled = true; btn.textContent = 'Preparing...'; }
