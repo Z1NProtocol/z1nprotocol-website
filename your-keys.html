@@ -227,6 +227,9 @@ footer .links a:hover{color:var(--text-main);}
 
     /* Both mode */
     .keys-grid.keys-view-both { grid-template-columns: repeat(2, 1fr); }
+    .keys-grid.keys-view-both .key-card { min-width: 0; max-width: none; flex: 1; }
+    .keys-grid.keys-view-both .key-card-inner { gap: 12px; }
+    .keys-grid.keys-view-both .key-artefact-preview { width: 160px; min-width: 140px; max-width: 180px; flex-shrink: 0; }
     @media(max-width:800px){ .keys-grid.keys-view-both { grid-template-columns: 1fr; } }
     .keys-grid.keys-view-both .key-card-inner { display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
     .keys-grid.keys-view-both .key-card { flex: 1; min-width: 0; }
@@ -948,7 +951,25 @@ footer .links a:hover{color:var(--text-main);}
       '<span class="artf-label">◈← <span class="artf-val">' + (artefactsReceived > 0 ? artefactsReceived : '–') + '</span></span>';
     previewPanel.appendChild(artfLabels);
 
-    previewPanel.onclick = function(e) { e.stopPropagation(); saveContext(key.tokenId, key.wallet); window.location.href = baseUrl + '&tab=artefacts'; };
+    previewPanel.onclick = function(e) {
+      e.stopPropagation();
+      if (currentKeysView === 'artefact') {
+        // Artefact-only mode: open lightbox
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+        var imgEl = document.createElement('img');
+        imgEl.src = previewUrl;
+        imgEl.style.cssText = 'max-width:90vw;max-height:90vh;border-radius:16px;border:1px solid rgba(94,232,160,0.3);';
+        imgEl.onerror = function() { overlay.innerHTML = '<div style="font-size:80px;color:rgba(94,232,160,0.3);">◈</div>'; };
+        overlay.appendChild(imgEl);
+        overlay.onclick = function() { overlay.remove(); };
+        document.body.appendChild(overlay);
+      } else {
+        // Both mode: navigate to artefacts tab
+        saveContext(key.tokenId, key.wallet);
+        window.location.href = baseUrl + '&tab=artefacts';
+      }
+    };
     inner.appendChild(previewPanel);
     wrapper.appendChild(inner);
 
