@@ -198,10 +198,12 @@
     .attest-signal-item{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer}.attest-signal-item:hover{background:rgba(251,191,36,0.1)}.attest-signal-item.selected{background:rgba(251,191,36,0.2);border-left:3px solid var(--keys-accent)}.attest-signal-item .signal-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}.attest-signal-item .signal-content{font-size:11px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .intent-filters{display:flex;align-items:center;gap:4px}.intent-checkbox{display:flex;align-items:center;cursor:pointer;opacity:0.5}.intent-checkbox:has(input:checked){opacity:1}.intent-checkbox input{display:none}
     
-    /* OVERVIEW LAYOUT - EVEN LANGE CARDS */
-    .overview-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:stretch}
-    @media(max-width:900px){.overview-layout{grid-template-columns:1fr}.artefact-preview-card{max-width:280px;margin:0 auto}.overview-layout .artefact-preview-card,.overview-layout .section-card{min-height:auto}}
-    .overview-layout .artefact-preview-card,.overview-layout .section-card{min-height:420px;display:flex;flex-direction:column}
+    /* OVERVIEW LAYOUT */
+    .overview-layout{display:grid;grid-template-columns:320px 1fr 220px;gap:16px;align-items:stretch}
+    @media(max-width:1100px){.overview-layout{grid-template-columns:280px 1fr}}
+    @media(max-width:900px){.overview-layout{grid-template-columns:1fr}}
+    .overview-layout .artefact-preview-card,.overview-layout .section-card,.overview-layout .csv-card{min-height:420px;display:flex;flex-direction:column}
+    .csv-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;}
     
     /* ARTEFACT PREVIEW - CLICKABLE */
     .artefact-preview-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
@@ -534,8 +536,7 @@
         <div class="artefact-placeholder" id="overviewArtefactPlaceholder">◈</div>
       </div>
       <div id="overviewArtefactCounts" style="font-size:11px;color:var(--text-soft);text-align:center;margin-top:6px;margin-bottom:8px;"></div>
-      <button class="btn btn-green" id="btnMintLiveArtefactOverview" onclick="mintLiveArtefactFromOverview()" style="width:100%;">+ Mint Artefact</button>
-      <div id="mintArtefactStatusOverview" style="margin-top:10px;"></div>
+      <div id="mintArtefactStatusOverview" style="display:none;"></div>
     </div>
     
     <!-- RIGHT: UNSEEN PRESENCE -->
@@ -564,6 +565,23 @@
       </div>
     </div>
     
+  </div>
+
+    <!-- CSV CARD -->
+    <div class="csv-card">
+      <div class="section-title title-white" style="margin-bottom:14px;font-size:12px;">Exports</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-soft);cursor:pointer;">
+          <input type="checkbox" id="presenceIncludeDirect" style="accent-color:var(--keys-accent);width:13px;height:13px;">
+          <span>Include Direct Channel</span>
+        </label>
+        <button class="btn btn-secondary" style="font-size:11px;padding:10px 8px;width:100%;text-align:left;" onclick="downloadKeyPresenceCSV()">↓ Key Presence CSV</button>
+        <button class="btn btn-secondary" style="font-size:11px;padding:10px 8px;width:100%;text-align:left;" onclick="openFieldSignalsExportModal()">↓ Field Signals CSV</button>
+      </div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(148,163,184,0.12);">
+        <div style="font-size:10px;color:var(--text-soft);line-height:1.6;opacity:0.7;">Key Presence exports all your activity — signals, attests, artefacts, canon. Field Signals exports all protocol signals with your attest/reply status.</div>
+      </div>
+    </div>
   </div>
 </div>
 
