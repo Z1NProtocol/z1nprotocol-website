@@ -2016,7 +2016,7 @@ function renderActivityFeed() {
 ActivityFeed.activities.forEach(function(a) {
     if (ActivityFeed.readItems.has(a.id)) return;
     
-   if (a.type === 'reply_received' || a.type === 'attest_received' || a.type === 'direct_received' || a.type === 'artefact_received') {
+    if (a.type === 'reply_received' || a.type === 'attest_received' || a.type === 'direct_received') {
       countSignals++;
     } else if (a.type.includes('artefact')) {
       countArtefacts++;
@@ -2499,6 +2499,8 @@ function updateTabBadges() {
   if (artefactBadge) {
     artefactBadge.textContent = artefactBadgeCount;
     artefactBadge.classList.toggle('hidden', artefactBadgeCount === 0);
+    if (artefactBadgeCount > 0) artefactBadge.style.cssText = 'background:rgba(94,232,160,0.5);color:#fff;';
+    else artefactBadge.style.cssText = '';
   }
   // #artefactBadge IS the tab-nav button badge (already in HTML) — no duplicate needed
 
