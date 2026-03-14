@@ -221,24 +221,24 @@ footer .links a:hover{color:var(--text-main);}
     .key-card-wrapper { display: flex; flex-direction: column; gap: 6px; }
 
     /* Card-only mode (default) */
-    .keys-view-card .key-card-inner { display: block; }
-    .keys-view-card .key-artefact-preview { display: none; }
-    .keys-view-card .key-card { display: block; }
+    .keys-grid.keys-view-card .key-card-inner { display: block; }
+    .keys-grid.keys-view-card .key-artefact-preview { display: none; }
+    .keys-grid.keys-view-card .key-card { display: block; }
 
     /* Both mode */
-    .keys-view-both .keys-grid { grid-template-columns: repeat(2, 1fr); }
-    @media(max-width:800px){ .keys-view-both .keys-grid { grid-template-columns: 1fr; } }
-    .keys-view-both .key-card-inner { display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
-    .keys-view-both .key-card { flex: 1; min-width: 0; }
-    .keys-view-both .key-artefact-preview { display: flex; width: 130px; flex-shrink: 0; }
+    .keys-grid.keys-view-both { grid-template-columns: repeat(2, 1fr); }
+    @media(max-width:800px){ .keys-grid.keys-view-both { grid-template-columns: 1fr; } }
+    .keys-grid.keys-view-both .key-card-inner { display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
+    .keys-grid.keys-view-both .key-card { flex: 1; min-width: 0; }
+    .keys-grid.keys-view-both .key-artefact-preview { display: flex; width: 130px; flex-shrink: 0; }
 
     /* Artefact-only mode */
-    .keys-view-artefact .keys-grid { grid-template-columns: repeat(4, 1fr); }
-    @media(max-width:1100px){ .keys-view-artefact .keys-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media(max-width:800px){ .keys-view-artefact .keys-grid { grid-template-columns: repeat(2, 1fr); } }
-    .keys-view-artefact .key-card-inner { display: block; }
-    .keys-view-artefact .key-card { display: none; }
-    .keys-view-artefact .key-artefact-preview { display: flex; width: 100%; border-radius: 14px; min-height: 220px; }
+    .keys-grid.keys-view-artefact { grid-template-columns: repeat(4, 1fr); }
+    @media(max-width:1100px){ .keys-grid.keys-view-artefact { grid-template-columns: repeat(3, 1fr); } }
+    @media(max-width:800px){ .keys-grid.keys-view-artefact { grid-template-columns: repeat(2, 1fr); } }
+    .keys-grid.keys-view-artefact .key-card-inner { display: block; }
+    .keys-grid.keys-view-artefact .key-card { display: none; }
+    .keys-grid.keys-view-artefact .key-artefact-preview { display: flex; width: 100%; border-radius: 14px; min-height: 220px; }
 
     /* Preview panel shared styles */
     .key-artefact-preview {
@@ -637,14 +637,14 @@ footer .links a:hover{color:var(--text-main);}
   function getUnseenCount(tokenId, keyData) {
     var readIds = [];
     try { var stored = localStorage.getItem('z1n_activity_read_' + tokenId); if (stored) readIds = JSON.parse(stored); } catch (e) {}
-    var readAttests = readIds.filter(function(id) { return id.startsWith('attest_recv_') || id.startsWith('whisper_recv_'); }).length;
-    var readDirect = readIds.filter(function(id) { return id.startsWith('direct_recv_'); }).length;
-    if (keyData) {
-      var unseenAttests = Math.max(0, ((keyData.totalAttestationsReceived || 0) + (keyData.repliesReceived || 0)) - readAttests);
-      var unseenDirect = Math.max(0, (keyData.directMessagesReceived || 0) - readDirect);
-      return Promise.resolve(unseenAttests + unseenDirect);
-    }
-    return Promise.resolve(0);
+    var readSet = new Set(readIds);
+    // Signal unseen: attest_recv_ + reply_recv_ + direct_recv_ (exact dashboard logica)
+    var unseenSignal = readIds.filter(function(id) {
+      return id.startsWith('attest_recv_') || id.startsWith('whisper_recv_') || id.startsWith('direct_recv_');
+    }).length;
+    var totalSignal = (keyData ? ((keyData.totalAttestationsReceived || 0) + (keyData.repliesReceived || 0) + (keyData.directMessagesReceived || 0)) : 0);
+    var signalUnseen = Math.max(0, totalSignal - unseenSignal);
+    return Promise.resolve({ signal: signalUnseen });
   }
 
   function getTotalEarned(tokenId) {
@@ -711,11 +711,7 @@ footer .links a:hover{color:var(--text-main);}
     currentKeysView = mode;
     try { localStorage.setItem('z1n_keys_view', mode); } catch(e) {}
     var container = document.getElementById('keysContainer');
-    container.className = 'keys-grid';
-    document.body.className = '';
-    // Apply mode class to a wrapper
-    var page = document.querySelector('.page');
-    page.className = 'page keys-view-' + mode;
+    container.className = 'keys-grid keys-view-' + mode;
     ['card','both','artefact'].forEach(function(m) {
       var btn = document.getElementById('viewBtn' + m.charAt(0).toUpperCase() + m.slice(1));
       if (btn) btn.classList.toggle('active', m === mode);
@@ -900,6 +896,7 @@ footer .links a:hover{color:var(--text-main);}
     // Indicator bolletjes: groen = artefact events, geel = attests/replies/DMs
     var hasArtefactEvent = artefactsReceived > 0 || key.unseenArtefactCount > 0;
     var hasSignalEvent = unseenCount > 0;
+    var hasArtefactEvent = key.unseenArtefactCount > 0;
     var artefactIndicator = hasArtefactEvent ? '<span class="indicator-dot artefact-indicator" title="Artefact events"></span>' : '';
     var signalIndicator = hasSignalEvent ? '<span class="indicator-dot signal-indicator" title="Unseen signals/attests/DMs"></span>' : '';
 
@@ -991,7 +988,7 @@ footer .links a:hover{color:var(--text-main);}
       var data = await response.json();
       if (data.currentEpoch) currentEpochNum = data.currentEpoch;
       var keys = (data.keys || []).map(function(k) {
-        return { tokenId: k.tokenId, wallet: walletAddr, genesis: k.genesis, glyphSymbols: k.glyphSymbols, epoch: k.epoch, signalsUsed: k.signalsUsed || 0, attestsUsed: k.attestsUsed || 0, liveArtefacts: k.liveArtefacts || 0, canonCount: k.canonCount || 0, unseenCount: 0, totalClaimed: 0, claimableEpochs: [], totalAttestationsReceived: k.totalAttestationsReceived || 0, repliesReceived: k.repliesReceived || 0, directMessagesReceived: k.directMessagesReceived || 0 };
+        return { tokenId: k.tokenId, wallet: walletAddr, genesis: k.genesis, glyphSymbols: k.glyphSymbols, epoch: k.epoch, signalsUsed: k.signalsUsed || 0, attestsUsed: k.attestsUsed || 0, liveArtefacts: k.liveArtefacts || 0, inMyViewArtefacts: k.inMyViewArtefacts || 0, canonCount: k.canonCount || 0, unseenCount: 0, totalClaimed: 0, claimableEpochs: [], totalAttestationsReceived: k.totalAttestationsReceived || 0, repliesReceived: k.repliesReceived || 0, directMessagesReceived: k.directMessagesReceived || 0 };
       });
       return keys;
     } catch (err) { console.error('Error loading keys for ' + walletAddr + ':', err); return []; }
@@ -1035,11 +1032,41 @@ footer .links a:hover{color:var(--text-main);}
         return Promise.all([
           fetch(API_BASE + '/key/' + key.tokenId + '/claimable').then(function(r) { return r.ok ? r.json() : { epochs: [] }; }).catch(function() { return { epochs: [] }; }),
           getUnseenCount(key.tokenId, key),
-          fetch('https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',params:[{to:'0xaB9D716c2799A95aE2A3640faAcc0148FC37F52D',data:'0xfe6569d7'+('0000000000000000000000000000000000000000000000000000000000000000'+key.tokenId.toString(16)).slice(-64)+('0000000000000000000000000000000000000000000000000000000000000000'+currentEpochNum.toString(16)).slice(-64)},'latest']})}).then(function(r){return r.json();}).catch(function(){return{result:'0x0'};})
+          fetch('https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',params:[{to:'0xaB9D716c2799A95aE2A3640faAcc0148FC37F52D',data:'0xfe6569d7'+('0000000000000000000000000000000000000000000000000000000000000000'+key.tokenId.toString(16)).slice(-64)+('0000000000000000000000000000000000000000000000000000000000000000'+currentEpochNum.toString(16)).slice(-64)},'latest']})}).then(function(r){return r.json();}).catch(function(){return{result:'0x0'};)),
+          fetch(API_BASE + '/key/' + key.tokenId + '/artefacts', {cache:'no-store'}).then(function(r) { return r.ok ? r.json() : {}; }).catch(function() { return {}; })
         ]).then(function(results) {
-          key.unseenCount = results[1];
+          key.unseenCount = (results[1] && results[1].signal) ? results[1].signal : 0;
           key.claimableEpochs = (results[0].epochs || []).map(function(e) { return { epochId: e.epochId, amount: e.amountFormatted || '0' }; });
-          // Count attests in current epoch (same logic as dashboard)
+          key.attestsUsed = Math.min(parseInt(results[2].result || '0x0', 16) || 0, 2);
+          // Artefact counts from artefacts endpoint
+          var artefactData = results[3] || {};
+          var liveArts = artefactData.liveArtefacts || [];
+          key.liveArtefacts = liveArts.filter(function(a) { return a.status !== 'released'; }).length;
+          var libArts = artefactData.library || [];
+          key.inMyViewArtefacts = libArts.filter(function(a) { return a.status === 'active'; }).length;
+          // Artefact unseen: exact dashboard logica via z1n_activity_read_ + z1n_notif_seen_
+          var actReadIds = [];
+          try { var actStored = localStorage.getItem('z1n_activity_read_' + key.tokenId); if (actStored) actReadIds = JSON.parse(actStored); } catch(e) {}
+          var actReadSet = new Set(actReadIds);
+          // Pending offers (synthetic offering_received) — niet in activity_read maar in notif_seen
+          var seenIds = [];
+          try { seenIds = JSON.parse(localStorage.getItem('z1n_notif_seen_' + key.tokenId) || '[]'); } catch(e) {}
+          var seenSet = new Set(seenIds);
+          var unseenNotifs = (artefactData.notifications || []).filter(function(n) {
+            var pid = n.artefactId + ':' + n.type + ':' + n.blockNumber;
+            return !seenSet.has(pid);
+          }).length;
+          var pendingOffers = libArts.filter(function(a) {
+            var pid = a.tokenId + ':offering_received:' + a.tokenId;
+            return a.status === 'pending' && !seenSet.has(pid);
+          }).length;
+          // artefact_recv_ items in activity_read
+          var readArtefacts = actReadIds.filter(function(id) { return id.startsWith('artefact_recv_'); }).length;
+          var totalArtefactEvents = (liveArts.filter(function(a) { return a.status === 'in_my_view'; }).length);
+          var unseenArtefactActivity = Math.max(0, totalArtefactEvents - readArtefacts);
+          key.unseenArtefactCount = unseenNotifs + pendingOffers + unseenArtefactActivity;
+          key.unseenCount = (results[1] && results[1].signal) ? results[1].signal : 0;
+          key.claimableEpochs = (results[0].epochs || []).map(function(e) { return { epochId: e.epochId, amount: e.amountFormatted || '0' }; });
           key.attestsUsed = Math.min(parseInt(results[2].result || '0x0', 16) || 0, 2);
         });
       })).then(function() { renderKeys(); }).catch(function() {});
