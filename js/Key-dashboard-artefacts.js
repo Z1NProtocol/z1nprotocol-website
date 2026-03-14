@@ -605,7 +605,7 @@
     var apiBase = z.API_BASE || 'https://z1n-backend-production.up.railway.app/api';
     var firstArtefact = ownedArtefacts.find(function(a) { return a.status === 'in_my_view'; }) || ownedArtefacts[0];
 var artefactParam = firstArtefact ? '&artefactTokenId=' + firstArtefact.tokenId : '';
-var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (z.epoch || 0) + artefactParam + '&t=' + Date.now();
+var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (z.epoch || 0) + artefactParam + '&inscription=-&t=' + Date.now();
     
     if (previewImg) {
       previewImg.onerror = function() {
