@@ -2028,7 +2028,7 @@ ActivityFeed.activities.forEach(function(a) {
     
     if (a.type === 'reply_received' || a.type === 'attest_received' || a.type === 'direct_received') {
       countSignals++;
-    } else if (a.type.includes('artefact')) {
+    } else if (a.type.includes('artefact') && !a.badgeOnly) {
       countArtefacts++;
     } else if (a.type.includes('treasury')) {
       countTreasury++;
@@ -2484,7 +2484,7 @@ function updateTabBadges() {
   }).length;
   
    var unreadArtefacts = ActivityFeed.activities.filter(function(a) {
-    return a.type.indexOf('artefact') !== -1 && a.direction === 'received' && !ActivityFeed.readItems.has(a.id);
+    return a.type.indexOf('artefact') !== -1 && a.direction === 'received' && !a.badgeOnly && !ActivityFeed.readItems.has(a.id);
   }).length;
 
   // Whispers badge (inside tab content)
@@ -2501,9 +2501,10 @@ function updateTabBadges() {
   var artefactBadge = document.getElementById('artefactBadge');
   if (artefactBadge) {
     artefactBadge.textContent = artefactBadgeCount > 0 ? artefactBadgeCount : '';
-    artefactBadge.style.cssText = artefactBadgeCount > 0
-      ? 'background:rgba(94,232,160,0.4)!important;color:#5ee8a0!important;font-weight:700;display:inline-flex;'
-      : 'display:none;';
+    artefactBadge.style.background = artefactBadgeCount > 0 ? 'rgba(94,232,160,0.4)' : '';
+    artefactBadge.style.color = artefactBadgeCount > 0 ? '#5ee8a0' : '';
+    artefactBadge.style.display = artefactBadgeCount > 0 ? 'inline-flex' : 'none';
+    artefactBadge.style.fontWeight = artefactBadgeCount > 0 ? '700' : '';
   }
   // #artefactBadge IS the tab-nav button badge (already in HTML) — no duplicate needed
 
