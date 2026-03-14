@@ -2058,6 +2058,7 @@ ActivityFeed.activities.forEach(function(a) {
   
  // Filter unseen items — only RECEIVED unread
   var filtered = ActivityFeed.activities.filter(function(a) {
+    if (a.badgeOnly) return false;
     if (a.direction !== 'received') return false;
     var isTreasury = a.type === 'treasury_claimable';
     if (!isTreasury && ActivityFeed.readItems.has(a.id)) return false;
