@@ -206,7 +206,7 @@
     .csv-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;}
     
     /* ARTEFACT PREVIEW - CLICKABLE */
-    .artefact-preview-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
+    .artefact-preview-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;text-align:center;cursor:zoom-in;transition:transform 0.2s,box-shadow 0.2s}
     .artefact-preview-card:hover{transform:scale(1.02);box-shadow:0 8px 32px rgba(94,232,160,0.15)}
     .artefact-preview-img{width:100%;max-width:100%;aspect-ratio:500/760;border-radius:12px;background:linear-gradient(135deg,#0a0f1a 0%,#111827 50%,#0f172a 100%);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border:1px solid rgba(94,232,160,0.2);flex:1;}
     .artefact-preview-img img{width:100%;height:100%;object-fit:contain;border-radius:12px}
@@ -529,7 +529,7 @@
   <div class="overview-layout">
     
     <!-- LEFT: ARTEFACT PREVIEW -->
-    <div class="artefact-preview-card">
+    <div class="artefact-preview-card" onclick="openOverviewArtefactLightbox()">
       <div class="artefact-preview-label">Live Artefact</div>
       <div class="artefact-preview-img" id="overviewArtefactContainer">
         <img id="overviewArtefactPreview" src="" alt="Artefact Preview" style="display:none;">
@@ -565,21 +565,20 @@
       </div>
     </div>
     
-  </div>
-
-    <!-- CSV CARD -->
-    <div class="csv-card">
-      <div class="section-title title-white" style="margin-bottom:14px;font-size:12px;">Exports</div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-soft);cursor:pointer;">
-          <input type="checkbox" id="presenceIncludeDirect" style="accent-color:var(--keys-accent);width:13px;height:13px;">
-          <span>Include Direct Channel</span>
-        </label>
-        <button class="btn btn-secondary" style="font-size:11px;padding:10px 8px;width:100%;text-align:left;" onclick="downloadKeyPresenceCSV()">↓ Key Presence CSV</button>
-        <button class="btn btn-secondary" style="font-size:11px;padding:10px 8px;width:100%;text-align:left;" onclick="openFieldSignalsExportModal()">↓ Field Signals CSV</button>
-      </div>
-      <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(148,163,184,0.12);">
-        <div style="font-size:10px;color:var(--text-soft);line-height:1.6;opacity:0.7;">Key Presence exports all your activity — signals, attests, artefacts, canon. Field Signals exports all protocol signals with your attest/reply status.</div>
+  <!-- CSV CARD -->
+      <div class="csv-card">
+        <div class="section-title title-white" style="margin-bottom:14px;font-size:12px;">Exports</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-soft);cursor:pointer;">
+            <input type="checkbox" id="presenceIncludeDirect" style="accent-color:var(--keys-accent);width:13px;height:13px;">
+            <span>Include Direct Channel</span>
+          </label>
+          <button class="btn btn-secondary" style="font-size:11px;padding:10px 8px;width:100%;text-align:left;" onclick="downloadKeyPresenceCSV()">↓ Key Presence CSV</button>
+          <button class="btn btn-secondary" style="font-size:11px;padding:10px 8px;width:100%;text-align:left;" onclick="openFieldSignalsExportModal()">↓ Field Signals CSV</button>
+        </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(148,163,184,0.12);flex:1;">
+          <div style="font-size:10px;color:var(--text-soft);line-height:1.6;opacity:0.7;">Key Presence exports all your activity — signals, attests, artefacts, canon. Field Signals exports all protocol signals with your attest/reply status.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1011,6 +1010,26 @@
 <script>
   window.Z1N_KEY_REGISTRY = '0x45DfC703d9357a5259075d2e90579c080c261265';
   window.Z1N_DIRECT_CHANNEL = '0x9bAcD1f3cc6a876489b39A7965e178Ca2Dc96637';
+
+  window.openOverviewArtefactLightbox = function() {
+    var img = document.getElementById('overviewArtefactPreview');
+    if (!img || img.style.display === 'none') return;
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+    var box = document.createElement('div');
+    box.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:12px;max-width:90vw;';
+    var bigImg = document.createElement('img');
+    bigImg.src = img.src;
+    bigImg.style.cssText = 'max-width:min(500px,85vw);max-height:82vh;border-radius:16px;border:1px solid rgba(94,232,160,0.3);box-shadow:0 0 40px rgba(94,232,160,0.15);';
+    var hint = document.createElement('div');
+    hint.style.cssText = 'font-size:11px;color:rgba(255,255,255,0.35);';
+    hint.textContent = 'Click anywhere to close';
+    box.appendChild(bigImg);
+    box.appendChild(hint);
+    overlay.appendChild(box);
+    overlay.onclick = function() { overlay.remove(); };
+    document.body.appendChild(overlay);
+  };
 </script>
 <script src="js/Key-dashboard.js"></script>
 <script src="js/Key-dashboard-artefacts.js"></script>
