@@ -363,6 +363,16 @@ footer .links a:hover{color:var(--text-main);}
     .mini-stat.treasury.empty { opacity: 0.35; }
     .mini-stat.treasury.has-claim { border-color: rgba(96,165,250,0.4); }
 
+    /* TOOLTIPS — geel variant van artefacts.html */
+    .keys-tooltip { position:fixed; background:rgba(5,8,18,0.97); border:1px solid var(--keys-accent); border-radius:10px; padding:12px 16px; font-size:13px; color:var(--text-main); max-width:280px; pointer-events:none; opacity:0; transform:translateY(8px); transition:opacity 0.2s ease,transform 0.2s ease; z-index:9000; line-height:1.5; box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+    .keys-tooltip.visible { opacity:1; transform:translateY(0); }
+    .keys-tooltip .ktt-title { font-weight:700; color:var(--keys-accent); margin-bottom:6px; font-size:14px; }
+    .keys-tooltip .ktt-body { color:var(--text-soft); font-size:12px; line-height:1.5; }
+    .keys-tooltip .ktt-dismiss { margin-top:10px; padding-top:8px; border-top:1px solid rgba(255,213,86,0.15); font-size:10px; color:var(--text-soft); opacity:0.6; cursor:pointer; display:flex; align-items:center; gap:6px; }
+    .keys-tooltip .ktt-dismiss:hover { opacity:1; color:var(--keys-accent); }
+    .keys-tooltip .ktt-dismiss-dot { width:10px; height:10px; border-radius:50%; border:1px solid currentColor; flex-shrink:0; }
+    .keys-tooltip .ktt-dismiss-dot.checked { background:var(--keys-accent); border-color:var(--keys-accent); }
+
     .filter-toolbar { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     @media(max-width:600px){ .filter-toolbar{ padding:10px; gap:8px; } .filter-toggle{ padding:8px 12px; } .search-input{ min-width:0; width:100%; } }
     .filter-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(148,163,184,0.3); background: transparent; color: var(--text-soft); font-size: 11px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
@@ -452,6 +462,14 @@ footer .links a:hover{color:var(--text-main);}
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="keys-tooltip" id="keysTooltip">
+  <div class="ktt-title" id="kttTitle"></div>
+  <div class="ktt-body" id="kttBody"></div>
+  <div class="ktt-dismiss" id="kttDismiss">
+    <span class="ktt-dismiss-dot" id="kttDismissDot"></span>
+    <span>Don't show this again</span>
+  </div>
+</div>
 
 <div class="modal-overlay" id="claimModal">
   <div class="claim-modal">
@@ -861,6 +879,62 @@ footer .links a:hover{color:var(--text-main);}
   document.getElementById('modalConfirm').onclick = executeClaimsSequentially;
   document.getElementById('claimModal').onclick = function(e) { if (e.target === this) closeClaimModal(); };
 
+  // ─── TOOLTIP SYSTEEM ───
+  var TOOLTIP_DISMISS_KEY = 'z1n_keys_tooltip_dismissed';
+  var tooltipDefs = {
+    signals:   { title: 'Signals', body: 'Proof of Glyph signals submitted this epoch. Each Key can submit 2 signals per epoch — one filled dot per signal used.' },
+    attests:   { title: 'Attests', body: 'Attestations given to other signals this epoch. Each Key can attest 2 times per epoch — one filled dot per attest used.' },
+    minted:    { title: 'Artefact Minted', body: 'Artefacts you have minted from this Key. First artefact is free, additional artefacts cost 7 POL each. Released artefacts are excluded.' },
+    bounded:   { title: 'Artefact Bounded', body: 'Artefacts currently bounded to this Key via an accepted offering. Only active bonds are counted — released bonds are excluded.' },
+    anchored:  { title: 'Canon Anchored', body: 'Permanent epoch anchors set by this Key. Each canon costs 3 POL and commits a 64-character inscription to the Field forever.' },
+    rewarded:  { title: 'POL Rewarded', body: 'Total POL earned by this Key across all epochs — including claimed rewards and any currently claimable amount.' }
+  };
+  var tooltipEl = document.getElementById('keysTooltip');
+  var kttTitle = document.getElementById('kttTitle');
+  var kttBody = document.getElementById('kttBody');
+  var kttDismiss = document.getElementById('kttDismiss');
+  var kttDismissDot = document.getElementById('kttDismissDot');
+  var tooltipHideTimer = null;
+  var tooltipDismissed = {};
+  try { tooltipDismissed = JSON.parse(localStorage.getItem(TOOLTIP_DISMISS_KEY) || '{}'); } catch(e) {}
+
+  function saveDismissed() { try { localStorage.setItem(TOOLTIP_DISMISS_KEY, JSON.stringify(tooltipDismissed)); } catch(e) {} }
+
+  function showKeyTooltip(key, el) {
+    if (tooltipDismissed[key]) return;
+    var def = tooltipDefs[key]; if (!def) return;
+    clearTimeout(tooltipHideTimer);
+    kttTitle.textContent = def.title;
+    kttBody.textContent = def.body;
+    kttDismissDot.className = 'ktt-dismiss-dot';
+    var rect = el.getBoundingClientRect();
+    var tx = rect.left + rect.width / 2;
+    var ty = rect.top - 10;
+    tooltipEl.style.left = Math.max(140, Math.min(tx, window.innerWidth - 140)) + 'px';
+    tooltipEl.style.top = (ty - 120) + 'px';
+    tooltipEl.style.transform = 'translateX(-50%)';
+    tooltipEl.classList.add('visible');
+    kttDismiss.onclick = function() {
+      tooltipDismissed[key] = true;
+      saveDismissed();
+      kttDismissDot.className = 'ktt-dismiss-dot checked';
+      setTimeout(function() { tooltipEl.classList.remove('visible'); }, 400);
+    };
+  }
+
+  function hideKeyTooltip() {
+    tooltipHideTimer = setTimeout(function() { tooltipEl.classList.remove('visible'); }, 120);
+  }
+
+  tooltipEl.addEventListener('mouseenter', function() { clearTimeout(tooltipHideTimer); });
+  tooltipEl.addEventListener('mouseleave', hideKeyTooltip);
+
+  function attachTooltip(el, key) {
+    el.addEventListener('mouseenter', function() { showKeyTooltip(key, el); });
+    el.addEventListener('mouseleave', hideKeyTooltip);
+  }
+  // ─── EINDE TOOLTIP SYSTEEM ───
+
   function renderKeyCard(key) {
     var wrapper = document.createElement('div'); wrapper.className = 'key-card-wrapper';
     var color = Z1NWallets.getColor(key.wallet);
@@ -923,6 +997,14 @@ footer .links a:hover{color:var(--text-main);}
       if (clickable && clickable.dataset.tab) { saveContext(key.tokenId, key.wallet); window.location.href = baseUrl + '&tab=' + clickable.dataset.tab; return; }
       saveContext(key.tokenId, key.wallet); window.location.href = baseUrl;
     };
+    // Tooltip bindings
+    var sigGroup = card.querySelector('.status-group[data-tab="signals"]');
+    var attGroup = card.querySelector('.status-group[data-tab="attests"]');
+    var miniStats = card.querySelectorAll('.mini-stat');
+    if (sigGroup) attachTooltip(sigGroup, 'signals');
+    if (attGroup) attachTooltip(attGroup, 'attests');
+    var tooltipKeys = ['minted', 'bounded', 'anchored', 'rewarded'];
+    miniStats.forEach(function(ms, i) { if (tooltipKeys[i]) attachTooltip(ms, tooltipKeys[i]); });
     // Inner wrapper
     var inner = document.createElement('div'); inner.className = 'key-card-inner';
     inner.appendChild(card);
