@@ -902,7 +902,7 @@ footer .links a:hover{color:var(--text-main);}
     var signalIndicator = hasSignalEvent ? '<span class="indicator-dot signal-indicator" title="Unseen signals/attests/DMs"></span>' : '';
 
     card.innerHTML =
-      '<div class="key-header"><span class="key-id">Key #' + key.tokenId + '</span><div class="header-indicators">' + artefactIndicator + signalIndicator + headerIndicator + '</div></div>' +
+      '<div class="key-header"><span class="key-id">Key #' + key.tokenId + '</span><div class="header-indicators">' + signalIndicator + artefactIndicator + headerIndicator + '</div></div>' +
       genesisHtml +
       '<div class="key-glyphs">' + (key.glyphSymbols || '...') + '</div>' +
       '<div class="key-meta"><span>Birth Epoch ' + (key.epoch || '—') + '</span><a href="' + EXPLORER + '/token/' + Z1N_KEY + '?a=' + key.tokenId + '" target="_blank" onclick="event.stopPropagation()">View on chain ↗</a></div>' +
