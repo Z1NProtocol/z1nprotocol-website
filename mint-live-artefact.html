@@ -524,7 +524,11 @@ window.openLightbox=function(){var img=document.getElementById('previewImg');if(
   var wpLower = wp ? wp.toLowerCase() : '';
   if(wpLower && window.phantom && window.phantom.ethereum){
     try{
+      // Eerst eth_accounts (silent), dan eth_requestAccounts als leeg
       var pa=await window.phantom.ethereum.request({method:'eth_accounts'});
+      if(!pa || !pa.length){
+        pa=await window.phantom.ethereum.request({method:'eth_requestAccounts'});
+      }
       if(pa && pa.some(function(a){return a.toLowerCase()===wpLower;})){
         provider=window.phantom.ethereum;
         await connectWallet();
