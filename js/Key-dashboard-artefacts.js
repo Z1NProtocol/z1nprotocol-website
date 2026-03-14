@@ -1839,9 +1839,11 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
               content: n.message || ''
             });
           });
-          // Herteken feed
-          if (typeof renderActivityFeed === 'function') renderActivityFeed();
-          if (typeof updateTabBadges === 'function') updateTabBadges();
+          // Herteken feed — alleen als ActivityFeed al geladen is
+          if (window.ActivityFeed && window.ActivityFeed.loaded) {
+            if (typeof renderActivityFeed === 'function') renderActivityFeed();
+            if (typeof updateTabBadges === 'function') updateTabBadges();
+          }
         }
 
         // (DOM injection removed — ActivityFeed.activities handles display via renderActivityFeed)
