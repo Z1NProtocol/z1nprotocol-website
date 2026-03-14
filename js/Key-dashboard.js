@@ -2132,7 +2132,7 @@ ActivityFeed.activities.forEach(function(a) {
     if (presenceFilter === 'all') return true;
     
    if (presenceFilter === 'signals') {
-      return a.type === 'reply_received' || a.type === 'attest_received';
+      return a.type === 'reply_received' || a.type === 'attest_received' || a.type === 'direct_received';
     }
     if (presenceFilter === 'artefacts') return a.type.includes('artefact');
     if (presenceFilter === 'canon') return false;
