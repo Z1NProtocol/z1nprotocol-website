@@ -523,6 +523,15 @@ window.openLightbox=function(){var img=document.getElementById('previewImg');if(
 
 (async function(){
   var wpLower = wp ? wp.toLowerCase() : '';
+  console.log('AUTO-CONNECT START wpLower:', wpLower);
+  console.log('window.phantom exists:', !!window.phantom);
+  console.log('window.phantom.ethereum exists:', !!(window.phantom && window.phantom.ethereum));
+  if(window.phantom && window.phantom.ethereum){
+    try{
+      var debugAccs = await window.phantom.ethereum.request({method:'eth_accounts'});
+      console.log('Phantom eth_accounts result:', debugAccs);
+    }catch(e){ console.log('Phantom eth_accounts error:', e.message); }
+  }
   if(wpLower && window.phantom && window.phantom.ethereum){
     try{
       // Probeer eerst silent
