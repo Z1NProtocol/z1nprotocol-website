@@ -903,7 +903,7 @@ updateAttestBtn();
       '</div>' +
       '<div style="margin-top:16px;display:flex;gap:8px;justify-content:center;">' +
         '<button onclick="switchTab(\'artefacts\');closeArtefactModal();" class="btn btn-primary" style="font-size:12px;padding:8px 16px;">View All Artefacts</button>' +
-        '<button onclick="mintLiveArtefact();closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? '+ Mint Extra — 7 POL' : '+ Mint First — FREE') + '</button>' +
+        '<button onclick="window.location.href=\'mint-live-artefact.html?key=\'+(window.Z1N&&window.Z1N.keyId||0)+\'&wallet=\'+encodeURIComponent(window.Z1N&&window.Z1N.wallet||\'\');closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? '+ Mint Extra — 7 POL' : '+ Mint First — FREE') + '</button>' +
       '</div>' +
     '</div>';
     

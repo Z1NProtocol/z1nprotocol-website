@@ -800,7 +800,7 @@
 <div id="tab-artefacts" class="tab-content">
   <div class="section-card">
     <div style="display:flex;justify-content:flex-end;margin-bottom:14px;">
-      <button class="btn btn-green" id="btnMintInSection" onclick="window.location.href='mint-live-artefact.html?key='+(window.Z1N&&window.Z1N.keyId||0)" style="height:36px;padding:0 16px;white-space:nowrap;">+ Mint Artefact</button>
+      <button class="btn btn-green" id="btnMintInSection" onclick="window.location.href='mint-live-artefact.html?key='+(window.Z1N&&window.Z1N.keyId||0)+'&wallet='+encodeURIComponent(window.Z1N&&window.Z1N.wallet||'')" style="height:36px;padding:0 16px;white-space:nowrap;">+ Mint Artefact</button>
     </div>
     <div class="artefact-sub-tabs">
       <button class="artefact-sub-tab active" id="subTabMinted" onclick="switchArtefactSubTab('minted')">
