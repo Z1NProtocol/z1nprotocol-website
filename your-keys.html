@@ -1188,10 +1188,8 @@ footer .links a:hover{color:var(--text-main);}
             return a.status === 'pending' && !seenSet.has(pid);
           }).length;
           // artefact_recv_ items in activity_read
-          var readArtefacts = actReadIds.filter(function(id) { return id.startsWith('artefact_recv_'); }).length;
-          var totalArtefactEvents = (liveArts.filter(function(a) { return a.status === 'in_my_view'; }).length);
-          var unseenArtefactActivity = Math.max(0, totalArtefactEvents - readArtefacts);
-          key.unseenArtefactCount = unseenNotifs + pendingOffers + unseenArtefactActivity;
+          // Alleen inkomende events tellen — eigen mints zijn geen unseen events
+          key.unseenArtefactCount = unseenNotifs + pendingOffers;
           key.unseenCount = (results[1] && results[1].signal) ? results[1].signal : 0;
           key.claimableEpochs = (results[0].epochs || []).map(function(e) { return { epochId: e.epochId, amount: e.amountFormatted || '0' }; });
           key.attestsUsed = Math.min(parseInt(results[2].result || '0x0', 16) || 0, 2);

@@ -385,7 +385,7 @@ function renderPreviewForState(){
 
   var artParam=firstArtefactId?'&artefactTokenId='+firstArtefactId:'';
   // No inscription param — artefact renders with blank inscription as designed
-  var src=API+'/artefact/'+keyId+'/static-preview?epoch='+epoch+artParam+'&t='+Date.now();
+  var src=API+'/artefact/'+keyId+'/static-preview?epoch='+epoch+artParam+'&inscription=-&t='+Date.now();
   img.onload=function(){
     img.classList.add('loaded');
     img.style.display='block';
