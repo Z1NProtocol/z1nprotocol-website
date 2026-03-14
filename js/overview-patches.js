@@ -311,7 +311,7 @@
             '', '', '', '', '',
             '',
             a.tokenId || '',
-            a.status || 'active',
+            a.stateNum === 0 ? 'UNSHARED' : a.stateNum === 1 ? 'PENDING' : a.stateNum === 2 ? 'ACTIVE' : a.stateNum === 3 ? 'RELEASED' : (a.status || 'unknown'),
             a.inscription || '',
             '',
             isReceived
@@ -346,7 +346,7 @@
       // ── DIRECT CHANNEL (optioneel) ──
       if (includeDirectChannel) {
         try {
-          var dcRes = await fetch(API_BASE + '/direct/key/' + currentKeyId + '?limit=1000', { cache: 'no-store' });
+          var dcRes = await fetch(API_BASE + '/direct-channel/key/' + currentKeyId + '?limit=1000', { cache: 'no-store' });
           if (dcRes.ok) {
             var dcData = await dcRes.json();
             (dcData.messages || []).forEach(function (m) {
@@ -464,6 +464,12 @@
 
       // Cache voor glyphs (al gevuld door loadKeyData → keyGlyphsCache)
       var keyGlyphsCache = window.keyGlyphsCache || {};
+      // Pre-fetch glyphs voor alle keys in de signals
+      var uniqueKeyIds = [...new Set(signals.map(function(s) { return s.keyId; }).filter(Boolean))];
+      await Promise.all(uniqueKeyIds.map(function(kid) {
+        if (keyGlyphsCache[kid]) return Promise.resolve();
+        return fetch(API_BASE + '/keys/' + kid, {cache:'no-store'}).then(function(r) { return r.ok ? r.json() : null; }).then(function(d) { if (d && d.glyphLine) keyGlyphsCache[kid] = d.glyphLine; }).catch(function(){});
+      }));
 
       signals.forEach(function (s) {
         var isReply       = s.replyTo && s.replyTo !== '0x' + '0'.repeat(64);
