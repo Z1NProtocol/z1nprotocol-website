@@ -804,11 +804,29 @@ updateAttestBtn();
       initUnreadState();
       if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
       initActivityFeed();
-      // Force reload feed after artefacts are in — picks up pending offerings
+      // Silent background tab switch: artefacts → overview
+      // Forces Z1NArtefacts data into ActivityFeed before user sees overview
       setTimeout(function() {
-        ActivityFeed.loaded = false;
-        loadActivityFeed();
-      }, 800);
+        var artefactsTab = document.getElementById('tab-artefacts');
+        var overviewTab = document.getElementById('tab-overview');
+        if (artefactsTab) artefactsTab.classList.add('active');
+        if (overviewTab) overviewTab.classList.remove('active');
+        setTimeout(function() {
+          if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) {
+            window.Z1NArtefacts.refresh().then(function() {
+              if (artefactsTab) artefactsTab.classList.remove('active');
+              if (overviewTab) overviewTab.classList.add('active');
+              ActivityFeed.loaded = false;
+              loadActivityFeed();
+            });
+          } else {
+            if (artefactsTab) artefactsTab.classList.remove('active');
+            if (overviewTab) overviewTab.classList.add('active');
+            ActivityFeed.loaded = false;
+            loadActivityFeed();
+          }
+        }, 500);
+      }, 300);
       
       // Switch to URL tab AFTER data loads
       switchToUrlTab();
