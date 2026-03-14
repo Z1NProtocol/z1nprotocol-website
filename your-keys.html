@@ -229,8 +229,8 @@ footer .links a:hover{color:var(--text-main);}
     .keys-grid.keys-view-both { grid-template-columns: repeat(2, 1fr); }
     @media(max-width:800px){ .keys-grid.keys-view-both { grid-template-columns: 1fr; } }
     .keys-grid.keys-view-both .key-card-inner { display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
-    .keys-grid.keys-view-both .key-card { flex: 0 0 auto; width: calc(100% - 148px); min-width: 0; }
-    .keys-grid.keys-view-both .key-artefact-preview { display: flex; width: 140px; flex-shrink: 0; }
+    .keys-grid.keys-view-both .key-card { flex: 1 1 0; min-width: 0; overflow: hidden; }
+    .keys-grid.keys-view-both .key-artefact-preview { display: flex; width: 140px; min-width: 140px; flex-shrink: 0; flex-grow: 0; }
 
     /* Artefact-only mode */
     .keys-grid.keys-view-artefact { grid-template-columns: repeat(4, 1fr); }
