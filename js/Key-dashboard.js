@@ -1916,8 +1916,8 @@ async function loadActivityFeed() {
         var arD = await arR.json();
         (arD.liveArtefacts || []).filter(function(a){ return a.status === 'in_my_view'; }).forEach(function(a) {
           var msgId = 'artefact_recv_' + a.tokenId;
-          var fromKey = a.senderKeyId || a.fromKeyId || a.receivedFromKeyId || null;
-          activities.push({ id: msgId, type: 'artefact_received', direction: 'received', timestamp: a.blockNumber || a.tokenId, fromKeyId: fromKey, tokenId: a.tokenId, content: '' });
+          // Badge only — geen feed item zonder sender info
+          activities.push({ id: msgId, type: 'artefact_received', direction: 'received', timestamp: a.blockNumber || a.tokenId, fromKeyId: null, tokenId: a.tokenId, content: '', badgeOnly: true });
         });
       }
     } catch(e) {}
