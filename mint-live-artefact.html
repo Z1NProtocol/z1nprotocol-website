@@ -520,7 +520,21 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
 
 window.openLightbox=function(){var img=document.getElementById('previewImg');if(!img.classList.contains('loaded'))return;document.getElementById('lightboxImg').src=img.src;document.getElementById('lightbox').classList.add('active');};
 
-(async function(){var e=getEth();if(e){try{var a=await e.request({method:'eth_accounts'});if(a&&a.length)await connectWallet();}catch(e){}}})();
+(async function(){
+  var wpLower = wp ? wp.toLowerCase() : '';
+  if(wpLower && window.phantom && window.phantom.ethereum){
+    try{
+      var pa=await window.phantom.ethereum.request({method:'eth_accounts'});
+      if(pa && pa.some(function(a){return a.toLowerCase()===wpLower;})){
+        provider=window.phantom.ethereum;
+        await connectWallet();
+        return;
+      }
+    }catch(e){}
+  }
+  var e=getEth();
+  if(e){try{var a=await e.request({method:'eth_accounts'});if(a&&a.length)await connectWallet();}catch(e){}}
+})();
 
 var hb=document.getElementById('hamburger'),nav=document.getElementById('navLinks');
 if(hb&&nav){hb.addEventListener('click',function(){hb.classList.toggle('open');nav.classList.toggle('open');});nav.addEventListener('click',function(e){if(e.target.tagName==='A'){hb.classList.remove('open');nav.classList.remove('open');}});}

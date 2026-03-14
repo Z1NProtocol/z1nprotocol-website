@@ -874,6 +874,19 @@ if (storedReturn) {
 
   // Auto-connect
   (async function() {
+    var urlWalletLower = walletParam ? walletParam.toLowerCase() : '';
+    // Als URL wallet bekend is, probeer eerst Phantom expliciet
+    if (urlWalletLower && window.phantom && window.phantom.ethereum) {
+      try {
+        var phantomAccs = await window.phantom.ethereum.request({ method: 'eth_accounts' });
+        if (phantomAccs && phantomAccs.some(function(a) { return a.toLowerCase() === urlWalletLower; })) {
+          provider = window.phantom.ethereum;
+          await connectWallet();
+          return;
+        }
+      } catch(e) {}
+    }
+    // Fallback: standaard provider
     var eth = getProvider();
     if (eth) {
       try {
