@@ -799,10 +799,16 @@
   <!-- ARTEFACTS TAB -->
 <div id="tab-artefacts" class="tab-content">
   <div class="section-card">
+    <div class="artefact-sub-tabs">
+      <button class="artefact-sub-tab active" id="subTabMinted" onclick="switchArtefactSubTab('minted')">
+        ◈ Minted <span class="sub-tab-badge" id="subBadgeMinted">0</span>
+      </button>
+      <button class="artefact-sub-tab" id="subTabReceived" onclick="switchArtefactSubTab('received')">
+        ◈← Received <span class="sub-tab-badge" id="subBadgeReceived">0</span>
+      </button>
+    </div>
     <div id="ownedArtefactsSection"></div>
-  </div>
-  <div class="section-card">
-    <div id="sharedWithMeSection"></div>
+    <div id="sharedWithMeSection" style="display:none;"></div>
   </div>
 </div>
 
@@ -1008,6 +1014,24 @@
 </footer>
 
 <script>
+  window.switchArtefactSubTab = function(tab) {
+    var minted = document.getElementById('ownedArtefactsSection');
+    var received = document.getElementById('sharedWithMeSection');
+    var btnMinted = document.getElementById('subTabMinted');
+    var btnReceived = document.getElementById('subTabReceived');
+    if (tab === 'minted') {
+      if (minted) minted.style.display = 'block';
+      if (received) received.style.display = 'none';
+      if (btnMinted) btnMinted.classList.add('active');
+      if (btnReceived) btnReceived.classList.remove('active');
+    } else {
+      if (minted) minted.style.display = 'none';
+      if (received) received.style.display = 'block';
+      if (btnMinted) btnMinted.classList.remove('active');
+      if (btnReceived) btnReceived.classList.add('active');
+    }
+  };
+
   window.Z1N_KEY_REGISTRY = '0x45DfC703d9357a5259075d2e90579c080c261265';
   window.Z1N_DIRECT_CHANNEL = '0x9bAcD1f3cc6a876489b39A7965e178Ca2Dc96637';
 

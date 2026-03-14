@@ -515,6 +515,25 @@
     });
     try { localStorage.setItem(seenKey, JSON.stringify([...seenSet])); } catch(e) {}
     updateBadgesAndFeed();
+
+    // Update sub-tab badges
+    var mintedBadge = document.getElementById('subBadgeMinted');
+    var receivedBadge = document.getElementById('subBadgeReceived');
+    var unreadOwned = Object.values(notifications).filter(function(n) {
+      return !n.seen && (n.type === 'offering_accepted' || n.type === 'offering_rejected' || n.type === 'artefact_released');
+    }).length;
+    var unreadReceived = Object.values(notifications).filter(function(n) {
+      return !n.seen && (n.type === 'offering_received');
+    }).length + sharedWithMe.filter(function(a) { return a.status === 'pending'; }).length;
+
+    if (mintedBadge) {
+      mintedBadge.textContent = ownedArtefacts.length;
+      mintedBadge.classList.toggle('has-unread', unreadOwned > 0);
+    }
+    if (receivedBadge) {
+      receivedBadge.textContent = sharedWithMe.length;
+      receivedBadge.classList.toggle('has-unread', unreadReceived > 0);
+    }
   }
 
   function getUnreadCount() {
@@ -1735,6 +1754,25 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     if (isLoadingShared) { isLoadingShared = false; lastSharedSig = ''; renderSharedSection(); }
     
     updateBadgesAndFeed();
+
+    // Update sub-tab badges
+    var mintedBadge = document.getElementById('subBadgeMinted');
+    var receivedBadge = document.getElementById('subBadgeReceived');
+    var unreadOwned = Object.values(notifications).filter(function(n) {
+      return !n.seen && (n.type === 'offering_accepted' || n.type === 'offering_rejected' || n.type === 'artefact_released');
+    }).length;
+    var unreadReceived = Object.values(notifications).filter(function(n) {
+      return !n.seen && (n.type === 'offering_received');
+    }).length + sharedWithMe.filter(function(a) { return a.status === 'pending'; }).length;
+
+    if (mintedBadge) {
+      mintedBadge.textContent = ownedArtefacts.length;
+      mintedBadge.classList.toggle('has-unread', unreadOwned > 0);
+    }
+    if (receivedBadge) {
+      receivedBadge.textContent = sharedWithMe.length;
+      receivedBadge.classList.toggle('has-unread', unreadReceived > 0);
+    }
   }
 
   // =====================================================================
