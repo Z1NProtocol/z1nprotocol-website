@@ -242,10 +242,10 @@
     return a ? a.slice(0, 6) + '...' + a.slice(-4) : '—';
   }
   
-  function showToast(msg, dur) {
+  function showToast(msg, dur, isError) {
     var z = getZ1N();
     if (z.showToast) {
-      z.showToast(msg, dur);
+      z.showToast(msg, dur, isError);
     } else {
       var t = document.getElementById('toast');
       if (t) {
@@ -748,8 +748,10 @@ var sig = ownedArtefacts.map(function(a) { return a.tokenId + ':' + a.status; })
       var statusLabel = art.status === 'in_my_view' ? 'Personal' :
                         art.status === 'pending' ? 'Offered' :
                         art.status === 'shared' ? 'Bounded' :
-                        art.status === 'released' ? (art.releasedByRecipient ? 'Released by K#' + art.releasedFromKeyId : 'Released by you') :
+                        art.status === 'released' ? (art.releasedByRecipient ? 'Released by K#' + art.releasedFromKeyId : 'Released by you') + (art.releasedFromKeyId > 0 ? ' · was K#' + art.releasedFromKeyId : '') :
                         art.status === 'rejected' ? 'Rejected' : art.status;
+      var releasedByRecipientBg = art.releasedByRecipient ? 'rgba(248,113,113,0.85)' : 'rgba(94,232,160,0.85)';
+      var releasedByRecipientColor = art.releasedByRecipient ? '#fff' : '#000';
       
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId + 
         '/static-preview?epoch=' + (z.epoch || 0) + '&artefactTokenId=' + art.tokenId;
@@ -776,8 +778,10 @@ var sig = ownedArtefacts.map(function(a) { return a.tokenId + ':' + a.status; })
       if (hasInitiatorNotif && !hasPending) {
         var notifBg = (initiatorNotifLabel.includes('released') || initiatorNotifLabel.includes('rejected')) ? 'rgba(248,113,113,0.85)' : 'rgba(94,232,160,0.85)';
         var notifColor = (initiatorNotifLabel.includes('released') || initiatorNotifLabel.includes('rejected')) ? '#fff' : '#000';
-        html += '<div style="position:absolute;top:6px;left:6px;z-index:3;background:' + notifBg + ';color:' + notifColor + ';font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">' + initiatorNotifLabel + '</div>';
-        html += '<div style="position:absolute;top:6px;right:6px;z-index:3;background:' + notifBg + ';color:' + notifColor + ';font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">NEW</div>';
+        var leftBg = (initiatorNotifLabel.includes('released') && art.releasedByRecipient) ? 'rgba(248,113,113,0.85)' : (initiatorNotifLabel.includes('rejected')) ? 'rgba(248,113,113,0.85)' : 'rgba(94,232,160,0.85)';
+        var leftColor = (leftBg === 'rgba(248,113,113,0.85)') ? '#fff' : '#000';
+        html += '<div style="position:absolute;top:6px;left:6px;z-index:3;background:' + leftBg + ';color:' + leftColor + ';font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">' + initiatorNotifLabel + '</div>';
+        html += '<div style="position:absolute;top:6px;right:6px;z-index:3;background:' + leftBg + ';color:' + leftColor + ';font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">NEW</div>';
       }
       
       if (hasPending) {
@@ -891,7 +895,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
           '<button class="filter-pill' + (libraryFilter.status === 'active' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'active\')">Bounded <span class="pill-count">' + countBounded + '</span></button>' +
           (countRejected > 0 ? '<button class="filter-pill' + (libraryFilter.status === 'rejected' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'rejected\')">Rejected <span class="pill-count">' + countRejected + '</span></button>' : '') +
           (countReleased > 0 ? '<button class="filter-pill' + (libraryFilter.status === 'released' ? ' active' : '') + '" onclick="Z1NArtefacts.setLibraryFilter(\'released\')">Released <span class="pill-count">' + countReleased + '</span></button>' : '') +
-          (countReleased > 0 ? '<button class="filter-pill' + (libraryFilter.hideReleased ? ' active' : '') + '" onclick="Z1NArtefacts.toggleHideReleased()" style="opacity:0.7;">Hide Released</button>' : '') +
+          (countReleased > 0 ? '<button class="filter-pill' + (libraryFilter.hideReleased ? ' active' : '') + '" onclick="Z1NArtefacts.toggleHideReleased(\'library\')" style="opacity:0.7;">Hide Released</button>' : '') +
           (countRejected > 0 ? '<button class="filter-pill' + (libraryFilter.hideRejected ? ' active' : '') + '" onclick="Z1NArtefacts.toggleHideRejected()" style="opacity:0.7;">Hide Rejected</button>' : '') +
         '</div>' +
         '<input type="text" class="filter-search" id="librarySearchInput" placeholder="Search Key ID..." value="' + (libraryFilter.search || '') + '" onkeyup="Z1NArtefacts.filterLibrary()">' +
@@ -932,7 +936,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId + 
         '&artefactTokenId=' + art.tokenId;
       
-      var hasNotif = hasUnreadNotification(art.tokenId);
+      var hasNotif = hasUnreadNotification(art.tokenId) && !art._releaseSeen;
       
       // Icon for non-preview states
       var previewContent;
@@ -950,8 +954,8 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
                     isPending && art.offerMessage ? art.offerMessage :
                     art.inscription || '';
       var releasedLabel = isReleased ? (art.releasedByInitiator ? 'K#' + art.sourceKeyId + ' released' : 'You released') : '';
-      var releasedBadgeBg = isReleased && !art.releasedByInitiator ? 'rgba(94,232,160,0.85)' : 'rgba(248,113,113,0.85)';
-      var releasedBadgeColor = isReleased && !art.releasedByInitiator ? '#000' : '#fff';
+      var releasedBadgeBg = isReleased && art.releasedByInitiator ? 'rgba(248,113,113,0.85)' : 'rgba(94,232,160,0.85)';
+      var releasedBadgeColor = isReleased && art.releasedByInitiator ? '#fff' : '#000';
       html += '<div class="artefact-card library-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" style="position:relative;" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
         (isReleased ? '<div style="position:absolute;top:6px;left:6px;z-index:3;background:' + releasedBadgeBg + ';color:' + releasedBadgeColor + ';font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.04em;">' + releasedLabel + '</div>' : '') +
         '<div class="artefact-preview">' +
@@ -982,7 +986,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       var previewUrl = (z.API_BASE || 'https://z1n-backend-production.up.railway.app/api') + '/artefact/' + art.sourceKeyId +
         '/static-preview?epoch=' + (z.epoch || 0) + '&viewerKeyId=' + z.keyId +
         '&artefactTokenId=' + art.tokenId;
-      var hasNotif = hasUnreadNotification(art.tokenId);
+      var hasNotif = hasUnreadNotification(art.tokenId) && !art._releaseSeen;
       html += '<div class="artefact-list-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
         '<div class="list-card-preview">' +
           (isBounded ? artImg(previewUrl, 'From Key #' + art.sourceKeyId) : '<div class="list-placeholder shared" style="color:' + (isRejected ? '#f87171' : isReleased ? 'var(--text-soft)' : '#ffd556') + ';opacity:' + (isReleased ? '0.4' : '1') + ';">◈</div>') +
@@ -1044,7 +1048,8 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       // Single preview — no two-column layout
       contentHtml = '<div class="modal-preview large">' + artImg(previewUrl, 'Artefact Preview') + '</div>' +
         '<div id="modalInscription_' + artefactId + '"></div>' +
-        '<div class="share-form">' +
+          (art.rejectCount > 0 ? '<div class="info-row" style="margin-bottom:8px;"><span class="label" style="font-size:11px;color:var(--text-soft);">Rejected</span><span class="value" style="font-size:11px;color:#f87171;">' + art.rejectCount + 'x previously rejected</span></div>' : '') +
+          '<div class="share-form">' +
           '<label>Offer to Key ID:</label>' +
           '<input type="number" id="shareTargetKeyId" placeholder="Enter Key ID" min="0">' +
           '<div id="shareKeyValidation" class="validation-msg"></div>' +
@@ -1096,7 +1101,8 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
         '<div id="modalInscription_' + artefactId + '"></div>' +
         '<div class="modal-info">' +
           '<div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--text-soft);">Released — retired</span></div>' +
-          (art.boundToKeyId > 0 ? '<div class="info-row"><span class="label">Was bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div>' : '') +
+          (art.boundToKeyId > 0 ? '<div class="info-row"><span class="label">Was bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div>' : (art.releasedFromKeyId > 0 ? '<div class="info-row"><span class="label">Was bound to</span><span class="value">Key #' + art.releasedFromKeyId + '</span></div>' : '')) +
+          (art.releaseMessage ? '<div class="info-row"><span class="label">Release msg</span><span class="value" style="color:#f87171;font-style:italic;">' + escapeHtml(art.releaseMessage) + '</span></div>' : '') +
           relNotifHtml +
         '</div>' +
         '<div style="padding:12px 0;color:var(--text-soft);font-size:13px;">This artefact has been permanently released and cannot be used again.</div>';
@@ -1116,6 +1122,11 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
   function openLibraryModal(artefactId, sourceKeyId) {
     markNotificationRead(artefactId);
     markInitiatorNotificationsReadForArtefact(artefactId);
+    // Also clear any released state from library display
+    var artToMark = sharedWithMe.find(function(a) { return a.tokenId === artefactId; });
+    if (artToMark && artToMark.status === 'released') {
+      artToMark._releaseSeen = true;
+    }
     lastSharedSig = '';
     lastOwnedSig = '';
     renderSharedSection();
@@ -1181,6 +1192,8 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     // Offer message from local store (saved when offer was processed)
     var offerMsg = artData && artData.offerMessage ? artData.offerMessage : '';
     var offerMsgHtml = offerMsg ? '<div class="info-row"><span class="label">Message</span><span class="value" style="color:var(--accent);">' + escapeHtml(offerMsg) + '</span></div>' : '';
+    var releaseMsg = artData && artData.releaseMessage ? artData.releaseMessage : '';
+    var releaseMsgHtml = (isReleased && releaseMsg) ? '<div class="info-row"><span class="label">Release msg</span><span class="value" style="color:#f87171;font-style:italic;">' + escapeHtml(releaseMsg) + '</span></div>' : '';
     
     modal.innerHTML = '<div class="modal-overlay" onclick="Z1NArtefacts.closeModal()"></div>' +
       '<div class="modal-content"><button class="modal-close" onclick="Z1NArtefacts.closeModal()">×</button>' +
@@ -1191,6 +1204,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
             '<div class="info-row"><span class="label">Status</span><span class="value">' + statusLabelLib + '</span></div>' +
             (glyphs ? '<div class="info-row"><span class="label">Glyphs</span><span class="value">' + glyphs + '</span></div>' : '') +
             offerMsgHtml +
+            releaseMsgHtml +
             inscHtml +
           '</div>' +
           actionsHtml +
@@ -1397,7 +1411,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(248,113,113,0.15);color:#f87171;">Waiting for confirmation...</div>';
       var success = await waitForReceipt(tx);
       if (success) {
-        showToast('Artefact released', 3000);
+        showToast('✅ Artefact released', 3000);
         addStateChangeNotification('released', artefactId, z.keyId, null, releaseMsg);
         pendingViewChanges[artefactId] = 'releasing'; closeModal(); lastOwnedSig = ''; renderOwnedSection();
         try {
@@ -1429,7 +1443,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       if (statusEl) statusEl.innerHTML = '<div class="status-msg" style="background:rgba(248,113,113,0.15);color:#f87171;">Waiting for confirmation...</div>';
       var success = await waitForReceipt(tx);
       if (success) {
-        showToast('Artefact released', 3000);
+        showToast('✅ Artefact released', 3000);
         addStateChangeNotification('released', artefactId, z.keyId, null, releaseMsg);
         pendingViewChanges[artefactId] = 'releasing'; closeModal(); lastSharedSig = ''; renderSharedSection();
         try {
@@ -1642,10 +1656,16 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     renderSharedSection();
   }
 
-  function toggleHideReleased() {
-    ownedFilter.hideReleased = !ownedFilter.hideReleased;
-    lastOwnedSig = '';
-    renderOwnedSection();
+  function toggleHideReleased(scope) {
+    if (scope === 'library') {
+      libraryFilter.hideReleased = !libraryFilter.hideReleased;
+      lastSharedSig = '';
+      renderSharedSection();
+    } else {
+      ownedFilter.hideReleased = !ownedFilter.hideReleased;
+      lastOwnedSig = '';
+      renderOwnedSection();
+    }
   }
 
   function toggleHideRejected() {
@@ -1806,7 +1826,9 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
             msg = '<strong style="color:#f87171;">K#' + n.byKeyId + '</strong> rejected your artefact offer';
             color = '#f87171';
           } else if (n.type === 'artefact_released') {
-            var who = n.releasedBy === 'initiator' ? 'K#' + n.byKeyId + ' released' : 'You released';
+            var z2 = getZ1N();
+            var releasedByMe = n.byKeyId === z2.keyId;
+            var who = releasedByMe ? 'You released' : 'K#' + n.byKeyId + ' released';
             msg = '<strong style="color:#f87171;">' + who + '</strong> artefact #' + n.artefactId +
               (n.message ? ' <span style="font-style:italic;color:rgba(248,113,113,0.7);">"' + escapeHtml(n.message.slice(0,40)) + '"</span>' : '');
             color = '#f87171';
