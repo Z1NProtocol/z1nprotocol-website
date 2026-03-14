@@ -1698,13 +1698,15 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     
     // Trigger activity feed reload after artefact data is loaded
     setTimeout(function() {
-      if (typeof loadActivityFeed === 'function') {
-        if (window.ActivityFeed) window.ActivityFeed.loaded = false;
+      if (window.ActivityFeed && window.ActivityFeed.loaded) {
+        if (typeof renderActivityFeed === 'function') renderActivityFeed();
+        if (typeof updateTabBadges === 'function') updateTabBadges();
+      } else if (typeof loadActivityFeed === 'function') {
         loadActivityFeed();
       }
     }, 500);
   }
-
+  
   async function refresh() {
     var ownedPromise = loadOwnedArtefacts().then(function() {
       isLoadingOwned = false;

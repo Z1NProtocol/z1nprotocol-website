@@ -1909,6 +1909,33 @@ async function loadActivityFeed() {
       }
     });
 
+    // ─── ARTEFACT NOTIFICATIONS (pending offerings in library) ───
+    try {
+      var libResp = await fetch(API_BASE + '/key/' + currentKeyId + '/library', {cache:'no-store'});
+      if (libResp.ok) {
+        var libData = await libResp.json();
+        var libItems = libData.library || [];
+        var libSeenKey = 'z1n_notif_seen_' + currentKeyId;
+        var libSeenIds = [];
+        try { libSeenIds = JSON.parse(localStorage.getItem(libSeenKey) || '[]'); } catch(e) {}
+        var libSeenSet = new Set(libSeenIds);
+        libItems.filter(function(art) { return art.status === 'pending'; }).forEach(function(art) {
+          var persistentId = art.tokenId + ':offering_received:' + art.tokenId;
+          if (!libSeenSet.has(persistentId)) {
+            activities.push({
+              id: 'artefact_notif_' + art.tokenId + '_offering_received',
+              type: 'artefact_received',
+              direction: 'received',
+              timestamp: art.tokenId,
+              fromKeyId: art.sourceKeyId,
+              tokenId: art.tokenId,
+              content: art.offerMessage || ''
+            });
+          }
+        });
+      }
+    } catch(e) {}
+
     // ─── ARTEFACTS IN MY VIEW (badge only) ───
     try {
       var arR = await fetch(API_BASE + '/key/' + currentKeyId + '/artefacts', {cache:'no-store'});
@@ -1942,6 +1969,37 @@ async function loadActivityFeed() {
         });
       }
     } catch(e) {}
+
+    // ─── ARTEFACT NOTIFICATIONS (from Z1NArtefacts notification system) ───
+    if (window.Z1NArtefacts && typeof window.Z1NArtefacts.getUnseenCount === 'function') {
+      try {
+        var artefactNotifResp = await fetch(API_BASE + '/key/' + currentKeyId + '/library', {cache:'no-store'});
+        if (artefactNotifResp.ok) {
+          var artefactNotifData = await artefactNotifResp.json();
+          var artefactLibrary = artefactNotifData.library || [];
+          var artefactSeenKey = 'z1n_notif_seen_' + currentKeyId;
+          var artefactSeenIds = [];
+          try { artefactSeenIds = JSON.parse(localStorage.getItem(artefactSeenKey) || '[]'); } catch(e) {}
+          var artefactSeenSet = new Set(artefactSeenIds);
+          artefactLibrary.filter(function(art) {
+            return art.status === 'pending';
+          }).forEach(function(art) {
+            var msgId = 'artefact_notif_' + art.tokenId + '_offering_received';
+            if (!artefactSeenSet.has(art.tokenId + ':offering_received:' + art.tokenId)) {
+              activities.push({
+                id: msgId,
+                type: 'artefact_received',
+                direction: 'received',
+                timestamp: art.tokenId,
+                fromKeyId: art.sourceKeyId,
+                tokenId: art.tokenId,
+                content: art.offerMessage || ''
+              });
+            }
+          });
+        }
+      } catch(e) {}
+    }
 
     // ─── ARTEFACTS RECEIVED (from allLiveArtefacts) ───
     (allLiveArtefacts || []).forEach(function(art) {
