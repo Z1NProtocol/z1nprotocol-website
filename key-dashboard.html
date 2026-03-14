@@ -839,7 +839,7 @@
   <div class="section-card">
     <div class="section-header">
       <span class="section-title" style="color:var(--canon-color);">Your Canon Anchors <span id="canonCount" style="font-weight:400;opacity:0.8;">(0)</span></span>
-      <button type="button" class="btn btn-canon" id="mintCanonBtn" onclick="sessionStorage.setItem('canonReturnUrl', window.location.href + (window.location.href.includes('tab=') ? '' : (window.location.href.includes('?') ? '&tab=canon' : '?tab=canon'))); window.location.href='mint-canon.html?key='+(window.Z1N?.keyId||0);">+ Mint Anchor</button>
+      <button type="button" class="btn btn-canon" id="mintCanonBtn" onclick="sessionStorage.setItem('canonReturnUrl', window.location.href + (window.location.href.includes('tab=') ? '' : (window.location.href.includes('?') ? '&tab=canon' : '?tab=canon'))); window.location.href='mint-canon.html?key='+(window.Z1N?.keyId||0)+'&wallet='+encodeURIComponent(window.Z1N?.wallet||'');">+ Mint Anchor</button>
     </div>
     <p style="font-size:12px;color:var(--text-soft);margin-bottom:16px;">
       Permanent markers of meaningful epochs. Non-transferable declarations written to the Field.
@@ -1058,6 +1058,7 @@
     document.body.appendChild(overlay);
   };
 </script>
+<script src="js/z1n-provider.js"></script>
 <script src="js/Key-dashboard.js"></script>
 <script src="js/Key-dashboard-artefacts.js"></script>
 <script src="js/Key-dashboard-canon.js"></script>

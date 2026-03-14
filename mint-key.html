@@ -789,6 +789,13 @@
     btnConnect.textContent = 'Connecting...';
     btnConnect.disabled = true;
 
+    // Sla wallet type op voor z1n-provider.js
+    var walletType = 'metamask';
+    if (provider === window.phantom?.ethereum) walletType = 'phantom';
+    else if (provider?.isCoinbaseWallet) walletType = 'coinbase';
+    else if (provider?.isBraveWallet) walletType = 'brave';
+    localStorage.setItem('z1n_preferred_wallet', walletType);
+
     provider.request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] })
       .then(function() { return provider.request({ method: 'eth_accounts' }); })
       .then(function(accounts) {

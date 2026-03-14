@@ -133,30 +133,7 @@ function showSafetyWarning(callback) {
   function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '—'; }
 
   function getProvider() {
-    // Als URL een wallet meegeeft, probeer de matching provider te vinden
-    if (urlWallet) {
-      var providers = (window.ethereum && window.ethereum.providers) ? window.ethereum.providers : (window.ethereum ? [window.ethereum] : []);
-      if (window.phantom && window.phantom.ethereum) providers = providers.concat([window.phantom.ethereum]);
-      // Zoek provider waarvan het geselecteerde account matcht
-      for (var i = 0; i < providers.length; i++) {
-        try {
-          var accs = providers[i]._state && providers[i]._state.accounts;
-          if (accs && accs.some(function(a) { return a.toLowerCase() === urlWallet; })) return providers[i];
-        } catch(e) {}
-      }
-      // Phantom specifiek: check window.phantom
-      if (window.phantom && window.phantom.ethereum) {
-        var phantomAccs = window.phantom.ethereum._state && window.phantom.ethereum._state.accounts;
-        if (phantomAccs && phantomAccs.some(function(a) { return a.toLowerCase() === urlWallet; })) {
-          return window.phantom.ethereum;
-        }
-      }
-    }
-    // Fallback: standaard volgorde
-    if (window.ethereum && window.ethereum.providers && window.ethereum.providers.length) { var mm = window.ethereum.providers.find(function(p){ return p.isMetaMask && !p.isBraveWallet; }); if (mm) return mm; return window.ethereum.providers[0]; }
-    if (window.ethereum) return window.ethereum;
-    if (window.phantom && window.phantom.ethereum) return window.phantom.ethereum;
-    return null;
+    return window.Z1NGetProvider ? window.Z1NGetProvider() : window.ethereum;
   }
 
   async function rpc(method, params) {
@@ -1644,16 +1621,6 @@ if (list && !list.querySelector('[data-hash="' + tx + '"]')) { var it = document
   // ═══════════════════════════════════════════════════════════════
   async function connect() {
     var eth = getProvider(); if (!eth) { alert('Install a Web3 wallet (MetaMask/Coinbase/Phantom).'); return; }
-    // Als URL wallet Phantom is en eth nog niet Phantom, forceer Phantom
-    if (urlWallet && window.phantom && window.phantom.ethereum) {
-      var phantomEth = window.phantom.ethereum;
-      try {
-        var testAccs = await phantomEth.request({ method: 'eth_accounts' });
-        if (testAccs && testAccs.some(function(a) { return a.toLowerCase() === urlWallet; })) {
-          eth = phantomEth;
-        }
-      } catch(e) {}
-    }
     provider = eth;
     try {
       var accs = await provider.request({ method: 'eth_accounts' }); if (!accs || accs.length === 0) accs = await provider.request({ method: 'eth_requestAccounts' });
@@ -2013,7 +1980,7 @@ async function loadActivityFeed() {
           epoch: art.epoch || art.receivedEpoch || art.mintEpoch || undefined,
           fromKeyId: fromKey,
           tokenId: art.tokenId
-        });h
+        });
       }
     });
 

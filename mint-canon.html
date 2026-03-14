@@ -329,6 +329,7 @@
 <footer>Your presence is real · The Field remembers</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
+<script src="js/z1n-provider.js"></script>
 <script>
 (function() {
   'use strict';
@@ -387,47 +388,7 @@
   }
 
   function getProvider() {
-    var urlWalletLower = walletParam ? walletParam.toLowerCase() : '';
-    
-    // Bouw lijst van alle beschikbare providers
-    var allProviders = [];
-    if (window.ethereum && window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
-      allProviders = allProviders.concat(window.ethereum.providers);
-    } else if (window.ethereum) {
-      allProviders.push(window.ethereum);
-    }
-    if (window.phantom && window.phantom.ethereum && allProviders.indexOf(window.phantom.ethereum) === -1) {
-      allProviders.push(window.phantom.ethereum);
-    }
-    
-    // Als URL wallet bekend is, zoek matching provider via _state.accounts
-    if (urlWalletLower) {
-      for (var i = 0; i < allProviders.length; i++) {
-        try {
-          var accs = allProviders[i]._state && allProviders[i]._state.accounts;
-          if (accs && accs.some(function(a) { return a.toLowerCase() === urlWalletLower; })) {
-            return allProviders[i];
-          }
-        } catch(e) {}
-      }
-      // Phantom fallback via selectedAddress
-      if (window.phantom && window.phantom.ethereum) {
-        var sel = window.phantom.ethereum.selectedAddress;
-        if (sel && sel.toLowerCase() === urlWalletLower) {
-          return window.phantom.ethereum;
-        }
-      }
-    }
-    
-    // Geen match gevonden — standaard volgorde
-    if (window.ethereum && window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
-      var mm = window.ethereum.providers.find(function(p) { return p.isMetaMask && !p.isBraveWallet; });
-      if (mm) return mm;
-      return window.ethereum.providers[0];
-    }
-    if (window.ethereum) return window.ethereum;
-    if (window.phantom && window.phantom.ethereum) return window.phantom.ethereum;
-    return null;
+    return window.Z1NGetProvider ? window.Z1NGetProvider() : window.ethereum;
   }
 
   async function rpc(method, params, retryCount) {
@@ -874,26 +835,11 @@ if (storedReturn) {
 
   // Auto-connect
   (async function() {
-    var urlWalletLower = walletParam ? walletParam.toLowerCase() : '';
-    // Als URL wallet bekend is, probeer eerst Phantom expliciet
-    if (urlWalletLower && window.phantom && window.phantom.ethereum) {
-      try {
-        var phantomAccs = await window.phantom.ethereum.request({ method: 'eth_accounts' });
-        if (phantomAccs && phantomAccs.some(function(a) { return a.toLowerCase() === urlWalletLower; })) {
-          provider = window.phantom.ethereum;
-          await connectWallet();
-          return;
-        }
-      } catch(e) {}
-    }
-    // Fallback: standaard provider
-    var eth = getProvider();
+    var eth = window.Z1NGetProvider ? window.Z1NGetProvider() : window.ethereum;
     if (eth) {
       try {
         var accs = await eth.request({ method: 'eth_accounts' });
-        if (accs && accs.length > 0) {
-          await connectWallet();
-        }
+        if (accs && accs.length > 0) await connectWallet();
       } catch (e) {}
     }
   })();
