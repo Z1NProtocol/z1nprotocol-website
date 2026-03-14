@@ -478,6 +478,17 @@ footer .links a:hover{color:var(--text-main);}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div id="walletModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:10001;align-items:center;justify-content:center;">
+  <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:24px;max-width:360px;width:90%;">
+    <div style="font-size:18px;font-weight:600;margin-bottom:16px;text-align:center;color:var(--keys-accent);">Select Wallet</div>
+    <div id="walletModalOptions"></div>
+    <div style="margin-top:12px;text-align:center;">
+      <button onclick="document.getElementById('walletModal').style.display='none'" style="background:none;border:none;color:var(--text-soft);cursor:pointer;font-size:13px;">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="keys-tooltip" id="keysTooltip">
   <div class="ktt-title" id="kttTitle"></div>
   <div class="ktt-body" id="kttBody"></div>
@@ -733,8 +744,62 @@ footer .links a:hover{color:var(--text-main);}
   function hideLoading() { document.getElementById('walletLoading').classList.remove('active'); }
 
   function getProvider() {
-    if (window.ethereum && window.ethereum.providers) { var mm = window.ethereum.providers.find(function(p) { return p.isMetaMask; }); if (mm) return mm; return window.ethereum.providers[0]; }
-    return window.ethereum || (window.phantom && window.phantom.ethereum) || null;
+    if (window.ethereum && window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+      var mm = window.ethereum.providers.find(function(p) { return p.isMetaMask && !p.isPhantom; });
+      if (mm) return mm;
+      var phantom = window.ethereum.providers.find(function(p) { return p.isPhantom; });
+      if (phantom) return phantom;
+      return window.ethereum.providers[0];
+    }
+    if (window.ethereum) return window.ethereum;
+    if (window.phantom && window.phantom.ethereum) return window.phantom.ethereum;
+    return null;
+  }
+
+  function detectWallets() {
+    var wallets = [];
+    if (window.ethereum && window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+      window.ethereum.providers.forEach(function(p) {
+        if (p.isMetaMask && !p.isPhantom) wallets.push({ name: 'MetaMask', icon: '🦊', provider: p });
+        else if (p.isPhantom) wallets.push({ name: 'Phantom', icon: '👻', provider: p });
+        else if (p.isCoinbaseWallet) wallets.push({ name: 'Coinbase', icon: '🔵', provider: p });
+        else if (p.isBraveWallet) wallets.push({ name: 'Brave', icon: '🦁', provider: p });
+      });
+    }
+    if (wallets.length === 0 && window.ethereum) {
+      var p = window.ethereum;
+      if (p.isMetaMask && !p.isPhantom) wallets.push({ name: 'MetaMask', icon: '🦊', provider: p });
+      else if (p.isPhantom) wallets.push({ name: 'Phantom', icon: '👻', provider: p });
+      else if (p.isCoinbaseWallet) wallets.push({ name: 'Coinbase', icon: '🔵', provider: p });
+      else wallets.push({ name: 'Browser Wallet', icon: '💳', provider: p });
+    }
+    if (window.phantom && window.phantom.ethereum && wallets.every(function(w) { return w.name !== 'Phantom'; })) {
+      wallets.push({ name: 'Phantom', icon: '👻', provider: window.phantom.ethereum });
+    }
+    return wallets;
+  }
+
+  function showWalletModal(onSelect) {
+    var modal = document.getElementById('walletModal');
+    var optionsEl = document.getElementById('walletModalOptions');
+    if (!modal || !optionsEl) return;
+    var wallets = detectWallets();
+    optionsEl.innerHTML = '';
+    if (wallets.length === 0) {
+      optionsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-soft);">No wallet detected.</div>';
+      modal.style.display = 'flex';
+      return;
+    }
+    wallets.forEach(function(wallet) {
+      var div = document.createElement('div');
+      div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--card-border);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:border-color 0.2s;';
+      div.innerHTML = '<span style="font-size:20px;">' + wallet.icon + '</span><span style="font-size:15px;font-weight:500;">' + wallet.name + '</span>';
+      div.onmouseover = function() { div.style.borderColor = 'var(--keys-accent)'; };
+      div.onmouseout = function() { div.style.borderColor = 'var(--card-border)'; };
+      div.onclick = function() { modal.style.display = 'none'; onSelect(wallet.provider); };
+      optionsEl.appendChild(div);
+    });
+    modal.style.display = 'flex';
   }
 
   function saveContext(keyId, wallet) { try { localStorage.setItem('z1n_signal_context', JSON.stringify({ keyId: keyId, wallet: wallet })); } catch (e) {} }
@@ -1204,17 +1269,40 @@ footer .links a:hover{color:var(--text-main);}
   }
 
   async function connectWallet() {
-    var eth = getProvider();
-    if (!eth) { alert('No wallet detected.\n\nOn mobile: open this page inside your wallet app (MetaMask → Browser tab).\n\nOn desktop: install MetaMask or another Web3 wallet and refresh.'); return; }
+    var wallets = detectWallets();
+    if (wallets.length === 0) {
+      alert('No wallet detected.\n\nOn mobile: open this page inside your wallet app.\n\nOn desktop: install MetaMask or another Web3 wallet and refresh.');
+      return;
+    }
+    if (wallets.length === 1) {
+      await connectWithProvider(wallets[0].provider);
+    } else {
+      showWalletModal(connectWithProvider);
+    }
+  }
+
+  async function connectWithProvider(eth) {
     showLoading('Connecting wallet...');
     try {
       var accounts = await eth.request({ method: 'eth_requestAccounts' });
-      if (accounts && accounts.length) { primaryWallet = accounts[0].toLowerCase(); accounts.forEach(function(a) { Z1NWallets.register(a); }); allConnectedAccounts = accounts; await loadAllKeys(); }
+      if (accounts && accounts.length) {
+        primaryWallet = accounts[0].toLowerCase();
+        accounts.forEach(function(a) { Z1NWallets.register(a); });
+        allConnectedAccounts = accounts;
+        await loadAllKeys();
+      }
     } catch (e) { console.error(e); hideLoading(); }
   }
 
   async function addAnotherWallet() {
-    var eth = getProvider(); if (!eth) { alert('No wallet detected.\n\nOn mobile: open this page inside your wallet app (MetaMask → Browser tab).\n\nOn desktop: install MetaMask or another Web3 wallet and refresh.'); return; }
+    var wallets = detectWallets();
+    if (wallets.length === 0) { alert('No wallet detected.\n\nOn mobile: open this page inside your wallet app.\n\nOn desktop: install MetaMask or another Web3 wallet and refresh.'); return; }
+    if (wallets.length > 1) { showWalletModal(async function(eth) { await _doAddWallet(eth); }); return; }
+    var eth = wallets[0].provider;
+    await _doAddWallet(eth);
+  }
+
+  async function _doAddWallet(eth) {
     showLoading('Managing wallets...');
     try {
       await eth.request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] });
