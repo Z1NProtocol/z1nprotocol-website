@@ -804,29 +804,6 @@ updateAttestBtn();
       initUnreadState();
       if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
       initActivityFeed();
-      // Silent background tab switch: artefacts → overview
-      // Forces Z1NArtefacts data into ActivityFeed before user sees overview
-      setTimeout(function() {
-        var artefactsTab = document.getElementById('tab-artefacts');
-        var overviewTab = document.getElementById('tab-overview');
-        if (artefactsTab) artefactsTab.classList.add('active');
-        if (overviewTab) overviewTab.classList.remove('active');
-        setTimeout(function() {
-          if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) {
-            window.Z1NArtefacts.refresh().then(function() {
-              if (artefactsTab) artefactsTab.classList.remove('active');
-              if (overviewTab) overviewTab.classList.add('active');
-              ActivityFeed.loaded = false;
-              loadActivityFeed();
-            });
-          } else {
-            if (artefactsTab) artefactsTab.classList.remove('active');
-            if (overviewTab) overviewTab.classList.add('active');
-            ActivityFeed.loaded = false;
-            loadActivityFeed();
-          }
-        }, 500);
-      }, 300);
       
       // Switch to URL tab AFTER data loads
       switchToUrlTab();
@@ -1992,37 +1969,6 @@ async function loadActivityFeed() {
         });
       }
     } catch(e) {}
-
-    // ─── ARTEFACT NOTIFICATIONS (from Z1NArtefacts notification system) ───
-    if (window.Z1NArtefacts && typeof window.Z1NArtefacts.getUnseenCount === 'function') {
-      try {
-        var artefactNotifResp = await fetch(API_BASE + '/key/' + currentKeyId + '/library', {cache:'no-store'});
-        if (artefactNotifResp.ok) {
-          var artefactNotifData = await artefactNotifResp.json();
-          var artefactLibrary = artefactNotifData.library || [];
-          var artefactSeenKey = 'z1n_notif_seen_' + currentKeyId;
-          var artefactSeenIds = [];
-          try { artefactSeenIds = JSON.parse(localStorage.getItem(artefactSeenKey) || '[]'); } catch(e) {}
-          var artefactSeenSet = new Set(artefactSeenIds);
-          artefactLibrary.filter(function(art) {
-            return art.status === 'pending';
-          }).forEach(function(art) {
-            var msgId = 'artefact_notif_' + art.tokenId + '_offering_received';
-            if (!artefactSeenSet.has(art.tokenId + ':offering_received:' + art.tokenId)) {
-              activities.push({
-                id: msgId,
-                type: 'artefact_received',
-                direction: 'received',
-                timestamp: art.tokenId,
-                fromKeyId: art.sourceKeyId,
-                tokenId: art.tokenId,
-                content: art.offerMessage || ''
-              });
-            }
-          });
-        }
-      } catch(e) {}
-    }
 
     // ─── ARTEFACTS RECEIVED (from allLiveArtefacts) ───
     (allLiveArtefacts || []).forEach(function(art) {
