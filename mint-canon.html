@@ -137,7 +137,7 @@
     .back-link:hover { color: var(--keys-accent); }
 
     .page-header { margin-bottom: 32px; }
-    h1 { font-size: 32px; font-weight: 700; color: var(--keys-accent); margin-bottom: 8px; }
+    h1 { font-size: 32px; font-weight: 700; color: var(--canon-purple); margin-bottom: 8px; }
     .subtitle { font-size: 15px; color: var(--text-soft); line-height: 1.6; max-width: 600px; }
 
     .mint-layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
@@ -303,7 +303,7 @@
       <div class="commitment-section">
         <div class="commitment-header">
           <span class="commitment-label">Inscription</span>
-          <span class="optional-badge">Required · max 64 chars</span>
+          <span class="optional-badge">Optional · max 64 chars</span>
         </div>
         <input type="text" class="commitment-input" id="commitmentText" maxlength="64" placeholder="Your on-chain inscription for this epoch...">
         <div class="commitment-hint"><span id="charCount">0</span> / 64 characters — permanently engraved on-chain.</div>
@@ -727,13 +727,6 @@ if (storedReturn) {
 
     try {
       var commitmentText = document.getElementById('commitmentText').value.trim();
-      if (!commitmentText || commitmentText.length === 0) {
-        statusArea.innerHTML = '<div class="status-msg error">Inscription is required (1–64 characters).</div>';
-        anchorBtn.disabled = false;
-        anchorBtn.classList.remove('minting');
-        anchorBtn.textContent = 'Mint Canon Anchor';
-        return;
-      }
       if (new TextEncoder().encode(commitmentText).length > 64) {
         statusArea.innerHTML = '<div class="status-msg error">Inscription exceeds 64 bytes.</div>';
         anchorBtn.disabled = false;
@@ -741,7 +734,9 @@ if (storedReturn) {
         anchorBtn.textContent = 'Mint Canon Anchor';
         return;
       }
-      var commitmentHash = ethers.keccak256(ethers.toUtf8Bytes(commitmentText));
+      var commitmentHash = commitmentText.length > 0
+        ? ethers.keccak256(ethers.toUtf8Bytes(commitmentText))
+        : '0x0000000000000000000000000000000000000000000000000000000000000000';
       
       var iface = new ethers.Interface([
         'function anchorCanon(uint256 tokenId, uint256 epochId, string commitment, bytes32 commitmentHash) payable'
