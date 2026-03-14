@@ -219,6 +219,50 @@ footer .links a:hover{color:var(--text-main);}
 
     /* KEY CARD */
     .key-card-wrapper { display: flex; flex-direction: column; gap: 6px; }
+    .key-card-inner { display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
+    .key-card-inner.show-both .key-card { flex: 1; min-width: 0; }
+    .key-card-inner.show-preview-only .key-card { display: none; }
+    .key-card-inner.show-card-only .key-artefact-preview { display: none; }
+    .key-artefact-preview {
+      width: 100px; flex-shrink: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 220ms ease;
+      position: relative;
+    }
+    .key-artefact-preview:hover { border-color: var(--accent); }
+    .key-artefact-preview img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .key-artefact-preview .preview-placeholder {
+      font-size: 32px; color: rgba(94,232,160,0.2);
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 100%;
+    }
+    .key-card-view-toggle {
+      display: flex; gap: 4px; justify-content: flex-end;
+      margin-bottom: 2px;
+    }
+    .key-card-view-btn {
+      background: transparent;
+      border: 1px solid rgba(148,163,184,0.25);
+      border-radius: 4px;
+      color: var(--text-soft);
+      font-size: 9px;
+      padding: 2px 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .key-card-view-btn:hover { border-color: var(--keys-accent); color: var(--keys-accent); }
+    .key-card-view-btn.active { background: rgba(255,213,86,0.15); border-color: var(--keys-accent); color: var(--keys-accent); }
+    @media(max-width:600px){ .key-artefact-preview { width: 80px; } }
     .wallet-badge-above { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; font-size: 10px; width: fit-content; transition: all 0.2s; }
     .wallet-badge-above .wallet-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .wallet-badge-above .wallet-label { font-weight: 600; }
@@ -235,9 +279,19 @@ footer .links a:hover{color:var(--text-main);}
     .header-indicators { display: flex; gap: 6px; align-items: center; }
     .indicator-dot { width: 10px; height: 10px; border-radius: 50%; }
     .indicator-dot.treasury-indicator { background: var(--treasury-blue); animation: pulse-blue 1.5s infinite; }
+    .indicator-dot.artefact-indicator { background: var(--accent); animation: pulse-green 1.5s infinite; }
+    .indicator-dot.signal-indicator { background: var(--keys-accent); animation: pulse-yellow 1.5s infinite; }
     @keyframes pulse-blue {
       0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 rgba(96,165,250,0); }
       50% { opacity: 0.7; transform: scale(0.9); box-shadow: 0 0 8px rgba(96,165,250,0.5); }
+    }
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 rgba(94,232,160,0); }
+      50% { opacity: 0.7; transform: scale(0.9); box-shadow: 0 0 8px rgba(94,232,160,0.5); }
+    }
+    @keyframes pulse-yellow {
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 rgba(255,213,86,0); }
+      50% { opacity: 0.7; transform: scale(0.9); box-shadow: 0 0 8px rgba(255,213,86,0.5); }
     }
 
     .genesis-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--keys-accent); opacity: 0.7; margin-bottom: 6px; }
@@ -276,11 +330,7 @@ footer .links a:hover{color:var(--text-main);}
     .mini-stat.treasury { background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.2); }
     .mini-stat.treasury .icon, .mini-stat.treasury .value { color: var(--treasury-blue); }
     .mini-stat.treasury.empty { opacity: 0.35; }
-    .mini-stat.treasury.has-claim { animation: glow-blue 2s infinite; }
-    @keyframes glow-blue {
-      0%, 100% { box-shadow: 0 0 0 rgba(96,165,250,0); border-color: rgba(96,165,250,0.2); }
-      50% { box-shadow: 0 0 10px rgba(96,165,250,0.4); border-color: rgba(96,165,250,0.6); }
-    }
+    .mini-stat.treasury.has-claim { border-color: rgba(96,165,250,0.4); }
 
     .filter-toolbar { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     @media(max-width:600px){ .filter-toolbar{ padding:10px; gap:8px; } .filter-toggle{ padding:8px 12px; } .search-input{ min-width:0; width:100%; } }
@@ -772,6 +822,9 @@ footer .links a:hover{color:var(--text-main);}
       badge.innerHTML = '<span class="wallet-dot" style="background:' + color.hex + ';"></span><span class="wallet-label">W' + (walletIdx + 1) + '</span><span class="wallet-addr">' + Z1NWallets.shortAddr(key.wallet) + '</span>';
       wrapper.appendChild(badge);
     }
+    var viewMode = 'both';
+    try { viewMode = localStorage.getItem('z1n_card_view_' + key.tokenId) || 'both'; } catch(e) {}
+
     var card = document.createElement('div'); card.className = 'key-card' + (isPrimary ? ' active-wallet' : '');
     var hasClaimable = key.claimableEpochs && key.claimableEpochs.length > 0;
     var claimableAmount = hasClaimable ? key.claimableEpochs.reduce(function(sum, e) { return sum + parseFloat(e.amount || 0); }, 0) : 0;
@@ -784,12 +837,20 @@ footer .links a:hover{color:var(--text-main);}
     var attest1 = key.attestsUsed >= 1 ? '<span class="dot filled"></span>' : '<span class="dot open"></span>';
     var attest2 = key.attestsUsed >= 2 ? '<span class="dot filled"></span>' : '<span class="dot open"></span>';
     var artefactsCount = key.liveArtefacts || 0;
+    var artefactsReceived = key.inMyViewArtefacts || 0;
     var canonsCount = key.canonCount || 0;
     var unseenCount = key.unseenCount || 0;
     var treasuryValue = formatPol(totalPol);
     var treasuryClass = 'mini-stat treasury' + (hasClaimable ? ' has-claim' : (totalPol === 0 ? ' empty' : ''));
+
+    // Indicator bolletjes: groen = artefact events, geel = attests/replies/DMs
+    var hasArtefactEvent = artefactsReceived > 0 || key.unseenArtefactCount > 0;
+    var hasSignalEvent = unseenCount > 0;
+    var artefactIndicator = hasArtefactEvent ? '<span class="indicator-dot artefact-indicator" title="Artefact events"></span>' : '';
+    var signalIndicator = hasSignalEvent ? '<span class="indicator-dot signal-indicator" title="Unseen signals/attests/DMs"></span>' : '';
+
     card.innerHTML =
-      '<div class="key-header"><span class="key-id">Key #' + key.tokenId + '</span><div class="header-indicators">' + headerIndicator + '</div></div>' +
+      '<div class="key-header"><span class="key-id">Key #' + key.tokenId + '</span><div class="header-indicators">' + artefactIndicator + signalIndicator + headerIndicator + '</div></div>' +
       genesisHtml +
       '<div class="key-glyphs">' + (key.glyphSymbols || '...') + '</div>' +
       '<div class="key-meta"><span>Birth Epoch ' + (key.epoch || '—') + '</span><a href="' + EXPLORER + '/token/' + Z1N_KEY + '?a=' + key.tokenId + '" target="_blank" onclick="event.stopPropagation()">View on chain ↗</a></div>' +
@@ -798,8 +859,8 @@ footer .links a:hover{color:var(--text-main);}
         '<div class="status-group" data-tab="attests"><span class="status-label">Attests</span><div class="dots-row">' + attest1 + attest2 + '</div></div>' +
       '</div></div>' +
       '<div class="bottom-row-4">' +
-        '<div class="mini-stat unseen' + (unseenCount === 0 ? ' empty' : '') + '" data-tab="overview"><span class="icon">●</span><span class="value">' + (unseenCount > 0 ? unseenCount : '–') + '</span><span class="label">Unseen</span></div>' +
-        '<div class="mini-stat artefacts' + (artefactsCount === 0 ? ' empty' : '') + '" data-tab="artefacts"><span class="icon">◈</span><span class="value">' + (artefactsCount > 0 ? artefactsCount : '–') + '</span><span class="label">Artf</span></div>' +
+        '<div class="mini-stat artefacts' + (artefactsCount === 0 ? ' empty' : '') + '" data-tab="artefacts"><span class="icon">◈</span><span class="value">' + (artefactsCount > 0 ? artefactsCount : '–') + '</span><span class="label">Artefact</span></div>' +
+        '<div class="mini-stat artefacts' + (artefactsReceived === 0 ? ' empty' : '') + '" data-tab="artefacts"><span class="icon">◈←</span><span class="value">' + (artefactsReceived > 0 ? artefactsReceived : '–') + '</span><span class="label">Received</span></div>' +
         '<div class="mini-stat canons' + (canonsCount === 0 ? ' empty' : '') + '" data-tab="canon"><span class="icon">Ω</span><span class="value">' + (canonsCount > 0 ? canonsCount : '–') + '</span><span class="label">Canon</span></div>' +
         '<div class="' + treasuryClass + '" data-tab="treasury"><span class="icon">⬡</span><span class="value">' + treasuryValue + '</span><span class="label">POL</span></div>' +
       '</div>';
@@ -809,7 +870,45 @@ footer .links a:hover{color:var(--text-main);}
       if (clickable && clickable.dataset.tab) { saveContext(key.tokenId, key.wallet); window.location.href = baseUrl + '&tab=' + clickable.dataset.tab; return; }
       saveContext(key.tokenId, key.wallet); window.location.href = baseUrl;
     };
-    wrapper.appendChild(card);
+    // Toggle buttons
+    var toggleRow = document.createElement('div'); toggleRow.className = 'key-card-view-toggle';
+    var btnBoth = document.createElement('button'); btnBoth.className = 'key-card-view-btn' + (viewMode === 'both' ? ' active' : ''); btnBoth.textContent = '⊞'; btnBoth.title = 'Show both';
+    var btnCard = document.createElement('button'); btnCard.className = 'key-card-view-btn' + (viewMode === 'card' ? ' active' : ''); btnCard.textContent = '▦'; btnCard.title = 'Dashboard only';
+    var btnPreview = document.createElement('button'); btnPreview.className = 'key-card-view-btn' + (viewMode === 'preview' ? ' active' : ''); btnPreview.textContent = '◈'; btnPreview.title = 'Artefact only';
+    toggleRow.appendChild(btnBoth); toggleRow.appendChild(btnCard); toggleRow.appendChild(btnPreview);
+    wrapper.appendChild(toggleRow);
+
+    // Inner wrapper
+    var inner = document.createElement('div');
+    inner.className = 'key-card-inner show-' + (viewMode === 'both' ? 'both' : viewMode === 'preview' ? 'preview-only' : 'card-only');
+    inner.appendChild(card);
+
+    // Artefact preview panel
+    var previewPanel = document.createElement('div'); previewPanel.className = 'key-artefact-preview';
+    var apiBase = 'https://z1n-backend-production.up.railway.app/api';
+    var previewUrl = apiBase + '/artefact/' + key.tokenId + '/static-preview?epoch=' + (key.epoch || 0) + '&t=' + Math.floor(Date.now() / 60000);
+    var img = document.createElement('img');
+    img.alt = 'Artefact Key #' + key.tokenId;
+    img.onerror = function() { previewPanel.innerHTML = '<div class="preview-placeholder">◈</div>'; };
+    img.src = previewUrl;
+    previewPanel.appendChild(img);
+    previewPanel.onclick = function(e) { e.stopPropagation(); saveContext(key.tokenId, key.wallet); window.location.href = baseUrl + '&tab=artefacts'; };
+    inner.appendChild(previewPanel);
+    wrapper.appendChild(inner);
+
+    // Toggle logic
+    function setView(mode) {
+      viewMode = mode;
+      try { localStorage.setItem('z1n_card_view_' + key.tokenId, mode); } catch(e) {}
+      inner.className = 'key-card-inner show-' + (mode === 'both' ? 'both' : mode === 'preview' ? 'preview-only' : 'card-only');
+      btnBoth.classList.toggle('active', mode === 'both');
+      btnCard.classList.toggle('active', mode === 'card');
+      btnPreview.classList.toggle('active', mode === 'preview');
+    }
+    btnBoth.onclick = function(e) { e.stopPropagation(); setView('both'); };
+    btnCard.onclick = function(e) { e.stopPropagation(); setView('card'); };
+    btnPreview.onclick = function(e) { e.stopPropagation(); setView('preview'); };
+
     return wrapper;
   }
 
