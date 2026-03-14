@@ -417,7 +417,36 @@ function updateBtn(){
 if(keyId!==null){ loadPreview(); loadKeyData(); }
 
 // wallet
-function getEth(){ var e=window.ethereum; if(!e) return null; if(e.providers&&e.providers.length) return e.providers.find(function(p){return p.isMetaMask&&!p.isBraveWallet;})||e.providers[0]; return e; }
+function getEth(){
+  var wpLower = wp ? wp.toLowerCase() : '';
+  var allProviders = [];
+  if(window.ethereum && window.ethereum.providers && Array.isArray(window.ethereum.providers)){
+    allProviders = allProviders.concat(window.ethereum.providers);
+  } else if(window.ethereum){
+    allProviders.push(window.ethereum);
+  }
+  if(window.phantom && window.phantom.ethereum && allProviders.indexOf(window.phantom.ethereum)===-1){
+    allProviders.push(window.phantom.ethereum);
+  }
+  if(wpLower){
+    for(var i=0;i<allProviders.length;i++){
+      try{
+        var accs=allProviders[i]._state&&allProviders[i]._state.accounts;
+        if(accs&&accs.some(function(a){return a.toLowerCase()===wpLower;})) return allProviders[i];
+      }catch(e){}
+    }
+    if(window.phantom&&window.phantom.ethereum){
+      var sel=window.phantom.ethereum.selectedAddress;
+      if(sel&&sel.toLowerCase()===wpLower) return window.phantom.ethereum;
+    }
+  }
+  if(window.ethereum&&window.ethereum.providers&&Array.isArray(window.ethereum.providers)){
+    return window.ethereum.providers.find(function(p){return p.isMetaMask&&!p.isBraveWallet;})||window.ethereum.providers[0];
+  }
+  if(window.ethereum) return window.ethereum;
+  if(window.phantom&&window.phantom.ethereum) return window.phantom.ethereum;
+  return null;
+}
 
 async function connectWallet(){
   var eth=getEth(); if(!eth){showS('No wallet found. Install MetaMask.','error');return false;}
