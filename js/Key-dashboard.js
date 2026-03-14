@@ -2480,26 +2480,40 @@ function updateTabBadges() {
     directBadge.classList.toggle('hidden', unreadWhispers === 0);
   }
 
-  // Artefacts tab-nav badge — write badge into BOTH #artefactBadge AND the tab-nav button
   var artefactBadgeCount = unreadArtefacts;
-  // Also count unseen from Z1NArtefacts module (pending offers, initiator notifs)
   if (window.Z1NArtefacts && window.Z1NArtefacts.getUnseenCount) {
     artefactBadgeCount += window.Z1NArtefacts.getUnseenCount();
-  } else if (artefactBadgeCount === 0 && typeof allLiveArtefacts !== 'undefined' && allLiveArtefacts.length > 0) {
-    allLiveArtefacts.forEach(function(a) {
-      var isReceived = a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId;
-      if (isReceived) {
-        var artId = 'artefact_recv_' + a.tokenId;
-        if (!ActivityFeed.readItems.has(artId)) artefactBadgeCount++;
-      }
-    });
   }
-  // Update #artefactBadge (inside tab-content)
   var artefactBadge = document.getElementById('artefactBadge');
   if (artefactBadge) {
-    artefactBadge.textContent = artefactBadgeCount;
-    artefactBadge.classList.toggle('hidden', artefactBadgeCount === 0);
-    artefactBadge.style.cssText = artefactBadgeCount > 0 ? 'background:rgba(94,232,160,0.4);color:#5ee8a0;font-weight:700;' : '';
+    if (artefactBadgeCount > 0) {
+      artefactBadge.textContent = artefactBadgeCount;
+      artefactBadge.className = 'tab-badge badge-artefacts';
+      artefactBadge.style.cssText = 'background:rgba(94,232,160,0.4);color:#5ee8a0;font-weight:700;display:inline-flex;';
+    } else {
+      artefactBadge.textContent = '';
+      artefactBadge.style.cssText = 'display:none;';
+    }
+  }
+  // Also update tab-nav button badge
+  var artefactsTab = document.querySelector('.tab-btn[onclick*="artefacts"]');
+  if (artefactsTab) {
+    var existingBadge = artefactsTab.querySelector('.tab-badge');
+    if (artefactBadgeCount > 0) {
+      if (!existingBadge) {
+        var newBadge = document.createElement('span');
+        newBadge.className = 'tab-badge';
+        newBadge.style.cssText = 'background:rgba(94,232,160,0.4);color:#5ee8a0;font-weight:700;';
+        newBadge.textContent = artefactBadgeCount;
+        artefactsTab.appendChild(newBadge);
+      } else {
+        existingBadge.textContent = artefactBadgeCount;
+        existingBadge.style.cssText = 'background:rgba(94,232,160,0.4);color:#5ee8a0;font-weight:700;';
+        existingBadge.classList.remove('hidden');
+      }
+    } else if (existingBadge) {
+      existingBadge.classList.add('hidden');
+    }
   }
   // #artefactBadge IS the tab-nav button badge (already in HTML) — no duplicate needed
 

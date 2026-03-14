@@ -1697,12 +1697,12 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     await refresh();
     
     // Trigger activity feed reload after artefact data is loaded
-    if (window.ActivityFeed && typeof loadActivityFeed === 'function') {
-      setTimeout(function() {
-        window.ActivityFeed.loaded = false;
+    setTimeout(function() {
+      if (typeof loadActivityFeed === 'function') {
+        if (window.ActivityFeed) window.ActivityFeed.loaded = false;
         loadActivityFeed();
-      }, 300);
-    }
+      }
+    }, 500);
   }
 
   async function refresh() {
