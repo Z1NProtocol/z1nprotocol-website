@@ -1695,6 +1695,14 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     updateOverviewPreview();
     
     await refresh();
+    
+    // Trigger activity feed reload after artefact data is loaded
+    if (window.ActivityFeed && typeof loadActivityFeed === 'function') {
+      setTimeout(function() {
+        window.ActivityFeed.loaded = false;
+        loadActivityFeed();
+      }, 300);
+    }
   }
 
   async function refresh() {
