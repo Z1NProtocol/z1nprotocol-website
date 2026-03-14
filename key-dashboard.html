@@ -199,18 +199,18 @@
     .intent-filters{display:flex;align-items:center;gap:4px}.intent-checkbox{display:flex;align-items:center;cursor:pointer;opacity:0.5}.intent-checkbox:has(input:checked){opacity:1}.intent-checkbox input{display:none}
     
     /* OVERVIEW LAYOUT */
-    .overview-layout{display:grid;grid-template-columns:320px 1fr 220px;gap:16px;align-items:stretch}
-    @media(max-width:1100px){.overview-layout{grid-template-columns:280px 1fr}}
+    .overview-layout{display:grid;grid-template-columns:300px 1fr 200px;gap:16px;align-items:stretch}
+    @media(max-width:1100px){.overview-layout{grid-template-columns:260px 1fr 180px}}
     @media(max-width:900px){.overview-layout{grid-template-columns:1fr}}
-    .overview-layout .artefact-preview-card,.overview-layout .section-card,.overview-layout .csv-card{min-height:420px;display:flex;flex-direction:column}
+    .overview-layout>*{min-height:420px;display:flex;flex-direction:column}
     .csv-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;}
     
     /* ARTEFACT PREVIEW - CLICKABLE */
     .artefact-preview-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
     .artefact-preview-card:hover{transform:scale(1.02);box-shadow:0 8px 32px rgba(94,232,160,0.15)}
-    .artefact-preview-img{width:100%;max-width:200px;aspect-ratio:500/760;border-radius:12px;background:linear-gradient(135deg,#0a0f1a 0%,#111827 50%,#0f172a 100%);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border:1px solid rgba(94,232,160,0.2)}
+    .artefact-preview-img{width:100%;max-width:100%;aspect-ratio:500/760;border-radius:12px;background:linear-gradient(135deg,#0a0f1a 0%,#111827 50%,#0f172a 100%);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border:1px solid rgba(94,232,160,0.2);flex:1;}
     .artefact-preview-img img{width:100%;height:100%;object-fit:contain;border-radius:12px}
-    .artefact-preview-label{font-size:10px;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+    .artefact-preview-label{display:none;}
     .artefact-preview-status{font-size:12px;color:var(--accent);margin-bottom:12px;min-height:18px}
     .artefact-preview-status.no-artefact{color:var(--text-soft)}
     .artefact-placeholder{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:64px;color:rgba(94,232,160,0.15)}
