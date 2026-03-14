@@ -2270,7 +2270,16 @@ function renderActivityItem(activity) {
       iconClass = 'artefact';
       icon = '◈';
       var fromKeyLabel = activity.fromKeyId ? '<span class="key-link">K#' + activity.fromKeyId + '</span> ' : '';
-      title = fromKeyLabel + (activity.content ? 'offered artefact <em style="color:var(--accent);">"' + activity.content + '"</em>' : 'shared an artefact with you');
+      var eventType = activity.eventType || 'offer';
+      if (eventType === 'rejected' || eventType === 'released') {
+        iconClass = 'artefact-negative';
+      }
+      title = fromKeyLabel + (
+        eventType === 'accepted' ? 'accepted your artefact offer' :
+        eventType === 'rejected' ? 'rejected your artefact offer' :
+        eventType === 'released' ? 'released your artefact' :
+        (activity.content ? 'offered artefact <em style="color:var(--accent);">"' + activity.content + '"</em>' : 'offered you an artefact')
+      );
       preview = activity.tokenId ? 'Artefact #' + activity.tokenId : '';
       activity.epoch = undefined;
       break;

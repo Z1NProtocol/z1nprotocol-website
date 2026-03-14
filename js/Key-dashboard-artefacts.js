@@ -1706,7 +1706,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       }
     }, 500);
   }
-  
+
   async function refresh() {
     var ownedPromise = loadOwnedArtefacts().then(function() {
       isLoadingOwned = false;
@@ -1831,6 +1831,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
           });
           Object.values(notifications).forEach(function(n) {
             if (n.seen) return;
+            var evtType = n.type === 'offering_accepted' ? 'accepted' : n.type === 'offering_rejected' ? 'rejected' : n.type === 'artefact_released' ? 'released' : 'offer';
             window.ActivityFeed.activities.unshift({
               id: 'artefact_notif_' + n.artefactId + '_' + n.type,
               type: 'artefact_received',
@@ -1838,7 +1839,8 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
               timestamp: n.blockNumber || 0,
               fromKeyId: n.byKeyId,
               tokenId: n.artefactId,
-              content: n.message || ''
+              content: n.message || '',
+              eventType: evtType
             });
           });
           // Herteken feed — alleen als ActivityFeed al geladen is
