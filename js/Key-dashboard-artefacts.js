@@ -1844,63 +1844,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
           if (typeof updateTabBadges === 'function') updateTabBadges();
         }
 
-        // Unified notifications feed — one loop, one system
-        Object.values(notifications).forEach(function(n) {
-          if (n.seen) return;
-          var msg = '';
-          var color = 'var(--accent)';
-
-          if (n.type === 'offering_accepted') {
-            msg = '<strong style="color:var(--accent);">K#' + n.byKeyId + '</strong> accepted your artefact offer';
-            color = 'var(--accent)';
-          } else if (n.type === 'offering_rejected') {
-            msg = '<strong style="color:#f87171;">K#' + n.byKeyId + '</strong> rejected your artefact offer';
-            color = '#f87171';
-          } else if (n.type === 'artefact_released') {
-            var z2 = getZ1N();
-            var releasedByMe = n.byKeyId === z2.keyId;
-            var who = releasedByMe ? 'You released' : 'K#' + n.byKeyId + ' released';
-            msg = '<strong style="color:#f87171;">' + who + '</strong> artefact #' + n.artefactId +
-              (n.message ? ' <span style="font-style:italic;color:rgba(248,113,113,0.7);">"' + escapeHtml(n.message.slice(0,40)) + '"</span>' : '');
-            color = '#f87171';
-          } else if (n.type === 'offering_received') {
-            var offerMsg = n.message || '';
-            msg = '<strong style="color:var(--accent);">K#' + n.byKeyId + '</strong> offered an artefact to you' +
-              (offerMsg ? ' <span style="font-style:italic;color:rgba(94,232,160,0.8);">"' + escapeHtml(offerMsg.slice(0,40)) + '"</span>' : '');
-            color = 'var(--accent)';
-          }
-
-          if (!msg) return;
-          var item = document.createElement('div');
-          item.className = 'activity-item unread artefact-notif';
-          item.style.cursor = 'pointer';
-          item.style.borderLeft = '3px solid ' + color;
-          item.onclick = function() { if (typeof switchTab === 'function') switchTab('artefacts'); };
-          item.innerHTML = '<div class="activity-icon artefact">◈</div>' +
-            '<div class="activity-content">' +
-              '<div class="activity-title" style="color:' + color + ';">' + msg + '</div>' +
-            '</div>';
-          if (feed.firstChild) feed.insertBefore(item, feed.firstChild);
-          else feed.appendChild(item);
-        });
-
-        // Local state changes (own actions this session — offered/accepted/cancelled only)
-        stateChangeLog.forEach(function(entry) {
-          if (entry.type === 'released') return;
-          var color = (entry.type === 'cancelled' || entry.type === 'rejected') ? '#f87171' : 'var(--accent)';
-          var actionText = entry.type === 'offered' ? 'You offered artefact #' + entry.artefactId + ' to K#' + entry.targetKeyId :
-                           entry.type === 'cancelled' ? 'You cancelled offering of artefact #' + entry.artefactId :
-                           entry.type === 'accepted' ? 'You accepted artefact #' + entry.artefactId :
-                           entry.type === 'rejected' ? 'You rejected artefact #' + entry.artefactId : '';
-          if (!actionText) return;
-          var item = document.createElement('div');
-          item.className = 'activity-item artefact-notif';
-          item.style.borderLeft = '3px solid ' + color;
-          item.innerHTML = '<div class="activity-icon artefact">◈</div>' +
-            '<div class="activity-content"><div class="activity-title" style="color:' + color + ';">' + actionText + '</div></div>';
-          if (feed.firstChild) feed.insertBefore(item, feed.firstChild);
-          else feed.appendChild(item);
-        });
+        // (DOM injection removed — ActivityFeed.activities handles display via renderActivityFeed)
       }
       
       var badgeArtefacts = document.getElementById('badgeArtefacts');
@@ -1947,27 +1891,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     toggleHideRejected: toggleHideRejected
   };
 
-  // Re-inject feed items on overview tab switch
-  var _origSwitchTab = window.switchTab;
-  if (typeof _origSwitchTab === 'function') {
-    window.switchTab = function(tab) {
-      _origSwitchTab(tab);
-      if (tab === 'overview') setTimeout(updateBadgesAndFeed, 300);
-    };
-  } else {
-    var _patchInterval = setInterval(function() {
-      if (typeof window.switchTab === 'function' && !window._z1nArtefactPatched) {
-        window._z1nArtefactPatched = true;
-        var orig = window.switchTab;
-        window.switchTab = function(tab) {
-          orig(tab);
-          if (tab === 'overview') setTimeout(updateBadgesAndFeed, 300);
-        };
-        clearInterval(_patchInterval);
-      }
-    }, 500);
-    setTimeout(function() { clearInterval(_patchInterval); }, 30000);
-  }
+  // (tab switch patch removed — renderActivityFeed handles display)
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 500); });
