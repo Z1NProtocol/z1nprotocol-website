@@ -2695,7 +2695,7 @@ async function loadTreasuryData() {
     });
 
     totalClaimable = parseFloat(data.totalClaimableFormatted || '0');
-    if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
+    if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '0';
     if (claimableCountEl) claimableCountEl.textContent = '(' + claimableEpochsData.length + ')';
 
     if (claimableBox) claimableBox.classList.toggle('has-claimable', totalClaimable > 0);
