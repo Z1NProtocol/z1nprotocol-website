@@ -242,24 +242,28 @@ var provider=null,account=null,keyId=null,hasFirst=false,epoch=0;
 window.currentState=0;
 
 var STATES=[
-  { key:'unshared', eyebrow:'◈ State 0 — Unshared', title:'Mint your Artefact',
-    desc:'An artefact is a living mirror of your Key\'s presence in the Field. Your first is free. Set an inscription at mint — it is permanent and write-once, preserved on-chain regardless of what happens later.',
-    maker:{ label:'You see', pip:'#8f9ab5', items:['Artefact is in your possession','Inscription is set at mint — permanent','You choose which Key to offer it to','Can offer and re-offer after rejection'], actions:[{label:'offer(artefactId, keyId, message)',cls:'act-yellow'}] },
-    receiver:{ label:'No recipient yet', pip:'#8f9ab5', items:['Artefact not yet offered','Waiting for your gesture'], actions:[] }
+  { key:'unshared', eyebrow:'◈ State 0 — Personal', title:'Mint your Artefact',
+    badge:'PERSONAL · State 0',
+    desc:'An artefact is a living mirror of your Key\'s presence in the Field — rendered from your on-chain activity. Your first artefact is free. It doesn\'t need to be shared: it can simply exist as a collectible, a record of your presence. The inscription you set at mint becomes part of the artefact itself — permanent, write-once, visible to anyone you share it with.',
+    maker:{ label:'You see', pip:'#8f9ab5', items:['Full artefact preview — your Key\'s presence rendered','Inscription is embedded in the artefact','Keep it personal — no obligation to share','Or offer it to another Key when ready'], actions:[{label:'offer(artefactId, keyId, message)',cls:'act-yellow'}] },
+    receiver:{ label:'No recipient yet', pip:'#8f9ab5', items:['Artefact stays in your personal possession','Not visible to others until offered'], actions:[] }
   },
-  { key:'pending', eyebrow:'⟡ State 1 — Pending', title:'Offer sent',
-    desc:'You\'ve offered the artefact. It sits in the recipient\'s incoming tab — they see the preview and your message. They decide. You can cancel any time to take it back.',
-    maker:{ label:'You see', pip:'#ffd556', items:['Offer live — waiting for response','Cannot offer to another Key while pending','Cancel to reclaim at any time'], actions:[{label:'cancel(artefactId)',cls:'act-gray'}] },
-    receiver:{ label:'Recipient sees', pip:'#5ee8a0', items:['Incoming offering notification','Artefact preview visible','Offer message shown if included','Must choose: Accept or Reject'], actions:[{label:'accept(artefactId)',cls:'act-green'},{label:'reject(artefactId)',cls:'act-red'}] }
+  { key:'pending', eyebrow:'⟡ State 1 — Offered', title:'Offer sent',
+    badge:'OFFERED · State 1',
+    desc:'You\'ve offered the artefact to another Key. Include a message — it travels with the offer and is shown to the recipient. They decide: accept or reject. You can cancel any time to take it back.',
+    maker:{ label:'You see', pip:'#ffd556', items:['Offer is live — waiting for response','Message you included is shown to recipient','Cannot offer to another Key while pending','Cancel to reclaim at any time'], actions:[{label:'cancel(artefactId)',cls:'act-gray'}] },
+    receiver:{ label:'Recipient sees', pip:'#5ee8a0', items:['Incoming offering in their Received tab','Artefact preview and your offer message visible','Accept to bind — Reject to return to you'], actions:[{label:'accept(artefactId)',cls:'act-green'},{label:'reject(artefactId)',cls:'act-red'}] }
   },
-  { key:'active', eyebrow:'◈ State 2 — Active', title:'Bounded',
-    desc:'The artefact is bounded. The recipient accepted and the bond is live between both Keys. Either side can release permanently at any time with an optional message.',
-    maker:{ label:'You see', pip:'#93c5fd', items:['Artefact shows as Bounded','Recipient Key shown on card','Full artefact preview remains yours','Can release with an optional message'], actions:[{label:'release(artefactId, message)',cls:'act-red'}] },
-    receiver:{ label:'Recipient sees', pip:'#5ee8a0', items:['Full artefact visible in Received tab','Bounded status confirmed','Can also release the bond at any time'], actions:[{label:'release(artefactId, message)',cls:'act-red'}] }
+  { key:'active', eyebrow:'◈ State 2 — Bounded', title:'Bounded',
+    badge:'BOUNDED · State 2',
+    desc:'The artefact is bounded — the recipient accepted and the bond is live between both Keys. The artefact\'s inscription is visible to both sides. Either can release the bond permanently at any time, with an optional release message stored on-chain.',
+    maker:{ label:'You see', pip:'#93c5fd', items:['Artefact shows as Bounded in your Minted tab','Recipient Key shown on the card','Inscription visible to both sides','Release with an optional on-chain message'], actions:[{label:'release(artefactId, message)',cls:'act-red'}] },
+    receiver:{ label:'Recipient sees', pip:'#5ee8a0', items:['Full artefact visible in Received tab','Inscription from maker shown','Bounded status confirmed on card','Can also release permanently at any time'], actions:[{label:'release(artefactId, message)',cls:'act-red'}] }
   },
   { key:'released', eyebrow:'◇ State 3 — Released', title:'Released',
-    desc:'The bond is permanently dissolved. RELEASED is terminal — no further transitions. The artefact remains on-chain forever as a record of the relationship that was.',
-    maker:{ label:'You see', pip:'#f87171', items:['Artefact shows as Released','Release message stored in event log','Artefact stays on-chain — cannot be deleted'], actions:[{label:'No further actions',cls:'act-gray'}] },
+    badge:'RELEASED · State 3',
+    desc:'The bond is permanently dissolved. RELEASED is terminal — no further transitions are possible. The artefact and its inscription remain on-chain forever as a permanent record. The release message, if included, is stored in the event log.',
+    maker:{ label:'You see', pip:'#f87171', items:['Artefact shows as Released','Release message stored in event log','Inscription and artefact stay on-chain permanently'], actions:[{label:'No further actions',cls:'act-gray'}] },
     receiver:{ label:'Recipient sees', pip:'#f87171', items:['Artefact shows as Released in library','Release message visible','Bond permanently dissolved'], actions:[{label:'No further actions',cls:'act-gray'}] }
   }
 ];
@@ -298,7 +302,7 @@ window.goState=function(idx){
   var s=STATES[idx];
   var stage=document.getElementById('cardStage');
   stage.className='card-stage state-'+(idx===2?'active':s.key);
-  document.getElementById('stateBadge').textContent=s.eyebrow.replace(/^[^\s]+\s/,'').toUpperCase();
+  document.getElementById('stateBadge').textContent=s.badge;
   document.querySelectorAll('.s-dot').forEach(function(d){ d.classList.toggle('active',parseInt(d.dataset.idx)===idx); });
   document.getElementById('btnPrev').disabled=idx===0;
   document.getElementById('btnNext').disabled=idx===3;
@@ -326,22 +330,37 @@ var wp=gp('wallet')||'';
 document.getElementById('backLink').href=keyId!==null?'key-dashboard.html?key='+keyId:'your-keys.html';
 
 // preview
+var firstArtefactId = null;
+
 function loadPreview(){
   var sp=document.getElementById('previewSpinner'),gl=document.getElementById('previewGlyph');
   sp.classList.add('active'); gl.style.display='none';
   fetch(API+'/live').then(function(r){return r.json();}).then(function(d){
     epoch=d.currentEpoch||0;
-    var img=document.getElementById('previewImg');
-    var src=API+'/artefact/'+keyId+'/static-preview?epoch='+epoch+'&t='+Date.now();
-    img.onload=function(){ img.classList.add('loaded'); sp.classList.remove('active'); document.getElementById('previewOverlay').style.display='none'; };
-    img.onerror=function(){ sp.classList.remove('active'); gl.style.display='block'; };
-    img.src=src;
+    renderPreviewForState();
   }).catch(function(){ document.getElementById('previewSpinner').classList.remove('active'); document.getElementById('previewGlyph').style.display='block'; });
+}
+
+function renderPreviewForState(){
+  var sp=document.getElementById('previewSpinner'),gl=document.getElementById('previewGlyph');
+  var img=document.getElementById('previewImg');
+  sp.classList.add('active'); gl.style.display='none'; img.classList.remove('loaded'); img.style.display='none';
+  document.getElementById('previewOverlay').style.display='flex';
+
+  var artParam = firstArtefactId ? '&artefactTokenId='+firstArtefactId : '';
+  var src=API+'/artefact/'+keyId+'/static-preview?epoch='+epoch+artParam+'&t='+Date.now();
+  img.onload=function(){ img.classList.add('loaded'); img.style.display='block'; sp.classList.remove('active'); document.getElementById('previewOverlay').style.display='none'; };
+  img.onerror=function(){ sp.classList.remove('active'); gl.style.display='block'; };
+  img.src=src;
 }
 
 function loadKeyData(){
   fetch(API+'/key/'+keyId+'/artefacts').then(function(r){return r.json();}).then(function(d){
-    var c=(d.liveArtefacts||[]).length; hasFirst=c>0; updateBtn();
+    var arts=d.liveArtefacts||[];
+    hasFirst=arts.length>0;
+    if(arts.length>0) firstArtefactId=arts[0].tokenId;
+    updateBtn();
+    if(firstArtefactId) renderPreviewForState();
   }).catch(function(){});
 }
 
