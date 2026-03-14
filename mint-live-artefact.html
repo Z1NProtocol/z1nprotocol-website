@@ -449,23 +449,8 @@ function getEth(){
 }
 
 async function connectWallet(){
-  // Als provider al gezet is (door auto-connect), gebruik die
-  var eth = provider || getEth();
+  var eth=provider||getEth();
   if(!eth){showS('No wallet found. Install MetaMask.','error');return false;}
-  
-  // Als URL wallet Phantom is, forceer Phantom
-  var wpLower = wp ? wp.toLowerCase() : '';
-  if(wpLower && window.phantom && window.phantom.ethereum && eth !== window.phantom.ethereum){
-    try{
-      var testAccs = await window.phantom.ethereum.request({method:'eth_accounts'});
-      if(!testAccs || !testAccs.length){
-        testAccs = await window.phantom.ethereum.request({method:'eth_requestAccounts'});
-      }
-      if(testAccs && testAccs.some(function(a){return a.toLowerCase()===wpLower;})){
-        eth = window.phantom.ethereum;
-      }
-    }catch(e){}
-  }
   provider=eth;
   try{
     var a=await provider.request({method:'eth_accounts'});
@@ -540,19 +525,23 @@ window.openLightbox=function(){var img=document.getElementById('previewImg');if(
   var wpLower = wp ? wp.toLowerCase() : '';
   if(wpLower && window.phantom && window.phantom.ethereum){
     try{
-      var pa=await window.phantom.ethereum.request({method:'eth_accounts'});
-      if(!pa || !pa.length){
-        pa=await window.phantom.ethereum.request({method:'eth_requestAccounts'});
-      }
-      if(pa && pa.some(function(a){return a.toLowerCase()===wpLower;})){
-        provider=window.phantom.ethereum;
+      var phantomAccs = await window.phantom.ethereum.request({method:'eth_accounts'});
+      if(phantomAccs && phantomAccs.some(function(a){return a.toLowerCase()===wpLower;})){
+        provider = window.phantom.ethereum;
         await connectWallet();
         return;
       }
     }catch(e){}
   }
-  var e=getEth();
-  if(e){try{var a=await e.request({method:'eth_accounts'});if(a&&a.length)await connectWallet();}catch(e){}}
+  var eth=getEth();
+  if(eth){
+    try{
+      var accs=await eth.request({method:'eth_accounts'});
+      if(accs&&accs.length>0){
+        await connectWallet();
+      }
+    }catch(e){}
+  }
 })();
 
 var hb=document.getElementById('hamburger'),nav=document.getElementById('navLinks');
