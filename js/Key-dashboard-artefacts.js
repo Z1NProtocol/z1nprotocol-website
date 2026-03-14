@@ -1821,6 +1821,26 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       if (unreadCount > 0) {
         var z = getZ1N();
 
+        // Sync unseen artefact notifications into ActivityFeed.activities
+        if (window.ActivityFeed) {
+          Object.values(notifications).forEach(function(n) {
+            if (n.seen) return;
+            var actId = 'artefact_notif_' + n.artefactId + '_' + n.type;
+            var already = window.ActivityFeed.activities.find(function(a) { return a.id === actId; });
+            if (!already) {
+              window.ActivityFeed.activities.unshift({
+                id: actId,
+                type: 'artefact_received',
+                direction: 'received',
+                timestamp: n.blockNumber || 0,
+                fromKeyId: n.byKeyId,
+                tokenId: n.artefactId,
+                content: n.message || ''
+              });
+            }
+          });
+        }
+
         // Unified notifications feed — one loop, one system
         Object.values(notifications).forEach(function(n) {
           if (n.seen) return;

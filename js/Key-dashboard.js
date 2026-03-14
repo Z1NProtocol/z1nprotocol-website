@@ -1916,7 +1916,7 @@ async function loadActivityFeed() {
         var arD = await arR.json();
         (arD.liveArtefacts || []).filter(function(a){ return a.status === 'in_my_view'; }).forEach(function(a) {
           var msgId = 'artefact_recv_' + a.tokenId;
-          activities.push({ id: msgId, type: 'artefact_received', timestamp: a.tokenId, content: '' });
+          activities.push({ id: msgId, type: 'artefact_received', direction: 'received', timestamp: a.tokenId, content: '' });
         });
       }
     } catch(e) {}
