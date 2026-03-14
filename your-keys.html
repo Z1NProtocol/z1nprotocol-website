@@ -707,15 +707,17 @@ footer .links a:hover{color:var(--text-main);}
   var currentKeysView = 'card';
   try { currentKeysView = localStorage.getItem('z1n_keys_view') || 'card'; } catch(e) {}
 
-  function setKeysView(mode) {
+  window.setKeysView = function setKeysView(mode) {
     currentKeysView = mode;
     try { localStorage.setItem('z1n_keys_view', mode); } catch(e) {}
     var container = document.getElementById('keysContainer');
     container.className = 'keys-grid keys-view-' + mode;
+    container.style.display = 'grid';
     ['card','both','artefact'].forEach(function(m) {
       var btn = document.getElementById('viewBtn' + m.charAt(0).toUpperCase() + m.slice(1));
       if (btn) btn.classList.toggle('active', m === mode);
     });
+    renderKeys();
   }
   function isPrimaryWallet(addr) { return primaryWallet && addr.toLowerCase() === primaryWallet.toLowerCase(); }
 
@@ -894,9 +896,8 @@ footer .links a:hover{color:var(--text-main);}
     var treasuryClass = 'mini-stat treasury' + (hasClaimable ? ' has-claim' : (totalPol === 0 ? ' empty' : ''));
 
     // Indicator bolletjes: groen = artefact events, geel = attests/replies/DMs
-    var hasArtefactEvent = artefactsReceived > 0 || key.unseenArtefactCount > 0;
-    var hasSignalEvent = unseenCount > 0;
     var hasArtefactEvent = key.unseenArtefactCount > 0;
+    var hasSignalEvent = unseenCount > 0;
     var artefactIndicator = hasArtefactEvent ? '<span class="indicator-dot artefact-indicator" title="Artefact events"></span>' : '';
     var signalIndicator = hasSignalEvent ? '<span class="indicator-dot signal-indicator" title="Unseen signals/attests/DMs"></span>' : '';
 
