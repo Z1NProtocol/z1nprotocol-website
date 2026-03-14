@@ -800,11 +800,10 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
       var viewLink = document.getElementById('viewOnChainLink'); if (viewLink) viewLink.href = EXPLORER + '/token/' + Z1N_KEY + '?a=' + keyId;
       updateOverviewArtefactPreview();
       await Promise.all([loadAttestableSignals(), loadSentSignals(), loadReceivedReplies(), loadSentAttests(), loadReceivedAttests(), loadCanonData(), loadTreasuryData()]);
-if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
-      updateAttestBtn();
-      initActivityFeed();
-      // (removed duplicate loadActivityFeed call)
+updateAttestBtn();
       initUnreadState();
+      if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
+      initActivityFeed();
       
       // Switch to URL tab AFTER data loads
       switchToUrlTab();
