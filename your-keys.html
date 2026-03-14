@@ -364,7 +364,8 @@ footer .links a:hover{color:var(--text-main);}
     .mini-stat.treasury.has-claim { border-color: rgba(96,165,250,0.4); }
 
     /* TOOLTIPS — geel variant van artefacts.html */
-    .keys-tooltip { position:fixed; background:rgba(5,8,18,0.97); border:1px solid var(--keys-accent); border-radius:10px; padding:12px 16px; font-size:13px; color:var(--text-main); max-width:280px; pointer-events:none; opacity:0; transform:translateY(8px); transition:opacity 0.2s ease,transform 0.2s ease; z-index:9000; line-height:1.5; box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+    .keys-tooltip { position:fixed; background:rgba(5,8,18,0.97); border:1px solid var(--keys-accent); border-radius:10px; padding:12px 16px; font-size:13px; color:var(--text-main); max-width:280px; pointer-events:auto; opacity:0; transform:translateY(8px); transition:opacity 0.2s ease,transform 0.2s ease; z-index:9000; line-height:1.5; box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+    .keys-tooltip:not(.visible) { pointer-events:none; }
     .keys-tooltip.visible { opacity:1; transform:translateY(0); }
     .keys-tooltip .ktt-title { font-weight:700; color:var(--keys-accent); margin-bottom:6px; font-size:14px; }
     .keys-tooltip .ktt-body { color:var(--text-soft); font-size:12px; line-height:1.5; }
@@ -372,6 +373,21 @@ footer .links a:hover{color:var(--text-main);}
     .keys-tooltip .ktt-dismiss:hover { opacity:1; color:var(--keys-accent); }
     .keys-tooltip .ktt-dismiss-dot { width:10px; height:10px; border-radius:50%; border:1px solid currentColor; flex-shrink:0; }
     .keys-tooltip .ktt-dismiss-dot.checked { background:var(--keys-accent); border-color:var(--keys-accent); }
+    .keys-tooltip.tt-artefacts { border-color:var(--accent); }
+    .keys-tooltip.tt-artefacts .ktt-title { color:var(--accent); }
+    .keys-tooltip.tt-artefacts .ktt-dismiss { border-top-color:rgba(94,232,160,0.15); }
+    .keys-tooltip.tt-artefacts .ktt-dismiss:hover { color:var(--accent); }
+    .keys-tooltip.tt-artefacts .ktt-dismiss-dot.checked { background:var(--accent); border-color:var(--accent); }
+    .keys-tooltip.tt-canon { border-color:var(--canon-purple); }
+    .keys-tooltip.tt-canon .ktt-title { color:var(--canon-purple); }
+    .keys-tooltip.tt-canon .ktt-dismiss { border-top-color:rgba(192,132,252,0.15); }
+    .keys-tooltip.tt-canon .ktt-dismiss:hover { color:var(--canon-purple); }
+    .keys-tooltip.tt-canon .ktt-dismiss-dot.checked { background:var(--canon-purple); border-color:var(--canon-purple); }
+    .keys-tooltip.tt-treasury { border-color:var(--treasury-blue); }
+    .keys-tooltip.tt-treasury .ktt-title { color:var(--treasury-blue); }
+    .keys-tooltip.tt-treasury .ktt-dismiss { border-top-color:rgba(123,184,252,0.15); }
+    .keys-tooltip.tt-treasury .ktt-dismiss:hover { color:var(--treasury-blue); }
+    .keys-tooltip.tt-treasury .ktt-dismiss-dot.checked { background:var(--treasury-blue); border-color:var(--treasury-blue); }
 
     .filter-toolbar { background: rgba(15, 23, 42, 0.5); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     @media(max-width:600px){ .filter-toolbar{ padding:10px; gap:8px; } .filter-toggle{ padding:8px 12px; } .search-input{ min-width:0; width:100%; } }
@@ -907,14 +923,19 @@ footer .links a:hover{color:var(--text-main);}
     kttTitle.textContent = def.title;
     kttBody.textContent = def.body;
     kttDismissDot.className = 'ktt-dismiss-dot';
+    // Kleur klasse op basis van type
+    tooltipEl.className = 'keys-tooltip visible';
+    if (key === 'minted' || key === 'bounded') tooltipEl.classList.add('tt-artefacts');
+    else if (key === 'anchored') tooltipEl.classList.add('tt-canon');
+    else if (key === 'rewarded') tooltipEl.classList.add('tt-treasury');
     var rect = el.getBoundingClientRect();
     var tx = rect.left + rect.width / 2;
-    var ty = rect.top - 10;
+    var ty = rect.top;
     tooltipEl.style.left = Math.max(140, Math.min(tx, window.innerWidth - 140)) + 'px';
-    tooltipEl.style.top = (ty - 120) + 'px';
+    tooltipEl.style.top = Math.max(10, ty - 130) + 'px';
     tooltipEl.style.transform = 'translateX(-50%)';
-    tooltipEl.classList.add('visible');
-    kttDismiss.onclick = function() {
+    kttDismiss.onclick = function(e) {
+      e.stopPropagation();
       tooltipDismissed[key] = true;
       saveDismissed();
       kttDismissDot.className = 'ktt-dismiss-dot checked';
