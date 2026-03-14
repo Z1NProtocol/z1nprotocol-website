@@ -219,50 +219,80 @@ footer .links a:hover{color:var(--text-main);}
 
     /* KEY CARD */
     .key-card-wrapper { display: flex; flex-direction: column; gap: 6px; }
-    .key-card-inner { display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
-    .key-card-inner.show-both .key-card { flex: 1; min-width: 0; }
-    .key-card-inner.show-preview-only .key-card { display: none; }
-    .key-card-inner.show-card-only .key-artefact-preview { display: none; }
+
+    /* Card-only mode (default) */
+    .keys-view-card .key-card-inner { display: block; }
+    .keys-view-card .key-artefact-preview { display: none; }
+    .keys-view-card .key-card { display: block; }
+
+    /* Both mode */
+    .keys-view-both .keys-grid { grid-template-columns: repeat(2, 1fr); }
+    @media(max-width:800px){ .keys-view-both .keys-grid { grid-template-columns: 1fr; } }
+    .keys-view-both .key-card-inner { display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
+    .keys-view-both .key-card { flex: 1; min-width: 0; }
+    .keys-view-both .key-artefact-preview { display: flex; width: 130px; flex-shrink: 0; }
+
+    /* Artefact-only mode */
+    .keys-view-artefact .keys-grid { grid-template-columns: repeat(4, 1fr); }
+    @media(max-width:1100px){ .keys-view-artefact .keys-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media(max-width:800px){ .keys-view-artefact .keys-grid { grid-template-columns: repeat(2, 1fr); } }
+    .keys-view-artefact .key-card-inner { display: block; }
+    .keys-view-artefact .key-card { display: none; }
+    .keys-view-artefact .key-artefact-preview { display: flex; width: 100%; border-radius: 14px; min-height: 220px; }
+
+    /* Preview panel shared styles */
     .key-artefact-preview {
-      width: 100px; flex-shrink: 0;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 14px;
       overflow: hidden;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      flex-direction: column;
+      align-items: center; justify-content: flex-start;
       cursor: pointer;
       transition: all 220ms ease;
       position: relative;
     }
-    .key-artefact-preview:hover { border-color: var(--accent); }
+    .key-artefact-preview:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .key-artefact-preview .preview-key-label {
+      font-size: 11px; font-weight: 600; color: var(--keys-accent);
+      padding: 8px 10px 4px; width: 100%; text-align: center;
+    }
+    .key-artefact-preview .preview-img-wrap {
+      flex: 1; width: 100%; display: flex; align-items: center; justify-content: center;
+      padding: 4px;
+    }
     .key-artefact-preview img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-      display: block;
+      width: 100%; height: auto; max-height: 200px;
+      object-fit: contain; display: block; border-radius: 8px;
     }
     .key-artefact-preview .preview-placeholder {
-      font-size: 32px; color: rgba(94,232,160,0.2);
-      display: flex; align-items: center; justify-content: center;
-      width: 100%; height: 100%;
+      font-size: 40px; color: rgba(94,232,160,0.2);
     }
-    .key-card-view-toggle {
-      display: flex; gap: 4px; justify-content: flex-end;
-      margin-bottom: 2px;
+    .key-artefact-preview .preview-artf-labels {
+      display: flex; gap: 6px; padding: 4px 8px 8px; width: 100%; justify-content: center;
     }
-    .key-card-view-btn {
+    .key-artefact-preview .artf-label {
+      font-size: 9px; color: var(--text-soft); display: flex; align-items: center; gap: 2px;
+    }
+    .key-artefact-preview .artf-label .artf-val { color: var(--accent); font-weight: 700; }
+
+    /* Global view toggle */
+    .keys-view-toggle-bar {
+      display: flex; gap: 6px; align-items: center;
+      margin-bottom: 12px;
+    }
+    .keys-view-toggle-bar .view-toggle-label {
+      font-size: 11px; color: var(--text-soft); margin-right: 4px;
+    }
+    .keys-view-toggle-btn {
       background: transparent;
-      border: 1px solid rgba(148,163,184,0.25);
-      border-radius: 4px;
-      color: var(--text-soft);
-      font-size: 9px;
-      padding: 2px 6px;
-      cursor: pointer;
+      border: 1px solid rgba(148,163,184,0.3);
+      border-radius: 6px; color: var(--text-soft);
+      font-size: 11px; padding: 5px 12px; cursor: pointer;
       transition: all 0.15s;
     }
-    .key-card-view-btn:hover { border-color: var(--keys-accent); color: var(--keys-accent); }
-    .key-card-view-btn.active { background: rgba(255,213,86,0.15); border-color: var(--keys-accent); color: var(--keys-accent); }
-    @media(max-width:600px){ .key-artefact-preview { width: 80px; } }
+    .keys-view-toggle-btn:hover { border-color: var(--keys-accent); color: var(--keys-accent); }
+    .keys-view-toggle-btn.active { background: rgba(255,213,86,0.15); border-color: var(--keys-accent); color: var(--keys-accent); }
     .wallet-badge-above { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; font-size: 10px; width: fit-content; transition: all 0.2s; }
     .wallet-badge-above .wallet-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .wallet-badge-above .wallet-label { font-weight: 600; }
@@ -525,6 +555,12 @@ footer .links a:hover{color:var(--text-main);}
     </div>
   </div>
 
+  <div id="keysViewToggleBar" class="keys-view-toggle-bar" style="display:none;">
+    <span class="view-toggle-label">View</span>
+    <button class="keys-view-toggle-btn active" id="viewBtnCard" onclick="setKeysView('card')">▦ Dashboard</button>
+    <button class="keys-view-toggle-btn" id="viewBtnBoth" onclick="setKeysView('both')">⊞ Both</button>
+    <button class="keys-view-toggle-btn" id="viewBtnArtefact" onclick="setKeysView('artefact')">◈ Artefact</button>
+  </div>
   <div id="keysContainer" class="keys-grid" style="display:none;"></div>
   <div id="noResultsState" class="no-results" style="display:none;">No Keys match your filters</div>
   <div id="mintMoreSection" style="display:none; margin-top:24px;"><a href="./mint-key.html" class="mode-btn">+ Mint another Key</a></div>
@@ -667,6 +703,24 @@ footer .links a:hover{color:var(--text-main);}
   }
 
   function saveContext(keyId, wallet) { try { localStorage.setItem('z1n_signal_context', JSON.stringify({ keyId: keyId, wallet: wallet })); } catch (e) {} }
+
+  var currentKeysView = 'card';
+  try { currentKeysView = localStorage.getItem('z1n_keys_view') || 'card'; } catch(e) {}
+
+  function setKeysView(mode) {
+    currentKeysView = mode;
+    try { localStorage.setItem('z1n_keys_view', mode); } catch(e) {}
+    var container = document.getElementById('keysContainer');
+    container.className = 'keys-grid';
+    document.body.className = '';
+    // Apply mode class to a wrapper
+    var page = document.querySelector('.page');
+    page.className = 'page keys-view-' + mode;
+    ['card','both','artefact'].forEach(function(m) {
+      var btn = document.getElementById('viewBtn' + m.charAt(0).toUpperCase() + m.slice(1));
+      if (btn) btn.classList.toggle('active', m === mode);
+    });
+  }
   function isPrimaryWallet(addr) { return primaryWallet && addr.toLowerCase() === primaryWallet.toLowerCase(); }
 
   function renderWalletsSection() {
@@ -870,44 +924,35 @@ footer .links a:hover{color:var(--text-main);}
       if (clickable && clickable.dataset.tab) { saveContext(key.tokenId, key.wallet); window.location.href = baseUrl + '&tab=' + clickable.dataset.tab; return; }
       saveContext(key.tokenId, key.wallet); window.location.href = baseUrl;
     };
-    // Toggle buttons
-    var toggleRow = document.createElement('div'); toggleRow.className = 'key-card-view-toggle';
-    var btnBoth = document.createElement('button'); btnBoth.className = 'key-card-view-btn' + (viewMode === 'both' ? ' active' : ''); btnBoth.textContent = '⊞'; btnBoth.title = 'Show both';
-    var btnCard = document.createElement('button'); btnCard.className = 'key-card-view-btn' + (viewMode === 'card' ? ' active' : ''); btnCard.textContent = '▦'; btnCard.title = 'Dashboard only';
-    var btnPreview = document.createElement('button'); btnPreview.className = 'key-card-view-btn' + (viewMode === 'preview' ? ' active' : ''); btnPreview.textContent = '◈'; btnPreview.title = 'Artefact only';
-    toggleRow.appendChild(btnBoth); toggleRow.appendChild(btnCard); toggleRow.appendChild(btnPreview);
-    wrapper.appendChild(toggleRow);
-
     // Inner wrapper
-    var inner = document.createElement('div');
-    inner.className = 'key-card-inner show-' + (viewMode === 'both' ? 'both' : viewMode === 'preview' ? 'preview-only' : 'card-only');
+    var inner = document.createElement('div'); inner.className = 'key-card-inner';
     inner.appendChild(card);
 
     // Artefact preview panel
     var previewPanel = document.createElement('div'); previewPanel.className = 'key-artefact-preview';
     var apiBase = 'https://z1n-backend-production.up.railway.app/api';
     var previewUrl = apiBase + '/artefact/' + key.tokenId + '/static-preview?epoch=' + (key.epoch || 0) + '&t=' + Math.floor(Date.now() / 60000);
+
+    var keyLabel = document.createElement('div'); keyLabel.className = 'preview-key-label';
+    keyLabel.textContent = 'Key #' + key.tokenId;
+    previewPanel.appendChild(keyLabel);
+
+    var imgWrap = document.createElement('div'); imgWrap.className = 'preview-img-wrap';
     var img = document.createElement('img');
     img.alt = 'Artefact Key #' + key.tokenId;
-    img.onerror = function() { previewPanel.innerHTML = '<div class="preview-placeholder">◈</div>'; };
+    img.onerror = function() { imgWrap.innerHTML = '<div class="preview-placeholder">◈</div>'; };
     img.src = previewUrl;
-    previewPanel.appendChild(img);
+    imgWrap.appendChild(img);
+    previewPanel.appendChild(imgWrap);
+
+    var artfLabels = document.createElement('div'); artfLabels.className = 'preview-artf-labels';
+    artfLabels.innerHTML = '<span class="artf-label">◈ <span class="artf-val">' + (artefactsCount > 0 ? artefactsCount : '–') + '</span></span>' +
+      '<span class="artf-label">◈← <span class="artf-val">' + (artefactsReceived > 0 ? artefactsReceived : '–') + '</span></span>';
+    previewPanel.appendChild(artfLabels);
+
     previewPanel.onclick = function(e) { e.stopPropagation(); saveContext(key.tokenId, key.wallet); window.location.href = baseUrl + '&tab=artefacts'; };
     inner.appendChild(previewPanel);
     wrapper.appendChild(inner);
-
-    // Toggle logic
-    function setView(mode) {
-      viewMode = mode;
-      try { localStorage.setItem('z1n_card_view_' + key.tokenId, mode); } catch(e) {}
-      inner.className = 'key-card-inner show-' + (mode === 'both' ? 'both' : mode === 'preview' ? 'preview-only' : 'card-only');
-      btnBoth.classList.toggle('active', mode === 'both');
-      btnCard.classList.toggle('active', mode === 'card');
-      btnPreview.classList.toggle('active', mode === 'preview');
-    }
-    btnBoth.onclick = function(e) { e.stopPropagation(); setView('both'); };
-    btnCard.onclick = function(e) { e.stopPropagation(); setView('card'); };
-    btnPreview.onclick = function(e) { e.stopPropagation(); setView('preview'); };
 
     return wrapper;
   }
@@ -978,6 +1023,13 @@ footer .links a:hover{color:var(--text-main);}
       document.getElementById('btnRefresh').style.alignItems = 'center';
       document.getElementById('btnRefresh').style.justifyContent = 'center';
       document.getElementById('mintMoreSection').style.display = 'block';
+      document.getElementById('keysViewToggleBar').style.display = 'flex';
+      setKeysView(currentKeysView);
+      // Set initial active button
+      ['card','both','artefact'].forEach(function(m) {
+        var btn = document.getElementById('viewBtn' + m.charAt(0).toUpperCase() + m.slice(1));
+        if (btn) btn.classList.toggle('active', m === currentKeysView);
+      });
       renderKeys(); hideLoading();
       Promise.all(allKeys.map(function(key) {
         return Promise.all([
