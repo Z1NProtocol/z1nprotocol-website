@@ -1033,7 +1033,7 @@ footer .links a:hover{color:var(--text-main);}
     // Artefact preview panel
     var previewPanel = document.createElement('div'); previewPanel.className = 'key-artefact-preview';
     var apiBase = 'https://z1n-backend-production.up.railway.app/api';
-    var previewUrl = apiBase + '/artefact/' + key.tokenId + '/static-preview?epoch=' + (key.epoch || 0) + '&t=' + Math.floor(Date.now() / 60000);
+    var previewUrl = apiBase + '/artefact/' + key.tokenId + '/static-preview?epoch=' + (key.epoch || 0) + '&inscription=-&t=' + Math.floor(Date.now() / 60000);
 
     var keyLabel = document.createElement('div'); keyLabel.className = 'preview-key-label';
     keyLabel.textContent = 'Key #' + key.tokenId;
