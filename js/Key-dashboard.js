@@ -804,6 +804,11 @@ updateAttestBtn();
       initUnreadState();
       if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
       initActivityFeed();
+      // Force reload feed after artefacts are in — picks up pending offerings
+      setTimeout(function() {
+        ActivityFeed.loaded = false;
+        loadActivityFeed();
+      }, 800);
       
       // Switch to URL tab AFTER data loads
       switchToUrlTab();
