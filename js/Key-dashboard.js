@@ -2081,11 +2081,12 @@ ActivityFeed.activities.forEach(function(a) {
     badgeCanon.style.display = 'none';
   }
   if (badgeTreasury) {
-    // Treasury badge toont claimable count, niet activity count
     var claimableCount = claimableEpochsData ? claimableEpochsData.length : 0;
     badgeTreasury.textContent = claimableCount;
     badgeTreasury.classList.toggle('has-items', claimableCount > 0);
     badgeTreasury.classList.toggle('active', presenceFilter === 'treasury');
+    badgeTreasury.style.background = claimableCount > 0 ? 'rgba(147,197,253,0.3)' : '';
+    badgeTreasury.style.color = claimableCount > 0 ? '#93c5fd' : '';
   }
   
  // Filter unseen items — only RECEIVED unread
@@ -2260,8 +2261,8 @@ function renderActivityItem(activity) {
     case 'treasury_claimable':
       iconClass = 'treasury';
       icon = '⬡';
-      title = 'Claimable event · <strong>Epoch ' + (activity.epoch || '?') + '</strong>';
-      preview = activity.amount ? activity.amount + ' POL' : '';
+      title = '<span style="color:#93c5fd;">Claimable event</span> · <strong style="color:#93c5fd;">Epoch ' + (activity.epoch || '?') + '</strong>';
+      preview = activity.amount ? '<span style="color:#93c5fd;">' + activity.amount + ' POL</span>' : '';
       break;
       
     default:
