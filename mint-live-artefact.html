@@ -22,21 +22,23 @@
     body { background: var(--bg); color: var(--text-main); font-family: system-ui,-apple-system,"Segoe UI",sans-serif; min-height: 100vh; }
     a { color: inherit; text-decoration: none; }
 
-    header { height: 64px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 28px; justify-content: space-between; position: sticky; top: 0; background: rgba(5,8,18,0.94); backdrop-filter: blur(12px); z-index: 100; }
+    header { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; background: rgba(5,8,18,0.94); backdrop-filter: blur(12px); z-index: 100; }
+    .nav-inner { width: 100%; max-width: 1200px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
     .logo-link { display: inline-flex; align-items: center; gap: 8px; }
-    .logo-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 12px; }
-    .logo-text { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; display: flex; gap: 5px; }
-    .logo-main { font-weight: 600; } .logo-sub { opacity: 0.45; }
-    .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.8; }
+    .logo-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .logo-text { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; display: flex; gap: 6px; }
+    .logo-main { font-weight: 600; } .logo-sub { opacity: 0.6; font-weight: 400; }
+    .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
     .nav-links a:hover { color: var(--accent); opacity: 1; }
-    .hamburger { display: none; background: transparent; border: 1px solid rgba(148,163,184,0.2); border-radius: 7px; padding: 7px; cursor: pointer; flex-direction: column; gap: 4px; }
-    .hamburger span { display: block; width: 18px; height: 1.5px; background: var(--text-main); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
-    .hamburger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .nav-links a.active-keys { color: var(--keys-accent); }
+    .hamburger { display: none; background: rgba(15,23,42,0.8); border: 1px solid rgba(148,163,184,0.25); border-radius: 8px; cursor: pointer; padding: 8px; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 20px; height: 1.5px; background: var(--text-main); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
     @media(max-width:800px){
       .hamburger { display: flex; }
-      .nav-links { display: none; position: absolute; top: 64px; left: 0; right: 0; background: rgba(5,8,18,0.98); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.12); flex-direction: column; padding: 16px 24px 20px; gap: 14px; font-size: 14px; z-index: 200; }
+      .nav-links { display: none; position: absolute; top: 72px; left: 0; right: 0; background: rgba(10,15,26,0.98); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.2); box-shadow: 0 12px 32px rgba(0,0,0,0.6); flex-direction: column; padding: 16px 24px 20px; gap: 14px; font-size: 14px; z-index: 200; }
       .nav-links.open { display: flex; }
     }
 
@@ -104,7 +106,7 @@
     .status-msg.pending { background: rgba(255,213,86,0.09); color: var(--keys-accent); border: 1px solid rgba(255,213,86,0.18); }
 
     /* RIGHT */
-    .right-col { padding-top: 2px; position: sticky; top: 84px; }
+    .right-col { padding-top: 2px; position: sticky; top: 92px; }
     @media(max-width:960px){ .right-col { position: static; } }
 
     .state-eyebrow { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
@@ -159,18 +161,22 @@
 </div>
 
 <header>
-  <a href="index.html" class="logo-link">
-    <div class="logo-dot">Ω</div>
-    <div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div>
-  </a>
-  <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
-  <nav class="nav-links" id="navLinks">
-    <a href="about.html">About</a>
-    <a href="how-it-works.html">How it Works</a>
-    <a href="live-stats.html">Live Stats</a>
-    <a href="artefacts.html">Artefacts</a>
-    <a href="your-keys.html">Your Keys</a>
-  </nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo-link">
+      <div class="logo-dot">Ω</div>
+      <div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div>
+    </a>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+    <nav class="nav-links" id="navLinks">
+      <a href="about.html">About</a>
+      <a href="how-it-works.html">How it Works</a>
+      <a href="live-stats.html">Live Stats</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="mint-key.html">Mint Key</a>
+      <a href="your-keys.html" class="active-keys">Your Keys</a>
+    </nav>
+  </div>
 </header>
 
 <main class="page">
@@ -261,15 +267,15 @@ var STATES=[
   },
   { key:'released', eyebrow:'◇ State 3 — Released', title:'Released',
     badge:'RELEASED · State 3',
-    desc:'The bond is permanently dissolved. RELEASED is terminal — no further transitions are possible. The artefact and its inscription remain on-chain forever as a permanent record. The release message, if included, is stored in the event log.',
-    maker:{ label:'You see', pip:'#f87171', items:['Artefact shows as Released','Release message stored in event log','Inscription and artefact stay on-chain permanently'], actions:[{label:'No further actions',cls:'act-gray'}] },
-    receiver:{ label:'Recipient sees', pip:'#f87171', items:['Artefact shows as Released in library','Release message visible','Bond permanently dissolved'], actions:[{label:'No further actions',cls:'act-gray'}] }
+    desc:'The bond is permanently dissolved. Either the maker or the recipient can release at any time — both sides have equal rights. RELEASED is terminal. The artefact and its inscription remain on-chain forever as a permanent record. The release message, if included, is stored in the event log.',
+    maker:{ label:'You see', pip:'#f87171', items:['You or the recipient released the bond','Release message stored in event log','Inscription and artefact stay on-chain permanently','Terminal — no further transitions'], actions:[{label:'No further actions',cls:'act-gray'}] },
+    receiver:{ label:'Recipient sees', pip:'#f87171', items:['Bond permanently dissolved','Artefact shows as Released in library','Release message visible if included','Terminal — no further transitions'], actions:[{label:'No further actions',cls:'act-gray'}] }
   }
 ];
 
 var PROPS=[
   {icon:'🔒',title:'Soulbound',body:'No transfer, no burn. The artefact stays on-chain forever, tied to its source Key.'},
-  {icon:'✍️',title:'Inscription',body:'Set once at mint, max 64 bytes. Permanent regardless of offering or release.'},
+  {icon:'✍️',title:'Inscription',body:'Set once at mint, max 64 bytes. The inscription becomes part of the artefact itself — visible on the card, shared with any recipient, permanent on-chain regardless of what happens to the bond.'},
   {icon:'⚖️',title:'Equal release rights',body:'Both maker and recipient can release the bond at any time with an optional message.'},
   {icon:'♻️',title:'Reusable after reject',body:'Rejection returns the artefact to UNSHARED. Offer again — reject count is recorded.'}
 ];
@@ -378,6 +384,7 @@ function renderPreviewForState(){
   overlay.style.display='flex';
 
   var artParam=firstArtefactId?'&artefactTokenId='+firstArtefactId:'';
+  // No inscription param — artefact renders with blank inscription as designed
   var src=API+'/artefact/'+keyId+'/static-preview?epoch='+epoch+artParam+'&t='+Date.now();
   img.onload=function(){
     img.classList.add('loaded');
