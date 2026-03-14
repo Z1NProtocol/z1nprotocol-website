@@ -355,24 +355,40 @@ document.getElementById('backLink').href=keyId!==null?'key-dashboard.html?key='+
 var firstArtefactId = null;
 
 function loadPreview(){
-  var sp=document.getElementById('previewSpinner'),gl=document.getElementById('previewGlyph');
-  sp.classList.add('active'); gl.style.display='none';
   fetch(API+'/live').then(function(r){return r.json();}).then(function(d){
     epoch=d.currentEpoch||0;
     renderPreviewForState();
-  }).catch(function(){ document.getElementById('previewSpinner').classList.remove('active'); document.getElementById('previewGlyph').style.display='block'; });
+  }).catch(function(){
+    document.getElementById('previewGlyph').style.display='block';
+  });
 }
 
 function renderPreviewForState(){
-  var sp=document.getElementById('previewSpinner'),gl=document.getElementById('previewGlyph');
-  var img=document.getElementById('previewImg');
-  sp.classList.add('active'); gl.style.display='none'; img.classList.remove('loaded'); img.style.display='none';
-  document.getElementById('previewOverlay').style.display='flex';
+  // Only show real artefact on state 0 (personal) and state 2 (bounded)
+  if(currentState===1||currentState===3) return;
 
-  var artParam = firstArtefactId ? '&artefactTokenId='+firstArtefactId : '';
+  var sp=document.getElementById('previewSpinner');
+  var gl=document.getElementById('previewGlyph');
+  var img=document.getElementById('previewImg');
+  var overlay=document.getElementById('previewOverlay');
+
+  sp.classList.add('active'); sp.style.display='block';
+  gl.style.display='none';
+  img.classList.remove('loaded'); img.style.display='none';
+  overlay.style.display='flex';
+
+  var artParam=firstArtefactId?'&artefactTokenId='+firstArtefactId:'';
   var src=API+'/artefact/'+keyId+'/static-preview?epoch='+epoch+artParam+'&t='+Date.now();
-  img.onload=function(){ img.classList.add('loaded'); img.style.display='block'; sp.classList.remove('active'); document.getElementById('previewOverlay').style.display='none'; };
-  img.onerror=function(){ sp.classList.remove('active'); gl.style.display='block'; };
+  img.onload=function(){
+    img.classList.add('loaded');
+    img.style.display='block';
+    sp.classList.remove('active'); sp.style.display='none';
+    overlay.style.display='none';
+  };
+  img.onerror=function(){
+    sp.classList.remove('active'); sp.style.display='none';
+    gl.style.display='block';
+  };
   img.src=src;
 }
 
