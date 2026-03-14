@@ -2859,7 +2859,7 @@ async function claimSingleReward(epochId, claimType) {
   if (itemEl) itemEl.classList.add('claiming');
   try {
     var actionText = claimType === 'recycle' ? 'Recycling' : claimType === 'nexus' ? 'Donating' : 'Claiming';
-    showToast(actionText + ' E' + epochId + '...', 2000);
+    showToast(actionText + ' E' + epochId + '...', 2000, false, true);
     var response = await fetch(API_BASE + '/treasury/claim-data?epochId=' + epochId + '&wallet=' + currentAccount + '&claimType=' + claimType);
     var claimData = await response.json();
     if (claimData.error) throw new Error(claimData.error);
@@ -2880,7 +2880,7 @@ async function claimSingleReward(epochId, claimType) {
       var claimableBox = document.getElementById('treasuryClaimableBox');
       if (claimableBox) claimableBox.classList.toggle('has-claimable', claimableEpochsData.length > 0);
       var actionDone = claimType === 'recycle' ? 'Recycled' : claimType === 'nexus' ? 'Donated' : 'Claimed';
-      showToast('✅ ' + actionDone + ' E' + epochId + '!', 4000);
+      showToast('✅ ' + actionDone + ' E' + epochId + '!', 4000, false, true);
       setTimeout(renderClaimableEpochs, 500);
     } else { throw new Error('Transaction not confirmed'); }
   } catch (e) {
@@ -2898,7 +2898,7 @@ async function claimSingleReward(epochId, claimType) {
 
 async function claimAllRewards() {
   if (!window.ethereum || !currentAccount) { showToast('Connect wallet first', 3000); return; }
-  if (claimableEpochsData.length === 0) { showToast('Nothing to claim', 2000); return; }
+  if (claimableEpochsData.length === 0) { showToast('Nothing to claim', 2000, false, true); return; }
   if (isClaimingAll) { showToast('Already claiming...', 2000); return; }
   // Open modal to choose claim type
   document.getElementById('claimAllModal').classList.add('active');
@@ -2946,7 +2946,7 @@ async function executeClaimAll(claimType) {
   if (btn) { btn.disabled = false; btn.classList.remove('claiming'); btn.innerHTML = '<span class="btn-icon">⬡</span><span>Claim All Rewards</span>'; }
   isClaimingAll = false;
   setTimeout(loadTreasuryData, 2000);
-  if (completed > 0) showToast('✅ Claimed ' + completed + ' epoch(s)!', 4000);
+  if (completed > 0) showToast('✅ Claimed ' + completed + ' epoch(s)!', 4000, false, true);
 }
 
 function updateEpochStatus(epochId, status, statusClass) {
