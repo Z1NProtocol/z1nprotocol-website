@@ -1916,7 +1916,8 @@ async function loadActivityFeed() {
         var arD = await arR.json();
         (arD.liveArtefacts || []).filter(function(a){ return a.status === 'in_my_view'; }).forEach(function(a) {
           var msgId = 'artefact_recv_' + a.tokenId;
-          activities.push({ id: msgId, type: 'artefact_received', direction: 'received', timestamp: a.tokenId, content: '' });
+          var fromKey = a.senderKeyId || a.fromKeyId || a.receivedFromKeyId || null;
+          activities.push({ id: msgId, type: 'artefact_received', direction: 'received', timestamp: a.blockNumber || a.tokenId, fromKeyId: fromKey, tokenId: a.tokenId, content: '' });
         });
       }
     } catch(e) {}
@@ -2141,6 +2142,8 @@ function renderActivityItem(activity) {
   var iconClass = 'signal'; // default geel
   if (activity.type === 'canon_mint') {
     iconClass = 'canon';
+  } else if (activity.type === 'treasury_claimable') {
+    iconClass = 'treasury';
   } else if (activity.type && activity.type.includes('artefact')) {
     iconClass = 'artefact';
   }
@@ -2199,7 +2202,8 @@ function renderActivityItem(activity) {
    case 'artefact_received':
       iconClass = 'artefact';
       icon = '◈';
-      title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> shared an artefact with you';
+      var fromKeyLabel = activity.fromKeyId ? '<span class="key-link">K#' + activity.fromKeyId + '</span> ' : '';
+      title = fromKeyLabel + (activity.content ? 'offered artefact <em style="color:var(--accent);">"' + activity.content + '"</em>' : 'shared an artefact with you');
       preview = activity.tokenId ? 'Artefact #' + activity.tokenId : '';
       activity.epoch = undefined;
       break;
