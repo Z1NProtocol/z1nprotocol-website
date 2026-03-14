@@ -799,6 +799,12 @@
   <!-- ARTEFACTS TAB -->
 <div id="tab-artefacts" class="tab-content">
   <div class="section-card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <input type="text" id="mintInscriptionInput" maxlength="64" placeholder="Inscription — optional, write-once, max 64 chars" style="flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text-main);font-family:inherit;">
+      <span id="mintInscriptionCount" style="font-size:10px;color:var(--text-soft);min-width:32px;text-align:right;flex-shrink:0;">0/64</span>
+      <button class="btn btn-green" id="btnMintInSection" onclick="Z1NArtefacts&&Z1NArtefacts.mint()" style="height:36px;padding:0 14px;white-space:nowrap;flex-shrink:0;">+ Mint Artefact</button>
+    </div>
+    <div id="mintArtefactStatusTop" style="margin-bottom:8px;"></div>
     <div class="artefact-sub-tabs">
       <button class="artefact-sub-tab active" id="subTabMinted" onclick="switchArtefactSubTab('minted')">
         ◈ Minted <span class="sub-tab-badge" id="subBadgeMinted">0</span>
