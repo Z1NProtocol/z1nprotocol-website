@@ -803,11 +803,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
 if (window.Z1NArtefacts && window.Z1NArtefacts.refresh) await window.Z1NArtefacts.refresh();
       updateAttestBtn();
       initActivityFeed();
-      // Herlaad feed na artefact data beschikbaar
-      setTimeout(function() {
-        if (window.ActivityFeed) window.ActivityFeed.loaded = false;
-        loadActivityFeed();
-      }, 800);
+      // (removed duplicate loadActivityFeed call)
       initUnreadState();
       
       // Switch to URL tab AFTER data loads
@@ -1990,6 +1986,14 @@ async function loadActivityFeed() {
         epoch: ep.epochId,
         amount: ep.amountFormatted
       });
+    });
+
+    // Dedupliceer op id — voorkom dubbele entries bij herhaalde loads
+    var seen = {};
+    activities = activities.filter(function(a) {
+      if (!a.id || seen[a.id]) return false;
+      seen[a.id] = true;
+      return true;
     });
 
     // Sort by timestamp (newest first)
