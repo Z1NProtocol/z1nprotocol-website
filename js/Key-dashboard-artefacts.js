@@ -1758,6 +1758,12 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       receivedBadge.textContent = sharedWithMe.length;
       receivedBadge.classList.toggle('has-unread', unreadReceived > 0);
     }
+
+    // Update mint button text based on whether key has artefacts
+    var mintBtn = document.getElementById('btnMintInSection');
+    if (mintBtn) {
+      mintBtn.textContent = ownedArtefacts.length > 0 ? '+ Mint Artefact — 7 POL' : '+ Mint Free Artefact';
+    }
   }
 
   // =====================================================================
