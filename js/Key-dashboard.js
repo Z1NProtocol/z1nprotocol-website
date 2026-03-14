@@ -1267,7 +1267,7 @@ if (receivedAttestsCountTitleEl) receivedAttestsCountTitleEl.textContent = '(' +
       it.dataset.activityId = activityId;
       
       var fromKeyDisplay = att.fromKeyId !== null ? 'K#' + att.fromKeyId : (att.fromWallet ? att.fromWallet.slice(0,6) + '...' : '?');
-      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'direct\');setTimeout(function(){replyWhisper('+(att.fromKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Whisper</button></div>';
+      it.innerHTML = '<div style="flex:1;"><div class="signal-item-header"><span style="color:var(--keys-accent);font-weight:600;">' + fromKeyDisplay + '</span>'+gs+'<span class="intent-tag '+ic+'" style="margin-left:6px;">'+isym+'</span><span style="margin-left:6px;font-size:10px;color:#fbbf24;">Attested</span><span style="color:var(--text-soft);margin-left:6px;">Epoch '+att.epoch+'</span></div><div class="signal-content-preview" style="font-size:11px;opacity:0.8;white-space:pre-wrap;word-break:break-word;">'+escapeHtml(content)+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="signal-time">'+(att.timeAgo||'')+'</span><button onclick="event.stopPropagation();switchTab(\'direct\');setTimeout(function(){replyWhisper('+(att.signalKeyId||0)+')},100);" style="padding:3px 8px;border-radius:4px;border:1px solid rgba(255,213,86,0.3);background:transparent;color:var(--keys-accent);font-size:9px;cursor:pointer;">💬 Message</button></div>';
       
       // Click to mark as read
       it.addEventListener('click', function() {
@@ -1983,7 +1983,7 @@ async function loadActivityFeed() {
           epoch: art.epoch || art.receivedEpoch || art.mintEpoch || undefined,
           fromKeyId: fromKey,
           tokenId: art.tokenId
-        });
+        });h
       }
     });
 
@@ -2215,18 +2215,18 @@ function renderActivityItem(activity) {
       break;
       
     case 'whisper_sent':
-      title = 'Whispered to <span class="key-link">K#' + (activity.targetKeyId || '?') + '</span>';
+      title = 'Message to <span class="key-link">K#' + (activity.targetKeyId || '?') + '</span>';
       preview = truncateActivityContent(activity.content);
       break;
       
     case 'whisper_received':
-      title = 'Whisper from <span class="key-link">K#' + (activity.fromKeyId || '?') + '</span>';
+      title = 'Message from <span class="key-link">K#' + (activity.fromKeyId || '?') + '</span>';
       preview = truncateActivityContent(activity.content);
       break;
 
     case 'direct_received':
       var isEncryptedDm = activity.content === '[Encrypted]';
-      title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> sent you ' + (isEncryptedDm ? 'an encrypted message' : 'an on-chain message');
+      title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> sent you a Key to Key ' + (isEncryptedDm ? 'encrypted message' : 'message');
       preview = isEncryptedDm ? '' : truncateActivityContent(activity.content);
       break;
       

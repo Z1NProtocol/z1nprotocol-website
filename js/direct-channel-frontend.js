@@ -418,7 +418,7 @@
         // LEFT: Compose
         '<div class="section-card">' +
           '<div class="section-header" style="margin-bottom:16px;">' +
-            '<span class="section-title" style="color:#ffd556;">SEND DIRECT MESSAGE</span>' +
+            '<span class="section-title" style="color:#ffd556;">SEND KEY TO KEY MESSAGE</span>' +
             renderModeToggle(encryptionState) +
           '</div>' +
 
@@ -442,7 +442,7 @@
         // RIGHT: Sent
         '<div class="section-card">' +
           '<div class="section-header" style="margin-bottom:16px;">' +
-            '<span class="section-title" style="color:#ffd556;">SENT <span id="directSentCount" style="font-weight:400;opacity:0.8;">(0)</span></span>' +
+            '<span class="section-title" style="color:#ffd556;">SENT MESSAGES <span id="directSentCount" style="font-weight:400;opacity:0.8;">(0)</span></span>' +
             '<div style="display:flex;gap:6px;align-items:center;">' +
               '<input type="text" id="directSentSearchKey" placeholder="To Key..." style="width:70px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterDirectSent()">' +
               '<button class="filter-select" style="cursor:pointer;" onclick="downloadDirectSentCSV()">↓ CSV</button>' +
@@ -458,7 +458,7 @@
       // RECEIVED — full width
       '<div class="section-card" style="margin-top:20px;">' +
         '<div class="section-header" style="margin-bottom:12px;">' +
-          '<span class="section-title" style="color:#ffd556;">RECEIVED <span id="directReceivedCount" style="font-weight:400;opacity:0.8;">(0)</span></span>' +
+          '<span class="section-title" style="color:#ffd556;">RECEIVED MESSAGES <span id="directReceivedCount" style="font-weight:400;opacity:0.8;">(0)</span></span>' +
           '<div style="display:flex;gap:6px;align-items:center;">' +
             '<input type="text" id="directReceivedSearchKey" placeholder="From Key..." style="width:80px;padding:6px 8px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:11px;" oninput="filterDirectReceived()">' +
             '<button class="filter-select" style="cursor:pointer;" onclick="downloadDirectReceivedCSV()">↓ CSV</button>' +
