@@ -227,13 +227,10 @@ footer .links a:hover{color:var(--text-main);}
 
     /* Both mode */
     .keys-grid.keys-view-both { grid-template-columns: repeat(2, 1fr); }
-    .keys-grid.keys-view-both .key-card { min-width: 0; max-width: none; flex: 1; }
-    .keys-grid.keys-view-both .key-card-inner { gap: 12px; }
-    .keys-grid.keys-view-both .key-artefact-preview { width: 160px; min-width: 140px; max-width: 180px; flex-shrink: 0; }
     @media(max-width:800px){ .keys-grid.keys-view-both { grid-template-columns: 1fr; } }
     .keys-grid.keys-view-both .key-card-inner { display: flex; flex-direction: row; gap: 8px; align-items: stretch; }
-    .keys-grid.keys-view-both .key-card { flex: 1; min-width: 0; }
-    .keys-grid.keys-view-both .key-artefact-preview { display: flex; width: 130px; flex-shrink: 0; }
+    .keys-grid.keys-view-both .key-card { flex: 0 0 auto; width: calc(100% - 148px); min-width: 0; }
+    .keys-grid.keys-view-both .key-artefact-preview { display: flex; width: 140px; flex-shrink: 0; }
 
     /* Artefact-only mode */
     .keys-grid.keys-view-artefact { grid-template-columns: repeat(4, 1fr); }
@@ -953,22 +950,26 @@ footer .links a:hover{color:var(--text-main);}
 
     previewPanel.onclick = function(e) {
       e.stopPropagation();
-      if (currentKeysView === 'artefact') {
-        // Artefact-only mode: open lightbox
-        var overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
-        var imgEl = document.createElement('img');
-        imgEl.src = previewUrl;
-        imgEl.style.cssText = 'max-width:90vw;max-height:90vh;border-radius:16px;border:1px solid rgba(94,232,160,0.3);';
-        imgEl.onerror = function() { overlay.innerHTML = '<div style="font-size:80px;color:rgba(94,232,160,0.3);">◈</div>'; };
-        overlay.appendChild(imgEl);
-        overlay.onclick = function() { overlay.remove(); };
-        document.body.appendChild(overlay);
-      } else {
-        // Both mode: navigate to artefacts tab
-        saveContext(key.tokenId, key.wallet);
-        window.location.href = baseUrl + '&tab=artefacts';
-      }
+      var overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+      var box = document.createElement('div');
+      box.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:12px;';
+      var label = document.createElement('div');
+      label.style.cssText = 'font-size:13px;color:var(--keys-accent);font-weight:600;';
+      label.textContent = 'Key #' + key.tokenId;
+      var imgEl = document.createElement('img');
+      imgEl.src = previewUrl;
+      imgEl.style.cssText = 'max-width:min(500px,90vw);max-height:80vh;border-radius:16px;border:1px solid rgba(94,232,160,0.3);';
+      imgEl.onerror = function() { box.innerHTML = '<div style="font-size:80px;color:rgba(94,232,160,0.3);">◈</div>'; };
+      var closeHint = document.createElement('div');
+      closeHint.style.cssText = 'font-size:11px;color:rgba(255,255,255,0.4);';
+      closeHint.textContent = 'Click anywhere to close';
+      box.appendChild(label);
+      box.appendChild(imgEl);
+      box.appendChild(closeHint);
+      overlay.appendChild(box);
+      overlay.onclick = function() { overlay.remove(); };
+      document.body.appendChild(overlay);
     };
     inner.appendChild(previewPanel);
     wrapper.appendChild(inner);
