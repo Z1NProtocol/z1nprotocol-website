@@ -525,13 +525,20 @@ window.openLightbox=function(){var img=document.getElementById('previewImg');if(
   var wpLower = wp ? wp.toLowerCase() : '';
   if(wpLower && window.phantom && window.phantom.ethereum){
     try{
+      // Probeer eerst silent
       var phantomAccs = await window.phantom.ethereum.request({method:'eth_accounts'});
+      // Geen actieve sessie — forceer verbinding
+      if(!phantomAccs || !phantomAccs.length){
+        phantomAccs = await window.phantom.ethereum.request({method:'eth_requestAccounts'});
+      }
       if(phantomAccs && phantomAccs.some(function(a){return a.toLowerCase()===wpLower;})){
         provider = window.phantom.ethereum;
         await connectWallet();
         return;
       }
-    }catch(e){}
+    }catch(e){
+      // Phantom geweigerd of niet beschikbaar — val terug op MM
+    }
   }
   var eth=getEth();
   if(eth){
