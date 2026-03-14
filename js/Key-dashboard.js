@@ -2088,6 +2088,15 @@ ActivityFeed.activities.forEach(function(a) {
     badgeTreasury.style.background = claimableCount > 0 ? 'rgba(147,197,253,0.3)' : '';
     badgeTreasury.style.color = claimableCount > 0 ? '#93c5fd' : '';
   }
+  var badgeFieldFlow = document.getElementById('badgeFieldFlow');
+  if (badgeFieldFlow) {
+    var claimableCount = claimableEpochsData ? claimableEpochsData.length : 0;
+    badgeFieldFlow.textContent = claimableCount;
+    badgeFieldFlow.style.background = claimableCount > 0 ? 'rgba(147,197,253,0.3)' : '';
+    badgeFieldFlow.style.color = claimableCount > 0 ? '#93c5fd' : '';
+    badgeFieldFlow.classList.toggle('has-items', claimableCount > 0);
+    badgeFieldFlow.classList.toggle('active', presenceFilter === 'treasury');
+  }
   
  // Filter unseen items — only RECEIVED unread
   var filtered = ActivityFeed.activities.filter(function(a) {
