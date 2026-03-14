@@ -2,290 +2,527 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Z1N Protocol – Mint Live Artefact</title>
-  <meta name="description" content="Mint a Live Artefact for your Z1N Key. A dynamic mirror of presence in the Field, bound to your Key and wallet." />
+  <title>Z1N Protocol – Mint Artefact</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,follow">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-
-  <!-- Key / wallet flows should not be indexed -->
-  <meta name="robots" content="noindex,follow" />
-
-  <!-- Canonical: keep it clean (no query params) -->
-  <link rel="canonical" href="https://www.z1nprotocol.xyz/mint-live-artefact.html" />
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Z1N Protocol" />
-  <meta property="og:title" content="Z1N Protocol – Mint Live Artefact" />
-  <meta property="og:description" content="Mint a Live Artefact — a dynamic mirror of your Key's presence in the Field." />
-  <meta property="og:url" content="https://www.z1nprotocol.xyz/mint-live-artefact.html" />
-  <meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg?v=2" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@Z1N_AI" />
-  <meta name="twitter:title" content="Z1N Protocol – Mint Live Artefact" />
-  <meta name="twitter:description" content="Mint a Live Artefact bound to your Z1N Key." />
-  <meta name="twitter:image" content="https://www.z1nprotocol.xyz/og-image.png" />
-
-  <!-- Structured data -->
-  <script type="application/ld+json">
-  [{
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": "https://www.z1nprotocol.xyz/mint-live-artefact.html#webpage",
-    "url": "https://www.z1nprotocol.xyz/mint-live-artefact.html",
-    "name": "Z1N Protocol – Mint Live Artefact",
-    "description": "Mint a Live Artefact for your Z1N Key. A dynamic mirror of presence in the Field, bound to your Key and wallet.",
-    "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
-    "inLanguage": "en"
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "@id": "https://www.z1nprotocol.xyz/#org",
-    "name": "Z1N Protocol",
-    "url": "https://www.z1nprotocol.xyz/",
-    "sameAs": [
-      "https://x.com/Z1N_AI",
-      "https://github.com/z1nprotocol",
-      "https://discord.gg/FBkCGfFEcV"
-    ]
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Z1N Protocol", "item": "https://www.z1nprotocol.xyz/" },
-      { "@type": "ListItem", "position": 2, "name": "Mint Live Artefact", "item": "https://www.z1nprotocol.xyz/mint-live-artefact.html" }
-    ]
-  }]
-  </script>
 
   <style>
     :root {
       --bg: #050812;
       --card-bg: #020617;
+      --card-bg2: #080f1e;
       --text-main: #ffffff;
       --text-soft: #8f9ab5;
       --accent: #5ee8a0;
       --accent-soft: #3ab876;
-      --card-border: rgba(148,163,184,0.25);
+      --card-border: rgba(148,163,184,0.18);
       --keys-accent: #ffd556;
-      --keys-accent-soft: #bf9f0f;
       --danger: #f87171;
+      --aether: #93c5fd;
+      --purple: #c084fc;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scrollbar-gutter: stable; overflow-y: scroll; scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--text-main); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    body { background: var(--bg); color: var(--text-main); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; min-height: 100vh; }
     a { color: inherit; text-decoration: none; }
-    a:hover { opacity: 0.9; }
 
-    header { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
-    .nav-inner { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    /* ── HEADER ── */
+    header { height: 64px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 24px; justify-content: space-between; position: sticky; top: 0; background: rgba(5,8,18,0.92); backdrop-filter: blur(12px); z-index: 100; }
     .logo-link { display: inline-flex; align-items: center; gap: 8px; }
-    .logo-dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; }
-    .logo-text{
-  font-size:11px;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  display:flex;
-  gap:6px;
-}
-
-.logo-main{
-  opacity:1;
-  font-weight:600;
-}
-
-.logo-sub{
-  opacity:0.6;
-  font-weight:400;
-}
-
-    .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
-    .hamburger{display:none;background:rgba(15,23,42,0.8);border:1px solid rgba(148,163,184,0.25);border-radius:8px;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
-    .hamburger span{display:block;width:20px;height:1.5px;background:var(--text-main);border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
-    .hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
-    .hamburger.open span:nth-child(2){opacity:0;}
-    .hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
-    @media(max-width:900px){
-      .hamburger{display:flex;}
-      .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:rgba(10,15,26,0.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,0.2);box-shadow:0 12px 32px rgba(0,0,0,0.6);flex-direction:column;padding:16px 24px 20px;gap:14px;font-size:14px;z-index:100;}
-      .nav-links.open{display:flex;}
-      .mint-btn{position:relative;top:auto;left:auto;transform:none;margin:16px auto 0;display:block;}
-      .mint-btn:hover:not(:disabled){transform:none;}
-      .mint-btn.minting,.mint-btn.success{transform:none;}
+    .logo-dot { width: 22px; height: 22px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 13px; }
+    .logo-text { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; display: flex; gap: 5px; }
+    .logo-main { font-weight: 600; }
+    .logo-sub { opacity: 0.5; }
+    .nav-links { display: flex; gap: 20px; font-size: 13px; opacity: 0.8; }
+    .nav-links a:hover { opacity: 1; color: var(--accent); }
+    .hamburger { display: none; background: transparent; border: 1px solid rgba(148,163,184,0.25); border-radius: 7px; padding: 7px; cursor: pointer; flex-direction: column; gap: 4px; }
+    .hamburger span { display: block; width: 18px; height: 1.5px; background: var(--text-main); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+    @media(max-width:800px){
+      .hamburger { display: flex; }
+      .nav-links { display: none; position: absolute; top: 64px; left: 0; right: 0; background: rgba(5,8,18,0.98); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.15); flex-direction: column; padding: 16px 24px 20px; gap: 14px; font-size: 14px; z-index: 200; }
+      .nav-links.open { display: flex; }
     }
-    .nav-links a.active-keys { color: var(--keys-accent); }
 
-    .page { max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px; }
-    .back-link { color: var(--text-soft); font-size: 13px; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 16px; }
+    /* ── PAGE ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+    @media(max-width:700px){ .page { padding: 28px 16px 60px; } }
+
+    .back-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-soft); margin-bottom: 24px; transition: color 0.2s; }
     .back-link:hover { color: var(--accent); }
 
-    h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 10px 0; color: var(--accent); }
-    .subtitle { font-size: 15px; line-height: 1.6; opacity: 0.85; max-width: 720px; margin-bottom: 32px; }
+    /* ── PAGE HEADER ── */
+    .page-header { margin-bottom: 40px; }
+    .page-eyebrow { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; font-weight: 600; }
+    .page-title { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 12px; }
+    .page-subtitle { font-size: 15px; line-height: 1.65; color: var(--text-soft); max-width: 640px; }
 
-    .mint-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: stretch; }
+    /* ── MAIN LAYOUT ── */
+    .mint-layout { display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: start; }
+    @media(max-width:900px){ .mint-layout { grid-template-columns: 1fr; } }
 
-    .mint-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; }
-    .key-header { margin-bottom: 20px; }
-    .key-id { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
-    .key-glyphs { font-size: 18px; color: #aaa; letter-spacing: 2px; }
-    .key-info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
+    /* ── LEFT: MINT CARD ── */
+    .mint-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      position: sticky;
+      top: 84px;
+    }
+    @media(max-width:900px){ .mint-card { position: static; } }
+
+    .mint-card-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 16px; font-weight: 600; }
+
+    /* artefact preview */
+    .artefact-preview-wrap {
+      width: 100%;
+      aspect-ratio: 500/760;
+      background: linear-gradient(135deg, #0a0f1a 0%, #111827 50%, #0f172a 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(94,232,160,0.2);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 16px;
+      cursor: zoom-in;
+    }
+    .artefact-preview-wrap img {
+      width: 100%; height: 100%; object-fit: contain;
+      display: none;
+    }
+    .artefact-preview-wrap img.loaded { display: block; }
+    .artefact-preview-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px;
+    }
+    .preview-glyph { font-size: 56px; color: rgba(94,232,160,0.15); line-height: 1; }
+    .preview-hint { font-size: 10px; color: var(--text-soft); opacity: 0.5; }
+    .preview-spinner {
+      width: 28px; height: 28px;
+      border: 2px solid rgba(94,232,160,0.15);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      display: none;
+    }
+    .preview-spinner.active { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* key info rows */
+    .key-info { margin-bottom: 16px; }
+    .key-info-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
     .key-info-row:last-child { border-bottom: none; }
     .key-info-label { color: var(--text-soft); }
-    .key-info-value { color: var(--text-main); font-weight: 500; }
+    .key-info-value { color: var(--text-main); font-weight: 500; font-family: "SF Mono", Menlo, Monaco, Consolas, monospace; font-size: 12px; }
+    .key-info-value.accent { color: var(--accent); font-family: inherit; font-size: 13px; }
 
-    .info-notice { display: flex; align-items: flex-start; gap: 10px; background: rgba(94, 232, 160, 0.08); border: 1px solid rgba(94, 232, 160, 0.25); border-radius: 12px; padding: 14px; margin-top: auto; font-size: 13px; color: var(--text-soft); line-height: 1.5; }
-    .info-notice::before { content: "◈"; color: var(--accent); font-size: 14px; }
-    .info-notice.paid { background: rgba(255, 213, 86, 0.08); border-color: rgba(255, 213, 86, 0.25); }
-    .info-notice.paid::before { content: "◇"; color: var(--keys-accent); }
+    /* inscription input */
+    .insc-row { margin-bottom: 14px; }
+    .insc-label { font-size: 12px; color: var(--text-soft); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .insc-count { font-size: 10px; color: var(--text-soft); opacity: 0.7; }
+    .insc-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text-main);
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .insc-input:focus { outline: none; border-color: rgba(94,232,160,0.5); }
+    .insc-input::placeholder { color: var(--text-soft); opacity: 0.6; }
 
-    .preview-section { position: relative; display: flex; flex-direction: column; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; }
-    .preview-title { text-align: center; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 12px; }
-    .preview-container { position: relative; width: 100%; flex: 1; display: flex; align-items: center; justify-content: center; }
-    .preview-container img { width: 100%; max-width: 420px; height: auto; border-radius: 32px; display: block; transition: opacity 0.2s ease; }
-    .preview-container img.loading { opacity: 0.5; }
-
-    .preview-loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
-    .preview-loading.active { opacity: 1; }
-    .preview-loading-spinner { width: 56px; height: 56px; border: 3px solid rgba(94, 232, 160, 0.2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .preview-loading-text { font-size: 15px; color: var(--text-soft); }
-
-    /* MINT BUTTON - GREEN themed */
+    /* mint button */
     .mint-btn {
-      position: absolute;
-      top: 48%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(94, 232, 160, 0.25);
-      border: 2px solid rgba(94, 232, 160, 0.6);
+      width: 100%;
+      padding: 14px 20px;
+      background: rgba(94,232,160,0.15);
+      border: 1px solid rgba(94,232,160,0.5);
+      border-radius: 10px;
       color: var(--accent);
-      padding: 18px 40px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 700;
-      border-radius: 999px;
       cursor: pointer;
-      transition: all 0.25s ease;
-      z-index: 10;
-      white-space: nowrap;
-      backdrop-filter: blur(4px);
+      transition: all 0.2s;
+      margin-bottom: 10px;
     }
     .mint-btn:hover:not(:disabled) {
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      background: var(--accent);
       border-color: var(--accent);
       color: #000;
-      transform: translate(-50%, -50%) scale(1.02);
-      box-shadow: 0 8px 32px rgba(94, 232, 160, 0.4);
+      box-shadow: 0 4px 20px rgba(94,232,160,0.3);
     }
-    .mint-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .mint-btn.minting { background: rgba(143, 154, 181, 0.3); border-color: rgba(143, 154, 181, 0.5); color: var(--text-soft); transform: translate(-50%, -50%); }
-    .mint-btn.success { background: linear-gradient(90deg, var(--accent), var(--accent-soft)); border-color: var(--accent); color: #000; transform: translate(-50%, -50%); }
+    .mint-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .mint-btn.free { background: rgba(94,232,160,0.2); }
 
-    .status-area { margin-top: 16px; text-align: center; min-height: 40px; }
-    .status-msg { padding: 10px 16px; border-radius: 8px; font-size: 13px; display: inline-block; max-width: 100%; text-align: left; }
-    .status-msg.success { background: rgba(94, 232, 160, 0.15); color: var(--accent); }
-    .status-msg.error { background: rgba(248, 113, 113, 0.15); color: #f87171; }
-    .status-msg.pending { background: rgba(255, 213, 86, 0.15); color: var(--keys-accent); }
+    .connect-hint { font-size: 11px; color: var(--text-soft); text-align: center; opacity: 0.7; }
 
-    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px)); font-size: 12px; text-align: center; opacity: 0.85; margin-top: 40px; }
-    footer .tagline { margin-bottom: 6px; font-size: 13px; }
-    footer .links { display: flex; justify-content: center; gap: 18px; font-size: 13px; }
+    .status-msg { padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-top: 10px; line-height: 1.5; }
+    .status-msg.success { background: rgba(94,232,160,0.12); color: var(--accent); border: 1px solid rgba(94,232,160,0.25); }
+    .status-msg.error { background: rgba(248,113,113,0.12); color: var(--danger); border: 1px solid rgba(248,113,113,0.25); }
+    .status-msg.pending { background: rgba(255,213,86,0.12); color: var(--keys-accent); border: 1px solid rgba(255,213,86,0.25); }
 
-    .toast { position: fixed; top: 20px; right: 20px; padding: 14px 20px; background: rgba(94, 232, 160, 0.95); color: #000; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 10000; opacity: 0; transform: translateY(-20px); transition: all 0.3s ease; pointer-events: none; }
+    .notice-box { display: flex; gap: 10px; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.55; margin-top: 14px; }
+    .notice-box.free { background: rgba(94,232,160,0.06); border: 1px solid rgba(94,232,160,0.2); color: var(--text-soft); }
+    .notice-box.paid { background: rgba(255,213,86,0.06); border: 1px solid rgba(255,213,86,0.2); color: var(--text-soft); }
+    .notice-icon { flex-shrink: 0; font-size: 16px; line-height: 1; }
+
+    /* ── RIGHT: EXPLAINER ── */
+    .explainer { display: flex; flex-direction: column; gap: 20px; }
+
+    /* state flow card */
+    .flow-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .flow-card-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 20px; font-weight: 600; }
+
+    /* state nodes */
+    .state-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+    .state-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .state-dot {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      border: 2px solid transparent;
+      transition: all 0.25s;
+      position: relative;
+    }
+    .state-node:hover .state-dot,
+    .state-node.active .state-dot { transform: scale(1.1); }
+
+    .state-dot.unshared { background: rgba(148,163,184,0.1); border-color: rgba(148,163,184,0.3); }
+    .state-dot.pending { background: rgba(255,213,86,0.12); border-color: rgba(255,213,86,0.4); }
+    .state-dot.active { background: rgba(94,232,160,0.12); border-color: rgba(94,232,160,0.5); box-shadow: 0 0 12px rgba(94,232,160,0.2); }
+    .state-dot.released { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); }
+
+    .state-node.active .state-dot.unshared { border-color: rgba(148,163,184,0.7); background: rgba(148,163,184,0.15); }
+    .state-node.active .state-dot.pending { border-color: rgba(255,213,86,0.8); background: rgba(255,213,86,0.18); }
+    .state-node.active .state-dot.active-state { border-color: var(--accent); background: rgba(94,232,160,0.18); }
+    .state-node.active .state-dot.released { border-color: rgba(248,113,113,0.7); background: rgba(248,113,113,0.15); }
+
+    .state-label { font-size: 10px; color: var(--text-soft); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .state-num { font-size: 9px; color: var(--text-soft); opacity: 0.5; }
+
+    .state-arrow {
+      display: flex; align-items: center; gap: 0; flex-shrink: 0;
+      margin: 0 4px;
+    }
+    .arrow-line { height: 2px; width: 28px; background: rgba(148,163,184,0.2); position: relative; }
+    .arrow-head { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid rgba(148,163,184,0.3); }
+
+    /* state detail panel */
+    .state-detail {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 20px;
+      min-height: 160px;
+      transition: opacity 0.2s;
+    }
+    .state-detail-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .state-detail-sub { font-size: 12px; color: var(--text-soft); margin-bottom: 14px; line-height: 1.5; }
+
+    .pov-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media(max-width:600px){ .pov-grid { grid-template-columns: 1fr; } }
+
+    .pov-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .pov-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .pov-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .pov-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-soft); line-height: 1.5; margin-bottom: 6px; }
+    .pov-item:last-child { margin-bottom: 0; }
+    .pov-icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+    .pov-action {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px;
+      margin-top: 8px; cursor: default;
+    }
+    .pov-action.green { background: rgba(94,232,160,0.15); color: var(--accent); border: 1px solid rgba(94,232,160,0.3); }
+    .pov-action.yellow { background: rgba(255,213,86,0.15); color: var(--keys-accent); border: 1px solid rgba(255,213,86,0.3); }
+    .pov-action.red { background: rgba(248,113,113,0.12); color: var(--danger); border: 1px solid rgba(248,113,113,0.25); }
+    .pov-action.gray { background: rgba(148,163,184,0.1); color: var(--text-soft); border: 1px solid rgba(148,163,184,0.2); }
+
+    /* ── FACTS CARD ── */
+    .facts-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .facts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media(max-width:600px){ .facts-grid { grid-template-columns: 1fr; } }
+    .fact-item { display: flex; gap: 10px; align-items: flex-start; }
+    .fact-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; line-height: 1; }
+    .fact-text { font-size: 12px; line-height: 1.6; color: var(--text-soft); }
+    .fact-text strong { color: var(--text-main); font-weight: 600; display: block; margin-bottom: 2px; font-size: 13px; }
+
+    /* ── NBI CODE CARD ── */
+    .code-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .ops-code {
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.15);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      overflow-x: auto;
+    }
+    .ops-code .c-green { color: var(--accent); }
+    .ops-code .c-yellow { color: var(--keys-accent); }
+    .ops-code .c-red { color: var(--danger); }
+    .ops-code .c-blue { color: var(--aether); }
+    .ops-code .c-dim { opacity: 0.4; }
+    .ops-code .c-white { color: var(--text-main); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; top: 20px; right: 20px;
+      padding: 12px 18px; background: rgba(94,232,160,0.95); color: #000;
+      border-radius: 10px; font-size: 13px; font-weight: 600;
+      z-index: 9999; opacity: 0; transform: translateY(-16px);
+      transition: all 0.3s; pointer-events: none;
+    }
     .toast.show { opacity: 1; transform: translateY(0); }
 
-    @media (max-width: 900px) {
-      .mint-layout { grid-template-columns: 1fr; }
-      .preview-section { order: -1; }
+    /* lightbox */
+    .lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92); z-index: 9998;
+      align-items: center; justify-content: center; cursor: zoom-out;
     }
+    .lightbox.active { display: flex; }
+    .lightbox img { max-width: min(500px,88vw); max-height: 88vh; border-radius: 16px; border: 1px solid rgba(94,232,160,0.25); }
+
+    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 24px; font-size: 12px; text-align: center; opacity: 0.7; margin-top: 40px; }
+    footer .links { display: flex; justify-content: center; gap: 18px; margin-top: 6px; }
   </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
-
-<header>
-  <div class="nav-inner">
-    <a href="index.html" class="logo-link">
-      <div class="logo-dot">Ω</div>
-      <div class="logo-text">
-  <span class="logo-main">Z1N</span>
-  <span class="logo-sub">PROTOCOL</span>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
+  <img id="lightboxImg" src="" alt="Artefact">
 </div>
 
-    </a>
-    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
-    <nav class="nav-links" id="navLinks">
-      <a href="about.html">About</a>
-      <a href="how-it-works.html">How it Works</a>
-      <a href="live-stats.html">Live Stats</a>
-      <a href="artefacts.html">Artefacts</a>
-      <a href="nbi-artefacts.html">4 NBIs</a>
-      <a href="mint-key.html">Mint Key</a>
-      <a href="your-keys.html" class="active-keys">Your Keys</a>
-    </nav>
-  </div>
+<header>
+  <a href="index.html" class="logo-link">
+    <div class="logo-dot">Ω</div>
+    <div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div>
+  </a>
+  <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  <nav class="nav-links" id="navLinks">
+    <a href="about.html">About</a>
+    <a href="how-it-works.html">How it Works</a>
+    <a href="live-stats.html">Live Stats</a>
+    <a href="artefacts.html">Artefacts</a>
+    <a href="your-keys.html">Your Keys</a>
+  </nav>
 </header>
 
 <main class="page">
-  <a href="#" class="back-link" id="backLink">← Back to Artefacts</a>
+  <a href="#" class="back-link" id="backLink">← Back to Key</a>
 
-  <h1>Mint Live Artefact</h1>
-  <p class="subtitle">A Live Artefact is a dynamic mirror of your Key's presence in the Field — always reflecting your current state.</p>
+  <div class="page-header">
+    <div class="page-eyebrow">◈ Artefact</div>
+    <h1 class="page-title">Mint an Artefact</h1>
+    <p class="page-subtitle">A living mirror of your Key's presence in the Field. Mint once free. Offer it. The recipient decides. Either side can release — permanently.</p>
+  </div>
 
   <div class="mint-layout">
+
+    <!-- LEFT: MINT CARD -->
     <div class="mint-card">
-      <div class="key-header">
-        <div class="key-id" id="keyTitle">Key #—</div>
-        <div class="key-glyphs" id="keyGlyphs">Loading...</div>
-      </div>
+      <div class="mint-card-title">Your Key</div>
 
-      <div class="key-info-row">
-        <span class="key-info-label">Wallet</span>
-        <span class="key-info-value" id="walletDisplay">—</span>
-      </div>
-      <div class="key-info-row">
-        <span class="key-info-label">Has Live Artefact</span>
-        <span class="key-info-value" id="hasArtefactDisplay">—</span>
-      </div>
-      <div class="key-info-row">
-        <span class="key-info-label">Price</span>
-        <span class="key-info-value" id="priceDisplay">—</span>
-      </div>
-
-      <div class="info-notice" id="infoFree">
-        Your first Live Artefact is free — a gift for joining the Field.
-      </div>
-      <div class="info-notice paid" id="infoPaid" style="display:none;">
-        Extra Artefacts cost 7 POL each.
-      </div>
-    </div>
-
-    <div class="preview-section">
-      <div class="preview-title">Live Artefact Preview</div>
-      <div class="preview-container">
+      <div class="artefact-preview-wrap" onclick="openLightbox()" id="previewWrap">
         <img id="previewImg" src="" alt="Artefact Preview">
-        
-        <div class="preview-loading" id="previewLoading">
-          <div class="preview-loading-spinner"></div>
-          <div class="preview-loading-text">Loading preview...</div>
+        <div class="artefact-preview-placeholder" id="previewPlaceholder">
+          <div class="preview-spinner" id="previewSpinner"></div>
+          <div class="preview-glyph" id="previewGlyph">◈</div>
+          <div class="preview-hint" id="previewHint">Connect wallet to preview</div>
         </div>
-        
-        <button class="mint-btn" id="mintBtn">Mint Live Artefact — FREE</button>
       </div>
-      <div class="status-area" id="statusArea"></div>
+
+      <div class="key-info" id="keyInfoBlock">
+        <div class="key-info-row">
+          <span class="key-info-label">Key</span>
+          <span class="key-info-value accent" id="keyDisplay">—</span>
+        </div>
+        <div class="key-info-row">
+          <span class="key-info-label">Wallet</span>
+          <span class="key-info-value" id="walletDisplay">—</span>
+        </div>
+        <div class="key-info-row">
+          <span class="key-info-label">Artefacts</span>
+          <span class="key-info-value" id="artefactCountDisplay">—</span>
+        </div>
+        <div class="key-info-row">
+          <span class="key-info-label">Price</span>
+          <span class="key-info-value accent" id="priceDisplay">FREE</span>
+        </div>
+      </div>
+
+      <div class="insc-row">
+        <div class="insc-label">
+          <span>Inscription <span style="opacity:0.5;font-size:11px;">(optional)</span></span>
+          <span class="insc-count" id="inscCount">0 / 64</span>
+        </div>
+        <input type="text" class="insc-input" id="inscInput" maxlength="64" placeholder="Your statement — permanent, on-chain">
+      </div>
+
+      <button class="mint-btn free" id="mintBtn" onclick="handleMint()">Mint Artefact — FREE</button>
+      <div class="connect-hint" id="connectHint">Connect wallet to mint</div>
+      <div id="mintStatus"></div>
+
+      <div class="notice-box free" id="noticeFree">
+        <span class="notice-icon">◈</span>
+        <span>Your first artefact is free — a gesture of Field entry. Additional artefacts cost 7 POL each.</span>
+      </div>
+      <div class="notice-box paid" id="noticePaid" style="display:none;">
+        <span class="notice-icon">◇</span>
+        <span>You already have artefacts. Extra artefacts cost <strong style="color:var(--keys-accent);">7 POL</strong> each. The inscription is set at mint — permanent and write-once.</span>
+      </div>
     </div>
-  </div>
+
+    <!-- RIGHT: EXPLAINER -->
+    <div class="explainer">
+
+      <!-- STATE FLOW -->
+      <div class="flow-card">
+        <div class="flow-card-title">The 4-State Lifecycle</div>
+
+        <div class="state-flow">
+          <div class="state-node active" data-state="0" onclick="selectState(0)">
+            <div class="state-dot unshared">◈</div>
+            <div class="state-label">Unshared</div>
+            <div class="state-num">State 0</div>
+          </div>
+          <div class="state-arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+          <div class="state-node" data-state="1" onclick="selectState(1)">
+            <div class="state-dot pending">⟡</div>
+            <div class="state-label">Pending</div>
+            <div class="state-num">State 1</div>
+          </div>
+          <div class="state-arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+          <div class="state-node" data-state="2" onclick="selectState(2)">
+            <div class="state-dot active">◈</div>
+            <div class="state-label">Active</div>
+            <div class="state-num">State 2</div>
+          </div>
+          <div class="state-arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+          <div class="state-node" data-state="3" onclick="selectState(3)">
+            <div class="state-dot released">◇</div>
+            <div class="state-label">Released</div>
+            <div class="state-num">State 3</div>
+          </div>
+        </div>
+
+        <div class="state-detail" id="stateDetail">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <!-- FACTS -->
+      <div class="facts-card">
+        <div class="flow-card-title">Properties</div>
+        <div class="facts-grid">
+          <div class="fact-item">
+            <div class="fact-icon">🔒</div>
+            <div class="fact-text"><strong>Soulbound</strong>No transfer, no burn. The artefact stays on-chain forever, tied to its source Key.</div>
+          </div>
+          <div class="fact-item">
+            <div class="fact-icon">✍️</div>
+            <div class="fact-text"><strong>Inscription</strong>Set once at mint, max 64 bytes. Preserved permanently regardless of offering or release.</div>
+          </div>
+          <div class="fact-item">
+            <div class="fact-icon">⚖️</div>
+            <div class="fact-text"><strong>Equal release rights</strong>Both maker and recipient can release the bond at any time with an optional message.</div>
+          </div>
+          <div class="fact-item">
+            <div class="fact-icon">♻️</div>
+            <div class="fact-text"><strong>Reusable after reject</strong>If a recipient rejects, the artefact returns to UNSHARED and can be offered again. Reject count is recorded.</div>
+          </div>
+          <div class="fact-item">
+            <div class="fact-icon">📨</div>
+            <div class="fact-text"><strong>Offer message</strong>Include an optional message (max 64 chars) with your offer. Lives in the event log only — not stored on-chain.</div>
+          </div>
+          <div class="fact-item">
+            <div class="fact-icon">🏁</div>
+            <div class="fact-text"><strong>RELEASED is terminal</strong>Once released, no further transitions are possible. The bond is permanently dissolved, but the artefact remains.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NBI CODE -->
+      <div class="code-card">
+        <div class="flow-card-title">On-Chain Interface</div>
+        <div class="ops-code">
+<span class="c-dim">// Mint</span>
+<span class="c-green">mint</span>(<span class="c-blue">keyId</span>, <span class="c-blue">inscription</span>) <span class="c-dim">→ free · state 0 (UNSHARED)</span>
+<span class="c-green">mintExtra</span>(<span class="c-blue">keyId</span>, <span class="c-blue">inscription</span>) payable <span class="c-dim">→ 7 POL</span>
+
+<span class="c-dim">// Offer flow</span>
+<span class="c-yellow">offer</span>(<span class="c-blue">artefactId</span>, <span class="c-blue">recipientKeyId</span>, <span class="c-blue">message</span>) <span class="c-dim">→ state 1 (PENDING)</span>
+<span class="c-yellow">cancel</span>(<span class="c-blue">artefactId</span>) <span class="c-dim">→ state 0 · caller: sourceKey owner</span>
+<span class="c-green">accept</span>(<span class="c-blue">artefactId</span>) <span class="c-dim">→ state 2 (ACTIVE) · caller: recipientKey owner</span>
+<span class="c-red">reject</span>(<span class="c-blue">artefactId</span>) <span class="c-dim">→ state 0 · rejectCount++</span>
+
+<span class="c-dim">// Release (either side)</span>
+<span class="c-red">release</span>(<span class="c-blue">artefactId</span>, <span class="c-blue">message</span>) <span class="c-dim">→ state 3 (RELEASED) · terminal</span>
+
+<span class="c-dim">// Storage</span>
+<span class="c-white">sourceKeyOf</span>[id]     <span class="c-dim">uint256  // maker — permanent</span>
+<span class="c-white">inscriptionOf</span>[id]   <span class="c-dim">string   // write-once, max 64 bytes</span>
+<span class="c-white">stateOf</span>[id]          <span class="c-dim">enum     // 0 UNSHARED · 1 PENDING · 2 ACTIVE · 3 RELEASED</span>
+<span class="c-white">boundToKeyId</span>[id]     <span class="c-dim">uint256  // set on accept</span>
+<span class="c-white">rejectCount</span>[id]      <span class="c-dim">uint16   // statistical</span>
+        </div>
+      </div>
+
+    </div><!-- /explainer -->
+  </div><!-- /mint-layout -->
 </main>
 
 <footer>
-  <div class="tagline">Your presence is real · The Field remembers</div>
+  <div>Your presence is real · The Field remembers</div>
   <div class="links">
     <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
     <a href="https://x.com/Z1N_AI" target="_blank" rel="noreferrer">X</a>
@@ -298,387 +535,381 @@
 (function() {
   'use strict';
 
-  var API = 'https://z1n-backend-production.up.railway.app/api';
-  var CHAIN_ID = '0x89';
+  var API     = 'https://z1n-backend-production.up.railway.app/api';
+  var CHAIN   = '0x89';
   var Z1N_KEY = '0x51A708cC79591cdE831B64773150cFaA41be3059';
-  var Z1N_ARTEFACT = '0x8f9C9760D530aA58A9cf13406888958c6856f326';
-  
-  var MINT_PRICE = '0x6124FEE993BC0000';
-  var MINT_PRICE_DISPLAY = '7 POL';
+  var Z1N_ART = '0x8f9C9760D530aA58A9cf13406888958c6856f326';
+  var PRICE   = '0x6124FEE993BC0000'; // 7 POL
 
-  var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
-  var currentRpcIndex = 0;
+  var provider = null, account = null, keyId = null, hasFirst = false, epoch = 0;
 
-  var provider = null;
-  var account = null;
-  var keyId = null;
-  var walletParam = '';
-  var hasFirstArtefact = false;
-  var currentEpoch = 0;
-  var keyOwner = '';
-
-  var keyTitle = document.getElementById('keyTitle');
-  var keyGlyphs = document.getElementById('keyGlyphs');
-  var walletDisplay = document.getElementById('walletDisplay');
-  var hasArtefactDisplay = document.getElementById('hasArtefactDisplay');
-  var priceDisplay = document.getElementById('priceDisplay');
-  var infoFree = document.getElementById('infoFree');
-  var infoPaid = document.getElementById('infoPaid');
-  var mintBtn = document.getElementById('mintBtn');
-  var statusArea = document.getElementById('statusArea');
-  var toast = document.getElementById('toast');
-  var previewImg = document.getElementById('previewImg');
-  var previewLoading = document.getElementById('previewLoading');
-  var backLink = document.getElementById('backLink');
-
-  function getParam(name) { 
-    var url = new URL(window.location.href);
-    var val = url.searchParams.get(name);
-    if (val) return val;
-    var hash = window.location.hash.substring(1);
-    if (hash) {
-      var hashParams = new URLSearchParams(hash);
-      val = hashParams.get(name);
-      if (val) return val;
+  // ── STATE DATA ──
+  var STATES = [
+    {
+      label: 'UNSHARED',
+      color: 'var(--text-soft)',
+      desc: 'The artefact exists on-chain but is not yet offered to anyone. You can offer it at any time.',
+      maker: {
+        label: 'Maker',
+        color: '#93c5fd',
+        items: ['You own this artefact', 'Choose a Key to offer it to', 'Include an optional message (max 64 chars)', 'You can offer and re-offer after rejection'],
+        actions: [{ label: 'offer(artefactId, recipientKeyId, message)', style: 'yellow' }]
+      },
+      receiver: {
+        label: 'No recipient yet',
+        color: 'var(--text-soft)',
+        items: ['No one has received this artefact yet', 'The artefact is in your personal possession'],
+        actions: []
+      }
+    },
+    {
+      label: 'PENDING',
+      color: '#ffd556',
+      desc: 'You have offered the artefact. The recipient must accept or reject. You can cancel the offer at any time.',
+      maker: {
+        label: 'Maker sees',
+        color: '#93c5fd',
+        items: ['Offer is live — waiting for response', 'Cannot offer to a different Key while pending', 'Can cancel to reclaim at any time'],
+        actions: [{ label: 'cancel(artefactId)', style: 'gray' }]
+      },
+      receiver: {
+        label: 'Recipient sees',
+        color: '#5ee8a0',
+        items: ['Incoming offering notification', 'Preview of the artefact (blurred)', 'Offer message if included', 'Must choose: Accept or Reject'],
+        actions: [
+          { label: 'accept(artefactId)', style: 'green' },
+          { label: 'reject(artefactId)', style: 'red' }
+        ]
+      }
+    },
+    {
+      label: 'ACTIVE',
+      color: '#5ee8a0',
+      desc: 'The artefact is bounded — accepted and active between maker and recipient. Either side can release permanently.',
+      maker: {
+        label: 'Maker sees',
+        color: '#93c5fd',
+        items: ['Artefact is bounded to recipient Key', 'Both sides can view the full artefact', 'Can release permanently with optional message'],
+        actions: [{ label: 'release(artefactId, message)', style: 'red' }]
+      },
+      receiver: {
+        label: 'Recipient sees',
+        color: '#5ee8a0',
+        items: ['Full artefact preview visible', 'Bond confirmed — bounded status', 'Can also release permanently at any time'],
+        actions: [{ label: 'release(artefactId, message)', style: 'red' }]
+      }
+    },
+    {
+      label: 'RELEASED',
+      color: '#f87171',
+      desc: 'The bond is permanently dissolved. RELEASED is terminal — no further transitions. The artefact remains on-chain forever.',
+      maker: {
+        label: 'Maker sees',
+        color: '#93c5fd',
+        items: ['Artefact shows as Released', 'Release message (if any) stored in event log', 'Artefact remains on-chain — cannot be deleted'],
+        actions: [{ label: 'No further actions', style: 'gray' }]
+      },
+      receiver: {
+        label: 'Recipient sees',
+        color: '#5ee8a0',
+        items: ['Artefact shows as Released in library', 'Release message visible', 'Bond permanently dissolved'],
+        actions: [{ label: 'No further actions', style: 'gray' }]
+      }
     }
-    return null;
+  ];
+
+  var activeState = 0;
+
+  window.selectState = function(idx) {
+    activeState = idx;
+    document.querySelectorAll('.state-node').forEach(function(n) {
+      n.classList.toggle('active', parseInt(n.dataset.state) === idx);
+    });
+    renderStateDetail();
+  };
+
+  function renderStateDetail() {
+    var s = STATES[activeState];
+    var html = '<div class="state-detail-title" style="color:' + s.color + ';">◈ ' + s.label + '</div>' +
+      '<div class="state-detail-sub">' + s.desc + '</div>' +
+      '<div class="pov-grid">' + renderPov(s.maker, 'blue') + renderPov(s.receiver, 'green') + '</div>';
+    document.getElementById('stateDetail').innerHTML = html;
   }
-  
-  function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '—'; }
-  function enc256(v) { return BigInt(v).toString(16).padStart(64, '0'); }
 
-  function showToast(message, duration) {
-    if (!toast) return;
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(function() { toast.classList.remove('show'); }, duration || 3000);
+  function renderPov(pov, colorKey) {
+    var dotColor = colorKey === 'blue' ? '#93c5fd' : '#5ee8a0';
+    var html = '<div class="pov-card">' +
+      '<div class="pov-label"><div class="pov-dot" style="background:' + dotColor + ';"></div>' + pov.label + '</div>';
+    pov.items.forEach(function(item) {
+      html += '<div class="pov-item"><span class="pov-icon">·</span><span>' + item + '</span></div>';
+    });
+    pov.actions.forEach(function(a) {
+      html += '<div><span class="pov-action ' + a.style + '">' + a.label + '</span></div>';
+    });
+    html += '</div>';
+    return html;
   }
 
-  function showLoading() { previewLoading.classList.add('active'); previewImg.classList.add('loading'); }
-  function hideLoading() { previewLoading.classList.remove('active'); previewImg.classList.remove('loading'); }
+  renderStateDetail();
 
+  // ── INSCRIPTION COUNTER ──
+  var inscInput = document.getElementById('inscInput');
+  var inscCount = document.getElementById('inscCount');
+  inscInput.addEventListener('input', function() {
+    var len = this.value.length;
+    inscCount.textContent = len + ' / 64';
+    inscCount.style.color = len > 56 ? 'var(--danger)' : 'var(--text-soft)';
+  });
+
+  // ── PARAMS ──
+  function getParam(name) {
+    var u = new URL(window.location.href);
+    return u.searchParams.get(name) || null;
+  }
+
+  var keyParam = getParam('key');
+  keyId = keyParam !== null ? parseInt(keyParam) : null;
+  var walletParam = getParam('wallet') || '';
+
+  var backLink = document.getElementById('backLink');
+  backLink.href = keyId !== null ? 'key-dashboard.html?key=' + keyId : 'your-keys.html';
+
+  if (keyId !== null) {
+    document.getElementById('keyDisplay').textContent = 'Key #' + keyId;
+    document.getElementById('walletDisplay').textContent = walletParam ? walletParam.slice(0,6) + '...' + walletParam.slice(-4) : '—';
+    loadPreview();
+    loadKeyData();
+  }
+
+  function loadPreview() {
+    var spinner = document.getElementById('previewSpinner');
+    var glyph = document.getElementById('previewGlyph');
+    var hint = document.getElementById('previewHint');
+    spinner.classList.add('active');
+    glyph.style.display = 'none';
+    hint.style.display = 'none';
+
+    fetch(API + '/live').then(function(r) { return r.json(); }).then(function(d) {
+      epoch = d.currentEpoch || 0;
+      var img = document.getElementById('previewImg');
+      var src = API + '/artefact/' + keyId + '/static-preview?epoch=' + epoch + '&t=' + Date.now();
+      img.onload = function() {
+        img.classList.add('loaded');
+        spinner.classList.remove('active');
+        document.getElementById('previewPlaceholder').style.display = 'none';
+      };
+      img.onerror = function() {
+        spinner.classList.remove('active');
+        glyph.style.display = 'block';
+        hint.textContent = 'Preview unavailable';
+        hint.style.display = 'block';
+      };
+      img.src = src;
+    }).catch(function() {
+      spinner.classList.remove('active');
+      glyph.style.display = 'block';
+      hint.textContent = 'Preview unavailable';
+      hint.style.display = 'block';
+    });
+  }
+
+  function loadKeyData() {
+    fetch(API + '/key/' + keyId + '/artefacts').then(function(r) { return r.json(); }).then(function(d) {
+      var count = (d.liveArtefacts || []).length;
+      hasFirst = count > 0;
+      document.getElementById('artefactCountDisplay').textContent = count + ' artefact' + (count !== 1 ? 's' : '');
+      updatePriceUI();
+    }).catch(function() {});
+  }
+
+  function updatePriceUI() {
+    var btn = document.getElementById('mintBtn');
+    var noticeFree = document.getElementById('noticeFree');
+    var noticePaid = document.getElementById('noticePaid');
+    var priceEl = document.getElementById('priceDisplay');
+    if (hasFirst) {
+      btn.textContent = 'Mint Extra Artefact — 7 POL';
+      btn.classList.remove('free');
+      noticeFree.style.display = 'none';
+      noticePaid.style.display = 'flex';
+      priceEl.textContent = '7 POL';
+    } else {
+      btn.textContent = 'Mint Artefact — FREE';
+      btn.classList.add('free');
+      noticeFree.style.display = 'flex';
+      noticePaid.style.display = 'none';
+      priceEl.textContent = 'FREE';
+    }
+  }
+
+  // ── WALLET ──
   function getProvider() {
     var eth = window.ethereum;
-    if (!eth) {
-      if (window.phantom && window.phantom.ethereum) return window.phantom.ethereum;
-      return null;
-    }
+    if (!eth) return null;
     if (eth.providers && eth.providers.length) {
-      var mm = eth.providers.find(function(p) { return p.isMetaMask && !p.isBraveWallet; });
-      if (mm) return mm;
-      return eth.providers[0];
+      return eth.providers.find(function(p) { return p.isMetaMask && !p.isBraveWallet; }) || eth.providers[0];
     }
     return eth;
   }
 
-  async function rpc(method, params, retryCount) {
-    retryCount = retryCount || 0;
-    var maxRetries = RPC_URLS.length * 2;
-    
-    try {
-      var rpcUrl = RPC_URLS[currentRpcIndex];
-      var response = await fetch(rpcUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: Date.now(), method: method, params: params })
-      });
-      var data = await response.json();
-      
-      if (data.error) {
-        if (data.error.message && (data.error.message.includes('rate') || data.error.message.includes('Too Many'))) {
-          currentRpcIndex = (currentRpcIndex + 1) % RPC_URLS.length;
-          if (retryCount < maxRetries) {
-            await new Promise(function(r) { setTimeout(r, 300); });
-            return rpc(method, params, retryCount + 1);
-          }
-        }
-        throw new Error(data.error.message);
-      }
-      return data.result;
-    } catch (err) {
-      currentRpcIndex = (currentRpcIndex + 1) % RPC_URLS.length;
-      if (retryCount < maxRetries) {
-        await new Promise(function(r) { setTimeout(r, 300); });
-        return rpc(method, params, retryCount + 1);
-      }
-      throw err;
-    }
-  }
-
-  // Init
-  var keyParam = getParam('key');
-  keyId = keyParam !== null ? parseInt(keyParam) : NaN;
-  
-  if (isNaN(keyId)) {
-    try {
-      var ctx = JSON.parse(localStorage.getItem('z1n_signal_context') || '{}');
-      keyId = typeof ctx.keyId === 'number' ? ctx.keyId : 0;
-    } catch (e) { keyId = 0; }
-  }
-
-  walletParam = getParam('wallet') || '';
-  if (!walletParam) {
-    try {
-      var ctx = JSON.parse(localStorage.getItem('z1n_signal_context') || '{}');
-      walletParam = ctx.wallet || '';
-    } catch (e) {}
-  }
-
-  var walletQuery = walletParam ? '&wallet=' + encodeURIComponent(walletParam) : '';
-  backLink.href = 'key-artefacts.html?key=' + keyId + walletQuery;
-
-  keyTitle.textContent = 'Key #' + keyId;
-  walletDisplay.textContent = shortAddr(walletParam);
-  keyOwner = walletParam.toLowerCase();
-  showLoading();
-
-  fetch(API + '/keys/' + keyId)
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      keyGlyphs.textContent = data.glyphLine || '◇ · ∞ · ☰';
-      return fetch(API + '/live');
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(live) {
-      currentEpoch = live.currentEpoch || 0;
-      updatePreview();
-    })
-    .catch(function(e) {
-      console.error('Load error:', e);
-      keyGlyphs.textContent = '◇ · ∞ · ☰';
-      hideLoading();
-    });
-
-  function updatePreview() {
-    var img = new Image();
-    var src = API + '/artefact/' + keyId + '/static-preview?epoch=' + currentEpoch + '&t=' + Date.now();
-    img.onload = function() { previewImg.src = src; hideLoading(); };
-    img.onerror = function() { hideLoading(); };
-    img.src = src;
-  }
-
-  async function checkHasFirstArtefact() {
-    try {
-      var data = '0x8e2f2e4d' + enc256(keyId);
-      var result = await rpc('eth_call', [{ to: Z1N_ARTEFACT, data: data }, 'latest']);
-      hasFirstArtefact = BigInt(result) > BigInt(0);
-      updatePriceDisplay();
-    } catch (e) {
-      console.warn('Could not check artefact status:', e);
-      hasFirstArtefact = false;
-      updatePriceDisplay();
-    }
-  }
-
-  function updatePriceDisplay() {
-    if (hasFirstArtefact) {
-      hasArtefactDisplay.textContent = 'Yes';
-      priceDisplay.textContent = MINT_PRICE_DISPLAY;
-      infoFree.style.display = 'none';
-      infoPaid.style.display = 'flex';
-      mintBtn.textContent = 'Mint Extra Artefact — ' + MINT_PRICE_DISPLAY;
-    } else {
-      hasArtefactDisplay.textContent = 'No';
-      priceDisplay.textContent = 'FREE';
-      infoFree.style.display = 'flex';
-      infoPaid.style.display = 'none';
-      mintBtn.textContent = 'Mint Live Artefact — FREE';
-    }
-  }
-
-  checkHasFirstArtefact();
-
   async function connectWallet() {
     var eth = getProvider();
-    if (!eth) {
-      statusArea.innerHTML = '<div class="status-msg error">No wallet found. Install MetaMask or another Web3 wallet.</div>';
-      return false;
-    }
-
+    if (!eth) { showStatus('No wallet found. Install MetaMask.', 'error'); return false; }
     provider = eth;
-
     try {
       var accs = await provider.request({ method: 'eth_accounts' });
-      if (!accs || accs.length === 0) {
-        accs = await provider.request({ method: 'eth_requestAccounts' });
-      }
-
-      if (!accs || accs.length === 0) {
-        statusArea.innerHTML = '<div class="status-msg error">No accounts found. Please unlock your wallet.</div>';
-        return false;
-      }
-
-      var urlWallet = walletParam.toLowerCase();
-      if (urlWallet) {
-        account = accs.find(function(a) { return a.toLowerCase() === urlWallet; }) || accs[0];
-      } else {
-        account = accs[0];
-      }
+      if (!accs || !accs.length) accs = await provider.request({ method: 'eth_requestAccounts' });
+      if (!accs || !accs.length) { showStatus('No accounts found.', 'error'); return false; }
+      account = (walletParam ? accs.find(function(a) { return a.toLowerCase() === walletParam.toLowerCase(); }) : null) || accs[0];
       account = account.toLowerCase();
-
-      walletDisplay.textContent = shortAddr(account);
+      document.getElementById('walletDisplay').textContent = account.slice(0,6) + '...' + account.slice(-4);
 
       var chainId = await provider.request({ method: 'eth_chainId' });
-      if (chainId !== CHAIN_ID) {
+      if (chainId !== CHAIN) {
         try {
-          await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID }] });
-        } catch (switchError) {
-          if (switchError.code === 4902) {
-            await provider.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId: CHAIN_ID,
-                chainName: 'Polygon',
-                nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 },
-                rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
-                blockExplorerUrls: ['https://polygonscan.com']
-              }]
-            });
-          } else {
-            throw switchError;
-          }
+          await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN }] });
+        } catch(e) {
+          if (e.code === 4902) {
+            await provider.request({ method: 'wallet_addEthereumChain', params: [{ chainId: CHAIN, chainName: 'Polygon', nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 }, rpcUrls: ['https://rpc-mainnet.maticvigil.com'], blockExplorerUrls: ['https://polygonscan.com'] }] });
+          } else throw e;
         }
       }
 
-      // Verify key ownership
-      var ownerData = '0x6352211e' + enc256(keyId);
-      var ownerResult = await rpc('eth_call', [{ to: Z1N_KEY, data: ownerData }, 'latest']);
-      keyOwner = '0x' + ownerResult.slice(26).toLowerCase();
-
-      if (keyOwner !== account) {
-        statusArea.innerHTML = '<div class="status-msg error">⚠️ This Key is owned by <strong>' + shortAddr(keyOwner) + '</strong><br><br>Switch to this wallet in your wallet app to mint.</div>';
-        mintBtn.disabled = true;
+      // verify ownership
+      var ownerData = '0x6352211e' + BigInt(keyId).toString(16).padStart(64,'0');
+      var res = await fetch('https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_call', params: [{ to: Z1N_KEY, data: ownerData }, 'latest'] })
+      });
+      var rdata = await res.json();
+      var owner = '0x' + rdata.result.slice(26).toLowerCase();
+      if (owner !== account) {
+        showStatus('⚠ This Key is owned by ' + owner.slice(0,6) + '...' + owner.slice(-4) + '. Switch wallet to mint.', 'error');
         return false;
       }
-
-      await checkHasFirstArtefact();
+      document.getElementById('connectHint').style.display = 'none';
       return true;
-
-    } catch (e) {
-      console.error('Connection error:', e);
-      statusArea.innerHTML = '<div class="status-msg error">' + (e.message || 'Connection failed') + '</div>';
-      return false;
+    } catch(e) {
+      showStatus(e.message || 'Connection failed', 'error'); return false;
     }
   }
 
-  mintBtn.addEventListener('click', async function() {
+  window.handleMint = async function() {
+    var btn = document.getElementById('mintBtn');
     if (!account || !provider) {
-      statusArea.innerHTML = '<div class="status-msg pending">Connecting wallet...</div>';
-      var connected = await connectWallet();
-      if (!connected) return;
+      showStatus('Connecting wallet...', 'pending');
+      var ok = await connectWallet();
+      if (!ok) return;
     }
 
-    if (!provider) {
-      statusArea.innerHTML = '<div class="status-msg error">Wallet not available</div>';
-      return;
-    }
-
-    mintBtn.disabled = true;
-    mintBtn.textContent = 'Preparing...';
-    mintBtn.classList.add('minting');
-    
-    statusArea.innerHTML = '<div class="status-msg pending">Preparing transaction...</div>';
+    var inscription = document.getElementById('inscInput').value.trim().slice(0, 64);
+    btn.disabled = true;
+    btn.textContent = 'Preparing...';
+    showStatus('Preparing transaction...', 'pending');
 
     try {
-     var functionName = hasFirstArtefact ? 'mintExtra' : 'mint';
+      var funcName = hasFirst ? 'mintExtra' : 'mint';
       var iface = new ethers.Interface([
         'function mint(uint256 keyId, string inscription)',
         'function mintExtra(uint256 keyId, string inscription) payable'
       ]);
+      var data = iface.encodeFunctionData(funcName, [BigInt(keyId), inscription]);
+      var txParams = { from: account, to: Z1N_ART, data: data };
+      if (hasFirst) txParams.value = PRICE;
 
-      var inscription = '';
-      var encodedData = iface.encodeFunctionData(functionName, [BigInt(keyId), inscription]);
-
-      statusArea.innerHTML = '<div class="status-msg pending">Confirm in your wallet...</div>';
-      mintBtn.textContent = 'Confirm in wallet...';
-
-      var txParams = { from: account, to: Z1N_ARTEFACT, data: encodedData };
-      if (hasFirstArtefact) txParams.value = MINT_PRICE;
-
+      showStatus('Confirm in wallet...', 'pending');
+      btn.textContent = 'Confirm in wallet...';
       var txHash = await provider.request({ method: 'eth_sendTransaction', params: [txParams] });
 
-      statusArea.innerHTML = '<div class="status-msg pending">Transaction sent... waiting for confirmation</div>';
-      mintBtn.textContent = 'Confirming...';
+      showStatus('Waiting for confirmation...', 'pending');
+      btn.textContent = 'Confirming...';
 
       var success = await waitForReceipt(txHash);
-
       if (success) {
-        statusArea.innerHTML = '<div class="status-msg success">✓ Live Artefact minted successfully!</div>';
-        mintBtn.textContent = '✓ Minted!';
-        mintBtn.classList.remove('minting');
-        mintBtn.classList.add('success');
-        showToast('✅ Live Artefact minted!', 4000);
+        showStatus('✅ Artefact minted! <a href="https://polygonscan.com/tx/' + txHash + '" target="_blank" style="color:var(--accent);">View tx ↗</a>', 'success');
+        showToast('✅ Artefact minted!');
+        btn.textContent = '✅ Minted!';
+        document.getElementById('inscInput').value = '';
+        inscCount.textContent = '0 / 64';
+        hasFirst = true;
+        updatePriceUI();
+        btn.disabled = false;
 
+        // try reindex
+        try { await fetch(API + '/reindex/artefacts', { method: 'POST', headers: { 'Content-Type': 'application/json' } }); } catch(e) {}
         setTimeout(function() {
-          window.location.href = 'key-artefacts.html?key=' + keyId + '&wallet=' + encodeURIComponent(account) + '&minted=live';
-        }, 2500);
+          window.location.href = 'key-dashboard.html?key=' + keyId + '#artefacts';
+        }, 3000);
       } else {
         throw new Error('Transaction failed on-chain');
       }
-
-    } catch (e) {
-      console.error('Mint error:', e);
+    } catch(e) {
       var msg = e.message || 'Unknown error';
-      var code = e.code || 0;
-      
-      if (msg.includes('reject') || msg.includes('denied') || msg.includes('User denied') || code === 4001) {
-        msg = 'Transaction rejected by user';
-      } else if (msg.includes('Internal JSON-RPC') || code === -32603 || msg.includes('execution reverted')) {
-        msg = '<strong>Transaction failed</strong><br><br>' +
-          'The connected wallet may not own this Key.<br><br>' +
-          '<strong>Fix:</strong> Switch to the Key owner wallet and try again.';
-      } else if (msg.includes('insufficient')) {
-        msg = 'Insufficient funds for gas';
-      } else {
-        if (msg.includes('FirstArtefactAlreadyMinted')) msg = 'First artefact already minted — use mintExtra';
-        else msg = 'Error: ' + msg.slice(0, 150);
-      }
-      
-      statusArea.innerHTML = '<div class="status-msg error">' + msg + '</div>';
-      mintBtn.disabled = false;
-      mintBtn.classList.remove('minting');
-      mintBtn.textContent = hasFirstArtefact ? 'Mint Extra Artefact — ' + MINT_PRICE_DISPLAY : 'Mint Live Artefact — FREE';
+      if (msg.includes('reject') || msg.includes('denied') || e.code === 4001) msg = 'Transaction rejected';
+      else if (msg.includes('reverted') || e.code === -32603) msg = 'Transaction failed — check wallet ownership';
+      else if (msg.includes('insufficient')) msg = 'Insufficient funds for gas';
+      showStatus(msg.slice(0,200), 'error');
+      btn.disabled = false;
+      btn.textContent = hasFirst ? 'Mint Extra Artefact — 7 POL' : 'Mint Artefact — FREE';
     }
-  });
+  };
 
   async function waitForReceipt(txHash) {
     for (var i = 0; i < 60; i++) {
       await new Promise(function(r) { setTimeout(r, 2000); });
       try {
-        var rc = await rpc('eth_getTransactionReceipt', [txHash]);
-        if (rc && rc.status === '0x1') return true;
-        if (rc && rc.status === '0x0') return false;
-      } catch (e) { console.warn('Receipt check failed:', e); }
+        var res = await fetch('https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_getTransactionReceipt', params: [txHash] })
+        });
+        var d = await res.json();
+        if (d.result && d.result.status === '0x1') return true;
+        if (d.result && d.result.status === '0x0') return false;
+      } catch(e) {}
     }
     return false;
   }
 
+  function showStatus(msg, type) {
+    var el = document.getElementById('mintStatus');
+    el.innerHTML = '<div class="status-msg ' + type + '">' + msg + '</div>';
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 4000);
+  }
+
+  // lightbox
+  window.openLightbox = function() {
+    var img = document.getElementById('previewImg');
+    if (!img.classList.contains('loaded')) return;
+    document.getElementById('lightboxImg').src = img.src;
+    document.getElementById('lightbox').classList.add('active');
+  };
+
+  // auto-connect if wallet already connected
   (async function() {
     var eth = getProvider();
     if (eth) {
       try {
         var accs = await eth.request({ method: 'eth_accounts' });
-        if (accs && accs.length > 0) {
-          await connectWallet();
-        }
-      } catch (e) {}
+        if (accs && accs.length) await connectWallet();
+      } catch(e) {}
     }
   })();
 
-})();
-</script>
-
-<script>
-(function(){
-  var btn=document.getElementById("hamburger");
-  var nav=document.getElementById("navLinks");
-  if(btn&&nav){
-    btn.addEventListener("click",function(){btn.classList.toggle("open");nav.classList.toggle("open");});
-    nav.addEventListener("click",function(e){if(e.target.tagName==="A"){btn.classList.remove("open");nav.classList.remove("open");}});
+  // hamburger
+  var hbtn = document.getElementById('hamburger');
+  var nav = document.getElementById('navLinks');
+  if (hbtn && nav) {
+    hbtn.addEventListener('click', function() { hbtn.classList.toggle('open'); nav.classList.toggle('open'); });
+    nav.addEventListener('click', function(e) { if (e.target.tagName === 'A') { hbtn.classList.remove('open'); nav.classList.remove('open'); } });
   }
+
 })();
 </script>
-
 </body>
 </html>
-

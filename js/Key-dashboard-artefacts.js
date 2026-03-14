@@ -686,7 +686,7 @@ var sig = ownedArtefacts.map(function(a) { return a.tokenId + ':' + a.status; })
       '<div class="header-actions" style="display:flex;align-items:center;gap:8px;">' +
         '<button class="view-toggle' + (ownedViewMode === 'card' ? ' active' : '') + '" onclick="Z1NArtefacts.setViewMode(\'card\')" title="Card view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">▦</button>' +
         '<button class="view-toggle' + (ownedViewMode === 'list' ? ' active' : '') + '" onclick="Z1NArtefacts.setViewMode(\'list\')" title="List view" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;">☰</button>' +
-        '<button class="btn btn-green" id="btnMintInSection" onclick="Z1NArtefacts.mint()"' + (isMinting ? ' disabled' : '') + ' style="height:32px;display:flex;align-items:center;">' + mintText + '</button>' +
+        '<button class="btn btn-green" id="btnMintInSection" onclick="window.location.href=\'mint-live-artefact.html?key=\'+(window.Z1N&&window.Z1N.keyId||0)"' + (isMinting ? ' disabled' : '') + ' style="height:32px;display:flex;align-items:center;">' + mintText + '</button>' +
       '</div>' +
     '</div>';
     
