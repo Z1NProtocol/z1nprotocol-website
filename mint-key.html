@@ -947,6 +947,12 @@
         params: [{ from: currentAccount, to: ISSUANCE_CONTROLLER, value: valueHex, data: '0x8c874ebd' }]
       });
 
+      try {
+        var pending = JSON.parse(localStorage.getItem('z1n_pending_keys') || '[]');
+        pending.push({ wallet: currentAccount.toLowerCase(), txHash: txHash, ts: Date.now(), keyCountBefore: 0 });
+        localStorage.setItem('z1n_pending_keys', JSON.stringify(pending));
+      } catch(e) {}
+
       if (mintStatus) { mintStatus.textContent = "Transaction submitted: " + txHash.slice(0, 10) + "..."; mintStatus.className = "status-text"; }
 
       var attempts = 0;
@@ -967,12 +973,7 @@
                 mintStatus.textContent = "✅ Key minted! Redirecting...";
                 mintStatus.className = "status-text status-success";
                 applyMintState("ready");
-                try {
-                  var pending = JSON.parse(localStorage.getItem('z1n_pending_keys') || '[]');
-                  var keyCountBefore = allKeys ? allKeys.filter(function(k) { return k.wallet.toLowerCase() === currentAccount.toLowerCase(); }).length : 0;
-pending.push({ wallet: currentAccount.toLowerCase(), txHash: txHash, ts: Date.now(), keyCountBefore: keyCountBefore });
-                  localStorage.setItem('z1n_pending_keys', JSON.stringify(pending));
-                } catch(e) {}
+                // pending already saved after txHash
                 setTimeout(function() { window.location.href = 'your-keys.html'; }, 1200);
               } else {
                 mintStatus.innerHTML = "❌ Transaction failed. <a href='https://polygonscan.com/tx/" + txHash + "' target='_blank' style='color:#5ee8a0;'>View on explorer</a>";
