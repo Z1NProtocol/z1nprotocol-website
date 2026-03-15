@@ -686,7 +686,7 @@ footer .links a:hover{color:var(--text-main);}
     var readSet = new Set(readIds);
     // Signal unseen: attest_recv_ + reply_recv_ + direct_recv_ (exact dashboard logica)
     var unseenSignal = readIds.filter(function(id) {
-      return id.startsWith('attest_recv_') || id.startsWith('whisper_recv_') || id.startsWith('direct_recv_');
+      return id.startsWith('attest_recv_') || id.startsWith('whisper_recv_') || id.startsWith('direct_recv_') || id.startsWith('reply_recv_');
     }).length;
     var totalSignal = (keyData ? ((keyData.totalAttestationsReceived || 0) + (keyData.repliesReceived || 0) + (keyData.directMessagesReceived || 0)) : 0);
     var signalUnseen = Math.max(0, totalSignal - unseenSignal);
