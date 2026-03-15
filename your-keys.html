@@ -1159,14 +1159,23 @@ footer .links a:hover{color:var(--text-main);}
       try {
         var pendingKeys = JSON.parse(localStorage.getItem('z1n_pending_keys') || '[]');
         var now = Date.now();
-        pendingKeys = pendingKeys.filter(function(p) { return now - p.ts < 300000; });
+        pendingKeys = pendingKeys.filter(function(p) { return now - p.ts < 600000; });
+        var myPendingBefore = pendingKeys.filter(function(p) { return primaryWallet && p.wallet.toLowerCase() === primaryWallet.toLowerCase(); }).length;
+        var myKeyCountBefore = allKeys.filter(function(k) { return primaryWallet && k.wallet.toLowerCase() === primaryWallet.toLowerCase(); }).length;
+        pendingKeys = pendingKeys.filter(function(p) {
+          var w = p.wallet.toLowerCase();
+          var ageMs = now - p.ts;
+          var myKeys = allKeys.filter(function(k) { return k.wallet.toLowerCase() === w; }).length;
+          if (ageMs > 90000 && myKeys > 0) return false;
+          return true;
+        });
         localStorage.setItem('z1n_pending_keys', JSON.stringify(pendingKeys));
-        var existingTxHashes = allKeys.map(function(k) { return k.txHash; });
         pendingKeys.forEach(function(p) {
           if (!primaryWallet || p.wallet.toLowerCase() !== primaryWallet.toLowerCase()) return;
+          var ageSeconds = Math.floor((now - p.ts) / 1000);
           var wrapper = document.createElement('div'); wrapper.className = 'key-card-wrapper';
           var draft = document.createElement('div'); draft.className = 'key-card key-card-draft';
-          draft.innerHTML = '<div class="draft-inner"><div class="draft-spinner"></div><div class="draft-label">Minting…</div><div class="draft-sub">Indexing on-chain</div></div>';
+          draft.innerHTML = '<div class="draft-inner"><div class="draft-spinner"></div><div class="draft-label">Minting…</div><div class="draft-sub">' + (ageSeconds < 30 ? 'Confirming on-chain' : 'Indexing — takes ~1 min') + '</div></div>';
           wrapper.appendChild(draft); container.appendChild(wrapper);
         });
       } catch(e) {}
@@ -1220,6 +1229,11 @@ footer .links a:hover{color:var(--text-main);}
         if (btn) btn.classList.toggle('active', m === currentKeysView);
       });
       renderKeys(); hideLoading();
+      try {
+        var _pending = JSON.parse(localStorage.getItem('z1n_pending_keys') || '[]');
+        var _myPending = _pending.filter(function(p) { return primaryWallet && p.wallet.toLowerCase() === primaryWallet.toLowerCase(); });
+        if (_myPending.length > 0) { setTimeout(function() { loadAllKeys(true); }, 15000); }
+      } catch(e) {}
       Promise.all(allKeys.map(function(key) {
         return Promise.all([
           fetch(API_BASE + '/key/' + key.tokenId + '/claimable').then(function(r) { return r.ok ? r.json() : { epochs: [] }; }).catch(function() { return { epochs: [] }; }),
