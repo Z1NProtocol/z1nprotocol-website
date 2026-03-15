@@ -494,7 +494,11 @@
   overflow: hidden;
 }
 
-/* Signal CID color zones v2.3.2 */
+* Hide number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Signal CID color zones v2.3.1 */
     .char-count.zone-normal{color:var(--keys-accent)}
     .char-count.zone-orange{color:#ffd556;font-weight:700}
     .char-count.zone-red{color:#f87171;font-weight:700;animation:pulse-danger 1s infinite}
