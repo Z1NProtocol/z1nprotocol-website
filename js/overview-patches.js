@@ -304,8 +304,8 @@
           var fromKey    = a.receivedFromKeyId || a.fromKeyId || a.senderKeyId || '';
           var stateLabel = a.stateNum === 0 ? 'UNSHARED' : a.stateNum === 1 ? 'PENDING' : a.stateNum === 2 ? 'ACTIVE' : a.stateNum === 3 ? 'RELEASED' : (a.status || 'unknown');
           var noteExtra  = '';
-          if (a.inscription)    noteExtra += ' · inscription: "' + a.inscription.slice(0, 40) + '"';
-          if (a.releaseMessage) noteExtra += ' · release: "' + a.releaseMessage.slice(0, 40) + '"';
+          if (a.inscription)    noteExtra += ' · inscription: ' + a.inscription.slice(0, 40);
+          if (a.releaseMessage) noteExtra += ' · release: ' + a.releaseMessage.slice(0, 40);
           if (a.releasedBy)     noteExtra += ' · released by: ' + a.releasedBy.slice(0, 10) + '...';
           rows.push([
             isReceived ? 'artefact_received' : 'artefact_minted',
@@ -338,14 +338,14 @@
             rows.push([
               'artefact_released', '', 'out', currentKeyId, a.releasedFromKeyId || a.boundToKeyId || '',
               '', '', '', '', '', '', a.tokenId || '', 'RELEASED', a.inscription || '', '',
-              'Released artefact #' + a.tokenId + (a.releaseMessage ? ' · "' + a.releaseMessage.slice(0, 40) + '"' : '')
+              'Released artefact #' + a.tokenId + (a.releaseMessage ? ' · ' + a.releaseMessage.slice(0, 40) : '')
             ]);
           });
           (libData2.library || []).filter(function(a) { return a.offerMessage; }).forEach(function(a) {
             rows.push([
               'artefact_offer_received', '', 'in', currentKeyId, a.sourceKeyId || '',
               '', '', '', '', '', '', a.tokenId || '', a.status ? a.status.toUpperCase() : '', a.inscription || '', '',
-              'Offer received for artefact #' + a.tokenId + ' from K#' + (a.sourceKeyId || '?') + ' · "' + a.offerMessage.slice(0, 40) + '"'
+              'Offer received for artefact #' + a.tokenId + ' from K#' + (a.sourceKeyId || '?') + ' · ' + a.offerMessage.slice(0, 40)
             ]);
           });
         }
