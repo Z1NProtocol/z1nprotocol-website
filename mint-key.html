@@ -949,7 +949,12 @@
 
       try {
         var pending = JSON.parse(localStorage.getItem('z1n_pending_keys') || '[]');
-        pending.push({ wallet: currentAccount.toLowerCase(), txHash: txHash, ts: Date.now(), keyCountBefore: 0 });
+        var _keyCountBefore = 0;
+try {
+  var _r = await fetch('https://z1n-backend-production.up.railway.app/api/wallet/' + currentAccount.toLowerCase() + '/keys-summary');
+  if (_r.ok) { var _d = await _r.json(); _keyCountBefore = (_d.keys || []).length; }
+} catch(e) {}
+pending.push({ wallet: currentAccount.toLowerCase(), txHash: txHash, ts: Date.now(), keyCountBefore: _keyCountBefore });
         localStorage.setItem('z1n_pending_keys', JSON.stringify(pending));
       } catch(e) {}
 
