@@ -79,7 +79,7 @@
 
     try {
       // Check of eerste artefact al gemint is (on-chain)
-      var Z1N_ARTEFACT = '0x8f9C9760D530aA58A9cf13406888958c6856f326'; // mainnet adres uit Key-dashboard.js
+      var Z1N_ARTEFACT = '0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B'; // mainnet adres uit Key-dashboard.js
       var hasFirst = false;
       try {
         // primaryArtefactOf(keyId) — selector: 0x8e2f2e4d

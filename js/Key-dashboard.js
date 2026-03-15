@@ -7,10 +7,10 @@
   'use strict';
 
   var CHAIN_ID = '0x89';
-  var Z1N_KEY = '0x51A708cC79591cdE831B64773150cFaA41be3059';
-  var Z1N_CORE = '0x42a08ccEA283127CaB427A880C8141eB14DC22d2';
-  var Z1N_SIGNAL = '0xaB9D716c2799A95aE2A3640faAcc0148FC37F52D';
-  var Z1N_ARTEFACT = '0x8f9C9760D530aA58A9cf13406888958c6856f326';
+  var Z1N_KEY = '0x8687429405bf787b523F3F1F998FA90f5828dA3D';
+  var Z1N_CORE = '0xc09b7dEE30635EeaD79e0d23da9598F9d3BaFF7b';
+  var Z1N_SIGNAL = '0x6a04c3605F38FCE9A4eCd5127Ef139F3c51f912B';
+  var Z1N_ARTEFACT = '0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B';
   var RPC_URLS = ['https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y'];
   var currentRpcIndex = 0;
   var EXPLORER = 'https://polygonscan.com';
@@ -336,7 +336,7 @@ window.toggleGlobalStealth = function() {
 
    setInterval(function() { 
   var EPOCH_DURATION = 75600; // 21 hours mainnet
-  var EPOCH_GENESIS = 1772917310; // Mainnet genesis — contract verified
+  var EPOCH_GENESIS = 1741992828; // Mainnet genesis — contract verified
   var now = Math.floor(Date.now() / 1000);
   var timeSinceGenesis = now - EPOCH_GENESIS;
   var rem = EPOCH_DURATION - (timeSinceGenesis % EPOCH_DURATION);
