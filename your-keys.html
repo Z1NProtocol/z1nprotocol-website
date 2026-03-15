@@ -683,29 +683,23 @@ footer .links a:hover{color:var(--text-main);}
   function getUnseenCount(tokenId, keyData) {
     var readIds = [];
     try { var stored = localStorage.getItem('z1n_activity_read_' + tokenId); if (stored) readIds = JSON.parse(stored); } catch (e) {}
-    var readSet = new Set(readIds);
-    var totalSignal = (keyData ? ((keyData.totalAttestationsReceived || 0) + (keyData.repliesReceived || 0) + (keyData.directMessagesReceived || 0)) : 0);
-    if (totalSignal === 0) return Promise.resolve({ signal: 0 });
-    // Fetch live signals/attests/directs and check which are unread
-    var API = 'https://z1n-backend-production.up.railway.app/api';
-    return fetch(API + '/wallet/' + (keyData.wallet || '') + '/keys-summary?detail=1')
-      .then(function() { return { signal: 0 }; })
-      .catch(function() { return { signal: 0 }; })
-      .then(function() {
-        // Fallback: als totalSignal > 0, check of er recentere items zijn dan de oudste readId
-        // Simpele heuristiek: als totalSignal > 0 en geen enkele recv_ id matcht een bekend nieuw patroon → toon 1
-        var hasNewStyleRead = readIds.some(function(id) {
-          return (id.startsWith('attest_recv_') && id.length > 20 && !id.includes('_0x19c')) ||
-                 (id.startsWith('reply_recv_') && id.length > 20) ||
-                 (id.startsWith('direct_recv_') && id.length > 20);
-        });
-        // Tel alleen items die NIET beginnen met oude patronen
-        var newReadCount = readIds.filter(function(id) {
-          if (id.startsWith('attest_recv_') && id.includes('_0x19c')) return false; // oud contract
-          return id.startsWith('attest_recv_') || id.startsWith('reply_recv_') || id.startsWith('direct_recv_');
-        }).length;
-        return { signal: Math.max(0, totalSignal - newReadCount) };
-      });
+    // Tel NIEUWE (niet-oude-contract) gelezen items per type
+    var readAttests = readIds.filter(function(id) {
+      return id.startsWith('attest_recv_') && !id.match(/^attest_recv_0x[0-9a-f]{8,12}_/i);
+    }).length;
+    var readReplies = readIds.filter(function(id) {
+      return id.startsWith('reply_recv_');
+    }).length;
+    var readDirects = readIds.filter(function(id) {
+      return id.startsWith('direct_recv_') || id.startsWith('whisper_recv_');
+    }).length;
+    var totalAttests = keyData ? (keyData.totalAttestationsReceived || 0) : 0;
+    var totalReplies = keyData ? (keyData.repliesReceived || 0) : 0;
+    var totalDirects = keyData ? (keyData.directMessagesReceived || 0) : 0;
+    var unseenAttests = Math.max(0, totalAttests - readAttests);
+    var unseenReplies = Math.max(0, totalReplies - readReplies);
+    var unseenDirects = Math.max(0, totalDirects - readDirects);
+    return Promise.resolve({ signal: unseenAttests + unseenReplies + unseenDirects });
   }
 
   function getTotalEarned(tokenId) {
