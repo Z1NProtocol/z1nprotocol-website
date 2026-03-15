@@ -1166,8 +1166,9 @@ footer .links a:hover{color:var(--text-main);}
           var w = p.wallet.toLowerCase();
           var ageMs = now - p.ts;
           var myKeys = allKeys.filter(function(k) { return k.wallet.toLowerCase() === w; }).length;
-          if (ageMs > 90000 && myKeys > 0) return false;
-          return true;
+          if (ageMs > 600000) return false;
+if (myKeys > (p.keyCountBefore !== undefined ? p.keyCountBefore : 0)) return false;
+return true;
         });
         localStorage.setItem('z1n_pending_keys', JSON.stringify(pendingKeys));
         pendingKeys.forEach(function(p) {

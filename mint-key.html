@@ -969,7 +969,8 @@
                 applyMintState("ready");
                 try {
                   var pending = JSON.parse(localStorage.getItem('z1n_pending_keys') || '[]');
-                  pending.push({ wallet: currentAccount.toLowerCase(), txHash: txHash, ts: Date.now() });
+                  var keyCountBefore = allKeys ? allKeys.filter(function(k) { return k.wallet.toLowerCase() === currentAccount.toLowerCase(); }).length : 0;
+pending.push({ wallet: currentAccount.toLowerCase(), txHash: txHash, ts: Date.now(), keyCountBefore: keyCountBefore });
                   localStorage.setItem('z1n_pending_keys', JSON.stringify(pending));
                 } catch(e) {}
                 setTimeout(function() { window.location.href = 'your-keys.html'; }, 1200);
