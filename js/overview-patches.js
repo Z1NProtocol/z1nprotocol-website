@@ -299,9 +299,14 @@
       var artRes = await fetch(API_BASE + '/key/' + currentKeyId + '/artefacts', { cache: 'no-store' });
       if (artRes.ok) {
         var artData = await artRes.json();
-        (artData.liveArtefacts || []).forEach(function (a) {
+                (artData.liveArtefacts || []).forEach(function (a) {
           var isReceived = a.isReceived || a.receivedFromKeyId || a.fromKeyId || a.senderKeyId;
           var fromKey    = a.receivedFromKeyId || a.fromKeyId || a.senderKeyId || '';
+          var stateLabel = a.stateNum === 0 ? 'UNSHARED' : a.stateNum === 1 ? 'PENDING' : a.stateNum === 2 ? 'ACTIVE' : a.stateNum === 3 ? 'RELEASED' : (a.status || 'unknown');
+          var noteExtra  = '';
+          if (a.inscription)    noteExtra += ' · inscription: "' + a.inscription.slice(0, 40) + '"';
+          if (a.releaseMessage) noteExtra += ' · release: "' + a.releaseMessage.slice(0, 40) + '"';
+          if (a.releasedBy)     noteExtra += ' · released by: ' + a.releasedBy.slice(0, 10) + '...';
           rows.push([
             isReceived ? 'artefact_received' : 'artefact_minted',
             a.epoch || a.mintEpoch || '',
@@ -311,14 +316,39 @@
             '', '', '', '', '',
             '',
             a.tokenId || '',
-            a.stateNum === 0 ? 'UNSHARED' : a.stateNum === 1 ? 'PENDING' : a.stateNum === 2 ? 'ACTIVE' : a.stateNum === 3 ? 'RELEASED' : (a.status || 'unknown'),
+            stateLabel,
             a.inscription || '',
             '',
             isReceived
-              ? 'Received artefact #' + a.tokenId + ' from K#' + fromKey
-              : 'Minted artefact #' + a.tokenId + (a.inscription ? ' · "' + a.inscription.slice(0, 30) + '"' : '')
+              ? 'Received artefact #' + a.tokenId + ' from K#' + fromKey + noteExtra
+              : 'Minted artefact #' + a.tokenId + noteExtra
           ]);
         });
+        var libRes2 = await fetch(API_BASE + '/key/' + currentKeyId + '/artefacts', { cache: 'no-store' });
+        if (libRes2.ok) {
+          var libData2 = await libRes2.json();
+          (libData2.liveArtefacts || []).filter(function(a) { return a.status === 'pending'; }).forEach(function(a) {
+            rows.push([
+              'artefact_offered', '', 'out', currentKeyId, a.pendingForKeyId || '',
+              '', '', '', '', '', '', a.tokenId || '', 'PENDING', a.inscription || '', '',
+              'Offered artefact #' + a.tokenId + ' to K#' + (a.pendingForKeyId || '?')
+            ]);
+          });
+          (libData2.liveArtefacts || []).filter(function(a) { return a.status === 'released' && a.releaseMessage; }).forEach(function(a) {
+            rows.push([
+              'artefact_released', '', 'out', currentKeyId, a.releasedFromKeyId || a.boundToKeyId || '',
+              '', '', '', '', '', '', a.tokenId || '', 'RELEASED', a.inscription || '', '',
+              'Released artefact #' + a.tokenId + (a.releaseMessage ? ' · "' + a.releaseMessage.slice(0, 40) + '"' : '')
+            ]);
+          });
+          (libData2.library || []).filter(function(a) { return a.offerMessage; }).forEach(function(a) {
+            rows.push([
+              'artefact_offer_received', '', 'in', currentKeyId, a.sourceKeyId || '',
+              '', '', '', '', '', '', a.tokenId || '', a.status ? a.status.toUpperCase() : '', a.inscription || '', '',
+              'Offer received for artefact #' + a.tokenId + ' from K#' + (a.sourceKeyId || '?') + ' · "' + a.offerMessage.slice(0, 40) + '"'
+            ]);
+          });
+        }
       }
 
       // ── CANON ANCHORS ──
@@ -413,7 +443,7 @@
     try {
       // Haal alle signals op (gefilterd op epoch als meegegeven)
       var params = new URLSearchParams();
-      params.set('limit', '2000');
+      params.set('limit', '100000');
       if (epochFrom) params.set('minEpoch', String(epochFrom));
       if (epochTo)   params.set('maxEpoch', String(epochTo));
 
@@ -526,22 +556,22 @@
         '</div>' +
         '<div class="modal-body" style="padding:20px;">' +
           '<p style="font-size:12px;color:var(--text-soft);margin-bottom:16px;line-height:1.6;">' +
-            'Alle PoG signals in het veld. Kolommen: signal hash, epoch, key, glyphs, intent, type (new/reply), content, attests, ' +
+            'All PoG signals in the field. Columns: signal hash, epoch, key, glyphs, intent, type (new/reply), content, attests, ' +
             '<strong style="color:var(--keys-accent);">your_key_attested</strong> en ' +
             '<strong style="color:var(--keys-accent);">your_key_replied</strong>.' +
           '</p>' +
           '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">' +
             '<div>' +
-              '<div style="font-size:11px;color:var(--text-soft);margin-bottom:4px;">Epoch from (leeg = alle)</div>' +
-              '<input type="number" id="fieldEpochFrom" placeholder="1" min="0" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:13px;">' +
+              '<div style="font-size:11px;color:var(--text-soft);margin-bottom:4px;">Epoch from (empty = all)</div>' +
+              '<input type="number" id="fieldEpochFrom" placeholder="1" min="0" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:13px;-moz-appearance:textfield;appearance:textfield;" oninput="this.value=this.value.replace(/[^0-9]/g,\'\')">' +
             '</div>' +
             '<div>' +
-              '<div style="font-size:11px;color:var(--text-soft);margin-bottom:4px;">Epoch to (leeg = huidig)</div>' +
-              '<input type="number" id="fieldEpochTo" placeholder="nu" min="0" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:13px;">' +
+              '<div style="font-size:11px;color:var(--text-soft);margin-bottom:4px;">Epoch to (empty = current)</div>' +
+              '<input type="number" id="fieldEpochTo" placeholder="now" min="0" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--card-border);background:rgba(15,23,42,0.6);color:var(--text-main);font-size:13px;-moz-appearance:textfield;appearance:textfield;" oninput="this.value=this.value.replace(/[^0-9]/g,\'\')">' +
             '</div>' +
           '</div>' +
           '<div style="font-size:10px;color:var(--text-soft);margin-bottom:20px;padding:8px 10px;background:rgba(255,213,86,0.08);border-radius:6px;line-height:1.5;">' +
-            '⚡ Max 2000 signals per export. Gebruik epoch-filters voor grote datasets.' +
+            '⚡ Max 100,000 signals per export. Use epoch filters for large datasets.' +
           '</div>' +
           '<button onclick="' +
             'var ef=document.getElementById(\'fieldEpochFrom\').value;' +
