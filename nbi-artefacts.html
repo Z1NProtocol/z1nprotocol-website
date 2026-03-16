@@ -346,7 +346,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       '<div class="activity-icon ' + iconClass + '">' + icon + '</div>' +
       '<div class="activity-body">' +
         '<div class="activity-line"><span>' + text + '</span>' +
-        (epoch ? '<span class="activity-epoch">Epoch ' + epoch + '</span>' : '') +
+        '' +
         '</div>' +
         (sub ? '<div class="activity-sub">' + sub + '</div>' : '') +
       '</div></div>';
@@ -377,11 +377,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         var replyKeyId = s.replyTo ? (hashToKeyId[s.replyTo.toLowerCase()] || '?') : '?';
         events.push({
           ts: s.blockTimestamp || 0,
-          epoch: s.epoch,
           icon: sym,
           iconClass: 'signal',
           text: s.isReply ? 'Reply · Key ' + replyKeyId + ' · ' + sym : 'Signal · ' + sym,
-epoch: null,
           sub: s.intent === 3 ? '[Silence]' : (s.cid ? s.cid.slice(0,60) + (s.cid.length > 60 ? '…' : '') : '')
         });
       });
@@ -390,7 +388,6 @@ epoch: null,
       (canonData.markers || []).forEach(function(c) {
         events.push({
           ts: c.timestamp || 0,
-          epoch: c.epochId || c.epoch,
           icon: 'Ω',
           iconClass: 'canon',
           text: 'Canon · Epoch ' + (c.epochId || c.epoch || '?'),
