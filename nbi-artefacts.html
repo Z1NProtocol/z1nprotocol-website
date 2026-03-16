@@ -381,7 +381,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       var INTENT_CLASSES = ['signal-c','signal-i','signal-k','signal-s'];
       var INTENT_LABELS  = ['ΩC','ΩI','ΩK','ΩS'];
 
-      // Signals
+      // Signals — alleen uitgaand
       (keyData.signalDetails || []).forEach(function(s) {
         var sym = INTENT_LABELS[s.intent] || 'Ω';
         var cls = INTENT_CLASSES[s.intent] || 'signal';
@@ -390,19 +390,25 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
           ts: s.blockTimestamp || 0,
           icon: sym,
           iconClass: cls,
-          text: replyKeyId ? 'Reply · Key ' + replyKeyId : (s.isReply ? 'Reply' : 'Signal'),
+          text: replyKeyId
+            ? 'Reply to Key ' + replyKeyId
+            : 'New Signal',
           sub: s.intent === 3 ? '[Silence]' : (s.cid ? s.cid.slice(0,60) + (s.cid.length > 60 ? '…' : '') : '')
         });
+      });
 
-        // Attests ontvangen op dit signal
+      // Attests sent — via signalDetails van andere keys
+      (allSigs.signals || []).forEach(function(s) {
         (s.attesters || []).forEach(function(a) {
-          events.push({
-            ts: a.blockNumber ? (s.blockTimestamp + 1) : s.blockTimestamp + 1,
-            icon: '✓',
-            iconClass: 'attest',
-            text: 'Attest from Key ' + (a.attesterKeyId || a.tokenId || '?'),
-            sub: ''
-          });
+          if (Number(a.attesterKeyId) === Number(keyId)) {
+            events.push({
+              ts: s.blockTimestamp || 0,
+              icon: '✓',
+              iconClass: 'attest',
+              text: 'Attest sent · Key ' + (s.keyId || '?'),
+              sub: ''
+            });
+          }
         });
       });
 
@@ -417,40 +423,20 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         });
       });
 
-      // Artefacts
+      // Artefacts — alleen uitgaand
       (artData.liveArtefacts || []).forEach(function(a) {
-        var artText, artSub;
+        var artText;
         if (a.status === 'pending' && a.pendingForKeyId) {
-          artText = 'Artefact #' + a.tokenId + ' · offered to Key ' + a.pendingForKeyId;
+          artText = 'Artefact offered to Key ' + a.pendingForKeyId;
         } else if (a.status === 'active' && a.boundToKeyId) {
-          artText = 'Artefact #' + a.tokenId + ' · bounded to Key ' + a.boundToKeyId;
+          artText = 'Artefact accepted by Key ' + a.boundToKeyId;
         } else if (a.status === 'released') {
-          artText = 'Artefact #' + a.tokenId + ' · released';
+          artText = 'Artefact released';
         } else {
-          artText = 'Artefact #' + a.tokenId + ' · minted';
+          artText = 'Artefact minted';
         }
-        artSub = a.inscription || '';
         events.push({
           ts: Date.now(),
-          icon: '◈',
-          iconClass: 'artefact',
-          text: artText,
-          sub: artSub
-        });
-      });
-
-      // Artefacts received (library)
-      (artData.library || []).forEach(function(a) {
-        var artText;
-        if (a.status === 'active') {
-          artText = 'Artefact #' + a.tokenId + ' · accepted from Key ' + (a.sourceKeyId || '?');
-        } else if (a.status === 'pending') {
-          artText = 'Artefact #' + a.tokenId + ' · received from Key ' + (a.sourceKeyId || '?');
-        } else {
-          return;
-        }
-        events.push({
-          ts: Date.now() - 1,
           icon: '◈',
           iconClass: 'artefact',
           text: artText,
