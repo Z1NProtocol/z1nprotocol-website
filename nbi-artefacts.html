@@ -126,6 +126,11 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .activity-row{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:rgba(15,23,42,0.4);border:1px solid rgba(148,163,184,0.08);border-radius:7px;font-size:11px;line-height:1.4;}
 .activity-icon{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
 .activity-icon.signal{background:rgba(255,213,86,0.12);color:var(--sunbeam);}
+.activity-icon.signal-c{background:rgba(94,232,160,0.12);color:var(--mint);}
+.activity-icon.signal-i{background:rgba(248,113,113,0.12);color:var(--rose);}
+.activity-icon.signal-k{background:rgba(255,213,86,0.12);color:var(--sunbeam);}
+.activity-icon.signal-s{background:rgba(123,184,252,0.12);color:var(--aether);}
+.activity-icon.attest{background:rgba(255,213,86,0.12);color:var(--sunbeam);}
 .activity-icon.canon{background:rgba(192,132,252,0.12);color:#c084fc;}
 .activity-icon.artefact{background:rgba(94,232,160,0.12);color:var(--mint);}
 .activity-body{flex:1;min-width:0;}
@@ -373,16 +378,31 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         if (s.hash) hashToKeyId[s.hash.toLowerCase()] = s.keyId;
       });
 
+      var INTENT_CLASSES = ['signal-c','signal-i','signal-k','signal-s'];
+      var INTENT_LABELS  = ['ΩC','ΩI','ΩK','ΩS'];
+
       // Signals
       (keyData.signalDetails || []).forEach(function(s) {
-        var sym = INTENT_SYMBOLS[s.intent] || 'Ω';
-        var replyKeyId = s.replyTo ? (hashToKeyId[s.replyTo.toLowerCase()] || '?') : '?';
+        var sym = INTENT_LABELS[s.intent] || 'Ω';
+        var cls = INTENT_CLASSES[s.intent] || 'signal';
+        var replyKeyId = s.replyTo ? (hashToKeyId[s.replyTo.toLowerCase()] || null) : null;
         events.push({
           ts: s.blockTimestamp || 0,
           icon: sym,
-          iconClass: 'signal',
-          text: s.isReply ? 'Reply · Key ' + replyKeyId + ' · ' + sym : 'Signal · ' + sym,
+          iconClass: cls,
+          text: replyKeyId ? 'Reply · Key ' + replyKeyId : (s.isReply ? 'Reply' : 'Signal'),
           sub: s.intent === 3 ? '[Silence]' : (s.cid ? s.cid.slice(0,60) + (s.cid.length > 60 ? '…' : '') : '')
+        });
+
+        // Attests ontvangen op dit signal
+        (s.attesters || []).forEach(function(a) {
+          events.push({
+            ts: a.blockNumber ? (s.blockTimestamp + 1) : s.blockTimestamp + 1,
+            icon: '✓',
+            iconClass: 'attest',
+            text: 'Attest from Key ' + (a.attesterKeyId || a.tokenId || '?'),
+            sub: ''
+          });
         });
       });
 
@@ -399,13 +419,41 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
       // Artefacts
       (artData.liveArtefacts || []).forEach(function(a) {
-        var statusLabel = a.status === 'active' ? ' · bounded' : a.status === 'pending' ? ' · pending' : a.status === 'released' ? ' · released' : '';
+        var artText, artSub;
+        if (a.status === 'pending' && a.pendingForKeyId) {
+          artText = 'Artefact #' + a.tokenId + ' · offered to Key ' + a.pendingForKeyId;
+        } else if (a.status === 'active' && a.boundToKeyId) {
+          artText = 'Artefact #' + a.tokenId + ' · bounded to Key ' + a.boundToKeyId;
+        } else if (a.status === 'released') {
+          artText = 'Artefact #' + a.tokenId + ' · released';
+        } else {
+          artText = 'Artefact #' + a.tokenId + ' · minted';
+        }
+        artSub = a.inscription || '';
         events.push({
           ts: Date.now(),
-          epoch: a.mintEpoch || '',
           icon: '◈',
           iconClass: 'artefact',
-          text: 'Artefact #' + a.tokenId + statusLabel,
+          text: artText,
+          sub: artSub
+        });
+      });
+
+      // Artefacts received (library)
+      (artData.library || []).forEach(function(a) {
+        var artText;
+        if (a.status === 'active') {
+          artText = 'Artefact #' + a.tokenId + ' · accepted from Key ' + (a.sourceKeyId || '?');
+        } else if (a.status === 'pending') {
+          artText = 'Artefact #' + a.tokenId + ' · received from Key ' + (a.sourceKeyId || '?');
+        } else {
+          return;
+        }
+        events.push({
+          ts: Date.now() - 1,
+          icon: '◈',
+          iconClass: 'artefact',
+          text: artText,
           sub: a.inscription || ''
         });
       });
