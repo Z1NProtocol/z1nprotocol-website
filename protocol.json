@@ -1,0 +1,20 @@
+{
+  "version": "2.3.1-Ω",
+  "network": "polygon",
+  "chainId": 137,
+  "contracts": {
+    "core": "0xc09b7dEE30635EeaD79e0d23da9598F9d3BaFF7b",
+    "key": "0x8687429405bf787b523F3F1F998FA90f5828dA3D",
+    "signal": "0x6a04c3605F38FCE9A4eCd5127Ef139F3c51f912B",
+    "canon": "0xeF04Ff8bA555f2Bad0A5aB2026A4A79C48ca0F68",
+    "artefact": "0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B",
+    "fieldFlow": "0xdc01857f48De93FFcc461a5F0C335a6BD427b447",
+    "directChannel": "0x480d50Cf11852C87A0824cdd6A055D52F6B747DF",
+    "epochClosure": "0xB38dACe9B9E32361af609EcBb23211A659AF2799",
+    "reporter": "0x8382B02cDA8415BA7fc8AdE11A8Dc7928018dc8a",
+    "issuance": "0x95E4bD9936e4A690A63bFc5cADbb9293FF26ffcc",
+    "keyRegistry": "0xE82d6a4B26C648854e1618f5bA241B07cDFc6ac0"
+  },
+  "api": "https://z1n-backend-production.up.railway.app/api",
+  "explorer": "https://polygonscan.com"
+}
