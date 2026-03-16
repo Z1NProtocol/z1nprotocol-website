@@ -358,17 +358,19 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     Promise.all([
       fetch(API_BASE + '/keys/' + keyId, {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }),
       fetch(API_BASE + '/canon/key/' + keyId, {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }),
-      fetch(API_BASE + '/key/' + keyId + '/artefacts', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; })
+      fetch(API_BASE + '/key/' + keyId + '/artefacts', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }),
+      fetch(API_BASE + '/signals?limit=200', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; })
     ]).then(function(results) {
       var keyData   = results[0];
       var canonData = results[1];
       var artData   = results[2];
+      var allSigs   = results[3];
       var events    = [];
 
-      // Hash → keyId lookup for reply labels
+      // Global hash → keyId lookup across all signals
       var hashToKeyId = {};
-      (keyData.signalDetails || []).forEach(function(s) {
-        if (s.signalHash) hashToKeyId[s.signalHash.toLowerCase()] = s.tokenId;
+      (allSigs.signals || []).forEach(function(s) {
+        if (s.hash) hashToKeyId[s.hash.toLowerCase()] = s.keyId;
       });
 
       // Signals
@@ -399,7 +401,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       (artData.liveArtefacts || []).forEach(function(a) {
         var statusLabel = a.status === 'active' ? ' · bounded' : a.status === 'pending' ? ' · pending' : a.status === 'released' ? ' · released' : '';
         events.push({
-          ts: 1,
+          ts: Date.now(),
           epoch: a.mintEpoch || '',
           icon: '◈',
           iconClass: 'artefact',
