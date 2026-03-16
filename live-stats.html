@@ -162,7 +162,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .fs-headline .ep-value{color:var(--text-soft);font-weight:700;}
 .fs-headline .hl-sep{color:var(--text-soft);opacity:0.4;}
 .fs-headline .hl-title{color:var(--text-soft);font-weight:600;font-size:13px;letter-spacing:0.02em;}
-.fs-body{font-size:13px;line-height:1.65;color:var(--text-soft);max-width:980px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;}
+.fs-body{font-size:13px;line-height:1.75;color:var(--text-soft);max-width:780px;white-space:pre-wrap;word-break:break-word;text-align:center;margin:0 auto;font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;font-style:italic;letter-spacing:0.01em;}
 .epoch-tooltip{position:fixed;display:none;background:rgba(5,8,18,0.97);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--text-soft);max-width:280px;line-height:1.5;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:1000;pointer-events:none;}
 
 /* ═══ MOBILE CAROUSEL ═══ */
@@ -197,7 +197,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .ms-divider{width:40px;height:1px;background:rgba(148,163,184,0.2);margin:0 auto 14px;}
 .ms-signal-label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-soft);font-weight:600;text-align:center;margin-bottom:6px;}
 .ms-signal-epoch{font-size:12px;color:var(--text-soft);text-align:center;margin-bottom:6px;}
-.ms-signal-body{font-size:13px;line-height:1.6;color:var(--text-soft);text-align:center;white-space:pre-wrap;word-break:break-word;}
+.ms-signal-body{font-size:13px;line-height:1.75;color:var(--text-soft);text-align:center;white-space:pre-wrap;word-break:break-word;font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;font-style:italic;letter-spacing:0.01em;}
 
 /* Mobile stat tooltip */
 .ms-stat-label{position:relative;cursor:help;}
@@ -458,7 +458,15 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     if(!data)return;
     var ls=data.lensStats||{},lcd=data.lastClosedEpoch||0,ce=data.currentEpoch||0;
     function gc(s,fk,fc,fa){return{keys:s?.keys??fk??0,canon:s?.canon??fc??0,artefacts:s?.artefacts??fa??0};}
-    function bs(s,el){var m=s?.mas;if(m)return{epoch:el,body:m.text||m.body||m.cid||"Signal stored on-chain."};return{epoch:el,body:"No signals in this period."};}
+    function bs(s,el){
+  var m=s?.mas;
+  if(m){
+    var raw=m.text||m.body||m.cid||"Signal stored on-chain.";
+    var trimmed=raw.length>280?raw.slice(0,277)+"...":raw;
+    return{epoch:el,body:"\u201C"+trimmed+"\u201D"};
+  }
+  return{epoch:el,body:"No signals in this period."};
+}
 
     var tk=data.totalKeys||data.live?.totalKeys||0,tc=data.totalCanonMarkers||data.live?.totalCanonMarkers||0,ta=data.totalArtefacts||data.live?.totalArtefacts||0;
     var el21=lcd<21?"Epoch 0–"+lcd:"Epoch "+(lcd-20)+"–"+lcd;
