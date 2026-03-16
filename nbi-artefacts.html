@@ -397,9 +397,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
       // Artefacts
       (artData.liveArtefacts || []).forEach(function(a) {
-        var statusLabel = a.status === 'active' ? ' · bounded' : a.status === 'released' ? ' · released' : '';
+        var statusLabel = a.status === 'active' ? ' · bounded' : a.status === 'pending' ? ' · pending' : a.status === 'released' ? ' · released' : '';
         events.push({
-          ts: a.mintTimestamp || a.timestamp || 0,
+          ts: 1,
           epoch: a.mintEpoch || '',
           icon: '◈',
           iconClass: 'artefact',
