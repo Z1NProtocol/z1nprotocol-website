@@ -687,8 +687,8 @@ footer .links a:hover{color:var(--text-main);}
     try { var stored = localStorage.getItem('z1n_activity_read_' + tokenId); if (stored) readIds = JSON.parse(stored); } catch (e) {}
     // Tel NIEUWE (niet-oude-contract) gelezen items per type
     var readAttests = readIds.filter(function(id) {
-      return id.startsWith('attest_recv_') && !id.match(/^attest_recv_0x[0-9a-f]{8,12}_/i);
-    }).length;
+  return id.startsWith('attest_recv_');
+}).length;
     var readReplies = readIds.filter(function(id) {
       return id.startsWith('reply_recv_');
     }).length;
