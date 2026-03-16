@@ -459,7 +459,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   function updateFromAPI(data){
     if(!data)return;
     var ls=data.lensStats||{},lcd=data.lastClosedEpoch||0,ce=data.currentEpoch||0;
-    function gc(s,fk,fc,fa){return{keys:s?.keys??fk??0,canon:s?.canon??fc??0,artefacts:s?.artefacts??fa??0};}
+    function gc(s,fk,fc,fa){return{keys:s?.keys??fk??0,canon:(s?.canon>0?s.canon:fc)??0,artefacts:s?.artefacts??fa??0};}
     function bs(s,el){
   var m=s?.mas;
   if(m){
