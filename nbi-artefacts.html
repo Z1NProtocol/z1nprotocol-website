@@ -391,21 +391,21 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
           icon: sym,
           iconClass: cls,
           text: replyKeyId
-            ? 'Reply to Key ' + replyKeyId
+            ? 'Reply to Signal Key ' + replyKeyId
             : 'New Signal',
           sub: s.intent === 3 ? '[Silence]' : (s.cid ? s.cid.slice(0,60) + (s.cid.length > 60 ? '…' : '') : '')
         });
       });
 
-      // Attests sent — via signalDetails van andere keys
+      // Attests sent via attesters in allSigs
       (allSigs.signals || []).forEach(function(s) {
         (s.attesters || []).forEach(function(a) {
-          if (Number(a.attesterKeyId) === Number(keyId)) {
+          if (Number(a.attesterKeyId) === Number(keyId) || Number(a.tokenId) === Number(keyId)) {
             events.push({
-              ts: s.blockTimestamp || 0,
+              ts: a.blockNumber || s.blockTimestamp || 0,
               icon: '✓',
               iconClass: 'attest',
-              text: 'Attest sent · Key ' + (s.keyId || '?'),
+              text: 'Attest sent to Key ' + (s.keyId || '?'),
               sub: ''
             });
           }
@@ -436,7 +436,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
           artText = 'Artefact minted';
         }
         events.push({
-          ts: Date.now(),
+          ts: 0,
           icon: '◈',
           iconClass: 'artefact',
           text: artText,
