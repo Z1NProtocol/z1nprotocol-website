@@ -436,7 +436,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
           artText = 'Artefact minted';
         }
         events.push({
-          ts: 0,
+          ts: a.mintTimestamp || a.mintBlockNumber || 0,
           icon: '◈',
           iconClass: 'artefact',
           text: artText,
