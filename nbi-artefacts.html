@@ -364,12 +364,14 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       fetch(API_BASE + '/keys/' + keyId, {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }),
       fetch(API_BASE + '/canon/key/' + keyId, {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }),
       fetch(API_BASE + '/key/' + keyId + '/artefacts', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }),
-      fetch(API_BASE + '/signals?limit=200', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; })
+      fetch(API_BASE + '/signals?limit=200', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }),
+      fetch(API_BASE + '/attestations?fromKeyIds=' + keyId + '&limit=50', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; })
     ]).then(function(results) {
       var keyData   = results[0];
       var canonData = results[1];
       var artData   = results[2];
       var allSigs   = results[3];
+      var attData   = results[4];
       var events    = [];
 
       // Global hash → keyId lookup across all signals
@@ -397,18 +399,14 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         });
       });
 
-      // Attests sent via attesters in allSigs
-      (allSigs.signals || []).forEach(function(s) {
-        (s.attesters || []).forEach(function(a) {
-          if (Number(a.attesterKeyId) === Number(keyId) || Number(a.tokenId) === Number(keyId)) {
-            events.push({
-              ts: a.blockNumber || s.blockTimestamp || 0,
-              icon: '✓',
-              iconClass: 'attest',
-              text: 'Attest sent to Key ' + (s.keyId || '?'),
-              sub: ''
-            });
-          }
+      // Attests sent via /api/attestations
+      (attData.attestations || []).forEach(function(a) {
+        events.push({
+          ts: a.blockNumber || a.blockTimestamp || 0,
+          icon: '✓',
+          iconClass: 'attest',
+          text: 'Attest sent to Key ' + (a.signalKeyId || '?'),
+          sub: ''
         });
       });
 
