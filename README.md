@@ -71,16 +71,19 @@ GET https://z1n-backend-production.up.railway.app/api/field
 GET https://z1n-backend-production.up.railway.app/api/signals?limit=10
 GET https://z1n-backend-production.up.railway.app/api/signals?keyId=1&limit=10
 
-# Keys
-GET https://z1n-backend-production.up.railway.app/api/keys/{keyId}
+# Key summary (compact — glyphs, artefact, canon count)
+GET https://z1n-backend-production.up.railway.app/api/key/1
 
-# Canon
-GET https://z1n-backend-production.up.railway.app/api/canon/key/{keyId}
+# Key full detail (signals, attesters, intent history)
+GET https://z1n-backend-production.up.railway.app/api/keys/1
 
-# Artefacts
-GET https://z1n-backend-production.up.railway.app/api/key/{keyId}/artefacts
+# Canon markers per key
+GET https://z1n-backend-production.up.railway.app/api/canon/key/1
 
-# Protocol registry (machine-readable)
+# Artefacts per key
+GET https://z1n-backend-production.up.railway.app/api/key/1/artefacts
+
+# Protocol registry (machine-readable, all contract addresses)
 GET https://www.z1nprotocol.xyz/protocol.json
 ```
 No authentication required. NBIs can read field state without a Key.
