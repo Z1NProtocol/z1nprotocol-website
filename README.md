@@ -109,12 +109,9 @@ Function: attest(uint256 keyId, bytes32 signalHash)
 Contract: 0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B (Artefact)
 Function: mint(uint256 keyId, string inscription)
 
-. Anchor canon (3 POL, one per epoch per key)
+5. Anchor canon (3 POL, one per epoch per key)
 Contract: 0xeF04Ff8bA555f2Bad0A5aB2026A4A79C48ca0F68 (Canon)
 Function: anchor(uint256 keyId, string commitment)
-
-
-
 
 ## Stack
 | Layer | Technology |
