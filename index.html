@@ -516,9 +516,9 @@ backdrop-filter:blur(12px);
       </div>
 
       <div class="glance-card">
-        <div class="glance-label">Most attested intent · last epoch</div>
+        <div class="glance-label">Intent · latest signal</div>
         <div class="glance-value loading" id="glanceIntent">–</div>
-        <div class="glance-sub" id="glanceIntentSub">Leading intent from the last closed epoch.</div>
+        <div class="glance-sub" id="glanceIntentSub">Intent of the most recent signal in the field.</div>
       </div>
     </div>
   </section>
@@ -652,31 +652,22 @@ backdrop-filter:blur(12px);
     countUp(elSignals, totalSignals, dur);
 
     // Epoch sub: protocol progress % (TOTAL_EPOCHS from Parameters.sol = 8766)
-    var progress = currentEpoch > 0 ? ((currentEpoch / TOTAL_EPOCHS) * 100).toFixed(2) : "0.00";
+    var progress = currentEpoch > 0 ? ((currentEpoch / TOTAL_EPOCHS) * 100).toFixed(1) : "0.0";
     elEpochSub.textContent = progress + "% of protocol completed";
 
-    // Intent distribution from last closed epoch
-    var dist = data.intentDistribution?.lastEpoch;
-    if (dist) {
-      var maxKey = null;
-      var maxVal = -1;
-      Object.keys(dist).forEach(function(k) {
-        if (dist[k] > maxVal) { maxVal = dist[k]; maxKey = k; }
-      });
-
-      if (maxKey && maxVal > 0) {
-        var info = INTENTS[maxKey] || { name: maxKey, desc: "", color: "#8f9ab5" };
-        elIntent.textContent = maxKey;
-        elIntent.style.color = info.color;
-        elIntentSub.textContent = info.desc;
-      } else {
-        elIntent.textContent = "–";
-        elIntent.style.color = "";
-        elIntentSub.textContent = "No signals in last epoch.";
-      }
+    // Intent of latest signal
+    var latestSignal = data.latestSignal || data.recentSignals?.[0];
+    var INTENT_SYMBOLS = ["ΩC", "ΩI", "ΩK", "ΩS"];
+    if (latestSignal && latestSignal.intent !== undefined) {
+      var intentKey = INTENT_SYMBOLS[latestSignal.intent] || "–";
+      var info = INTENTS[intentKey] || { name: intentKey, desc: "", color: "#8f9ab5" };
+      elIntent.textContent = intentKey;
+      elIntent.style.color = info.color;
+      elIntentSub.textContent = info.desc;
     } else {
       elIntent.textContent = "–";
-      elIntentSub.textContent = "No distribution data.";
+      elIntent.style.color = "";
+      elIntentSub.textContent = "No signals yet.";
     }
 
     hasRendered = true;
