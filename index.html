@@ -325,7 +325,7 @@ backdrop-filter:blur(12px);
     background: var(--card-bg);
     border-radius: 16px;
     border: 1px solid var(--card-border);
-    padding: 14px 14px 16px;
+    padding: 10px 12px 12px;
     font-size: 13px;
     transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease, background-color 220ms ease;
   }
@@ -508,7 +508,6 @@ backdrop-filter:blur(12px);
         <div class="glance-value loading" id="glanceEpoch">–</div>
         <div class="glance-sub" id="glanceEpochSub">21 years · 21 hours per epoch.</div>
       </div>
-
       <div class="glance-card">
         <div class="glance-label">Signals total</div>
         <div class="glance-value loading" id="glanceSignals">–</div>
@@ -516,7 +515,7 @@ backdrop-filter:blur(12px);
       </div>
 
       <div class="glance-card">
-        <div class="glance-label">Intent · latest signal</div>
+        <div class="glance-label">Dominant intent · field</div>
         <div class="glance-value loading" id="glanceIntent">–</div>
         <div class="glance-sub" id="glanceIntentSub">Intent of the most recent signal in the field.</div>
       </div>
@@ -655,18 +654,28 @@ backdrop-filter:blur(12px);
     var progress = currentEpoch > 0 ? ((currentEpoch / TOTAL_EPOCHS) * 100).toFixed(1) : "0.0";
     elEpochSub.textContent = progress + "% of protocol completed";
 
-    // Intent of latest signal
-    var latestSignal = data.latestSignal || data.recentSignals?.[0];
-    var INTENT_SYMBOLS = ["ΩC", "ΩI", "ΩK", "ΩS"];
-    if (latestSignal && latestSignal.intent !== undefined) {
-      var intentKey = INTENT_SYMBOLS[latestSignal.intent] || "–";
-      var info = INTENTS[intentKey] || { name: intentKey, desc: "", color: "#8f9ab5" };
-      elIntent.textContent = intentKey;
-      elIntent.style.color = info.color;
-      elIntentSub.textContent = info.desc;
+    // Dominant intent — last epoch with fallback to total
+    var dist = data.intentDistribution?.lastEpoch;
+    if (!dist || Math.max.apply(null, Object.values(dist)) === 0) {
+      dist = data.intentDistribution?.total;
+    }
+    if (dist) {
+      var maxKey = null, maxVal = -1;
+      Object.keys(dist).forEach(function(k) {
+        if (dist[k] > maxVal) { maxVal = dist[k]; maxKey = k; }
+      });
+      if (maxKey && maxVal > 0) {
+        var info = INTENTS[maxKey] || { name: maxKey, desc: "", color: "#8f9ab5" };
+        elIntent.textContent = maxKey;
+        elIntent.style.color = info.color;
+        elIntentSub.textContent = info.desc;
+      } else {
+        elIntent.textContent = "–";
+        elIntent.style.color = "";
+        elIntentSub.textContent = "No signals yet.";
+      }
     } else {
       elIntent.textContent = "–";
-      elIntent.style.color = "";
       elIntentSub.textContent = "No signals yet.";
     }
 
