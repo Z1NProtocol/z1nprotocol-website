@@ -341,11 +341,21 @@
               'Released artefact #' + a.tokenId + (a.releaseMessage ? ' · ' + a.releaseMessage.slice(0, 40) : '')
             ]);
           });
-          (libData2.library || []).filter(function(a) { return a.offerMessage; }).forEach(function(a) {
+          (libData2.library || []).forEach(function(a) {
+            if (a.status === 'pending') {
+              if (!a.offerMessage) return;
+              rows.push([
+                'artefact_offer_received', '', 'in', currentKeyId, a.sourceKeyId || '',
+                '', '', '', '', '', '', a.tokenId || '', 'PENDING', a.inscription || '', '',
+                'Offer received for artefact #' + a.tokenId + ' from K#' + (a.sourceKeyId || '?') + ' · ' + a.offerMessage.slice(0, 40)
+              ]);
+              return;
+            }
+            var statusLabel = a.status === 'active' ? 'BOUNDED' : 'RELEASED';
             rows.push([
-              'artefact_offer_received', '', 'in', currentKeyId, a.sourceKeyId || '',
-              '', '', '', '', '', '', a.tokenId || '', a.status ? a.status.toUpperCase() : '', a.inscription || '', '',
-              'Offer received for artefact #' + a.tokenId + ' from K#' + (a.sourceKeyId || '?') + ' · ' + a.offerMessage.slice(0, 40)
+              'artefact_received', '', 'in', currentKeyId, a.sourceKeyId || '',
+              '', '', '', '', '', '', a.tokenId || '', statusLabel, a.inscription || '', '',
+              'Received artefact #' + a.tokenId + ' from K#' + (a.sourceKeyId || '?') + ' · ' + statusLabel
             ]);
           });
         }
