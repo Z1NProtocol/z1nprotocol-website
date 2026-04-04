@@ -582,6 +582,19 @@ backdrop-filter:blur(12px);
     }
     .contract-addr:hover{ color:var(--text-main); text-decoration:underline; }
 
+    @keyframes thumbPulse {
+      0%, 100% { box-shadow: 0 10px 20px rgba(0,0,0,0.35), 0 0 0 0   rgba(255,213,86,0.55), 0 0 0 1px rgba(255,255,255,0.08); }
+      50%       { box-shadow: 0 10px 20px rgba(0,0,0,0.35), 0 0 0 7px rgba(255,213,86,0.0),  0 0 0 1px rgba(255,255,255,0.08); }
+    }
+    input[type="range"].pulse-hint::-webkit-slider-thumb {
+      animation: thumbPulse 1.6s ease-in-out infinite;
+    }
+    .slider-hint-label {
+      text-align: center; font-size: 11px; color: var(--text-soft);
+      margin-bottom: 4px; transition: opacity 0.4s; letter-spacing: 0.06em;
+    }
+    .slider-hint-label.hidden { opacity: 0; }
+
     @media(prefers-reduced-motion:reduce){
       html{ scroll-behavior:auto; }
       .field-mist{ animation:none; }
@@ -663,8 +676,9 @@ backdrop-filter:blur(12px);
       </div>
 
       <div class="slider-wrap">
+        <div class="slider-hint-label" id="sliderHintLabel">← sleep →</div>
         <input id="epochSlider" type="range" min="0" max="8" step="1" value="0"
-       aria-label="Epoch slider"
+       class="pulse-hint" aria-label="Epoch slider"
        aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" />
       </div>
 
@@ -883,6 +897,18 @@ backdrop-filter:blur(12px);
       el.classList.add("new");
       setTimeout(() => el.classList.remove("new"), 820);
     }
+
+    const sliderHintLabel = document.getElementById("sliderHintLabel");
+    let hintDismissed = false;
+    function dismissHint(){
+      if (hintDismissed) return;
+      hintDismissed = true;
+      slider.classList.remove("pulse-hint");
+      sliderHintLabel.classList.add("hidden");
+    }
+    slider.addEventListener("mousedown", dismissHint, { passive: true });
+    slider.addEventListener("touchstart", dismissHint, { passive: true });
+    slider.addEventListener("input", dismissHint, { passive: true });
 
     let lastE = Number(slider.value);
 
