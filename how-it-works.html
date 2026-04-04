@@ -928,7 +928,8 @@ backdrop-filter:blur(12px);
       const min = Number(slider.min);
       const max = Number(slider.max);
       const val = Number(slider.value);
-      const thumbRadius = 9;
+      const thumbDia = window.innerWidth <= 600 ? 28 : 18;
+      const thumbRadius = thumbDia / 2;
       const trackWidth = slider.offsetWidth - thumbRadius * 2;
       const pct = (val - min) / (max - min);
       const x = thumbRadius + pct * trackWidth + 0.5;
@@ -937,6 +938,8 @@ backdrop-filter:blur(12px);
       const y = sliderRect.top - wrapRect.top + sliderRect.height / 2;
       thumbPulseRing.style.left = x + "px";
       thumbPulseRing.style.top = y + "px";
+      thumbPulseRing.style.width = thumbDia + "px";
+      thumbPulseRing.style.height = thumbDia + "px";
     }
     slider.addEventListener("input", syncRing, { passive: true });
     window.addEventListener("resize", syncRing, { passive: true });
