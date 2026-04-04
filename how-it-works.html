@@ -600,17 +600,16 @@ backdrop-filter:blur(12px);
       position: absolute;
       width: 18px; height: 18px;
       border-radius: 999px;
-      border: 1.5px solid rgba(255,255,255,0.7);
+      border: 2.5px solid rgba(255,255,255,0.75);
       transform: translate(-50%, -50%);
-      animation: ringPulse 1.4s ease-out infinite;
+      animation: ringPulse 1.5s ease-out infinite;
       pointer-events: none;
       transition: opacity 0.4s;
-      margin-top: 0;
     }
     .thumb-pulse-ring.hidden { opacity: 0; animation: none; }
     @keyframes ringPulse {
-      0%   { width: 18px; height: 18px; opacity: 0.85; }
-      100% { width: 36px; height: 36px; opacity: 0; }
+      0%   { width: 18px; height: 18px; opacity: 0.9; }
+      100% { width: 40px; height: 40px; opacity: 0; }
     }
 
     @media(prefers-reduced-motion:reduce){
@@ -932,7 +931,7 @@ backdrop-filter:blur(12px);
       const thumbRadius = 9;
       const trackWidth = slider.offsetWidth - thumbRadius * 2;
       const pct = (val - min) / (max - min);
-      const x = thumbRadius + pct * trackWidth;
+      const x = thumbRadius + pct * trackWidth + 0.5;
       const sliderRect = slider.getBoundingClientRect();
       const wrapRect = slider.parentElement.getBoundingClientRect();
       const y = sliderRect.top - wrapRect.top + sliderRect.height / 2;
