@@ -598,19 +598,19 @@ backdrop-filter:blur(12px);
     .slider-wrap { position: relative; }
     .thumb-pulse-ring {
       position: absolute;
-      width: 32px; height: 32px;
+      width: 18px; height: 18px;
       border-radius: 999px;
-      border: 2px solid rgba(255,255,255,0.6);
-      top: 50%; left: 9px;
-      transform: translateY(-50%);
+      border: 1.5px solid rgba(255,255,255,0.7);
+      top: 50%;
+      transform: translate(-50%, -50%);
       animation: ringPulse 1.4s ease-out infinite;
       pointer-events: none;
       transition: opacity 0.4s;
     }
-    .thumb-pulse-ring.hidden { opacity: 0; }
+    .thumb-pulse-ring.hidden { opacity: 0; animation: none; }
     @keyframes ringPulse {
-      0%   { transform: translateY(-50%) scale(0.7); opacity: 0.9; }
-      100% { transform: translateY(-50%) scale(1.7); opacity: 0; }
+      0%   { width: 18px; height: 18px; opacity: 0.85; }
+      100% { width: 36px; height: 36px; opacity: 0; }
     }
 
     @media(prefers-reduced-motion:reduce){
@@ -924,6 +924,22 @@ backdrop-filter:blur(12px);
       slider.classList.remove("pulse-hint");
       thumbPulseRing.classList.add("hidden");
     }
+    function syncRing(){
+      if (hintDismissed) return;
+      const min = Number(slider.min);
+      const max = Number(slider.max);
+      const val = Number(slider.value);
+      const thumbRadius = 9;
+      const trackWidth = slider.offsetWidth - thumbRadius * 2;
+      const pct = (val - min) / (max - min);
+      const x = thumbRadius + pct * trackWidth;
+      const y = slider.offsetHeight / 2;
+      thumbPulseRing.style.left = x + "px";
+      thumbPulseRing.style.top = y + "px";
+    }
+    slider.addEventListener("input", syncRing, { passive: true });
+    window.addEventListener("resize", syncRing, { passive: true });
+    setTimeout(syncRing, 50);
     slider.addEventListener("mousedown", dismissHint, { passive: true });
     slider.addEventListener("touchstart", dismissHint, { passive: true });
     slider.addEventListener("input", dismissHint, { passive: true });
