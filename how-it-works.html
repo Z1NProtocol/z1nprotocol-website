@@ -595,6 +595,23 @@ backdrop-filter:blur(12px);
       margin-bottom: 4px; transition: opacity 0.4s; letter-spacing: 0.06em;
     }
     .slider-hint-label.hidden { opacity: 0; }
+    .slider-wrap { position: relative; }
+    .thumb-pulse-ring {
+      position: absolute;
+      width: 32px; height: 32px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.6);
+      top: 50%; left: 9px;
+      transform: translateY(-50%);
+      animation: ringPulse 1.4s ease-out infinite;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    .thumb-pulse-ring.hidden { opacity: 0; }
+    @keyframes ringPulse {
+      0%   { transform: translateY(-50%) scale(0.7); opacity: 0.9; }
+      100% { transform: translateY(-50%) scale(1.7); opacity: 0; }
+    }
 
     @media(prefers-reduced-motion:reduce){
       html{ scroll-behavior:auto; }
@@ -677,6 +694,7 @@ backdrop-filter:blur(12px);
       </div>
 
       <div class="slider-wrap">
+        <div class="thumb-pulse-ring" id="thumbPulseRing"></div>
         <input id="epochSlider" type="range" min="0" max="8" step="1" value="0"
        class="pulse-hint" aria-label="Epoch slider"
        aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" />
@@ -898,11 +916,13 @@ backdrop-filter:blur(12px);
       setTimeout(() => el.classList.remove("new"), 820);
     }
 
+    const thumbPulseRing = document.getElementById("thumbPulseRing");
     let hintDismissed = false;
     function dismissHint(){
       if (hintDismissed) return;
       hintDismissed = true;
       slider.classList.remove("pulse-hint");
+      thumbPulseRing.classList.add("hidden");
     }
     slider.addEventListener("mousedown", dismissHint, { passive: true });
     slider.addEventListener("touchstart", dismissHint, { passive: true });
