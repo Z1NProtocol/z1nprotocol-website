@@ -601,11 +601,11 @@ backdrop-filter:blur(12px);
       width: 18px; height: 18px;
       border-radius: 999px;
       border: 1.5px solid rgba(255,255,255,0.7);
-      top: 50%;
       transform: translate(-50%, -50%);
       animation: ringPulse 1.4s ease-out infinite;
       pointer-events: none;
       transition: opacity 0.4s;
+      margin-top: 0;
     }
     .thumb-pulse-ring.hidden { opacity: 0; animation: none; }
     @keyframes ringPulse {
@@ -933,7 +933,9 @@ backdrop-filter:blur(12px);
       const trackWidth = slider.offsetWidth - thumbRadius * 2;
       const pct = (val - min) / (max - min);
       const x = thumbRadius + pct * trackWidth;
-      const y = slider.offsetHeight / 2;
+      const sliderRect = slider.getBoundingClientRect();
+      const wrapRect = slider.parentElement.getBoundingClientRect();
+      const y = sliderRect.top - wrapRect.top + sliderRect.height / 2;
       thumbPulseRing.style.left = x + "px";
       thumbPulseRing.style.top = y + "px";
     }
