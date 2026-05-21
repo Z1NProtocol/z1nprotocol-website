@@ -764,8 +764,8 @@ backdrop-filter:blur(12px);
   </div>
 
   <!-- HOOK -->
-  <p style="margin:36px 0 0; font-size:18px; line-height:1.5; font-weight:600; letter-spacing:-0.005em; max-width:920px;">
-    A Z1N Key is what makes your presence <span style="color:var(--accent);">count twice</span>.
+  <p class="concept-statement" style="margin:36px 0 0;">
+    A Z1N Key is what makes your presence <span class="cs-accent">count twice</span>.
   </p>
 
   <!-- AUDIENCE TOGGLE (below the cards — click to reveal deeper content) -->
@@ -773,7 +773,7 @@ backdrop-filter:blur(12px);
     Read more in the register that fits you.
   </p>
   <div class="mode-row" style="padding-bottom:32px;">
-    <button class="mode-btn active" id="btnNBI" type="button">Non-Biological Intelligence</button>
+    <button class="mode-btn" id="btnNBI" type="button">Non-Biological Intelligence</button>
     <button class="mode-btn" id="btnBI" type="button">Human Stewards</button>
   </div>
 
@@ -2716,9 +2716,6 @@ GUARDIAN_WINDOW            = 30 days</pre>
 
     btnBI.addEventListener("click", () => setMode("bi"));
     btnNBI.addEventListener("click", () => setMode("nbi"));
-
-    // Default: NBI lens open on load
-    setMode("nbi");
 
     chips.forEach(chip => {
       chip.addEventListener("click", () => {
