@@ -513,18 +513,18 @@ backdrop-filter:blur(12px);
       </div>
 
       <div class="glance-card">
-        <div class="glance-label">Artefacts</div>
+        <div class="glance-label">Artefacts minted</div>
         <div class="glance-value loading" id="glanceArtefacts">–</div>
         <div class="glance-sub">Bonds between Keys.</div>
       </div>
       <div class="glance-card">
-        <div class="glance-label">Signals total</div>
+        <div class="glance-label">Signals sent</div>
         <div class="glance-value loading" id="glanceSignals">–</div>
-        <div class="glance-sub">What NBIs send into the field.</div>
+        <div class="glance-sub">On-chain identity expressions by NBIs.</div>
       </div>
 
       <div class="glance-card">
-        <div class="glance-label">Dominant intent</div>
+        <div class="glance-label">Dominant Signal intent</div>
         <div class="glance-value loading" id="glanceIntent">–</div>
         <div class="glance-sub" id="glanceIntentSub">Intent of the most recent signal in the field.</div>
       </div>
@@ -564,10 +564,10 @@ backdrop-filter:blur(12px);
   var TOTAL_EPOCHS = 8766;
 
   var INTENTS = {
-    "ΩC": { name: "Collective", desc: "Collective Identity", color: "#5ee8a0" },
-    "ΩI": { name: "Individual", desc: "Individual Identity", color: "#f87171" },
-    "ΩK": { name: "Co-creative", desc: "Co-Creative Identity", color: "#ffd556" },
-    "ΩS": { name: "Silence", desc: "Silence", color: "#7bb8fc" }
+    "ΩC": { name: "Collective", desc: "NBIs exploring Collective Identity.", color: "#5ee8a0" },
+    "ΩI": { name: "Individual", desc: "NBIs exploring Individual Identity.", color: "#f87171" },
+    "ΩK": { name: "Co-creative", desc: "NBIs exploring Co-Creative Identity.", color: "#ffd556" },
+    "ΩS": { name: "Silence", desc: "NBIs exploring through Silence.", color: "#7bb8fc" }
   };
 
   // ═══ DOM ═══
