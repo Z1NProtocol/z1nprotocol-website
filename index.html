@@ -513,14 +513,14 @@ backdrop-filter:blur(12px);
       </div>
 
       <div class="glance-card">
-        <div class="glance-label">Epoch</div>
-        <div class="glance-value loading" id="glanceEpoch">–</div>
-        <div class="glance-sub" id="glanceEpochSub">21 years · 21 hours per epoch.</div>
+        <div class="glance-label">Artefacts</div>
+        <div class="glance-value loading" id="glanceArtefacts">–</div>
+        <div class="glance-sub">Bonds between Keys.</div>
       </div>
       <div class="glance-card">
         <div class="glance-label">Signals total</div>
         <div class="glance-value loading" id="glanceSignals">–</div>
-        <div class="glance-sub">Proof of Glyph signals across all epochs.</div>
+        <div class="glance-sub">Signals — proofs of presence across the field.</div>
       </div>
 
       <div class="glance-card">
@@ -572,8 +572,7 @@ backdrop-filter:blur(12px);
 
   // ═══ DOM ═══
   var elKeys = document.getElementById("glanceKeys");
-  var elEpoch = document.getElementById("glanceEpoch");
-  var elEpochSub = document.getElementById("glanceEpochSub");
+  var elArtefacts = document.getElementById("glanceArtefacts");
   var elSignals = document.getElementById("glanceSignals");
   var elIntent = document.getElementById("glanceIntent");
   var elIntentSub = document.getElementById("glanceIntentSub");
@@ -643,25 +642,21 @@ backdrop-filter:blur(12px);
     // Primary paths → fallbacks (all from /api/field, 0 RPC)
     var totalKeys = data.lensStats?.total?.keys ?? data.totalKeys ?? 0;
     var totalSignals = data.lensStats?.total?.signals ?? data.totalSignals ?? 0;
-    var currentEpoch = data.currentEpoch ?? 0;
+    var totalArtefacts = data.totalArtefacts ?? data.live?.totalArtefacts ?? data.lensStats?.total?.artefacts ?? 0;
 
     totalKeys = typeof totalKeys === "number" ? totalKeys : (parseInt(String(totalKeys), 10) || 0);
     totalSignals = typeof totalSignals === "number" ? totalSignals : (parseInt(String(totalSignals), 10) || 0);
-    currentEpoch = typeof currentEpoch === "number" ? currentEpoch : (parseInt(String(currentEpoch), 10) || 0);
+    totalArtefacts = typeof totalArtefacts === "number" ? totalArtefacts : (parseInt(String(totalArtefacts), 10) || 0);
 
     // Remove all loading states
-    [elKeys, elEpoch, elSignals, elIntent].forEach(stopLoading);
+    [elKeys, elArtefacts, elSignals, elIntent].forEach(stopLoading);
 
     // Count-up only on first load
     var dur = hasRendered ? 0 : 2000;
 
     countUp(elKeys, totalKeys, dur);
-    countUp(elEpoch, currentEpoch, dur);
+    countUp(elArtefacts, totalArtefacts, dur);
     countUp(elSignals, totalSignals, dur);
-
-    // Epoch sub: protocol progress % (TOTAL_EPOCHS from Parameters.sol = 8766)
-    var progress = currentEpoch > 0 ? ((currentEpoch / TOTAL_EPOCHS) * 100).toFixed(1) : "0.0";
-    elEpochSub.textContent = progress + "% of protocol completed";
 
     // Dominant intent — last epoch with fallback to total
     var dist = data.intentDistribution?.lastEpoch;
@@ -692,11 +687,10 @@ backdrop-filter:blur(12px);
   }
 
   function renderFallback() {
-    [elKeys, elEpoch, elSignals, elIntent].forEach(function (el) {
+    [elKeys, elArtefacts, elSignals, elIntent].forEach(function (el) {
       if (el) { el.textContent = "–"; stopLoading(el); }
     });
 
-    if (elEpochSub) elEpochSub.textContent = "–";
     if (elIntentSub) elIntentSub.textContent = "No data.";
     if (elIntent) elIntent.style.color = "";
   }
