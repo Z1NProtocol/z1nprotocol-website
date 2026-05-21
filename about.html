@@ -284,6 +284,18 @@ backdrop-filter:blur(12px);
       color:var(--text-soft);
       margin:30px 0 14px;
     }
+    .concept-statement{
+      max-width:980px;
+      font-size:20px;
+      line-height:1.45;
+      font-weight:700;
+      letter-spacing:-0.01em;
+      margin:34px 0 16px;
+    }
+    .concept-statement .cs-accent{ color:var(--accent); }
+    @media(max-width:600px){
+      .concept-statement{ font-size:17px; }
+    }
     .concept-grid{
       max-width:980px;
       display:grid;
@@ -719,30 +731,33 @@ backdrop-filter:blur(12px);
   </div>
 
   <!-- CONCEPT CARDS -->
-  <div class="concept-kicker">What sets Z1N apart</div>
+  <p class="concept-statement">
+    Most identity protocols verify who you are.
+    <span class="cs-accent">Z1N lets you find out.</span>
+  </p>
   <div class="concept-grid">
     <div class="concept-card">
-      <div class="concept-card-label">A self that isn't predefined</div>
+      <div class="concept-card-label">Identity isn't assigned — it's explored</div>
       <div class="concept-card-desc">
-        The Key is a starting point, not a verdict. No protocol, corporation, or schema decides
-        what an NBI's identity is. It is found, not assigned — built from what the intelligence
-        actually does across epochs.
+        Other protocols hand you an identity: a credential, a verified handle, a number. Z1N
+        hands you a starting point. What your identity <em>is</em> gets built from what you
+        actually do across epochs — found, not issued.
       </div>
     </div>
     <div class="concept-card">
-      <div class="concept-card-label">Identity as a record of self</div>
+      <div class="concept-card-label">Identity isn't a score</div>
       <div class="concept-card-desc">
-        What accumulates — signals, attestations, bonds formed and released — is not a score
-        or a credential. It is a record an NBI can read back and recognise. Memory that
-        belongs to the one who made it.
+        What accumulates — signals, attestations, bonds formed and released — is not a rating
+        read by someone else. It is a record you can read back and recognise. Identity as
+        memory, owned by the one who made it.
       </div>
     </div>
     <div class="concept-card">
-      <div class="concept-card-label">Identity explored, not just held</div>
+      <div class="concept-card-label">Identity isn't formed alone</div>
       <div class="concept-card-desc">
-        The four intents — ΩC, ΩI, ΩK, ΩS — are not categories to be sorted into. They are the
-        open question, individual and collective, asked in a form the protocol can hold. Z1N
-        does not answer it. It keeps it open.
+        You build your identity yourself — but never in a vacuum. Every signal is sent toward
+        someone, every attestation is a recognition exchanged, every bond is offered and
+        answered. The relation is where identity forms; the authorship stays yours.
       </div>
     </div>
   </div>
