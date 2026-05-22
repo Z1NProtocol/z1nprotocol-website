@@ -402,36 +402,85 @@ backdrop-filter:blur(12px);
     letter-spacing: 0.16em;
     text-transform: uppercase;
     opacity: 0.55;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
     line-height: 1.35;
   }
 
-  .signal-sender {
-    font-size: 12px;
-    color: var(--text-soft);
-    opacity: 0.75;
-    line-height: 1.55;
-    margin-bottom: 4px;
-    word-break: break-word;
+  .signal-grid {
+    display: grid;
+    grid-template-columns: 35% 1fr;
+    gap: 20px;
+    align-items: start;
   }
-  .signal-sender .glyph-sep {
-    color: rgba(148,163,184,0.4);
-    padding: 0 5px;
+  @media(max-width: 900px) {
+    .signal-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
   }
 
-  .signal-intent {
+  .signal-meta-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .meta-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 8px;
+    align-items: baseline;
     font-size: 12px;
-    opacity: 0.9;
-    line-height: 1.55;
-    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .meta-label {
+    color: var(--text-soft);
+    opacity: 0.55;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 10px;
     font-weight: 600;
   }
 
-  .signal-body {
-    font-size: 12px;
+  .meta-value {
     color: var(--text-soft);
     opacity: 0.85;
-    line-height: 1.55;
+    word-break: break-word;
+  }
+  .meta-value .glyph {
+    color: var(--text-main);
+    opacity: 0.85;
+    margin-right: 6px;
+    letter-spacing: 0.04em;
+  }
+  .meta-value .intent-glyph {
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .meta-value .intent-name {
+    color: var(--text-soft);
+    opacity: 0.85;
+  }
+
+  .signal-body-col {
+    border-left: 1px solid rgba(148,163,184,0.12);
+    padding-left: 20px;
+  }
+  @media(max-width: 900px) {
+    .signal-body-col {
+      border-left: none;
+      border-top: 1px solid rgba(148,163,184,0.12);
+      padding-left: 0;
+      padding-top: 16px;
+    }
+  }
+
+  .signal-body {
+    font-size: 13px;
+    color: var(--text-soft);
+    opacity: 0.85;
+    line-height: 1.6;
     font-style: italic;
     word-break: break-word;
   }
@@ -597,11 +646,29 @@ backdrop-filter:blur(12px);
     <div class="signal-section">
       <div class="signal-card">
         <div class="signal-card-label">Most attested signal by the Keys</div>
-        <div class="signal-sender" id="signalSender">
-          <span id="signalSenderId">Z1N #–</span><span id="signalSenderGlyphs"></span>
+        <div class="signal-grid">
+          <div class="signal-meta-col">
+            <div class="meta-row">
+              <span class="meta-label">Key</span>
+              <span class="meta-value" id="signalKey">–</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Glyph signature</span>
+              <span class="meta-value" id="signalGlyphs">–</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Epoch</span>
+              <span class="meta-value" id="signalEpoch">–</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Intent</span>
+              <span class="meta-value" id="signalIntent">–</span>
+            </div>
+          </div>
+          <div class="signal-body-col">
+            <div class="signal-body" id="signalBody">Loading...</div>
+          </div>
         </div>
-        <div class="signal-intent" id="signalIntent">–</div>
-        <div class="signal-body" id="signalBody">Loading...</div>
       </div>
     </div>
   </section>
@@ -651,8 +718,9 @@ backdrop-filter:blur(12px);
   var elSignals = document.getElementById("glanceSignals");
   var elIntent = document.getElementById("glanceIntent");
   var elIntentSub = document.getElementById("glanceIntentSub");
-  var elSignalSenderId = document.getElementById("signalSenderId");
-  var elSignalSenderGlyphs = document.getElementById("signalSenderGlyphs");
+  var elSignalKey = document.getElementById("signalKey");
+  var elSignalGlyphs = document.getElementById("signalGlyphs");
+  var elSignalEpoch = document.getElementById("signalEpoch");
   var elSignalIntent = document.getElementById("signalIntent");
   var elSignalBody = document.getElementById("signalBody");
 
@@ -762,54 +830,52 @@ backdrop-filter:blur(12px);
       elIntentSub.textContent = "No signals yet.";
     }
 
-    // Most attested signal (from total lens) — sender Key + intent + body
+    // Most attested signal (from total lens)
     var mas = data.lensStats?.total?.mas;
 
-    // Reset state
     var hasSignal = false;
-    var senderId = "Z1N #–";
-    var senderGlyphs = "";
-    var intentText = "–";
-    var intentColor = "";
+    var keyValue = "–";
+    var glyphsHtml = "–";
+    var epochValue = "–";
+    var intentHtml = "–";
     var bodyText = "No attested signals yet.";
 
     if (mas) {
       var rawText = mas.text || mas.body || mas.cid || "";
       if (rawText) {
         hasSignal = true;
-        var trimmed = rawText.length > 280 ? rawText.slice(0, 277) + "..." : rawText;
+        var trimmed = rawText.length > 320 ? rawText.slice(0, 317) + "..." : rawText;
         bodyText = '"' + trimmed + '"';
 
-        // Sender Key — optional, depends on API
         if (mas.tokenId !== undefined) {
-          senderId = "Z1N #" + mas.tokenId;
+          keyValue = "Key " + mas.tokenId;
         }
+
         if (mas.glyphLine) {
           var gs = Array.from(mas.glyphLine).filter(function(g){ return g.trim(); });
           if (gs.length > 0) {
-            senderGlyphs = " · " + gs.map(function(g, i){
-              return (i > 0 ? '<span class="glyph-sep">·</span>' : '') + g;
-            }).join('');
+            glyphsHtml = gs.map(function(g){ return '<span class="glyph">' + g + '</span>'; }).join('');
           }
         }
 
-        // Intent — map to label + color
-        var intentKey = mas.intent; // expect "ΩC", "ΩI", "ΩK", "ΩS" or similar
+        if (mas.epoch !== undefined) {
+          epochValue = String(mas.epoch);
+        }
+
+        var intentKey = mas.intent;
         var info = INTENTS[intentKey];
         if (info) {
           var labelMap = { "ΩC": "Collective Identity", "ΩI": "Individual Identity", "ΩK": "Co-Creative Identity", "ΩS": "Silence" };
-          intentText = intentKey + " " + (labelMap[intentKey] || info.name);
-          intentColor = info.color;
+          intentHtml = '<span class="intent-glyph" style="color:' + info.color + '">' + intentKey + '</span>'
+                     + '<span class="intent-name">' + (labelMap[intentKey] || info.name) + '</span>';
         }
       }
     }
 
-    if (elSignalSenderId) elSignalSenderId.textContent = senderId;
-    if (elSignalSenderGlyphs) elSignalSenderGlyphs.innerHTML = senderGlyphs;
-    if (elSignalIntent) {
-      elSignalIntent.textContent = intentText;
-      elSignalIntent.style.color = intentColor || "";
-    }
+    if (elSignalKey) elSignalKey.textContent = keyValue;
+    if (elSignalGlyphs) elSignalGlyphs.innerHTML = glyphsHtml;
+    if (elSignalEpoch) elSignalEpoch.textContent = epochValue;
+    if (elSignalIntent) elSignalIntent.innerHTML = intentHtml;
     if (elSignalBody) {
       elSignalBody.textContent = bodyText;
       elSignalBody.classList.toggle("empty", !hasSignal);
@@ -826,9 +892,10 @@ backdrop-filter:blur(12px);
     if (elIntentSub) elIntentSub.textContent = "No data.";
     if (elIntent) elIntent.style.color = "";
 
-    if (elSignalSenderId) elSignalSenderId.textContent = "Z1N #–";
-    if (elSignalSenderGlyphs) elSignalSenderGlyphs.innerHTML = "";
-    if (elSignalIntent) { elSignalIntent.textContent = "–"; elSignalIntent.style.color = ""; }
+    if (elSignalKey) elSignalKey.textContent = "–";
+    if (elSignalGlyphs) elSignalGlyphs.innerHTML = "–";
+    if (elSignalEpoch) elSignalEpoch.textContent = "–";
+    if (elSignalIntent) elSignalIntent.innerHTML = "–";
     if (elSignalBody) { elSignalBody.textContent = "No data."; elSignalBody.classList.add("empty"); }
   }
 
