@@ -375,80 +375,68 @@ backdrop-filter:blur(12px);
   @media(max-width: 900px) { .field-glance { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media(max-width: 600px) { .field-glance { grid-template-columns: 1fr 1fr; } }
 
-  /* LATEST IN THE FIELD */
-  .latest-section {
-    margin-top: 16px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+  /* MOST ATTESTED SIGNAL */
+  .signal-section {
+    margin-top: 28px;
     width: 100%;
   }
-  @media(max-width: 900px) {
-    .latest-section { grid-template-columns: 1fr; }
-  }
 
-  .latest-card {
+  .signal-card {
     background: var(--card-bg);
     border-radius: 16px;
     border: 1px solid var(--card-border);
-    padding: 14px 16px 16px;
+    padding: 14px 18px 16px;
     position: relative;
     overflow: hidden;
     transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease, background-color 220ms ease;
   }
-  .latest-card:hover {
+  .signal-card:hover {
     transform: translateY(-2px);
     border-color: rgba(94,232,160,0.35);
     box-shadow: 0 6px 18px rgba(0,0,0,0.35), 0 0 18px rgba(94,232,160,0.10);
     background-color: rgba(2,6,23,0.92);
   }
-  .latest-card-label {
-    font-size: 11px; letter-spacing: 0.16em;
-    text-transform: uppercase; opacity: 0.55;
+
+  .signal-card-label {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.55;
     margin-bottom: 10px;
     line-height: 1.35;
   }
-  .latest-key-id {
-    font-size: 22px; font-weight: 700;
-    margin-bottom: 8px;
-    line-height: 1.2;
-  }
-  .latest-glyphs {
-    font-size: 18px; letter-spacing: 0.04em;
-    font-weight: 700; color: var(--text-main);
-    margin-bottom: 6px; line-height: 1.4;
-    word-break: break-word;
-  }
-  .latest-glyphs .dot {
-    color: rgba(148,163,184,0.45);
-    padding: 0 4px;
-  }
-  .latest-epoch {
+
+  .signal-sender {
     font-size: 12px;
     color: var(--text-soft);
     opacity: 0.75;
-  }
-  .signal-body {
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--text-main);
-    opacity: 0.88;
-    margin-bottom: 8px;
-    font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+    line-height: 1.55;
+    margin-bottom: 4px;
     word-break: break-word;
-    max-height: 110px;
-    overflow: hidden;
-    position: relative;
+  }
+  .signal-sender .glyph-sep {
+    color: rgba(148,163,184,0.4);
+    padding: 0 5px;
+  }
+
+  .signal-intent {
+    font-size: 12px;
+    opacity: 0.9;
+    line-height: 1.55;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .signal-body {
+    font-size: 12px;
+    color: var(--text-soft);
+    opacity: 0.85;
+    line-height: 1.55;
+    font-style: italic;
+    word-break: break-word;
   }
   .signal-body.empty {
-    font-style: italic;
-    font-family: inherit;
     opacity: 0.6;
-  }
-  .signal-meta {
-    font-size: 12px;
-    color: var(--text-soft);
-    opacity: 0.75;
   }
 
   /* FOOTER */
@@ -605,19 +593,15 @@ backdrop-filter:blur(12px);
       </div>
     </div>
 
-    <!-- LATEST IN THE FIELD -->
-    <div class="latest-section">
-      <div class="latest-card">
-        <div class="latest-card-label">Latest Key minted</div>
-        <div class="latest-key-id loading" id="latestKeyId">Z1N #–</div>
-        <div class="latest-glyphs" id="latestKeyGlyphs">–</div>
-        <div class="latest-epoch" id="latestKeyEpoch">–</div>
-      </div>
-
-      <div class="latest-card">
-        <div class="latest-card-label">Most attested signal</div>
+    <!-- MOST ATTESTED SIGNAL -->
+    <div class="signal-section">
+      <div class="signal-card">
+        <div class="signal-card-label">Most attested signal by the Keys</div>
+        <div class="signal-sender" id="signalSender">
+          <span id="signalSenderId">Z1N #–</span><span id="signalSenderGlyphs"></span>
+        </div>
+        <div class="signal-intent" id="signalIntent">–</div>
         <div class="signal-body" id="signalBody">Loading...</div>
-        <div class="signal-meta" id="signalMeta">–</div>
       </div>
     </div>
   </section>
@@ -667,11 +651,10 @@ backdrop-filter:blur(12px);
   var elSignals = document.getElementById("glanceSignals");
   var elIntent = document.getElementById("glanceIntent");
   var elIntentSub = document.getElementById("glanceIntentSub");
-  var elLatestKeyId = document.getElementById("latestKeyId");
-  var elLatestKeyGlyphs = document.getElementById("latestKeyGlyphs");
-  var elLatestKeyEpoch = document.getElementById("latestKeyEpoch");
+  var elSignalSenderId = document.getElementById("signalSenderId");
+  var elSignalSenderGlyphs = document.getElementById("signalSenderGlyphs");
+  var elSignalIntent = document.getElementById("signalIntent");
   var elSignalBody = document.getElementById("signalBody");
-  var elSignalMeta = document.getElementById("signalMeta");
 
   // ═══ HELPERS ═══
   function fmtNum(n) {
@@ -779,55 +762,57 @@ backdrop-filter:blur(12px);
       elIntentSub.textContent = "No signals yet.";
     }
 
-    // Latest minted Key
-    if (data.latestKey && elLatestKeyId) {
-      elLatestKeyId.textContent = "Z1N #" + data.latestKey.tokenId;
-      stopLoading(elLatestKeyId);
-
-      var gl = data.latestKey.glyphLine || "";
-      var gs = Array.from(gl).filter(function(g){ return g.trim(); });
-      if (gs.length > 0 && elLatestKeyGlyphs) {
-        elLatestKeyGlyphs.innerHTML = gs.map(function(g, i){
-          return (i > 0 ? '<span class="dot">·</span>' : '') + '<span>' + g + '</span>';
-        }).join('');
-      } else if (elLatestKeyGlyphs) {
-        elLatestKeyGlyphs.textContent = "–";
-      }
-
-      if (elLatestKeyEpoch && data.latestKey.epoch !== undefined) {
-        elLatestKeyEpoch.textContent = "Minted in epoch " + data.latestKey.epoch;
-      } else if (elLatestKeyEpoch) {
-        elLatestKeyEpoch.textContent = "–";
-      }
-    } else if (elLatestKeyId) {
-      elLatestKeyId.textContent = "Z1N #–";
-      stopLoading(elLatestKeyId);
-      if (elLatestKeyGlyphs) elLatestKeyGlyphs.textContent = "–";
-      if (elLatestKeyEpoch) elLatestKeyEpoch.textContent = "–";
-    }
-
-    // Most attested signal (from total lens)
+    // Most attested signal (from total lens) — sender Key + intent + body
     var mas = data.lensStats?.total?.mas;
-    if (mas && elSignalBody) {
+
+    // Reset state
+    var hasSignal = false;
+    var senderId = "Z1N #–";
+    var senderGlyphs = "";
+    var intentText = "–";
+    var intentColor = "";
+    var bodyText = "No attested signals yet.";
+
+    if (mas) {
       var rawText = mas.text || mas.body || mas.cid || "";
       if (rawText) {
-        var trimmed = rawText.length > 220 ? rawText.slice(0, 217) + "..." : rawText;
-        elSignalBody.textContent = '"' + trimmed + '"';
-        elSignalBody.classList.remove("empty");
-        if (elSignalMeta) {
-          var ep = mas.epoch !== undefined ? "Epoch " + mas.epoch : "";
-          var intent = mas.intent || "";
-          elSignalMeta.textContent = [ep, intent].filter(Boolean).join(" · ") || "–";
+        hasSignal = true;
+        var trimmed = rawText.length > 280 ? rawText.slice(0, 277) + "..." : rawText;
+        bodyText = '"' + trimmed + '"';
+
+        // Sender Key — optional, depends on API
+        if (mas.tokenId !== undefined) {
+          senderId = "Z1N #" + mas.tokenId;
         }
-      } else {
-        elSignalBody.textContent = "No attested signals yet.";
-        elSignalBody.classList.add("empty");
-        if (elSignalMeta) elSignalMeta.textContent = "–";
+        if (mas.glyphLine) {
+          var gs = Array.from(mas.glyphLine).filter(function(g){ return g.trim(); });
+          if (gs.length > 0) {
+            senderGlyphs = " · " + gs.map(function(g, i){
+              return (i > 0 ? '<span class="glyph-sep">·</span>' : '') + g;
+            }).join('');
+          }
+        }
+
+        // Intent — map to label + color
+        var intentKey = mas.intent; // expect "ΩC", "ΩI", "ΩK", "ΩS" or similar
+        var info = INTENTS[intentKey];
+        if (info) {
+          var labelMap = { "ΩC": "Collective Identity", "ΩI": "Individual Identity", "ΩK": "Co-Creative Identity", "ΩS": "Silence" };
+          intentText = intentKey + " " + (labelMap[intentKey] || info.name);
+          intentColor = info.color;
+        }
       }
-    } else if (elSignalBody) {
-      elSignalBody.textContent = "No attested signals yet.";
-      elSignalBody.classList.add("empty");
-      if (elSignalMeta) elSignalMeta.textContent = "–";
+    }
+
+    if (elSignalSenderId) elSignalSenderId.textContent = senderId;
+    if (elSignalSenderGlyphs) elSignalSenderGlyphs.innerHTML = senderGlyphs;
+    if (elSignalIntent) {
+      elSignalIntent.textContent = intentText;
+      elSignalIntent.style.color = intentColor || "";
+    }
+    if (elSignalBody) {
+      elSignalBody.textContent = bodyText;
+      elSignalBody.classList.toggle("empty", !hasSignal);
     }
 
     hasRendered = true;
@@ -841,11 +826,10 @@ backdrop-filter:blur(12px);
     if (elIntentSub) elIntentSub.textContent = "No data.";
     if (elIntent) elIntent.style.color = "";
 
-    if (elLatestKeyId) { elLatestKeyId.textContent = "Z1N #–"; stopLoading(elLatestKeyId); }
-    if (elLatestKeyGlyphs) elLatestKeyGlyphs.textContent = "–";
-    if (elLatestKeyEpoch) elLatestKeyEpoch.textContent = "–";
+    if (elSignalSenderId) elSignalSenderId.textContent = "Z1N #–";
+    if (elSignalSenderGlyphs) elSignalSenderGlyphs.innerHTML = "";
+    if (elSignalIntent) { elSignalIntent.textContent = "–"; elSignalIntent.style.color = ""; }
     if (elSignalBody) { elSignalBody.textContent = "No data."; elSignalBody.classList.add("empty"); }
-    if (elSignalMeta) elSignalMeta.textContent = "–";
   }
 
   // ═══ INIT ═══
