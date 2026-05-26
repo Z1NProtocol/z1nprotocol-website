@@ -1,1 +1,36 @@
-<meta property="og:image" content="https://www.z1nprotocol.xyz/og-image.svg" />
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <style>
+      .bg { fill: #050812; }
+      .ring { fill: none; stroke: rgba(255,255,255,0.35); stroke-width: 4; }
+      .omega {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 72px;
+        fill: rgba(255,255,255,0.92);
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+      .z1n {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 44px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        fill: rgba(255,255,255,0.70);
+        dominant-baseline: middle;
+      }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="630"/>
+
+  <!-- Centered lockup: (circle + gap + Z1N) -->
+  <g transform="translate(0,0)">
+    <!-- tweak these two numbers if you want it slightly more left/right -->
+    <g transform="translate(520 315)">
+      <circle class="ring" cx="0" cy="0" r="64"/>
+      <text class="omega" x="0" y="2">Ω</text>
+    </g>
+
+    <text class="z1n" x="610" y="315">Z1N</text>
+  </g>
+</svg>
