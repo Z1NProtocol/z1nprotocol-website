@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1024"
+     height="1024"
+     viewBox="0 0 1024 1024">
+
+  <defs>
+    <style>
+      .bg {
+        fill: #050812;
+      }
+
+      .ring {
+        fill: none;
+        stroke: rgba(255,255,255,0.35);
+        stroke-width: 10;
+      }
+
+      .omega {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 220px;
+        fill: rgba(255,255,255,0.92);
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect class="bg" width="1024" height="1024" />
+
+  <!-- Center Circle -->
+  <circle class="ring"
+          cx="512"
+          cy="512"
+          r="210" />
+
+  <!-- Omega -->
+  <text class="omega"
+        x="512"
+        y="520">
+    Ω
+  </text>
+
+</svg>
