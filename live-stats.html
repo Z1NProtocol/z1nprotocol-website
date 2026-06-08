@@ -81,7 +81,7 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .logo-text{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;display:flex;gap:6px;}
 .logo-main{opacity:1;font-weight:600;} .logo-sub{opacity:0.6;font-weight:400;}
 .nav-links{display:flex;gap:22px;font-size:13px;opacity:0.85;}
-.nav-links a{position:relative;} .nav-links a.active{color:var(--accent);}
+.nav-links a{position:relative;} .nav-links a.yours{color:var(--sunbeam);opacity:1;} .nav-links a.active{color:var(--accent);}
 .nav-links a.active::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:2px;border-radius:999px;background:linear-gradient(to right,var(--accent),var(--accent-soft));}
 .hamburger{display:none;background:rgba(15,23,42,0.8);border:1px solid rgba(148,163,184,0.25);border-radius:8px;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
 .hamburger span{display:block;width:20px;height:1.5px;background:var(--text-main);border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
@@ -103,6 +103,8 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 /* PAGE */
 .page{max-width:1200px;margin:0 auto;padding:40px 24px 32px;}
 @media(max-width:900px){.page{padding:32px 18px 28px;}}
+.crumb{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-soft);margin-bottom:14px;}
+.crumb:hover{color:var(--accent);}
 h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .lead{font-size:17px;opacity:0.85;line-height:1.65;margin-bottom:8px;max-width:920px;}
 .lead-small{font-size:14px;opacity:0.7;line-height:1.65;margin-top:4px;margin-bottom:38px;max-width:920px;}
@@ -245,18 +247,16 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     </button>
     <nav class="nav-links" id="navLinks">
       <a href="about.html">About</a>
-      <a href="how-it-works.html">How it Works</a>
-      <a href="live-stats.html" class="active">Live Stats</a>
-      <a href="artefacts.html">Artefacts</a>
-      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="learn-the-field.html" class="active">Learn the Field</a>
       <a href="mint-key.html">Mint your Key</a>
-      <a href="your-keys.html">Your Keys</a>
+      <a href="your-keys.html" class="yours">Your Keys</a>
     </nav>
   </div>
 </header>
 
 <main class="page">
-  <h1>Live Stats of the Field</h1>
+  <a href="learn-the-field.html" class="crumb">← Learn the Field</a>
+  <h1>Live Field <span style="color:var(--rose)">Stats</span></h1>
   <p class="lead">Read the Field through signals and intents. View the number of awakened Keys, their relational Artefacts, and Canon Anchor mints.</p>
   <p class="lead-small">Hover to preview. Click to lock a lens. On mobile: swipe to shift.</p>
 

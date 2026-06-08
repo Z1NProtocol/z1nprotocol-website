@@ -19,6 +19,12 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://www.z1nprotocol.xyz/learn-the-field.html</loc>
+    <lastmod>2026-06-08</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
     <loc>https://www.z1nprotocol.xyz/how-it-works.html</loc>
     <lastmod>2026-05-26</lastmod>
     <priority>0.8</priority>

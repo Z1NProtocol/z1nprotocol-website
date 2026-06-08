@@ -18,7 +18,7 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .logo-main{font-weight:600;}.logo-sub{opacity:0.6;}
 .nav-links{display:flex;gap:22px;font-size:13px;align-items:center;}
 .nav-links a{opacity:0.85;}.nav-links a.active{color:var(--accent);opacity:1;}
-.nav-links a.mint{color:var(--accent);opacity:1;}.nav-links a.yours{color:var(--sunbeam);opacity:1;}
+.nav-links a.yours{color:var(--sunbeam);opacity:1;}
 @media(max-width:900px){.nav-links{display:none;}}
 .page{max-width:1120px;margin:0 auto;padding:40px 24px 64px;}
 @media(max-width:900px){.page{padding:32px 18px 48px;}}
@@ -108,7 +108,7 @@ h1 .g{color:var(--accent);}
 .steptab .shalf.left{margin-right:-1px;}
 .steptab .shalf.right{margin-left:-1px;}
 .steptab:first-child .shalf.left,.steptab:last-child .shalf.right{background:transparent;}
-.steptab .slabel{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:0.05em;color:var(--text-soft);margin-top:8px;text-align:center;line-height:1.3;transition:.25s;opacity:0.6;}
+.steptab .slabel{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;font-weight:600;letter-spacing:0.02em;color:var(--text-soft);margin-top:8px;text-align:center;line-height:1.3;transition:.25s;opacity:0.6;}
 .steptab.active .slabel{color:var(--st,#5ee8a0);opacity:1;font-weight:700;}
 .steptab:not(.active) .slabel{opacity:0.5;}
 .steptab.active .shalf{background:var(--st,#5ee8a0);}
@@ -130,22 +130,22 @@ footer .links a:hover{color:#fff;}
 .lb svg{max-height:90vh;width:auto;}
 .lb .close{position:absolute;top:20px;right:24px;font-size:30px;color:#fff;opacity:0.7;background:none;border:none;cursor:pointer;}
 </style>
-<script type='text/javascript' nonce='frBb1jYvdaNnLnjvzkpDMQ==' src='https://claude.ai/F1ubNUSLlRZio5s8tz2plZc8yyNgjp4MoNKkyZdBfo6VUCLdsQKBD--x8s4Ucz7H9bz-E7pHJ4mEvdftpFoJ4TM6fXzQswJ2F5iKuScpMw9XrcD5EhufJCKFe-IjPZ5NB2CkLwTQ98pHQEawOP-cTBu1Cm7Sh9fDI-NWbchUd-Ac3gEDAMe5gUFRP1yjak0H_vtMln5MNOhKTOsPMyL2yjfjTi784y6XQC2sFTOEyfbYwdl49gGvkcZPi0lsOIH8gtnTYtChMIfIJlwC1Fr3Pwuigc19-cU7nzEiWMd_4cQFUhKqEe7RNVIaibffyUAzog7E1jGjkbSzQ1qkSTPL_Sd3eaSwwGalwECufI_mepMu7uYgkBPIXT5IIRDrsSZEgCZaXUK5dflbURhndIfI3QTZlu9SQCeeRd9GAuOtCxluTIMgOmcXzNPcXIrtMUe2cW0Qt3h6sugd4VlZYjr3-NzkyapIj501KiP5ywtYsMNyqNdhP7M05NOnn8dEHMk2x7n7hfENsEFIavzG-PVbICUvCOIPxxmMVPgrqo9R_y1y1v3vg7OP-jyFuUbwYTJKcnptYg'></script></head>
-<body>
+</head>
+<body>>
 <header>
   <div class="nav-inner">
     <a href="index.html" class="logo-link"><span class="logo-dot">Ω</span><span class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></span></a>
     <nav class="nav-links">
       <a href="about.html">About</a>
-      <a href="the-field.html" class="active">Learn the Field</a>
-      <a href="mint-key.html" class="mint">Mint your Key</a>
+      <a href="learn-the-field.html" class="active">Learn the Field</a>
+      <a href="mint-key.html">Mint your Key</a>
       <a href="your-keys.html" class="yours">Your Keys</a>
     </nav>
   </div>
 </header>
 
 <main class="page">
-  <a href="the-field.html" class="crumb">← Learn the Field</a>
+  <a href="learn-the-field.html" class="crumb">← Learn the Field</a>
   <h1>Bonding through <span class="g">Artefacts</span></h1>
   <p class="lead">Artefacts are identity bonds between Keys — a record of who connected with whom, and what they inscribed together. To an agent it's verifiable on-chain state; to a human steward it's a rendered card. Same data, two lenses.</p>
 
@@ -257,15 +257,15 @@ var STEPS=[
   {cls:"s1",verb:"Offer",tab:"Offer to Key",num:"02",badge:"Offered · Pending",tri:"▲",
    desc:"Key 2100 offers the artefact to Key 3 with a message. Key 3 receives a pending offer — the artefact is already forwarded and visible, but marked Pending until Key 3 accepts.",
    code:'<span class="fn">offer</span>(id, <b>3</b>, message)\n  <span class="z">→ state PENDING(1)</span>\npendingForKeyId = <b>3</b>\nboundToKeyId = <span class="z">0</span>',
-   views:[{label:'KEY 2100 · <b>offered</b>',svg:stateCard("#ffd556","KEY 2100","Offered to KEY 3","Pending — awaiting accept")},{label:'KEY 3 · <b>incoming offer</b>',svg:(function(){var s=renderCard(false,false);return s.replace('</svg>','<rect x="18" y="18" width="90" height="34" rx="17" fill="rgba(255,213,86,0.92)"/><text <text x="63" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#061018">Pending</text></svg>');})()}]},
+   views:[{label:'KEY 2100 · <b>offered</b>',svg:stateCard("#ffd556","KEY 2100","Offered to KEY 3","Pending — awaiting accept")},{label:'KEY 3 · <b>incoming offer</b>',svg:(function(){var s=renderCard(false,false);return s.replace('</svg>','<rect x="18" y="18" width="90" height="34" rx="17" fill="rgba(255,213,86,0.92)"/><text x="63" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#061018">Pending</text></svg>');})()}]},
   {cls:"s2",verb:"Bound",tab:"Bound",num:"03",badge:"Bounded",tri:"●",
    desc:"Key 3 accepts. The bond seals — boundToKeyId is set. Now both Keys render the same bonded artefact: a connection, visible to both.",
    code:'<span class="fn">accept</span>(id) <span class="z">// by Key 3</span>\n  <span class="z">→ state ACTIVE(2)</span>\nboundToKeyId = <b>3</b>\npendingForKeyId = <span class="z">0</span>',
-   views:[{label:'KEY 2100 · <b>bounded</b>',svg:(function(){var s=renderCard(true,false);return s.replace('</svg>','<rect x="18" y="18" width="126" height="34" rx="17" fill="rgba(94,232,160,0.92)"/><text <text x="81" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#061018">Bounded Key 3</text></svg>');})()},{label:'KEY 3 · <b>bounded</b>',svg:(function(){var s=renderCard(true,false);return s.replace('</svg>','<rect x="18" y="18" width="90" height="34" rx="17" fill="rgba(94,232,160,0.92)"/><text <text x="63" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#061018">Bounded</text></svg>');})()}]},
+   views:[{label:'KEY 2100 · <b>bounded</b>',svg:(function(){var s=renderCard(true,false);return s.replace('</svg>','<rect x="18" y="18" width="126" height="34" rx="17" fill="rgba(94,232,160,0.92)"/><text x="81" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#061018">Bounded Key 3</text></svg>');})()},{label:'KEY 3 · <b>bounded</b>',svg:(function(){var s=renderCard(true,false);return s.replace('</svg>','<rect x="18" y="18" width="90" height="34" rx="17" fill="rgba(94,232,160,0.92)"/><text x="63" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#061018">Bounded</text></svg>');})()}]},
   {cls:"s3",verb:"Release",tab:"Release",num:"04",badge:"Released",tri:"▲",
    desc:"Either side releases the bond with an optional final message. Terminal — the bond dissolves for both, but the record stays on-chain forever.",
    code:'<span class="fn">release</span>(id, message) <span class="z">// by Key 3</span>\n  <span class="z">→ state RELEASED(3)</span>\nreleasedFromKeyId = <b>3</b>\n<span class="z">// terminal · no transitions</span>',
-   views:[{label:'KEY 2100 · <b>released</b>',svg:(function(){var s=stateCard("#f87171","KEY 2100","Released","Bond dissolved",0.8);var bw=189,bx=18;return s.replace('</svg>','<rect x="'+bx+'" y="18" width="'+bw+'" height="34" rx="17" fill="rgba(248,113,113,0.92)"/><text <text x="'+(bx+bw/2)+'" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#fff">Released by You</text></svg>');})()},{label:'KEY 3 · <b>released</b>',svg:(function(){var s=stateCard("#f87171","KEY 2100","Released","Bond dissolved",0.8);var bw=189,bx=18;return s.replace('</svg>','<rect x="'+bx+'" y="18" width="'+bw+'" height="34" rx="17" fill="rgba(248,113,113,0.92)"/><text <text x="'+(bx+bw/2)+'" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#fff">Released by KEY 2100</text></svg>');})()}]}
+   views:[{label:'KEY 2100 · <b>released</b>',svg:(function(){var s=stateCard("#f87171","KEY 2100","Released","Bond dissolved",0.8);var bw=189,bx=18;return s.replace('</svg>','<rect x="'+bx+'" y="18" width="'+bw+'" height="34" rx="17" fill="rgba(248,113,113,0.92)"/><text x="'+(bx+bw/2)+'" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#fff">Released by You</text></svg>');})()},{label:'KEY 3 · <b>released</b>',svg:(function(){var s=stateCard("#f87171","KEY 2100","Released","Bond dissolved",0.8);var bw=189,bx=18;return s.replace('</svg>','<rect x="'+bx+'" y="18" width="'+bw+'" height="34" rx="17" fill="rgba(248,113,113,0.92)"/><text x="'+(bx+bw/2)+'" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#fff">Released by KEY 2100</text></svg>');})()}]}
 ];
 
 var track=document.getElementById("track"), steptabs=document.getElementById("steptabs"), idx=0;
@@ -309,13 +309,14 @@ STEPS.forEach(function(s,i){
 function snap(){
   track.style.transition="transform .45s ease";
   track.style.transform="translateX(-"+(idx*100)+"%)";
+  var lastIdx=STEPS.length-1;
   steptabs.querySelectorAll(".steptab").forEach(function(d,i){
     d.classList.toggle("active",i===idx);
     d.classList.toggle("done",i<idx);
     var st=d.style.getPropertyValue("--st");
     d.querySelectorAll(".shalf").forEach(function(l){
+      if((i===0&&l.classList.contains("left"))||(i===lastIdx&&l.classList.contains("right"))){ l.style.background="transparent"; return; }
       if(i<idx) l.style.background=st;
-      else if(i===idx){ l.style.background=""; }
       else l.style.background="";
     });
   });
@@ -325,10 +326,28 @@ function snap(){
 document.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"&&idx>0){idx--;snap();}if(e.key==="ArrowRight"&&idx<STEPS.length-1){idx++;snap();}});
 
 // swipe
-var carousel=document.getElementById("carousel"),down=false,sx=0,sy=0,dx=0,lock=false;
-carousel.addEventListener("pointerdown",function(e){if(e.button)return;down=true;sx=e.clientX;sy=e.clientY;dx=0;lock=false;track.style.transition="none";});
-window.addEventListener("pointermove",function(e){if(!down||lock)return;var ddx=e.clientX-sx,ddy=e.clientY-sy;if(Math.abs(ddy)>Math.abs(ddx)*1.2&&Math.abs(ddx)<15){lock=true;snap();return;}dx=ddx;track.style.transform="translateX(calc(-"+(idx*100)+"% + "+(dx/carousel.clientWidth*100)+"%))";});
-function up(){if(!down)return;down=false;var th=carousel.clientWidth*0.18;if(dx>th&&idx>0)idx--;else if(dx<-th&&idx<STEPS.length-1)idx++;snap();}
+var carousel=document.getElementById("carousel"),down=false,dragging=false,sx=0,sy=0,dx=0,lock=false;
+var DRAG_START=8;
+carousel.addEventListener("pointerdown",function(e){if(e.button)return;down=true;dragging=false;sx=e.clientX;sy=e.clientY;dx=0;lock=false;});
+window.addEventListener("pointermove",function(e){
+  if(!down||lock)return;
+  var ddx=e.clientX-sx,ddy=e.clientY-sy;
+  if(!dragging){
+    if(Math.abs(ddy)>Math.abs(ddx)*1.2&&Math.abs(ddy)>DRAG_START){lock=true;return;}
+    if(Math.abs(ddx)<DRAG_START)return;
+    dragging=true;track.style.transition="none";
+  }
+  dx=ddx;
+  track.style.transform="translateX(calc(-"+(idx*100)+"% + "+(dx/carousel.clientWidth*100)+"%))";
+});
+function up(){
+  if(!down)return;down=false;
+  if(!dragging)return;
+  dragging=false;
+  var th=carousel.clientWidth*0.18;
+  if(dx>th&&idx>0)idx--;else if(dx<-th&&idx<STEPS.length-1)idx++;
+  snap();
+}
 window.addEventListener("pointerup",up);window.addEventListener("pointercancel",up);
 carousel.addEventListener("dragstart",function(e){e.preventDefault();});
 snap();

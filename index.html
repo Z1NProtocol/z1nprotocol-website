@@ -161,6 +161,7 @@
 
   .nav-links { display: flex; gap: 22px; font-size: 13px; opacity: 0.85; }
   .nav-links a { position: relative; }
+  .nav-links a.yours { color: var(--sunbeam); opacity: 1; }
   .nav-links a.active { color: var(--accent); }
   .nav-links a.active::after {
     content: ""; position: absolute; left: 0; bottom: -4px;
@@ -445,12 +446,9 @@ backdrop-filter:blur(12px);
     </button>
     <nav class="nav-links" id="navLinks">
       <a href="about.html">About</a>
-      <a href="how-it-works.html">How it Works</a>
-      <a href="live-stats.html">Live Stats</a>
-      <a href="artefacts.html">Artefacts</a>
-      <a href="nbi-artefacts.html">4 NBIs</a>
+      <a href="learn-the-field.html">Learn the Field</a>
       <a href="mint-key.html">Mint your Key</a>
-      <a href="your-keys.html">Your Keys</a>
+      <a href="your-keys.html" class="yours">Your Keys</a>
     </nav>
   </div>
 </header>
