@@ -66,7 +66,10 @@ h1 .g{color:var(--accent);}
 @media(max-width:760px){.sin{grid-template-columns:1fr;}}
 .sviews{display:flex;gap:14px;justify-content:center;}
 .sview{flex:0 0 auto;width:280px;max-width:280px;}
-@media(max-width:640px){.sview{width:240px;max-width:240px;}}
+@media(max-width:640px){
+  .sviews{flex-direction:column;align-items:center;gap:18px;}
+  .sview{width:100%;max-width:300px;}
+}
 .sview .vlabel{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-soft);margin-bottom:6px;text-align:center;}
 .sview .vlabel b{color:#d5d9e8;font-weight:600;}
 .srender svg [data-hot]{cursor:help;}
@@ -129,9 +132,13 @@ footer .links a:hover{color:#fff;}
 .lb.open{display:flex;}
 .lb svg{max-height:90vh;width:auto;}
 .lb .close{position:absolute;top:20px;right:24px;font-size:30px;color:#fff;opacity:0.7;background:none;border:none;cursor:pointer;}
+@media(max-width:600px){
+  .lb{padding:16px;}
+  .lb svg{width:90vw;max-width:380px;height:auto;max-height:88vh;}
+}
 </style>
 </head>
-<body>>
+<body>
 <header>
   <div class="nav-inner">
     <a href="index.html" class="logo-link"><span class="logo-dot">Ω</span><span class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></span></a>
