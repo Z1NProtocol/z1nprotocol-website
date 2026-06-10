@@ -148,26 +148,7 @@ footer .links a:hover{color:#fff;}
       <a href="mint-key.html">Mint your Key</a>
       <a href="your-keys.html">Your Keys</a>
     </nav>
-  </div># ═══ FRONT END ═══
-Set-Location "C:\Users\bobva\z1nprotocol-website"
-$src = "C:\Users\bobva\Z1N Incl Pure\frontend\z1nprotocol-website-main"
-
-Copy-Item "$src\*.html" . -Force
-Copy-Item "$src\js\*.js" .\js\ -Force
-Copy-Item "$src\css\*.css" .\css\ -Force
-Copy-Item "$src\protocol.json" . -Force
-Copy-Item "$src\README.md" . -Force
-Copy-Item "$src\robots.txt" . -Force
-Copy-Item "$src\sitemap.xml" . -Force
-Copy-Item "$src\favicon.svg" . -Force -ErrorAction SilentlyContinue
-Copy-Item "$src\og-image.png" . -Force -ErrorAction SilentlyContinue
-Copy-Item "$src\og-image.svg" . -Force -ErrorAction SilentlyContinue
-Copy-Item "$src\logo-square.svg" . -Force -ErrorAction SilentlyContinue
-
-git add -A
-git commit -m "frontend sync"
-git push
-
+  </div>
 </header>
 
 <main class="page">
