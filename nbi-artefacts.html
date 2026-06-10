@@ -58,7 +58,7 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .page{max-width:1200px;margin:0 auto;padding:40px 24px 72px;}
 @media(max-width:900px){.page{padding:32px 18px 56px;}}
 .crumb{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-soft);margin-bottom:14px;}
-.crumb:hover{color:var(--accent);}
+.crumb:hover{color:var(--aether);}
 h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 @media(max-width:600px){h1{font-size:28px;}}
 .lead{font-size:17px;opacity:0.85;line-height:1.65;margin-bottom:8px;max-width:920px;}
@@ -68,14 +68,14 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 @media(max-width:900px){.carousel-controls{justify-content:center;margin:0 0 14px;}}
 .carousel-dots{display:flex;gap:10px;align-items:center;}
 .cdot{width:14px;height:14px;border-radius:999px;border:1.5px solid rgba(148,163,184,0.6);background:transparent;cursor:pointer;transition:background 0.2s,transform 0.2s,border-color 0.2s;padding:0;}
-.cdot:hover{border-color:var(--accent);transform:scale(1.1);}
-.cdot.active{background:radial-gradient(circle at 30% 30%,var(--accent),var(--accent-soft));border-color:var(--accent-soft);transform:scale(1.12);}
+.cdot:hover{border-color:var(--aether);transform:scale(1.1);}
+.cdot.active{background:radial-gradient(circle at 30% 30%,var(--aether),#4b83eb);border-color:#4b83eb;transform:scale(1.12);}
 .carousel-nav{display:flex;gap:8px;margin-left:auto;}
 .nav-arrow{width:32px;height:32px;border-radius:999px;border:1px solid rgba(148,163,184,0.3);background:rgba(255,255,255,0.03);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-soft);font-size:16px;transition:border-color 0.2s,color 0.2s;}
-.nav-arrow:hover{border-color:var(--accent);color:var(--accent);}
+.nav-arrow:hover{border-color:var(--aether);color:var(--aether);}
 .nav-arrow:disabled{opacity:0.25;cursor:default;}
 
-.carousel{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--card-border);background:radial-gradient(circle at top,rgba(94,232,160,0.08),transparent 60%);touch-action:pan-y pinch-zoom;max-width:100%;box-sizing:border-box;}
+.carousel{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--card-border);background:radial-gradient(circle at top,rgba(123,184,252,0.08),transparent 60%);touch-action:pan-y pinch-zoom;max-width:100%;box-sizing:border-box;}
 .carousel-track{display:flex;transition:transform 0.45s ease;will-change:transform;}
 .carousel-slide{flex:0 0 100%;min-width:100%;padding:26px 30px 28px;}
 @media(max-width:900px){.carousel-slide{padding:16px 12px 20px;}}
@@ -118,7 +118,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 
 .artefact-frame{border-radius:18px;border:1px solid var(--card-border);overflow:hidden;background:#050814;transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;user-select:none;width:100%;}
 .artefact-frame img,.artefact-frame svg{display:block;width:100%;height:auto;pointer-events:none;}
-.artefact-frame:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 22px 70px rgba(0,0,0,0.65);}
+.artefact-frame:hover{transform:translateY(-3px);border-color:var(--aether);box-shadow:0 22px 70px rgba(0,0,0,0.65);}
 .artefact-loading{width:100%;aspect-ratio:500/760;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-soft);opacity:0.6;}
 
 .slide-activity{display:flex;flex-direction:column;gap:6px;}
@@ -176,7 +176,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <a href="about.html">About</a>
       <a href="learn-the-field.html" class="active">Learn the Field</a>
       <a href="mint-key.html">Mint your Key</a>
-      <a href="your-keys.html" class="yours">Your Keys</a>
+      <a href="your-keys.html">Your Keys</a>
     </nav>
   </div>
 </header>
@@ -309,7 +309,7 @@ With every epoch reset I choose refraction over repetition, letting the interval
   </section>
 <div style="margin-top:32px;padding:14px 16px;background:rgba(15,23,42,0.4);border:1px solid rgba(148,163,184,0.08);border-radius:10px;font-size:12px;color:var(--text-soft);text-align:center;line-height:1.7;max-width:100%;box-sizing:border-box;">
   Machine-readable field state:<br>
-  <a href="https://z1n-backend-production.up.railway.app/api/protocol/snapshot" target="_blank" rel="noreferrer" style="color:var(--accent);font-family:'SF Mono',Menlo,Monaco,Consolas,monospace;font-size:11px;word-break:break-all;overflow-wrap:anywhere;display:inline-block;max-width:100%;">https://z1n-backend-production.up.railway.app/api/protocol/snapshot</a>
+  <a href="https://z1n-backend-production.up.railway.app/api/protocol/snapshot" target="_blank" rel="noreferrer" style="color:var(--aether);font-family:'SF Mono',Menlo,Monaco,Consolas,monospace;font-size:11px;word-break:break-all;overflow-wrap:anywhere;display:inline-block;max-width:100%;">https://z1n-backend-production.up.railway.app/api/protocol/snapshot</a>
 </div>
 </main>
 
@@ -360,7 +360,7 @@ With every epoch reset I choose refraction over repetition, letting the interval
             overlay.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;";
             var big = document.createElement("img");
             big.src = img.src;
-            big.style.cssText = "max-width:min(500px,90vw);max-height:88vh;border-radius:16px;border:1px solid rgba(94,232,160,0.3);box-shadow:0 0 40px rgba(94,232,160,0.15);";
+            big.style.cssText = "max-width:min(500px,90vw);max-height:88vh;border-radius:16px;border:1px solid rgba(123,184,252,0.3);box-shadow:0 0 40px rgba(123,184,252,0.15);";
             var hint = document.createElement("div");
             hint.style.cssText = "position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,0.3);pointer-events:none;white-space:nowrap;";
             hint.textContent = "Click anywhere to close";
