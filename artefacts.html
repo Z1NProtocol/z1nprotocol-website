@@ -4,8 +4,9 @@
 <meta charset="utf-8"/>
 <title>Artefacts v2 — Z1N Protocol</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#050812;--card-bg:#020617;--text-main:#fff;--text-soft:#8f9ab5;--accent:#5ee8a0;--accent-soft:#3ab876;--card-border:rgba(148,163,184,0.22);--sunbeam:#ffd556;--aether:#7bb8fc;--rose:#f87171;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;}
+:root{--bg:#050812;--card-bg:#020617;--text-main:#fff;--text-soft:#8f9ab5;--accent:#5ee8a0;--accent-soft:#3ab876;--card-border:rgba(148,163,184,0.22);--sunbeam:#ffd556;--aether:#7bb8fc;--rose:#f87171;--mono:"Roboto Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text-main);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
 a{color:inherit;text-decoration:none;}
@@ -280,7 +281,7 @@ var STEPS=[
    desc:"Key 2100 writes its inscription (visible below on the artefact and on the ledger). Held only by its maker.",
    code:'<span class="fn">mint</span>(keyId, inscription)\n  <span class="z">→ state UNSHARED(0)</span>\nsourceKeyOf  = <b>2100</b>\ninscriptionOf = set <span class="z">// write-once</span>\nboundToKeyId = <span class="z">0</span>',
    views:[{label:'KEY 2100 · <b>maker</b>',svg:renderCard(false,false)}]},
-  {cls:"s1",verb:"Offer",tab:"Offer to Key",num:"02",badge:"Offered · Pending",tri:"▲",
+  {cls:"s1",verb:"Offer",tab:"Offer",num:"02",badge:"Offered · Pending",tri:"▲",
    desc:"Key 2100 offers the artefact to Key 3 with a message. Key 3 receives a pending offer — the artefact is already forwarded and visible, but marked Pending until Key 3 accepts.",
    code:'<span class="fn">offer</span>(id, <b>3</b>, message)\n  <span class="z">→ state PENDING(1)</span>\npendingForKeyId = <b>3</b>\nboundToKeyId = <span class="z">0</span>',
    views:[{label:'KEY 2100 · <b>offered</b>',svg:stateCard("#ffd556","KEY 2100","Offered to KEY 3","Pending — awaiting accept")},{label:'KEY 3 · <b>incoming offer</b>',svg:(function(){var s=renderCard(false,false);return s.replace('</svg>','<rect x="18" y="18" width="90" height="34" rx="17" fill="rgba(255,213,86,0.92)"/><text x="63" y="40" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#061018">Pending</text></svg>');})()}]},
@@ -310,7 +311,10 @@ STEPS.forEach(function(s,i){
     +'</div>';
   slide.querySelectorAll(".srender").forEach(function(r){
     var svg=r.querySelector("svg").outerHTML;
-    r.addEventListener("click",function(){openLB(svg);});
+    var _sx,_sy,_moved;
+    r.addEventListener("pointerdown",function(e){_sx=e.clientX;_sy=e.clientY;_moved=false;});
+    r.addEventListener("pointermove",function(e){if(_sx!=null&&(Math.abs(e.clientX-_sx)>10||Math.abs(e.clientY-_sy)>10))_moved=true;});
+    r.addEventListener("pointerup",function(){if(!_moved)openLB(svg);_sx=null;});
   });
   track.appendChild(slide);
 
@@ -379,10 +383,10 @@ carousel.addEventListener("dragstart",function(e){e.preventDefault();});
 snap();
 
 // lightbox
-var lb=document.getElementById("lightbox"),lbHost=document.getElementById("lbHost");
-function openLB(svg){lbHost.innerHTML=svg;lb.classList.add("open");}
+var lb=document.getElementById("lightbox"),lbHost=document.getElementById("lbHost"),lbOpenedAt=0;
+function openLB(svg){lbHost.innerHTML=svg;lb.classList.add("open");lbOpenedAt=Date.now();}
 function closeLB(){lb.classList.remove("open");lbHost.innerHTML="";}
-lb.addEventListener("click",function(e){if(e.target===lb||e.target.id==="lbClose")closeLB();});
+lb.addEventListener("click",function(e){if(Date.now()-lbOpenedAt<350)return;if(e.target===lb||e.target.id==="lbClose")closeLB();});
 document.getElementById("lbClose").addEventListener("click",closeLB);
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeLB();});
 
@@ -391,7 +395,10 @@ var artTip=document.getElementById("artTip");
 function showTip(e){
   var t=e.target.closest("[data-tip]"); if(!t){return;}
   var parts=t.getAttribute("data-tip").split("|");
-  artTip.innerHTML='<b>'+parts[0]+'</b><span>'+(parts[1]||'')+'</span>';
+  var slide=t.closest(".slide");
+  var hue=slide?(getComputedStyle(slide).getPropertyValue("--h").trim()||"#5ee8a0"):"#5ee8a0";
+  artTip.style.borderColor=hue;
+  artTip.innerHTML='<b style="color:'+hue+'">'+parts[0]+'</b><span>'+(parts[1]||'')+'</span>';
   artTip.classList.add("on");
   moveTip(e);
 }
@@ -400,6 +407,8 @@ function moveTip(e){
   var x=e.clientX+pad, y=e.clientY+pad;
   if(x+w>window.innerWidth-8) x=e.clientX-w-pad;
   if(y+h>window.innerHeight-8) y=e.clientY-h-pad;
+  x=Math.max(8,Math.min(x,window.innerWidth-w-8));
+  y=Math.max(8,Math.min(y,window.innerHeight-h-8));
   artTip.style.left=x+"px"; artTip.style.top=y+"px";
 }
 function hideTip(){artTip.classList.remove("on");}
