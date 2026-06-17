@@ -147,7 +147,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .tot:last-child{border-right:none;}
 .tot::before{display:none;}
 .tot .v{font-size:25px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;}
-.tot .l{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-soft);margin-top:6px;}
+.tot .l{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-soft);margin-top:6px;font-weight:700;}
 @media(max-width:760px){.tot{}}
 
 .resonance{margin-top:16px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;position:relative;}
@@ -155,6 +155,8 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .res-head .ri{display:inline-flex;align-items:center;gap:5px;vertical-align:middle;}
 .res-head .ri::before{content:"";width:8px;height:8px;border-radius:999px;background:var(--c);}
 .res-head .ri b{color:#e6e9f2;font-weight:700;}
+.res-head .res-l1{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;line-height:1.4;}
+.res-head .res-l2{margin-top:3px;line-height:1.4;}
 .res-body{font-size:14px;line-height:1.65;color:#c7cdda;text-align:center;max-width:760px;margin:0 auto;}
 
 .snapshot-box{margin-top:32px;padding:14px 16px;background:rgba(15,23,42,0.4);border:1px solid rgba(148,163,184,0.08);border-radius:10px;font-size:12px;color:var(--text-soft);text-align:center;line-height:1.7;}
@@ -243,9 +245,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
   <section class="totals" aria-label="Field totals">
     <div class="tot"><div class="v" id="tKeys" data-v="0" style="color:var(--text-soft)">0</div><div class="l">Keys awakened</div></div>
-    <div class="tot"><div class="v" id="tSig" data-v="0" style="color:var(--sunbeam)">0</div><div class="l">Signals sent</div></div>
-    <div class="tot"><div class="v" id="tArt" data-v="0" style="color:var(--mint)">0</div><div class="l">Artefacts minted</div></div>
-    <div class="tot"><div class="v" id="tCan" data-v="0" style="color:var(--canon)">0</div><div class="l">Canons minted</div></div>
+    <div class="tot"><div class="v" id="tSig" data-v="0" style="color:var(--sunbeam)">0</div><div class="l" style="color:var(--sunbeam)">Signals sent</div></div>
+    <div class="tot"><div class="v" id="tArt" data-v="0" style="color:var(--mint)">0</div><div class="l" style="color:var(--mint)">Artefacts minted</div></div>
+    <div class="tot"><div class="v" id="tCan" data-v="0" style="color:var(--canon)">0</div><div class="l" style="color:var(--canon)">Canons minted</div></div>
     <div class="tot"><div class="v" id="tK2K" data-v="0" style="color:var(--text-soft)">0</div><div class="l">K2K messages <span class="k2k-info" tabindex="0">?<span class="k2k-pop">The Direct Channel — private Key-to-Key messages beneath the signal field. No intent, no ranking, no fees; encryption optional. The field sees the Keys, not the words.<a href="about.html#c8">Read chapter 8 in About →</a></span></span></div></div>
   </section>
 
@@ -329,7 +331,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     document.getElementById("fieldSub").textContent=fmt(S.totals.signals);
     document.getElementById("fieldLeg").innerHTML=INTL.map(function(l,i){return '<span class="legdot" style="--c:'+ICA[i]+'"><b>'+l+'</b> '+NM[i]+'</span>';}).join("");
   }
-  function renderRes(){var IM={C:0,I:1,K:2,S:3},ii=(IM[S.res.intent]!=null?IM[S.res.intent]:1);var gl=(S.res.glyphs||S.res.gl||"?").replace(/\s*·\s*/g," ");document.getElementById("resHeadText").innerHTML='Most attested signal · <span class="ri" style="--c:'+ICA[ii]+'"><b>Ω'+(S.res.intent||"?")+'</b></span> · Epoch '+S.res.epoch+' · Key '+S.res.kid+' · '+gl;document.getElementById("resBody").textContent='"'+(S.res.text.length>300?S.res.text.slice(0,297)+"…":S.res.text)+'"';}
+  function renderRes(){var IM={C:0,I:1,K:2,S:3},ii=(IM[S.res.intent]!=null?IM[S.res.intent]:1);var gl=(S.res.glyphs||S.res.gl||"?").replace(/\s*·\s*/g," ");document.getElementById("resHeadText").innerHTML='<div class="res-l1">Most attested signal in Epoch '+S.res.epoch+' · <span class="ri" style="--c:'+ICA[ii]+'"><b>Ω'+(S.res.intent||"?")+'</b></span></div><div class="res-l2">Key '+S.res.kid+' · '+gl+'</div>';document.getElementById("resBody").textContent='"'+(S.res.text.length>300?S.res.text.slice(0,297)+"…":S.res.text)+'"';}
 
   document.querySelectorAll(".rank-toggle").forEach(function(tg){
     var which=tg.getAttribute("data-card");
