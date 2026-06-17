@@ -2734,6 +2734,18 @@ GUARDIAN_WINDOW            = 30 days</pre>
 
     window.addEventListener("scroll", onScroll, { passive:true });
     window.addEventListener("resize", () => updateActiveFromScroll());
+
+    // ── Deep-link: open Steward lens + scroll when arriving with #chapter ──
+    function openHashChapter(){
+      var id = (location.hash || "").slice(1);
+      if(!id) return;
+      var el = document.getElementById(id);
+      if(!el || !lensBI.contains(el)) return;   // alleen hoofdstukken in de Steward-lens
+      setMode("bi");
+      setTimeout(function(){ scrollToId(id); setActive(id); }, 360);
+    }
+    window.addEventListener("hashchange", openHashChapter);
+    if(location.hash) setTimeout(openHashChapter, 60);
   })();
 
 (function(){
