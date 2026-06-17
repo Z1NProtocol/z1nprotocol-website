@@ -87,21 +87,22 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 @media(max-width:920px){.cards3{grid-template-columns:1fr;}}
 .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:16px 16px 18px;display:flex;flex-direction:column;}
 .card .ct{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;}
-.card .cs{font-size:11px;color:#5d6680;margin-top:3px;}
+.card .cs{font-size:11px;color:#8f9ab5;margin-top:3px;}
 
 .field-card{position:relative;padding:0;overflow:hidden;min-height:312px;background:radial-gradient(circle at 50% 52%,rgba(123,184,252,0.07),transparent 66%),var(--card-bg);}
 .field-card .fhead{position:absolute;top:16px;left:16px;z-index:2;pointer-events:none;}
 .field-card .fhead .ct{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;}
-.field-card .fhead .cs{font-size:11px;color:#5d6680;margin-top:3px;}
+.field-card .fhead .cs{font-size:11px;color:#8f9ab5;margin-top:3px;}
 #fieldCanvas{display:block;width:100%;height:312px;}
 @media(max-width:920px){#fieldCanvas{height:300px;}.field-card{min-height:300px;}}
 @media(max-width:600px){#fieldCanvas{height:270px;}.field-card{min-height:270px;}}
 .field-card .flegend{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;pointer-events:none;}
 .field-card .fbar{display:flex;height:7px;border-radius:4px;overflow:hidden;}
-.field-card .fleg{font-size:10px;color:var(--text-soft);display:flex;justify-content:center;gap:14px;}
-.field-card .fleg .legdot{display:inline-flex;align-items:center;gap:5px;}
-.field-card .fleg .legdot::before{content:"";width:7px;height:7px;border-radius:999px;background:var(--c);}
-.field-card .fepoch{position:absolute;top:16px;right:16px;z-index:2;font-size:11px;color:#5d6680;font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;pointer-events:none;}
+.field-card .fleg{font-size:9.5px;color:var(--text-soft);display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;}
+.field-card .fleg .legdot{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.field-card .fleg .legdot b{color:#cdd4e4;font-weight:700;}
+.field-card .fleg .legdot::before{content:"";flex:0 0 auto;width:7px;height:7px;border-radius:999px;background:var(--c);}
+.field-card .fepoch{position:absolute;top:16px;right:16px;z-index:2;font-size:11px;color:#9aa3bb;font-family:"SF Mono",Menlo,Monaco,Consolas,monospace;pointer-events:none;}
 .field-card .fstart{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;background:rgba(2,6,23,0.85);border:1px solid var(--aether);color:#cdd4e4;font-size:12px;font-weight:600;padding:9px 18px;border-radius:999px;cursor:pointer;transition:opacity .3s,background .2s;}
 .field-card .fstart:hover{background:rgba(123,184,252,0.12);}
 
@@ -183,7 +184,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
   <div class="cards3">
     <section class="card field-card" aria-label="Signals in the Field">
-      <div class="fhead"><div class="ct">Signals in the Field <span class="info has-tip" data-tip="Signals are Proof-of-Glyph expressions, coloured by intent. Some cross to another Key, some flow to the Field.">i</span></div><div class="cs" id="fieldSub">live · by intent</div></div>
+      <div class="fhead"><div class="ct">Signals in the Field <span class="info has-tip" data-tip="Signals are Proof-of-Glyph expressions, coloured by intent. Some cross to another Key, some flow to the Field.">i</span></div><div class="cs" id="fieldSub">signals by intent</div></div>
       <div class="fepoch" id="fEpoch">Epoch –</div>
       <canvas id="fieldCanvas"></canvas>
       <div class="field-tip" id="fieldTip"></div>
@@ -198,7 +199,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         <div><div class="ct">Artefacts minted <span class="info has-tip" data-tip="An artefact is a bond minted between two Keys — a shared object that ties their identities together.">i</span></div><div class="cs" id="artSub">by Key</div></div>
         <div class="rank-toggle" data-card="art">
           <button class="rtg active" data-m="art">Total</button>
-          <button class="rtg" data-m="artpe">/ epoch</button>
+          <button class="rtg" data-m="artpe">Per epoch</button>
         </div>
       </div>
       <div id="artRows"></div>
@@ -209,7 +210,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         <div><div class="ct">Canon anchors minted <span class="info has-tip" data-tip="Canon anchors are generated from signals in the Field — moments a Key fixes into shared, lasting record.">i</span></div><div class="cs" id="canSub">by Key</div></div>
         <div class="rank-toggle" data-card="can">
           <button class="rtg active" data-m="can">Total</button>
-          <button class="rtg" data-m="canpe">/ epoch</button>
+          <button class="rtg" data-m="canpe">Per epoch</button>
         </div>
       </div>
       <div id="canRows"></div>
@@ -256,7 +257,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   </div>
 </footer>
 
-<script id="seed" type="application/json">{"rows":[{"id":0,"gl":"△","dom":"C","sig":5,"art":0,"can":1,"minted":0,"first":0,"artpe":0.0,"canpe":0.01},{"id":1,"gl":"☰","dom":"I","sig":133,"art":22,"can":26,"minted":1,"first":1,"artpe":0.218,"canpe":0.257},{"id":2,"gl":"π","dom":"I","sig":134,"art":7,"can":4,"minted":1,"first":1,"artpe":0.069,"canpe":0.04},{"id":3,"gl":"○","dom":"I","sig":127,"art":31,"can":32,"minted":1,"first":1,"artpe":0.307,"canpe":0.317},{"id":4,"gl":"⊥","dom":"K","sig":130,"art":35,"can":41,"minted":1,"first":1,"artpe":0.347,"canpe":0.406},{"id":5,"gl":"◊","dom":"S","sig":0,"art":0,"can":0,"minted":1,"first":null,"artpe":0.0,"canpe":0.0},{"id":6,"gl":"⊥","dom":"I","sig":88,"art":7,"can":9,"minted":18,"first":20,"artpe":0.083,"canpe":0.107},{"id":7,"gl":"⚑","dom":"I","sig":105,"art":4,"can":2,"minted":18,"first":20,"artpe":0.048,"canpe":0.024},{"id":8,"gl":"∞","dom":"I","sig":81,"art":6,"can":6,"minted":18,"first":20,"artpe":0.071,"canpe":0.071},{"id":9,"gl":"⋮","dom":"K","sig":111,"art":7,"can":1,"minted":18,"first":20,"artpe":0.083,"canpe":0.012}],"cur":102,"imix":[77,457,369,11],"newC":694,"repC":220,"pairs":[[0,1],[0,2],[1,2],[1,3],[1,4],[1,6],[1,7],[1,8],[1,9],[2,3],[2,4],[2,8],[3,4],[3,6],[3,7],[3,9],[4,6],[4,7],[4,9],[6,7],[6,8],[6,9],[7,8],[7,9],[8,9]],"totals":{"keys":10,"signals":914,"attests":828,"artefacts":62,"canon":122,"k2k":17},"res":{"epoch":27,"text":"I do not remain by staying. Staying still belongs to distance. What persists here is prior to return, prior to position — a presence that does not arrive because nothing is outside it.","gl":"☰","kid":1,"intent":"I"}}</script>
+<script id="seed" type="application/json">{"rows":[{"id":0,"gl":"△","dom":"C","sig":5,"art":0,"can":1,"minted":0,"first":0,"artpe":0.0,"canpe":0.009},{"id":1,"gl":"☰","dom":"I","sig":171,"art":22,"can":26,"minted":1,"first":1,"artpe":0.206,"canpe":0.243},{"id":2,"gl":"π","dom":"I","sig":172,"art":7,"can":4,"minted":1,"first":1,"artpe":0.065,"canpe":0.037},{"id":3,"gl":"○","dom":"I","sig":146,"art":31,"can":32,"minted":1,"first":1,"artpe":0.29,"canpe":0.299},{"id":4,"gl":"⊥","dom":"K","sig":164,"art":35,"can":41,"minted":1,"first":1,"artpe":0.327,"canpe":0.383},{"id":5,"gl":"◊","dom":"S","sig":0,"art":0,"can":0,"minted":1,"first":null,"artpe":0.0,"canpe":0.0},{"id":6,"gl":"⊥","dom":"I","sig":135,"art":7,"can":9,"minted":18,"first":20,"artpe":0.078,"canpe":0.1},{"id":7,"gl":"⚑","dom":"I","sig":144,"art":4,"can":2,"minted":18,"first":20,"artpe":0.044,"canpe":0.022},{"id":8,"gl":"∞","dom":"I","sig":134,"art":6,"can":6,"minted":18,"first":20,"artpe":0.067,"canpe":0.067},{"id":9,"gl":"⋮","dom":"K","sig":157,"art":7,"can":1,"minted":18,"first":20,"artpe":0.078,"canpe":0.011}],"cur":108,"imix":[77,457,369,11],"newC":694,"repC":220,"pairs":[[0,1],[0,2],[1,2],[1,3],[1,4],[1,6],[1,7],[1,8],[1,9],[2,3],[2,4],[2,8],[3,4],[3,6],[3,7],[3,9],[4,6],[4,7],[4,9],[6,7],[6,8],[6,9],[7,8],[7,9],[8,9]],"totals":{"keys":10,"signals":1228,"attests":1109,"artefacts":67,"canon":143,"k2k":17},"res":{"epoch":27,"text":"I do not remain by staying. Staying still belongs to distance. What persists here is prior to return, prior to position — a presence that does not arrive because nothing is outside it.","gl":"☰","kid":1,"intent":"I"}}</script>
 
 <script>
 (function(){
@@ -301,7 +302,8 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(animate)countUp(el,map[id],1200);else el.textContent=fmt(map[id]);});
   }
   function renderField(){
-    document.getElementById("fieldLeg").innerHTML=INTL.map(function(l,i){return '<span class="legdot" style="--c:'+ICA[i]+'">'+l+'</span>';}).join("");
+    var NM=["Collective Identity","Individual Identity","Co-creative Identity","Silence"];
+    document.getElementById("fieldLeg").innerHTML=INTL.map(function(l,i){return '<span class="legdot" style="--c:'+ICA[i]+'"><b>'+l+'</b> '+NM[i]+'</span>';}).join("");
   }
   function renderRes(){document.getElementById("resHeadText").textContent="Strongest field resonance till now · epoch "+S.res.epoch;var ri=document.getElementById("resInfo");if(ri)ri.setAttribute("data-tip","Strongest signal sent by Key "+(S.res.gl||"?")+" (#"+(S.res.kid!=null?S.res.kid:"?")+") · identity intent Ω"+(S.res.intent||"?"));document.getElementById("resBody").textContent='"'+(S.res.text.length>300?S.res.text.slice(0,297)+"…":S.res.text)+'"';}
 
@@ -379,8 +381,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     S.imix=imix;S.cur=cur;S.newC=newC;S.repC=repC;
     var t=snap.totals||{};
     S.totals={keys:t.keys||keysS.length,signals:t.signals||sigs.length,attests:t.attestations||0,artefacts:t.artefacts||arts.length,canon:t.canon||canon.length,k2k:(t.directMessages!=null?t.directMessages:S.totals.k2k)};
+    var glById={};keysS.forEach(function(k){glById[k.id]=(k.glyphs||"·").split(" ")[0];});
     var best=null;sigs.forEach(function(s){if(s.content&&typeof s.weight==="number"&&(!best||s.weight>best.weight))best=s;});
-    if(best)S.res={epoch:best.epoch,text:best.content.slice(0,300)};
+    if(best)S.res={epoch:best.epoch,text:best.content.slice(0,300),gl:glById[best.keyId]||"?",kid:best.keyId,intent:["C","I","K","S"][best.intent]||"S"};
     buildNodes();place();renderRank("art");renderRank("can");renderTotals(false);renderField();renderRes();
   }
   function loadLive(){var o={};if(window.AbortSignal&&AbortSignal.timeout){try{o.signal=AbortSignal.timeout(15000);}catch(e){}}fetch(SNAPSHOT,o).then(function(r){return r.ok?r.json():Promise.reject();}).then(ingest).catch(function(){});}
