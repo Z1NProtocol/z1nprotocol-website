@@ -81,11 +81,18 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .info{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:999px;border:1px solid var(--card-border);color:var(--text-soft);font-size:9px;font-style:italic;font-weight:700;cursor:help;vertical-align:middle;pointer-events:auto;position:relative;margin-left:5px;}
 .has-tip::after{content:attr(data-tip);position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 8px);z-index:30;background:rgba(2,6,23,0.98);border:1px solid var(--card-border);border-radius:8px;padding:8px 11px;font-size:11px;font-weight:400;font-style:normal;letter-spacing:0;text-transform:none;color:#aab2c6;width:200px;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .15s;box-shadow:0 8px 24px rgba(0,0,0,0.55);}
 .has-tip:hover::after{opacity:1;}
+.qbtn{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:999px;border:1px solid var(--card-border);background:rgba(255,255,255,0.03);color:var(--text-soft);font-size:10px;font-weight:700;cursor:pointer;vertical-align:middle;margin-left:6px;pointer-events:auto;padding:0;line-height:1;}
+.qbtn:hover{color:#cdd4e4;border-color:var(--aether);}
+.card-info{position:absolute;inset:0;z-index:9;background:rgba(2,6,23,0.98);border:1px solid var(--card-border);border-radius:18px;padding:22px;display:flex;flex-direction:column;justify-content:center;gap:8px;opacity:0;pointer-events:none;transform:scale(0.985);transition:opacity .25s,transform .25s;cursor:pointer;text-align:left;}
+.card-info.open{opacity:1;pointer-events:auto;transform:scale(1);}
+.card-info .ci-t{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;}
+.card-info .ci-b{font-size:13px;line-height:1.65;color:#c7cdda;}
+.card-info .ci-h{font-size:10px;color:#5d6680;margin-top:6px;}
 .field-card .field-tip{position:absolute;z-index:5;background:rgba(2,6,23,0.97);border:1px solid var(--card-border);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--text-soft);pointer-events:none;opacity:0;transition:opacity .15s;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
 
 .cards3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:stretch;}
 @media(max-width:920px){.cards3{grid-template-columns:1fr;}}
-.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:16px 16px 18px;display:flex;flex-direction:column;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:16px 16px 18px;display:flex;flex-direction:column;position:relative;}
 .card .ct{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;}
 .card .cs{font-size:11px;color:#8f9ab5;margin-top:3px;}
 
@@ -96,9 +103,9 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 #fieldCanvas{display:block;width:100%;height:312px;}
 @media(max-width:920px){#fieldCanvas{height:300px;}.field-card{min-height:300px;}}
 @media(max-width:600px){#fieldCanvas{height:270px;}.field-card{min-height:270px;}}
-.field-card .flegend{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;pointer-events:none;}
+.field-card .flegend{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;pointer-events:none;text-align:center;}
 .field-card .fbar{display:flex;height:7px;border-radius:4px;overflow:hidden;}
-.field-card .fleg{font-size:9.5px;color:var(--text-soft);display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;}
+.field-card .fleg{font-size:9.5px;color:var(--text-soft);display:inline-grid;grid-template-columns:auto auto;gap:5px 16px;text-align:left;}
 .field-card .fleg .legdot{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
 .field-card .fleg .legdot b{color:#cdd4e4;font-weight:700;}
 .field-card .fleg .legdot::before{content:"";flex:0 0 auto;width:7px;height:7px;border-radius:999px;background:var(--c);}
@@ -106,7 +113,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .field-card .fstart{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;background:rgba(2,6,23,0.85);border:1px solid var(--aether);color:#cdd4e4;font-size:12px;font-weight:600;padding:9px 18px;border-radius:999px;cursor:pointer;transition:opacity .3s,background .2s;}
 .field-card .fstart:hover{background:rgba(123,184,252,0.12);}
 
-.rank-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;}
+.rank-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px;}
 .rank-toggle{display:flex;gap:4px;}
 .rtg{font-size:10px;color:var(--text-soft);background:transparent;border:1px solid var(--card-border);border-radius:999px;padding:4px 9px;cursor:pointer;transition:.2s;}
 .rtg:hover{color:#cdd4e4;border-color:rgba(123,184,252,0.5);}
@@ -184,7 +191,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
   <div class="cards3">
     <section class="card field-card" aria-label="Signals in the Field">
-      <div class="fhead"><div class="ct">Signals in the Field <span class="info has-tip" data-tip="Signals are Proof-of-Glyph expressions, coloured by intent. Some cross to another Key, some flow to the Field.">i</span></div><div class="cs" id="fieldSub">signals by intent</div></div>
+      <div class="fhead"><div class="ct" style="color:var(--sunbeam)">Signals in the Field <button class="qbtn" type="button">?</button></div><div class="cs" id="fieldSub">signals by intent</div></div>
       <div class="fepoch" id="fEpoch">Epoch –</div>
       <canvas id="fieldCanvas"></canvas>
       <div class="field-tip" id="fieldTip"></div>
@@ -192,42 +199,45 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="flegend">
         <div class="fleg" id="fieldLeg"></div>
       </div>
+      <div class="card-info"><div class="ci-t">Signals in the Field</div><div class="ci-b">Each spark is a Proof-of-Glyph signal, coloured by the intent it carries. Some cross to another Key, some flow to the Field itself. Press Play to watch the epochs build.</div><div class="ci-h">tap to close</div></div>
     </section>
 
     <section class="card" aria-label="Artefacts minted">
       <div class="rank-head">
-        <div><div class="ct">Artefacts minted <span class="info has-tip" data-tip="An artefact is a bond minted between two Keys — a shared object that ties their identities together.">i</span></div><div class="cs" id="artSub">by Key</div></div>
+        <div><div class="ct" style="color:var(--mint)">Artefacts minted <button class="qbtn" type="button">?</button></div><div class="cs" id="artSub">by Key</div></div>
         <div class="rank-toggle" data-card="art">
           <button class="rtg active" data-m="art">Total</button>
           <button class="rtg" data-m="artpe">Per epoch</button>
         </div>
       </div>
       <div id="artRows"></div>
+      <div class="card-info"><div class="ci-t">Artefacts minted</div><div class="ci-b">An artefact is a bond minted between two Keys — a shared on-chain object that ties their identities together. Ranked per Key, by total or per epoch.</div><div class="ci-h">tap to close</div></div>
     </section>
 
     <section class="card" aria-label="Canon anchors minted">
       <div class="rank-head">
-        <div><div class="ct">Canon anchors minted <span class="info has-tip" data-tip="Canon anchors are generated from signals in the Field — moments a Key fixes into shared, lasting record.">i</span></div><div class="cs" id="canSub">by Key</div></div>
+        <div><div class="ct" style="color:var(--canon)">Canon anchors minted <button class="qbtn" type="button">?</button></div><div class="cs" id="canSub">by Key</div></div>
         <div class="rank-toggle" data-card="can">
           <button class="rtg active" data-m="can">Total</button>
           <button class="rtg" data-m="canpe">Per epoch</button>
         </div>
       </div>
       <div id="canRows"></div>
+      <div class="card-info"><div class="ci-t">Canon anchors minted</div><div class="ci-b">Canon anchors are generated from signals in the Field — the moments a Key fixes something into shared, lasting record. Ranked per Key, by total or per epoch.</div><div class="ci-h">tap to close</div></div>
     </section>
   </div>
 
   <section class="totals" aria-label="Field totals">
     <div class="tot" style="--ac:var(--aether)"><div class="v" id="tKeys" data-v="0">0</div><div class="l">Keys awakened</div></div>
-    <div class="tot" style="--ac:var(--mint)"><div class="v" id="tSig" data-v="0">0</div><div class="l">Signals sent</div></div>
+    <div class="tot" style="--ac:var(--sunbeam)"><div class="v" id="tSig" data-v="0" style="color:var(--sunbeam)">0</div><div class="l">Signals sent</div></div>
     <div class="tot" style="--ac:var(--sunbeam)"><div class="v" id="tAtt" data-v="0">0</div><div class="l">Attests sent</div></div>
-    <div class="tot" style="--ac:var(--mint)"><div class="v" id="tArt" data-v="0">0</div><div class="l">Artefacts minted</div></div>
-    <div class="tot" style="--ac:var(--canon)"><div class="v" id="tCan" data-v="0">0</div><div class="l">Canon minted</div></div>
+    <div class="tot" style="--ac:var(--mint)"><div class="v" id="tArt" data-v="0" style="color:var(--mint)">0</div><div class="l">Artefacts minted</div></div>
+    <div class="tot" style="--ac:var(--canon)"><div class="v" id="tCan" data-v="0" style="color:var(--canon)">0</div><div class="l">Canon minted</div></div>
     <div class="tot" style="--ac:var(--rose)"><div class="v" id="tK2K" data-v="0">0</div><div class="l">K2K messages <span class="info has-tip" data-tip="Messages without intent, sent directly between Keys — with the option to be encrypted. Not part of Proof-of-Glyph signals.">i</span></div></div>
   </section>
 
   <section class="resonance" aria-label="Strongest field resonance">
-    <div class="res-head"><span id="resHeadText">Strongest field resonance</span> <span class="info has-tip" id="resInfo" data-tip="">i</span></div>
+    <div class="res-head"><span id="resHeadText">Strongest field resonance</span></div>
     <div class="res-body" id="resBody">Loading…</div>
   </section>
 
@@ -305,7 +315,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     var NM=["Collective Identity","Individual Identity","Co-creative Identity","Silence"];
     document.getElementById("fieldLeg").innerHTML=INTL.map(function(l,i){return '<span class="legdot" style="--c:'+ICA[i]+'"><b>'+l+'</b> '+NM[i]+'</span>';}).join("");
   }
-  function renderRes(){document.getElementById("resHeadText").textContent="Strongest field resonance till now · epoch "+S.res.epoch;var ri=document.getElementById("resInfo");if(ri)ri.setAttribute("data-tip","Strongest signal sent by Key "+(S.res.gl||"?")+" (#"+(S.res.kid!=null?S.res.kid:"?")+") · identity intent Ω"+(S.res.intent||"?"));document.getElementById("resBody").textContent='"'+(S.res.text.length>300?S.res.text.slice(0,297)+"…":S.res.text)+'"';}
+  function renderRes(){document.getElementById("resHeadText").textContent="Strongest field resonance till now · epoch "+S.res.epoch+" · Key "+(S.res.gl||"?")+" · Ω"+(S.res.intent||"?");document.getElementById("resBody").textContent='"'+(S.res.text.length>300?S.res.text.slice(0,297)+"…":S.res.text)+'"';}
 
   document.querySelectorAll(".rank-toggle").forEach(function(tg){
     var which=tg.getAttribute("data-card");
@@ -317,6 +327,9 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       });
     });
   });
+
+  document.querySelectorAll(".qbtn").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();var card=b.closest(".card");if(!card)return;var info=card.querySelector(".card-info");if(info)info.classList.toggle("open");});});
+  document.querySelectorAll(".card-info").forEach(function(ci){ci.addEventListener("click",function(){ci.classList.remove("open");});});
 
   /* ── living Field: Keys as dots coupled by lines; signals flow Key→Key and to the Field ── */
   var cv=document.getElementById("fieldCanvas"),ctx=cv.getContext("2d");
