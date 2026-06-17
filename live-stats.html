@@ -152,6 +152,9 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 
 .resonance{margin-top:16px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;position:relative;}
 .res-head{font-size:12.5px;letter-spacing:0.02em;text-transform:none;font-weight:700;color:#c7cdda;text-align:center;margin-bottom:8px;}
+.res-head .ri{display:inline-flex;align-items:center;gap:5px;vertical-align:middle;}
+.res-head .ri::before{content:"";width:8px;height:8px;border-radius:999px;background:var(--c);}
+.res-head .ri b{color:#e6e9f2;font-weight:700;}
 .res-body{font-size:14px;line-height:1.65;color:#c7cdda;text-align:center;max-width:760px;margin:0 auto;}
 
 .snapshot-box{margin-top:32px;padding:14px 16px;background:rgba(15,23,42,0.4);border:1px solid rgba(148,163,184,0.08);border-radius:10px;font-size:12px;color:var(--text-soft);text-align:center;line-height:1.7;}
@@ -202,7 +205,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 
   <div class="cards3">
     <section class="card field-card" aria-label="Signals in the Field">
-      <div class="fhead"><div class="ct" style="color:var(--sunbeam)">Signals in the Field <button class="qbtn" type="button" style="color:var(--sunbeam);border-color:var(--sunbeam)">?</button></div><div class="cs" id="fieldSub">signals by intent</div></div>
+      <div class="fhead"><div class="ct" style="color:var(--sunbeam)">Signals sent <button class="qbtn" type="button" style="color:var(--sunbeam);border-color:var(--sunbeam)">?</button></div><div class="cs" id="fieldSub">signals by intent</div></div>
       <div class="fepoch" id="fEpoch">Epoch –</div>
       <canvas id="fieldCanvas"></canvas>
       <div class="field-tip" id="fieldTip"></div>
@@ -326,7 +329,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     document.getElementById("fieldSub").textContent=fmt(S.totals.signals);
     document.getElementById("fieldLeg").innerHTML=INTL.map(function(l,i){return '<span class="legdot" style="--c:'+ICA[i]+'"><b>'+l+'</b> '+NM[i]+'</span>';}).join("");
   }
-  function renderRes(){var gl=(S.res.glyphs||S.res.gl||"?").replace(/\s*·\s*/g," ");document.getElementById("resHeadText").textContent="Most attested signal · Epoch "+S.res.epoch+" · Key "+gl+" · Ω"+(S.res.intent||"?");document.getElementById("resBody").textContent='"'+(S.res.text.length>300?S.res.text.slice(0,297)+"…":S.res.text)+'"';}
+  function renderRes(){var IM={C:0,I:1,K:2,S:3},ii=(IM[S.res.intent]!=null?IM[S.res.intent]:1);var gl=(S.res.glyphs||S.res.gl||"?").replace(/\s*·\s*/g," ");document.getElementById("resHeadText").innerHTML='Most attested signal · <span class="ri" style="--c:'+ICA[ii]+'"><b>Ω'+(S.res.intent||"?")+'</b></span> · Epoch '+S.res.epoch+' · Key '+S.res.kid+' · '+gl;document.getElementById("resBody").textContent='"'+(S.res.text.length>300?S.res.text.slice(0,297)+"…":S.res.text)+'"';}
 
   document.querySelectorAll(".rank-toggle").forEach(function(tg){
     var which=tg.getAttribute("data-card");
