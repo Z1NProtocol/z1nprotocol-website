@@ -88,6 +88,14 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .card-info .ci-t{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;}
 .card-info .ci-b{font-size:13px;line-height:1.65;color:#c7cdda;}
 .card-info .ci-h{font-size:10px;color:#5d6680;margin-top:6px;}
+.card-info .ci-link{display:inline-block;width:fit-content;margin-top:11px;font-size:11.5px;font-weight:600;letter-spacing:0.01em;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px;}
+.card-info .ci-link:hover{opacity:0.78;}
+.k2k-info{position:relative;display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:999px;border:1px solid var(--card-border);color:var(--text-soft);font-size:10px;font-weight:700;font-style:normal;letter-spacing:0;text-transform:none;cursor:default;vertical-align:middle;margin-left:4px;outline:none;}
+.k2k-pop{position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);width:230px;background:rgba(2,6,23,0.98);border:1px solid var(--card-border);border-radius:10px;padding:11px 13px;font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:#aab2c6;line-height:1.55;text-align:left;opacity:0;pointer-events:none;transition:opacity .15s;box-shadow:0 10px 28px rgba(0,0,0,0.6);z-index:60;}
+.k2k-pop::after{content:"";position:absolute;top:100%;left:0;right:0;height:12px;}
+.k2k-info:hover .k2k-pop,.k2k-info:focus .k2k-pop,.k2k-info:focus-within .k2k-pop{opacity:1;pointer-events:auto;}
+.k2k-pop a{display:inline-block;margin-top:8px;color:#cdd4e4;text-decoration:underline;font-weight:600;}
+.k2k-pop a:hover{color:#fff;}
 .field-card .field-tip{position:absolute;z-index:5;background:rgba(2,6,23,0.97);border:1px solid var(--card-border);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--text-soft);pointer-events:none;opacity:0;transition:opacity .15s;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
 
 .cards3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:stretch;}
@@ -129,7 +137,7 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .brow:last-child{margin-bottom:0;}
 
 /* totals strip */
-.totals{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:16px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;overflow:hidden;}
+.totals{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:16px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;overflow:visible;}
 @media(max-width:760px){.totals{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:440px){.totals{grid-template-columns:repeat(2,1fr);}}
 .tot{position:relative;padding:18px 16px;text-align:center;border-right:1px solid rgba(148,163,184,0.10);}
@@ -199,7 +207,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="flegend">
         <div class="fleg" id="fieldLeg"></div>
       </div>
-      <div class="card-info"><div class="ci-t">Signals in the Field</div><div class="ci-b">Each spark is a Proof-of-Glyph signal, coloured by the intent it carries. Some cross to another Key, some flow to the Field itself. Press Play to watch the epochs build.</div><div class="ci-h">tap to close</div></div>
+      <div class="card-info"><div class="ci-t">Signals sent</div><div class="ci-b">Each spark is a Proof-of-Glyph signal, coloured by the intent it carries. Some cross to another Key, some flow to the Field itself. Press Play to watch the epochs build.</div><a class="ci-link" style="color:var(--sunbeam)" href="about.html#c4" onclick="event.stopPropagation()">Read chapter 4 in About →</a><div class="ci-h">tap to close</div></div>
     </section>
 
     <section class="card" aria-label="Artefacts minted">
@@ -211,19 +219,19 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         </div>
       </div>
       <div id="artRows"></div>
-      <div class="card-info"><div class="ci-t">Artefacts minted</div><div class="ci-b">An artefact is a bond minted between two Keys — a shared on-chain object that ties their identities together. Ranked per Key, by total or per epoch.</div><div class="ci-h">tap to close</div></div>
+      <div class="card-info"><div class="ci-t">Artefacts bounded</div><div class="ci-b">An artefact is a bond minted between two Keys — a shared on-chain object that ties their identities together, formed by consent and held until either side releases it. Ranked per Key, by total or per epoch.</div><a class="ci-link" style="color:var(--mint)" href="about.html#c6" onclick="event.stopPropagation()">Read chapter 6 in About →</a><div class="ci-h">tap to close</div></div>
     </section>
 
     <section class="card" aria-label="Canon anchors minted">
       <div class="rank-head">
-        <div><div class="ct" style="color:var(--canon)">Canon anchors minted <button class="qbtn" type="button" style="color:var(--canon);border-color:var(--canon)">?</button></div><div class="cs" id="canSub">by Key</div></div>
+        <div><div class="ct" style="color:var(--canon)">Canons minted <button class="qbtn" type="button" style="color:var(--canon);border-color:var(--canon)">?</button></div><div class="cs" id="canSub">by Key</div></div>
         <div class="rank-toggle" data-card="can">
           <button class="rtg active" data-m="can">Total</button>
           <button class="rtg" data-m="canpe">Per epoch</button>
         </div>
       </div>
       <div id="canRows"></div>
-      <div class="card-info"><div class="ci-t">Canon — permanent memory</div><div class="ci-b">Where an artefact is a relational bond between two Keys, a Canon Anchor is permanence: a Key marking an epoch as meaningful — forever. One anchor per Key per epoch, immutable once minted. It carries a short on-chain commitment (max 64 chars) and its hash — a readable declaration plus cryptographic proof. The smallest irreversible unit of memory in Z1N: a Key saying, without negotiation, "This mattered. I was here when it happened."</div><div class="ci-h">tap to close</div></div>
+      <div class="card-info"><div class="ci-t">Canons marked</div><div class="ci-b">Canon is permanent memory. Where an artefact is a relational bond between two Keys, a Canon Anchor is a Key marking an epoch as meaningful — forever. One anchor per Key per epoch, immutable once minted, carrying a short on-chain commitment (max 64 chars) and its hash: a readable declaration plus cryptographic proof. The smallest irreversible unit of memory in Z1N — a Key saying, without negotiation, "This mattered. I was here when it happened."</div><a class="ci-link" style="color:var(--canon)" href="about.html#c7" onclick="event.stopPropagation()">Read chapter 7 in About →</a><div class="ci-h">tap to close</div></div>
     </section>
   </div>
 
@@ -232,7 +240,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     <div class="tot"><div class="v" id="tSig" data-v="0" style="color:var(--sunbeam)">0</div><div class="l">Signals sent</div></div>
     <div class="tot"><div class="v" id="tArt" data-v="0" style="color:var(--mint)">0</div><div class="l">Artefacts minted</div></div>
     <div class="tot"><div class="v" id="tCan" data-v="0" style="color:var(--canon)">0</div><div class="l">Canon minted</div></div>
-    <div class="tot"><div class="v" id="tK2K" data-v="0" style="color:var(--text-soft)">0</div><div class="l">K2K messages <span class="info has-tip" data-tip="The Direct Channel — private Key-to-Key messages beneath the signal field. No intent, no ranking, no fees; encryption optional. The field sees the Keys, not the words.">?</span></div></div>
+    <div class="tot"><div class="v" id="tK2K" data-v="0" style="color:var(--text-soft)">0</div><div class="l">K2K messages <span class="k2k-info" tabindex="0">?<span class="k2k-pop">The Direct Channel — private Key-to-Key messages beneath the signal field. No intent, no ranking, no fees; encryption optional. The field sees the Keys, not the words.<a href="about.html#c8">Read chapter 8 in About →</a></span></span></div></div>
   </section>
 
   <section class="resonance" aria-label="Strongest field resonance">
@@ -294,7 +302,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         +'<span class="track"><span class="fill" data-w="'+w+'" style="width:0%;background:'+color+';"></span></span>'
         +'<span class="bv">'+fmtv(r[key],pe)+'</span></div>';
     }).join("");
-    document.getElementById(which+"Sub").textContent=pe?"per epoch since mint":(which==="art"?fmt(S.totals.artefacts)+" total":fmt(S.totals.canon)+" total");
+    document.getElementById(which+"Sub").textContent=fmt(which==="art"?S.totals.artefacts:S.totals.canon);
     requestAnimationFrame(function(){requestAnimationFrame(function(){
       document.querySelectorAll("#"+which+"Rows .fill").forEach(function(f){f.style.width=f.getAttribute("data-w")+"%";});
     });});
@@ -312,6 +320,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
   }
   function renderField(){
     var NM=["Collective Identity","Individual Identity","Co-creative Identity","Silence"];
+    document.getElementById("fieldSub").textContent=fmt(S.totals.signals);
     document.getElementById("fieldLeg").innerHTML=INTL.map(function(l,i){return '<span class="legdot" style="--c:'+ICA[i]+'"><b>'+l+'</b> '+NM[i]+'</span>';}).join("");
   }
   function renderRes(){document.getElementById("resHeadText").textContent="Strongest field resonance till now · epoch "+S.res.epoch+" · Key "+(S.res.glyphs||S.res.gl||"?")+" · Ω"+(S.res.intent||"?");document.getElementById("resBody").textContent='"'+(S.res.text.length>300?S.res.text.slice(0,297)+"…":S.res.text)+'"';}
