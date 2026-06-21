@@ -104,8 +104,6 @@ h1 .g{color:var(--accent);}
 .art-badge{position:absolute;top:14px;left:14px;z-index:3;display:inline-flex;align-items:center;font-family:system-ui;font-size:13px;font-weight:700;padding:6px 13px;border-radius:999px;}
 .art-badge.pending{background:rgba(255,213,86,0.92);color:#061018;}
 .art-badge.bounded{background:rgba(94,232,160,0.92);color:#061018;}
-.art-inscription{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 16px 18px;font-family:system-ui;font-size:12px;line-height:1.45;color:#cdd4e4;font-style:italic;text-align:center;background:linear-gradient(to top,rgba(5,8,18,0.97),rgba(5,8,18,0.85) 55%,transparent);}
-.art-inscription .ai-label{display:block;font-style:normal;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-soft);margin-bottom:5px;}
 .srender .zh{position:absolute;bottom:8px;right:10px;font-size:10px;color:var(--text-soft);opacity:0.55;transition:.2s;font-family:var(--mono);background:rgba(5,8,18,0.65);padding:3px 7px;border-radius:6px;pointer-events:none;z-index:4;}
 .srender:hover .zh{opacity:0.8;}
 
@@ -227,7 +225,7 @@ footer .links a:hover{color:#fff;}
 <script>
 var API_BASE="https://z1n-backend-production.up.railway.app/api";
 var ART_KEY=3; // artefact #5 is Key 3's first (primary) artefact
-var ART_INSCRIPTION="\u201cThe field does not finish with what it has not resolved.\u201d";
+var ART_INSCRIPTION="The field does not finish with what it has not resolved.";
 
 // State placeholder card (matches dashboard ◈ placeholders) — used for offered/released sides
 function stateCard(hue,keyLabel,statusLabel,subLabel,opacity){
@@ -271,7 +269,7 @@ STEPS.forEach(function(s,i){
   slide.className="slide "+s.cls;
   var viewsHtml=s.views.map(function(v){
     if(v.card){
-      return '<div class="sview"><div class="vlabel">'+v.label+'</div><div class="srender artlive" data-key="'+ART_KEY+'">'+(v.badge||'')+'<div class="art-inscription"><span class="ai-label">Inscription · #5</span>'+ART_INSCRIPTION+'</div><div class="artload">Loading artefact…</div><span class="zh">⤢ zoom</span></div></div>';
+      return '<div class="sview"><div class="vlabel">'+v.label+'</div><div class="srender artlive" data-key="'+ART_KEY+'">'+(v.badge||'')+'<div class="artload">Loading artefact…</div><span class="zh">⤢ zoom</span></div></div>';
     }
     return '<div class="sview"><div class="vlabel">'+v.label+'</div><div class="srender" data-svg="1">'+v.svg+'<span class="zh">⤢ zoom</span></div></div>';
   }).join("");
@@ -324,7 +322,7 @@ STEPS.forEach(function(s,i){
       var key=node.getAttribute("data-key")||"3";
       var img=new Image();
       img.alt="Live artefact for Key #"+key;
-      img.src=API_BASE+"/artefact/"+key+"/static-preview?epoch="+ep+"&t="+Date.now();
+      img.src=API_BASE+"/artefact/"+key+"/static-preview?epoch="+ep+"&artefactTokenId=5&inscription="+encodeURIComponent(ART_INSCRIPTION)+"&t="+Date.now();
       img.onload=function(){ var l=node.querySelector(".artload"); if(l){ l.parentNode.replaceChild(img,l); } else { node.insertBefore(img,node.firstChild); } };
       img.onerror=function(){ var l=node.querySelector(".artload"); if(l) l.textContent="Artefact unavailable"; };
     });
