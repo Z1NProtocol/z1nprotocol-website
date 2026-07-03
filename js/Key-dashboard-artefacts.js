@@ -163,7 +163,7 @@
   var Z1N_ARTEFACT = '0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B';
   var Z1N_KEY = '0x8687429405bf787b523F3F1F998FA90f5828dA3D';
   
-  var RPC_URLS = ['https://polygon-rpc.com'];
+  var RPC_URLS = ['https://polygon.drpc.org'];
   var currentRpcIndex = 0;
   
   var SELECTORS = {

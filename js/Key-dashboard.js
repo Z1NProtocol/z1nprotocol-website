@@ -11,7 +11,7 @@
   var Z1N_CORE = '0xc09b7dEE30635EeaD79e0d23da9598F9d3BaFF7b';
   var Z1N_SIGNAL = '0x6a04c3605F38FCE9A4eCd5127Ef139F3c51f912B';
   var Z1N_ARTEFACT = '0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B';
-  var RPC_URLS = ['https://polygon-rpc.com'];
+  var RPC_URLS = ['https://polygon.drpc.org'];
   var currentRpcIndex = 0;
   var EXPLORER = 'https://polygonscan.com';
   var API_BASE = 'https://z1n-backend-production.up.railway.app/api';
@@ -1632,7 +1632,7 @@ if (list && !list.querySelector('[data-hash="' + tx + '"]')) { var it = document
       }
       
       var cid = await provider.request({ method: 'eth_chainId' });
-      if (cid !== CHAIN_ID) { try { await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID }] }); } catch (se) { if (se.code === 4902) { await provider.request({ method: 'wallet_addEthereumChain', params: [{ chainId: CHAIN_ID, chainName: 'Polygon', nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'], blockExplorerUrls: ['https://polygonscan.com'] }] }); } } }
+      if (cid !== CHAIN_ID) { try { await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID }] }); } catch (se) { if (se.code === 4902) { await provider.request({ method: 'wallet_addEthereumChain', params: [{ chainId: CHAIN_ID, chainName: 'Polygon', nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 }, rpcUrls: ['https://polygon.drpc.org'], blockExplorerUrls: ['https://polygonscan.com'] }] }); } } }
       
       currentKeyId = null;
       console.log('URL params - key:', urlKeyId, 'wallet:', urlWallet, 'tab:', urlTab);

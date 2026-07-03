@@ -19,8 +19,8 @@
   var POL_DANGER = 7.5;   // red danger threshold in POL
   var TYPICAL_GAS_LIMIT = 250000; // typical Z1N transaction gas usage
   var POLL_INTERVAL = 60000;
-  var RPC_URL       = 'https://polygon-rpc.com';
-  var FALLBACK_RPC  = 'https://polygon-rpc.com';
+  var RPC_URL       = 'https://polygon.drpc.org';
+  var FALLBACK_RPC  = 'https://polygon.drpc.org';
 
   // ── STATE ──────────────────────────────────────────────────
   var banner      = null;
