@@ -436,7 +436,7 @@ async function connectWallet(){
       catch(e){if(e.code===4902) await provider.request({method:'wallet_addEthereumChain',params:[{chainId:CHAIN,chainName:'Polygon',nativeCurrency:{name:'POL',symbol:'POL',decimals:18},rpcUrls:['https://rpc-mainnet.maticvigil.com'],blockExplorerUrls:['https://polygonscan.com']}]}); else throw e;}
     }
     var od='0x6352211e'+BigInt(keyId).toString(16).padStart(64,'0');
-    var r=await fetch('https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',params:[{to:Z1N_KEY,data:od},'latest']})});
+    var r=await fetch('https://polygon-rpc.com',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',params:[{to:Z1N_KEY,data:od},'latest']})});
     var rd=await r.json();
     var owner='0x'+rd.result.slice(26).toLowerCase();
     if(owner!==account){showS('⚠ Key owned by '+owner.slice(0,6)+'…'+owner.slice(-4)+'. Switch wallet.','error');return false;}
@@ -479,7 +479,7 @@ async function waitReceipt(h){
   for(var i=0;i<60;i++){
     await new Promise(function(r){setTimeout(r,2000);});
     try{
-      var r=await fetch('https://polygon-mainnet.g.alchemy.com/v2/P7YcT2oy0Mfad2Pedbe3y',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_getTransactionReceipt',params:[h]})});
+      var r=await fetch('https://polygon-rpc.com',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_getTransactionReceipt',params:[h]})});
       var d=await r.json();
       if(d.result&&d.result.status==='0x1') return true;
       if(d.result&&d.result.status==='0x0') return false;
