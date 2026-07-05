@@ -816,9 +816,10 @@ backdrop-filter:blur(12px);
 .contract-addr:hover{color:var(--text-main);text-decoration:underline;}
 .contract-sep{color:var(--text-soft);opacity:0.3;margin:0 4px;}
 
-    /* ── header sync met artefacts.html (laat staan: wint van elke eerdere afwijkende regel) ── */
-    header{ height:72px; display:flex; align-items:center; justify-content:center; }
-    header .nav-inner{ width:100%; max-width:1200px; margin:0 auto; padding:0 24px; }
+    /* ── header sync met artefacts.html — geforceerd ── */
+    header{ height:72px !important; display:flex !important; align-items:center !important; justify-content:center !important; width:100% !important; }
+    header .nav-inner{ width:100% !important; max-width:1200px !important; margin:0 auto !important; padding:0 24px !important; }
+    main.page{ max-width:1200px !important; margin:0 auto !important; padding:40px 24px 72px !important; }
   </style>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
