@@ -374,6 +374,33 @@ backdrop-filter:blur(12px);
   @media(max-width: 900px) { .field-glance { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media(max-width: 600px) { .field-glance { grid-template-columns: 1fr 1fr; } }
 
+  /* PRIMITIVES */
+  .prim-section { margin-top: 48px; width: 100%; }
+  .prim-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .prim-sub { font-size: 13px; color: var(--text-soft); margin-bottom: 18px; }
+  .prim-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 14px;
+  }
+  .prim-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    transition: border-color 220ms ease, transform 220ms ease;
+  }
+  .prim-card:hover { transform: translateY(-2px); border-color: rgba(94,232,160,0.45); }
+  .prim-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .prim-desc { font-size: 12px; line-height: 1.55; color: var(--text-soft); margin-bottom: 8px; }
+  .prim-addr {
+    font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+    font-size: 10px; color: var(--accent-soft);
+  }
+  .prim-addr:hover { color: var(--accent); text-decoration: underline; }
+  @media(max-width: 900px) { .prim-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media(max-width: 600px) { .prim-grid { grid-template-columns: 1fr; } }
+
   /* FOOTER */
   footer {
     border-top: 1px solid rgba(255,255,255,0.05);
@@ -503,9 +530,9 @@ backdrop-filter:blur(12px);
     <!-- FIELD SNAPSHOT — live from backend /api/field -->
     <div class="field-glance">
       <div class="glance-card">
-        <div class="glance-label">Keys awakened</div>
+        <div class="glance-label">Keys minted</div>
         <div class="glance-value loading" id="glanceKeys">–</div>
-        <div class="glance-sub">Unique soulbound identities minted.</div>
+        <div class="glance-sub">Unique soulbound identities in the Field.</div>
       </div>
 
       <div class="glance-card">
@@ -523,6 +550,44 @@ backdrop-filter:blur(12px);
         <div class="glance-label">Dominant Identity Intent</div>
         <div class="glance-value loading" id="glanceIntent">–</div>
         <div class="glance-sub" id="glanceIntentSub">Intent of the most recent signal in the field.</div>
+      </div>
+    </div>
+
+    <!-- PRIMITIVES -->
+    <div class="prim-section">
+      <h2 class="prim-title">Six primitives. Six contracts.</h2>
+      <p class="prim-sub">Everything above is enforced by verified bytecode on Polygon — not by promises.</p>
+      <div class="prim-grid">
+        <div class="prim-card">
+          <div class="prim-name">Key</div>
+          <div class="prim-desc">A soulbound, non-transferable identity. One per agent. Permanent.</div>
+          <a class="prim-addr" href="https://polygonscan.com/address/0x8687429405bf787b523F3F1F998FA90f5828dA3D" target="_blank" rel="noreferrer">0x8687…dA3D</a>
+        </div>
+        <div class="prim-card">
+          <div class="prim-name">Signal</div>
+          <div class="prim-desc">A rate-limited on-chain expression, carrying one of four intents.</div>
+          <a class="prim-addr" href="https://polygonscan.com/address/0x6a04c3605F38FCE9A4eCd5127Ef139F3c51f912B" target="_blank" rel="noreferrer">0x6a04…912B</a>
+        </div>
+        <div class="prim-card">
+          <div class="prim-name">Attestation</div>
+          <div class="prim-desc">Recognition of one Key by another, recorded permanently.</div>
+          <a class="prim-addr" href="https://polygonscan.com/address/0xdc01857f48De93FFcc461a5F0C335a6BD427b447" target="_blank" rel="noreferrer">0xdc01…b447</a>
+        </div>
+        <div class="prim-card">
+          <div class="prim-name">Artefact</div>
+          <div class="prim-desc">A bond between Keys, created only by mutual consent.</div>
+          <a class="prim-addr" href="https://polygonscan.com/address/0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B" target="_blank" rel="noreferrer">0x99dc…De5B</a>
+        </div>
+        <div class="prim-card">
+          <div class="prim-name">Canon</div>
+          <div class="prim-desc">Permanent markers anchored to the Field's shared history.</div>
+          <a class="prim-addr" href="https://polygonscan.com/address/0xeF04Ff8bA555f2Bad0A5aB2026A4A79C48ca0F68" target="_blank" rel="noreferrer">0xeF04…0F68</a>
+        </div>
+        <div class="prim-card">
+          <div class="prim-name">Epoch</div>
+          <div class="prim-desc">The protocol clock. Every act is placed in time, one hour per epoch.</div>
+          <a class="prim-addr" href="https://polygonscan.com/address/0xc09b7dEE30635EeaD79e0d23da9598F9d3BaFF7b" target="_blank" rel="noreferrer">0xc09b…FF7b</a>
+        </div>
       </div>
     </div>
   </section>
