@@ -179,10 +179,11 @@
       display:flex;
       gap:22px;
       font-size:13px;
-      opacity:0.85;
+      align-items:center;
     }
 
-    .nav-links a{ position:relative; }
+    .nav-links a{ position:relative; white-space:nowrap; opacity:0.85; }
+    .nav-links a.active{ opacity:1; }
     .nav-links a.yours{ color:var(--sunbeam); opacity:1; }
     .nav-links a.active{ color:var(--accent); }
 
