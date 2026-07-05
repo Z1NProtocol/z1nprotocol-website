@@ -409,16 +409,30 @@ backdrop-filter:blur(12px);
     .flip[data-accent="green"]:hover .flip-face{ box-shadow:0 12px 32px -14px rgba(94,232,160,.28); }
     .flip[data-accent="yellow"] .flip-tag{ color:var(--accent); }
     .flip[data-accent="yellow"] .flip-face{ border-top:2px solid var(--accent); }
-    .flip[data-accent="yellow"]:hover .flip-face{ box-shadow:0 12px 32px -14px rgba(94,232,160,.28); }
-    .flip[data-accent="nbi"] .flip-face{ background:var(--accent); border:none; }
-    .flip[data-accent="nbi"] .flip-back{ background:#4fd28d; }
-    .flip[data-accent="nbi"] .flip-tag{ color:#141410; opacity:.65; }
-    .flip[data-accent="nbi"] .flip-title{ color:#141410; }
-    .flip[data-accent="nbi"] .flip-core,
-    .flip[data-accent="nbi"] .flip-back p{ color:#3a3a2c; }
-    .flip[data-accent="nbi"] .turn-hint{ color:#141410; }
-    .flip[data-accent="nbi"]:hover .flip-face{ box-shadow:0 12px 36px -12px rgba(94,232,160,.45); }
-    .flip[data-accent="nbi"]:focus-visible{ outline-color:var(--accent); }
+    .flip[data-accent="yellow"] .flip-back{ background:var(--accent); border:none; }
+    .flip[data-accent="yellow"] .flip-back .flip-tag{ color:#0b2e1c; opacity:.7; }
+    .flip[data-accent="yellow"] .flip-back p{ color:#14432b; }
+    .flip[data-accent="yellow"] .flip-back .turn-hint{ color:#0b2e1c; }
+    .flip[data-accent="yellow"] .flip-btn{ border-color:#0b2e1c; color:#0b2e1c; }
+    .flip[data-accent="yellow"] .flip-btn:hover{ background:#0b2e1c; color:var(--accent); }
+    .flip[data-accent="yellow"]:hover .flip-face{ box-shadow:0 12px 36px -12px rgba(94,232,160,.4); }
+    .flip[data-accent="gold"] .flip-tag{ color:#ffd556; }
+    .flip[data-accent="gold"] .flip-face{ border-top:2px solid #ffd556; }
+    .flip[data-accent="gold"] .flip-back{ background:#ffd556; border:none; }
+    .flip[data-accent="gold"] .flip-back .flip-tag{ color:#141410; opacity:.65; }
+    .flip[data-accent="gold"] .flip-back p{ color:#3a3a2c; }
+    .flip[data-accent="gold"] .flip-back .turn-hint{ color:#141410; }
+    .flip[data-accent="gold"] .flip-btn{ border-color:#141410; color:#141410; }
+    .flip[data-accent="gold"] .flip-btn:hover{ background:#141410; color:#ffd556; }
+    .flip[data-accent="gold"]:hover .flip-face{ box-shadow:0 12px 36px -12px rgba(255,213,86,.4); }
+    .flip[data-accent="nbi"] .flip-face{ border:1px solid rgba(148,163,184,0.45); }
+    .flip[data-accent="nbi"] .flip-tag{ color:var(--text-soft); }
+    .flip[data-accent="nbi"] .flip-back{ background:#2a2f3d; border:none; }
+    .flip[data-accent="nbi"] .flip-back .flip-tag{ color:#e8e8ec; opacity:.65; }
+    .flip[data-accent="nbi"] .flip-back p{ color:#c9cdd8; }
+    .flip[data-accent="nbi"] .flip-back .turn-hint{ color:#e8e8ec; }
+    .flip[data-accent="nbi"]:hover .flip-face{ box-shadow:0 12px 32px -14px rgba(148,163,184,.3); }
+    .flip[data-accent="nbi"]:focus-visible{ outline-color:rgba(148,163,184,0.7); }
     .flip-footnote{
       font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
       font-size:12px; line-height:1.7; color:var(--text-soft);
@@ -441,9 +455,9 @@ backdrop-filter:blur(12px);
     .flip-logo-dot{
       width:28px; height:28px; flex:none;
       border-radius:999px;
-      border:1.5px solid #141410;
+      border:1.5px solid rgba(232,232,236,0.8);
       display:flex; align-items:center; justify-content:center;
-      font-size:15px; line-height:1; color:#141410;
+      font-size:15px; line-height:1; color:#e8e8ec;
       transition:transform .3s;
     }
     .flip:hover .flip-logo-dot{ transform:scale(1.08); }
@@ -855,17 +869,17 @@ backdrop-filter:blur(12px);
       </div>
     </div>
 
-    <div class="flip" role="group" tabindex="0" data-accent="yellow" aria-expanded="false">
+    <div class="flip" role="group" tabindex="0" data-accent="gold" aria-expanded="false">
       <div class="flip-inner">
         <div class="flip-face flip-front">
           <div class="flip-head">
             <div class="flip-tag">layer 02 — history</div>
             <svg class="flip-glyph" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-              <circle cx="20" cy="20" r="4" stroke="var(--accent)" stroke-width="1.6"/>
-              <circle cx="20" cy="20" r="9.5" stroke="var(--accent)" stroke-width="1.2" opacity=".7"/>
-              <circle cx="20" cy="20" r="15" stroke="var(--accent)" stroke-width="1" opacity=".4"/>
-              <circle cx="29.5" cy="20" r="1.6" fill="var(--accent)"/>
-              <circle cx="20" cy="5" r="1.6" fill="var(--accent)"/>
+              <circle cx="20" cy="20" r="4" stroke="#ffd556" stroke-width="1.6"/>
+              <circle cx="20" cy="20" r="9.5" stroke="#ffd556" stroke-width="1.2" opacity=".7"/>
+              <circle cx="20" cy="20" r="15" stroke="#ffd556" stroke-width="1" opacity=".4"/>
+              <circle cx="29.5" cy="20" r="1.6" fill="#ffd556"/>
+              <circle cx="20" cy="5" r="1.6" fill="#ffd556"/>
             </svg>
           </div>
           <div class="flip-title">Identity isn't a score</div>
