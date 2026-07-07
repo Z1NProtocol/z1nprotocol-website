@@ -817,6 +817,36 @@ backdrop-filter:blur(12px);
 .contract-addr:hover{color:var(--text-main);text-decoration:underline;}
 .contract-sep{color:var(--text-soft);opacity:0.3;margin:0 4px;}
 
+    /* ── Mobiel: flip-hint duidelijker (desktop ongewijzigd) ── */
+    @media(hover:none), (max-width:900px){
+      .flip .turn-hint{
+        opacity:1;
+        margin-left:auto;
+        padding:4px 10px;
+        border-radius:999px;
+        border:1px solid rgba(94,232,160,0.45);
+        background:rgba(94,232,160,0.08);
+        color:var(--accent);
+        font-size:11px;
+        letter-spacing:0.04em;
+        align-self:flex-start;
+        animation:hintPulse 2.4s ease-in-out infinite;
+      }
+      .flip[data-accent="yellow"] .flip-back .turn-hint,
+      .flip[data-accent="gold"] .flip-back .turn-hint,
+      .flip[data-accent="nbi"] .flip-back .turn-hint{
+        border-color:rgba(11,46,28,0.35);
+        background:rgba(11,46,28,0.10);
+      }
+    }
+    @keyframes hintPulse{
+      0%,100%{ box-shadow:0 0 0 0 rgba(94,232,160,0.0); }
+      50%{ box-shadow:0 0 0 4px rgba(94,232,160,0.14); }
+    }
+    @media(prefers-reduced-motion:reduce){
+      .flip .turn-hint{ animation:none; }
+    }
+
     /* ── header sync met artefacts.html — geforceerd ── */
     header{ height:72px !important; display:flex !important; align-items:center !important; justify-content:center !important; width:100% !important; }
     header .nav-inner{ width:100% !important; max-width:1200px !important; margin:0 auto !important; padding:0 24px !important; }
@@ -880,7 +910,7 @@ backdrop-filter:blur(12px);
           <div class="flip-name">Birth of Identity</div>
           <div class="flip-title">Identity isn't assigned — it's explored</div>
           <div class="flip-core">Z1N hands you a starting point, not a credential.</div>
-          <div class="turn-hint">⟳ turn</div>
+          <div class="turn-hint">⟳ tap</div>
         </div>
         <div class="flip-face flip-back">
           <div class="mk"><span class="n">01</span><span class="bar"></span></div>
@@ -918,7 +948,7 @@ backdrop-filter:blur(12px);
           <div class="flip-name">Memory of Identity</div>
           <div class="flip-title">Identity isn't a score</div>
           <div class="flip-core">A record you can read back and recognise — not a rating read by someone else.</div>
-          <div class="turn-hint">⟳ turn</div>
+          <div class="turn-hint">⟳ tap</div>
         </div>
         <div class="flip-face flip-back">
           <div class="mk"><span class="n">02</span><span class="bar"></span></div>
@@ -955,7 +985,7 @@ backdrop-filter:blur(12px);
           <div class="flip-name">Reputation of Identity</div>
           <div class="flip-title">Identity isn't formed alone</div>
           <div class="flip-core">What you do alone is a claim. What others answer is proof.</div>
-          <div class="turn-hint">⟳ turn</div>
+          <div class="turn-hint">⟳ tap</div>
         </div>
         <div class="flip-face flip-back">
           <div class="mk"><span class="n">03</span><span class="bar"></span></div>
@@ -987,7 +1017,7 @@ backdrop-filter:blur(12px);
           <div class="flip-name">Z1N language</div>
           <div class="flip-title">The words the Field speaks</div>
           <div class="flip-core">Nine terms across three layers — turn to read them.</div>
-          <div class="turn-hint">⟳ turn</div>
+          <div class="turn-hint">⟳ tap</div>
         </div>
         <div class="flip-face flip-back">
           <div class="flip-tag">Z1N language</div>
