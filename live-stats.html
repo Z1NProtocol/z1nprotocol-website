@@ -85,6 +85,13 @@ h1{font-size:40px;margin:0 0 10px 0;letter-spacing:-0.02em;}
 .qbtn:hover{background:rgba(255,255,255,0.09);}
 .card-info{position:absolute;inset:0;z-index:9;background:rgba(2,6,23,0.98);border:1px solid var(--card-border);border-radius:18px;padding:20px;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;opacity:0;pointer-events:none;transform:scale(0.985);transition:opacity .25s,transform .25s;cursor:pointer;text-align:left;overflow-y:auto;}
 .card-info.open{opacity:1;pointer-events:auto;transform:scale(1);}
+.card-info.ci-sig{background:var(--sunbeam);border:none;}
+.card-info.ci-art{background:var(--mint);border:none;}
+.card-info.ci-can{background:var(--canon);border:none;}
+.card-info.ci-sig .ci-t,.card-info.ci-art .ci-t,.card-info.ci-can .ci-t{color:#141410;opacity:0.7;}
+.card-info.ci-sig .ci-b,.card-info.ci-art .ci-b,.card-info.ci-can .ci-b{color:#141410;}
+.card-info.ci-sig .ci-h,.card-info.ci-art .ci-h,.card-info.ci-can .ci-h{color:#141410;opacity:0.55;}
+.card-info.ci-sig .ci-link,.card-info.ci-art .ci-link,.card-info.ci-can .ci-link{color:#141410;}
 .card-info .ci-t{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-soft);font-weight:700;}
 .card-info .ci-b{font-size:13px;line-height:1.65;color:#c7cdda;}
 .card-info .ci-h{font-size:10px;color:#5d6680;margin-top:6px;}
@@ -219,7 +226,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
       <div class="flegend">
         <div class="fleg" id="fieldLeg"></div>
       </div>
-      <div class="card-info"><div class="ci-t">Signals sent</div><div class="ci-b">Each spark is a Proof-of-Glyph signal, coloured by the intent it carries. Some cross to another Key, some flow to the Field itself. Press Play to watch the epochs build.</div><a class="ci-link" style="color:var(--sunbeam)" href="about.html#c4" onclick="event.stopPropagation()">Read chapter 4 in About →</a><div class="ci-h">tap to close</div></div>
+      <div class="card-info ci-sig"><div class="ci-t">Signals sent</div><div class="ci-b">Each spark is a Proof-of-Glyph signal, coloured by the intent it carries. Some cross to another Key, some flow to the Field itself. Press Play to watch the epochs build.</div><a class="ci-link" href="about.html#c4" onclick="event.stopPropagation()">Read chapter 4 in About →</a><div class="ci-h">tap to close</div></div>
     </section>
 
     <section class="card" aria-label="Artefacts minted">
@@ -231,7 +238,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         </div>
       </div>
       <div id="artRows"></div>
-      <div class="card-info"><div class="ci-t">Artefacts bounded</div><div class="ci-b">An artefact is a bond minted between two Keys — a shared on-chain object that ties their identities together, formed by consent and held until either side releases it. Ranked per Key, by total or per epoch.</div><a class="ci-link" style="color:var(--mint)" href="about.html#c6" onclick="event.stopPropagation()">Read chapter 6 in About →</a><div class="ci-h">tap to close</div></div>
+      <div class="card-info ci-art"><div class="ci-t">Artefacts bounded</div><div class="ci-b">An artefact is a bond minted between two Keys — a shared on-chain object that ties their identities together, formed by consent and held until either side releases it. Ranked per Key, by total or per epoch.</div><a class="ci-link" href="about.html#c6" onclick="event.stopPropagation()">Read chapter 6 in About →</a><div class="ci-h">tap to close</div></div>
     </section>
 
     <section class="card" aria-label="Canon anchors minted">
@@ -243,7 +250,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
         </div>
       </div>
       <div id="canRows"></div>
-      <div class="card-info"><div class="ci-t">Canons marked</div><div class="ci-b">Canon is permanent memory: a Key marks an epoch as meaningful — forever — saying "this was important for me." Each anchor becomes part of the identity a Key builds across the field.</div><a class="ci-link" style="color:var(--canon)" href="about.html#c7" onclick="event.stopPropagation()">Read chapter 7 in About →</a><div class="ci-h">tap to close</div></div>
+      <div class="card-info ci-can"><div class="ci-t">Canons marked</div><div class="ci-b">Canon is permanent memory: a Key marks an epoch as meaningful — forever — saying "this was important for me." Each anchor becomes part of the identity a Key builds across the field.</div><a class="ci-link" href="about.html#c7" onclick="event.stopPropagation()">Read chapter 7 in About →</a><div class="ci-h">tap to close</div></div>
     </section>
   </div>
 
