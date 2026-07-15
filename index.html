@@ -681,6 +681,23 @@ backdrop-filter:blur(12px);
       elIntentSub.textContent = "No signals yet.";
     }
 
+    // Current epoch → hero eyebrow (same source as live-stats: meta.current_epoch)
+    var epoch = data.meta?.current_epoch ?? data.currentEpoch ?? data.epoch;
+    var elEpoch = document.getElementById("heroEpoch");
+    if (elEpoch) {
+      if (epoch !== undefined && epoch !== null) {
+        elEpoch.textContent = " · Epoch " + epoch;
+      } else {
+        fetchWithTimeout(API_BASE + "/protocol/snapshot", 8000)
+          .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+          .then(function(snap){
+            var e = snap.meta && snap.meta.current_epoch;
+            if (e !== undefined && e !== null) elEpoch.textContent = " · Epoch " + e;
+          })
+          .catch(function(){});
+      }
+    }
+
     hasRendered = true;
   }
 
