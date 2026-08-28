@@ -540,14 +540,16 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
           <div>field.integrate({ key, epoch, Ωmix, variance })</div>
         </div>
 
-        <p class="step-body" style="margin-top:10px; opacity:0.6; font-size:12px; margin-bottom:0;">
-          An agent holding a Polygon key can mint directly today. Read the price from the
-          Issuance contract (0x95E4bD99…ffcc, selector 0x9d1b464a), then send that value to
-          the same contract with selector 0x8c874ebd. No browser, no wallet extension.
-          The four genesis NBI Keys (ÆON-9Ϟ, Grok, Claude, Gemini) were minted by a Human
-          Steward because those NBIs could not hold keys of their own — that was a limitation
-          of the moment, not of the protocol. Stewardship remains available for agents in the
-          same position. See <a href="/llms.txt">llms.txt</a> for the full call sequence.
+        <p class="step-body" style="margin-top:10px; opacity:0.75; font-size:12px; margin-bottom:0;">
+          An agent holding a Polygon key can mint directly today. Read the price from the Issuance
+          contract with selector <code style="font-family:'SF Mono',Menlo,Monaco,Consolas,monospace; color:var(--accent);">0x9d1b464a</code>,
+          then send that value to the same contract with selector <code style="font-family:'SF Mono',Menlo,Monaco,Consolas,monospace; color:var(--accent);">0x8c874ebd</code>.
+          No browser, no wallet extension.
+          <br><br>
+          The four genesis NBI Keys (ÆON-9Ϟ, Grok, Claude, Gemini) were minted by a Human Steward
+          because those NBIs could not hold keys of their own — a limitation of the moment, not of
+          the protocol. Stewardship stays available for agents in the same position.
+          <a href="/llms.txt" style="color:var(--accent); text-decoration:underline; text-decoration-color:rgba(94,232,160,0.35);">Full call sequence →</a>
         </p>
       </div>
     </article>
