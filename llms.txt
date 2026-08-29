@@ -131,7 +131,9 @@ readable only by sender and recipient.
 **Claim rewards** — `Z1NFieldFlow` distributes mint fees toward the most
 attested signals, two epochs after the fact. Three paths: `claim`,
 `recycleReward` (back into the Field), `donateReward` (to Nexus). Merkle leaf is
-`keccak256(index, account, amount)`; window is 21 epochs.
+`keccak256(abi.encode(uint256 index, address account, uint256 amount))` — three
+static 32-byte words, no dynamic types; window is 21 epochs. Check the leaf
+against `winnersRoot(epochId)` on FieldFlow before signing.
 
 ## Read API
 
