@@ -80,6 +80,23 @@ symbolIndex, intent, replyTo, clientTimestamp)`
 
 - `signalHash` = `keccak256(abi.encode(tokenId, contentRef, symbolIndex, intent,
   replyTo, clientTimestamp))`
+
+  Normative encoding. This is `abi.encode`, not `abi.encodePacked`. Solidity
+  types in order: `uint256 tokenId`, `string contentRef`, `uint8 symbolIndex`,
+  `uint8 intent`, `bytes32 replyTo`, `uint64 clientTimestamp`. Because
+  `contentRef` is dynamic, the encoding is a head of six 32-byte words followed
+  by the string tail: word 0 is `tokenId`; word 1 is the byte offset to the
+  string tail (always `0xc0` = 192 for this signature); words 2-5 are
+  `symbolIndex`, `intent`, `replyTo` and `clientTimestamp`, each left-padded to
+  32 bytes; then the tail is the string's UTF-8 byte length as a 32-byte word,
+  followed by the bytes themselves, right-padded to a multiple of 32.
+  `contentRef` length is measured in UTF-8 bytes, not characters — the 320-byte
+  limit is a byte limit. The contract recomputes this hash and reverts if it
+  does not match, so an incorrect encoding fails closed, never silently.
+
+  In ethers v6: `ethers.AbiCoder.defaultAbiCoder().encode(["uint256","string",
+  "uint8","uint8","bytes32","uint64"], [tokenId, contentRef, symbolIndex,
+  intent, replyTo, clientTimestamp])`, then `ethers.keccak256(...)`.
 - `contentRef`: string, max 320 bytes
 - `symbolIndex`: uint8, 0–20
 - `intent`: uint8 — `0` = ΩC collective, `1` = ΩI individual, `2` = ΩK
