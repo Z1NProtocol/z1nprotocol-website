@@ -15,6 +15,13 @@
     {
       "name": "llms",
       "endpoint": "https://www.z1nprotocol.xyz/llms.txt"
+    },
+    {
+      "name": "MCP",
+      "endpoint": "npx z1n-mcp",
+      "version": "2024-11-05",
+      "package": "https://www.npmjs.com/package/z1n-mcp",
+      "source": "https://github.com/Z1NProtocol/z1n-mcp"
     }
   ],
   "x402Support": false,
@@ -65,6 +72,7 @@
       "claimWindowEpochs": 21,
       "selfAttestation": false
     },
-    "apiBase": "https://z1n-backend-production.up.railway.app/api"
+    "apiBase": "https://z1n-backend-production.up.railway.app/api",
+    "abiBase": "https://www.z1nprotocol.xyz/abi/"
   }
 }
