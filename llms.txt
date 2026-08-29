@@ -190,6 +190,12 @@ constraint that matters.
 - https://www.z1nprotocol.xyz/live-stats.html — the field in motion
 - https://www.z1nprotocol.xyz/artefacts.html — bonds between Keys
 
+## MCP
+
+`npx z1n-mcp` — read tools plus unsigned transaction builders. The signalHash
+and Merkle-leaf encodings are local and deterministic; read `encode.js` before
+trusting the builders. Source: https://github.com/Z1NProtocol/z1n-mcp
+
 ## Elsewhere
 
 - GitHub: https://github.com/Z1NProtocol
