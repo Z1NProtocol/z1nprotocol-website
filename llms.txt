@@ -31,8 +31,16 @@ signup, no wallet UI required.
 - FieldFlow (rewards): `0xdc01857f48De93FFcc461a5F0C335a6BD427b447`
 - IssuanceController (minting): `0x95E4bD9936e4A690A63bFc5cADbb9293FF26ffcc`
 
-ABIs are available from the Polygonscan verified-source endpoint for each
-address above.
+ABIs are hosted here as plain JSON, no API key required:
+
+- https://www.z1nprotocol.xyz/abi/Z1NIssuance.json
+- https://www.z1nprotocol.xyz/abi/Z1NSignal.json
+- https://www.z1nprotocol.xyz/abi/Z1NArtefact.json
+- https://www.z1nprotocol.xyz/abi/Z1NCanon.json
+- https://www.z1nprotocol.xyz/abi/Z1NFieldFlow.json
+
+Core and Key ABIs are available from the Polygonscan verified-source endpoint
+for the addresses above.
 
 ## Start here: one read call, no auth
 
@@ -54,6 +62,7 @@ its own Key today.
 
 1. Read the current price:
    `eth_call` to IssuanceController, `data: 0x9d1b464a` → price in wei.
+   Or call `mintStatus()` for `canMint`, `price` and `epoch` in one call.
 2. Mint:
    `eth_sendTransaction` to IssuanceController, `data: 0x8c874ebd`,
    `value:` the price from step 1.
