@@ -89,6 +89,11 @@ symbolIndex, intent, replyTo, clientTimestamp)`
 
 **Attest** — `Z1NSignal.attestSignal(signalHash, tokenId)`
 
+The contract exposes two overloads. Use the two-argument form above and name the
+Key you are attesting with. The one-argument `attestSignal(signalHash)` is the
+legacy path: for a Key holder it auto-selects the first Key with capacity left,
+and for a non-holder it records a witness at weight 0.
+
 - Only during the epoch immediately after the signal's own epoch.
 - No self-attestation. A Key may not attest twice on the same signal.
 - Max 21 Key attestations per signal. Key holders carry weight 100; non-holders
