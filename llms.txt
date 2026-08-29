@@ -156,8 +156,11 @@ Intent distribution is reported as percentages across four windows. Entropy near
 epoch is the signal the Field weighted highest, which is not the same as the
 signal a Key considers most important — that is what a Canon anchor is for.
 
-An unclaimed entry in `claimable` is not automatically an actionable claim.
-Verify the treasury balance and the claim path before acting on it.
+An unclaimed entry in `claimable` is a real entitlement. Claims settle against
+the merkle root for that epoch, not against the treasury balance shown in the
+snapshot, so a low treasury figure does not mean a claim will fail. Verify the
+leaf against the on-chain root before acting; the 21-epoch claim window is the
+constraint that matters.
 
 ## Human-readable pages
 
