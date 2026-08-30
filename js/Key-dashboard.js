@@ -27,7 +27,7 @@
   var keyMintEpoch = 0;
 
   var provider = null, currentAccount = null, currentKeyId = null, walletKeyIds = [], activeEpoch = 0, selectedIntent = 0, signalType = 'new', signalsUsed = 0, attestsUsed = 0, ethersLib = null, selectedAttestSignal = null, allAttestableSignals = [], allSentSignals = [], keyGlyphsCache = {};
-  var pogStealthEnabled = false, attestStealthEnabled = false, stealthRelayerAvailable = false;
+
   var replyModalOffset = 0, replyModalLimit = 20, replySelectedSignal = null, replyFilterTimer = null, allReplySignals = [];
   var hasFirstArtefact = false, allLiveArtefacts = [], allSentAttests = [];
   var presenceFilter = 'all';
@@ -164,29 +164,9 @@ function showSafetyWarning(callback) {
   document.querySelectorAll('.tab-btn').forEach(function(btn, i) { btn.classList.toggle('active', tabs[i] === tabId); });
   document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
   var el = document.getElementById('tab-' + tabId); if (el) el.classList.add('active');
-  
-  var eye = document.getElementById('globalStealthToggle');
-  var tooltip = document.getElementById('stealthTooltip');
-  
+
   if (tabId === 'direct') {
-    if (eye) { eye.style.display = 'none'; }
     if (typeof loadDirectChannel === 'function') loadDirectChannel();
-  } else if (tabId === 'signals' || tabId === 'attests') {
-    if (eye) {
-      eye.style.display = 'flex';
-      eye.classList.remove('whisper-disabled');
-      eye.style.cursor = 'pointer';
-      eye.onclick = toggleGlobalStealth;
-      eye.classList.toggle('active', globalStealthEnabled);
-    }
-    if (tooltip) {
-      tooltip.innerHTML = '<div class="tt-title">Stealth Mode</div><div class="tt-body">When active (red), your signals and attestations are submitted through a relayer. Your wallet address stays hidden on-chain.</div>';
-    }
-  } else {
-    // Overview, Artefacts, Canon, Treasury - hide eye
-    if (eye) {
-      eye.style.display = 'none';
-    }
   }
   
   // Load tab-specific data only if key is loaded
@@ -227,77 +207,12 @@ function showSafetyWarning(callback) {
     }
   }
 
-  async function checkStealthAvailability() {
-    try { var r = await fetch(API_BASE + '/relay/health', { cache: 'no-store' }); var d = await r.json(); stealthRelayerAvailable = d.status === 'ready'; if (!stealthRelayerAvailable) { var pt = document.getElementById('pogStealthToggle'); var at = document.getElementById('attestStealthToggle'); if (pt) { pt.classList.add('disabled'); pt.onclick = null; } if (at) { at.classList.add('disabled'); at.onclick = null; } } } catch (e) { stealthRelayerAvailable = false; }
-  }
 
-  window.togglePogStealth = function() {
-    if (!stealthRelayerAvailable) { showToast('Stealth relayer not available', 3000); return; }
-    pogStealthEnabled = !pogStealthEnabled;
-    var toggle = document.getElementById('pogStealthToggle'), icon = document.getElementById('pogStealthIcon'), label = document.getElementById('pogStealthLabel'), feeDisplay = document.getElementById('pogFee'), submitBtn = document.getElementById('btnSubmitPog');
-    toggle.classList.toggle('active', pogStealthEnabled);
-    if (pogStealthEnabled) { icon.textContent = '👁‍🗨'; icon.style.opacity = '0.5'; label.textContent = 'Hidden'; label.style.color = 'var(--stealth-color)'; submitBtn.textContent = '👁‍🗨 Submit Hidden'; }
-    else { icon.textContent = '👁'; icon.style.opacity = '1'; label.textContent = 'Visible'; label.style.color = 'var(--accent)'; submitBtn.textContent = 'Submit Signal'; }
-  };
-
-  window.toggleAttestStealth = function() {
-    if (!stealthRelayerAvailable) { showToast('Stealth relayer not available', 3000); return; }
-    attestStealthEnabled = !attestStealthEnabled;
-    var toggle = document.getElementById('attestStealthToggle'), icon = document.getElementById('attestStealthIcon'), label = document.getElementById('attestStealthLabel');
-    toggle.classList.toggle('active', attestStealthEnabled);
-    if (attestStealthEnabled) { icon.textContent = '👁‍🗨'; icon.style.opacity = '0.5'; label.textContent = 'Hidden'; label.style.color = 'var(--stealth-color)'; }
-    else { icon.textContent = '👁'; icon.style.opacity = '1'; label.textContent = 'Visible'; label.style.color = 'var(--accent)'; }
-    updateAttestBtn();
-  };
-
-  async function signTypedData(domain, types, primaryType, message) {
-    var typedData = { types: { EIP712Domain: [{ name: 'name', type: 'string' },{ name: 'version', type: 'string' },{ name: 'chainId', type: 'uint256' },{ name: 'verifyingContract', type: 'address' }] }, primaryType: primaryType, domain: domain, message: message };
-    for (var k in types) { typedData.types[k] = types[k]; }
-    return await provider.request({ method: 'eth_signTypedData_v4', params: [currentAccount, JSON.stringify(typedData)] });
-  }
-
-  async function submitStealthSignal(keyId, signalHash, intent, symbolIndex, epochRef, replyTo) {
-    var prepareUrl = API_BASE + '/relay/signal/prepare/' + keyId + '?' + new URLSearchParams({ signalHash: signalHash, intent: String(intent), symbolIndex: String(symbolIndex || 0), epochRef: String(epochRef || 0), replyTo: replyTo || '0x0000000000000000000000000000000000000000000000000000000000000000' });
-    var prepareRes = await fetch(prepareUrl); if (!prepareRes.ok) { var err = await prepareRes.json(); throw new Error(err.error || 'Failed to prepare'); }
-    var prepareData = await prepareRes.json();
-    var signature = await signTypedData(prepareData.domain, prepareData.types, prepareData.primaryType, prepareData.message);
-    var submitRes = await fetch(API_BASE + '/relay/signal/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ signature: signature, keyId: keyId, signalHash: prepareData.message.signalHash, intent: prepareData.message.intent, symbolIndex: prepareData.message.symbolIndex, epochRef: prepareData.message.epochRef, replyTo: prepareData.message.replyTo, deadline: prepareData.message.deadline }) });
-    var result = await submitRes.json(); if (!result.success) throw new Error(result.error || 'Relay failed'); return result;
-  }
-
-  async function submitStealthAttestation(keyId, signalHash) {
-    var prepareUrl = API_BASE + '/relay/attest/prepare/' + keyId + '?signalHash=' + encodeURIComponent(signalHash);
-    var prepareRes = await fetch(prepareUrl); if (!prepareRes.ok) { var err = await prepareRes.json(); throw new Error(err.error || 'Failed to prepare'); }
-    var prepareData = await prepareRes.json();
-    var signature = await signTypedData(prepareData.domain, prepareData.types, prepareData.primaryType, prepareData.message);
-    var submitRes = await fetch(API_BASE + '/relay/attest/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ signature: signature, keyId: keyId, signalHash: prepareData.message.signalHash, deadline: prepareData.message.deadline }) });
-    var result = await submitRes.json(); if (!result.success) throw new Error(result.error || 'Relay failed'); return result;
-  }
 
   window.selectIntent = function(i) { selectedIntent = i; document.querySelectorAll('.intent-btn').forEach(function(b) { b.classList.toggle('selected', parseInt(b.dataset.intent) === i); }); var cc = document.getElementById('signalContentCard'); if (cc) cc.style.display = i === 3 ? 'none' : 'block'; };
   window.setSignalType = function(t) { signalType = t; document.querySelectorAll('.toggle-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.type === t); }); var rs = document.getElementById('replySection'); if (rs) rs.classList.toggle('active', t === 'reply'); };
 
-var globalStealthEnabled = false;
 
-window.toggleGlobalStealth = function() {
-  if (!stealthRelayerAvailable) { showToast('Stealth relayer not available', 3000); return; }
-  globalStealthEnabled = !globalStealthEnabled;
-  pogStealthEnabled = globalStealthEnabled;
-  attestStealthEnabled = globalStealthEnabled;
-  var toggle = document.getElementById('globalStealthToggle');
-  var tooltip = document.getElementById('stealthTooltip');
-  var feeDisplay = document.getElementById('pogFee');
-  var submitBtn = document.getElementById('btnSubmitPog');
-  if (toggle) toggle.classList.toggle('active', globalStealthEnabled);
-  if (tooltip) tooltip.classList.toggle('active-stealth', globalStealthEnabled);
-  if (globalStealthEnabled) {
-    if (submitBtn) submitBtn.textContent = '👁‍🗨 Submit Hidden';
-    showToast('🔴 Stealth ON', 2000);
-  } else {
-    if (submitBtn) submitBtn.textContent = 'Submit Signal';
-    showToast('🟢 Stealth OFF', 2000);
-  }
-};
 
   window.toggleReplySection = function() {
   var checkbox = document.getElementById('replyCheckbox');
@@ -981,7 +896,7 @@ window.filterAttestSignals = function() {
  function updateAttestBtn() {
     var btn = document.getElementById('btnAttestNormalInline'); if (!btn) return;
     var can = !!selectedAttestSignal && attestsUsed < 2; btn.disabled = !can;
-    var prefix = attestStealthEnabled ? '👁‍🗨 ' : '✓ ';
+    var prefix = '✓ ';
     if (attestsUsed >= 2) { btn.textContent = prefix + 'Max Attests (2/2)'; return; }
     if (!selectedAttestSignal) { btn.textContent = prefix + 'Attest Signal'; return; }
     btn.textContent = prefix + 'Attest K#' + selectedAttestSignal.keyId;
@@ -1478,10 +1393,6 @@ window.submitWhisper = async function() {
           ['uint256', 'string', 'uint8', 'uint8', 'bytes32', 'uint64'],
           [BigInt(currentKeyId), contentRef, sym, intent, reply, BigInt(clientTimestamp)]
       ));
-      if (pogStealthEnabled && stealthRelayerAvailable) {
-        st.innerHTML = '<div class="status-msg pending">🔒 Stealth mode: Sign message...</div>';
-        try { var result = await submitStealthSignal(currentKeyId, hash, intent, sym, 0, reply); signalsUsed++; updateDots(); document.getElementById('signalContent').value = ''; window.updateCharCount(); st.innerHTML = '<div class="status-msg" style="background:rgba(255,213,86,0.15);border:1px solid #ffd556;color:#ffd556;">🔒 Stealth signal submitted! <a href="' + EXPLORER + '/tx/' + result.txHash + '" target="_blank">View tx</a></div>'; showToast('🔒 Stealth signal submitted!', 4000); allSentSignals.unshift({ hash: result.txHash || hash, keyId: currentKeyId, intent: selectedIntent, intentSymbol: ['ΩC','ΩI','ΩK','ΩS'][selectedIntent], cid: contentRef || '[Silence]', epoch: activeEpoch, attestCount: 0, timeAgo: 'just now', replyTo: signalType === 'reply' ? reply : null, _pending: true }); await loadSentSignals(); return; } catch (e) { st.innerHTML = '<div class="status-msg error">Stealth failed: ' + (e.message || 'Unknown error').slice(0, 150) + '</div>'; return; }
-      }
       var iface = new ethersLib.Interface(['function submitSignal(uint256 tokenId, bytes32 signalHash, string contentRef, uint8 symbolIndex, uint8 intent, bytes32 replyTo, uint64 clientTimestamp)']);
       var data = iface.encodeFunctionData('submitSignal', [BigInt(currentKeyId), hash, contentRef, sym, intent, reply, BigInt(clientTimestamp)]);
       st.innerHTML = '<div class="status-msg pending">Confirm in wallet...</div>';
@@ -1503,32 +1414,6 @@ if (list && !list.querySelector('[data-hash="' + tx + '"]')) { var it = document
     var btn = document.getElementById('btnAttestNormalInline'), orig = btn.textContent; btn.disabled = true; btn.textContent = 'Submitting...';
     try {
       var hash = selectedAttestSignal.hash;
-      if (attestStealthEnabled && stealthRelayerAvailable) { 
-        btn.textContent = 'Signing...'; 
-        try { 
-          var result = await submitStealthAttestation(currentKeyId, hash);
-          attestsUsed++;
-          updateDots();
-          var pendingAttest = { signalHash: hash, signalKeyId: selectedAttestSignal.keyId, signalIntent: selectedAttestSignal.intent, signalIntentSymbol: selectedAttestSignal.intentSymbol, signalContent: selectedAttestSignal.cid || '[Silence]', signalCid: selectedAttestSignal.cid || '[Silence]', epoch: activeEpoch, timeAgo: 'just now', _pending: true };
-          allSentAttests.unshift(pendingAttest);
-          await loadAttestableSignals();
-          updateAttestBtn();
-          showToast('Stealth attestation submitted!', 4000);
-          await loadSentAttests();
-          return;
-        } catch (e) { 
-          var errMsg = e.message || 'Unknown error';
-          if (errMsg.includes('already attested') || errMsg.includes('Already attested') || errMsg.includes('CALL_EXCEPTION')) {
-            showToast('Your wallet already attested this signal', 4000, true);
-          } else if (errMsg.includes('revert')) {
-            showToast('Transaction failed - you may have already attested this signal', 4000, true);
-          } else {
-            showToast('Stealth failed: ' + errMsg.slice(0, 80), 4000, true);
-          }
-          btn.textContent = orig; btn.disabled = false; 
-          return; 
-        } 
-      }
       await loadEthers(); 
       var iface = new ethersLib.Interface(['function attestSignal(bytes32 signalHash, uint256 tokenId)']); 
       var data = iface.encodeFunctionData('attestSignal', [hash, BigInt(currentKeyId)]);
@@ -1737,7 +1622,7 @@ if (list && !list.querySelector('[data-hash="' + tx + '"]')) { var it = document
 
 await loadKeyData(currentKeyId);
 
-      await checkStealthAvailability();
+
       
       if (!provider.__z1nBound) {
         provider.__z1nBound = true;
