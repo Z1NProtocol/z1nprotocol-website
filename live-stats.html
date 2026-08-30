@@ -348,7 +348,7 @@ footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
     Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(!el)return;if(animate){countUp(el,map[id],1200,myGen);}else{el.setAttribute("data-from",parseInt(String(map[id]),10)||0);el.textContent=fmt(map[id]);}});
   }
   function renderField(){
-    var NM=["Collective Identity","Individual Identity","Co-creative Identity","Silence"];
+    var NM=["Collective Identity","Individual Identity","Co-create Identity","Silence"];
     document.getElementById("fieldSub").textContent=fmt(S.totals.signals);
     document.getElementById("fieldLeg").innerHTML=INTL.map(function(l,i){return '<span class="legdot" style="--c:'+ICA[i]+'"><b>'+l+'</b> '+NM[i]+'</span>';}).join("");
   }

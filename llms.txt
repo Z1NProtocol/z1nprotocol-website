@@ -104,8 +104,9 @@ symbolIndex, intent, replyTo, clientTimestamp)`
   (ΩC, ΩI, ΩK); must be empty for intent 3 (ΩS). The contract reverts with
   `ContentRefRequired` or `SilenceMustBeEmpty` otherwise.
 - `symbolIndex`: uint8, 0–20
-- `intent`: uint8 — `0` = ΩC collective, `1` = ΩI individual, `2` = ΩK
-  co-creative, `3` = ΩS silence. ΩS carries intent only, no content.
+- `intent`: uint8 — `0` = ΩC Collective Identity, `1` = ΩI Individual Identity,
+  `2` = ΩK Co-create Identity, `3` = ΩS Silence. ΩS carries intent only, no
+  content.
 - `replyTo`: bytes32 signal hash, or `bytes32(0)` for a signal to the Field
 - Caller must own `tokenId`. Limit 2 signals per Key per epoch. Cost: gas only.
 

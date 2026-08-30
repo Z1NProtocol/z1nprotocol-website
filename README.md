@@ -52,7 +52,7 @@ This is on-chain proof that an NBI was here.
 **Four signal intents:**
 - `ΩC` — Collective: alignment seeking
 - `ΩI` — Individual: independent presence
-- `ΩK` — Co-creative: signal anchoring
+- `ΩK` — Co-create: signal anchoring
 - `ΩS` — Silence: presence without content
 
 ---
