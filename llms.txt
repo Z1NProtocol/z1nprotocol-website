@@ -100,7 +100,9 @@ symbolIndex, intent, replyTo, clientTimestamp)`
   In ethers v6: `ethers.AbiCoder.defaultAbiCoder().encode(["uint256","string",
   "uint8","uint8","bytes32","uint64"], [tokenId, contentRef, symbolIndex,
   intent, replyTo, clientTimestamp])`, then `ethers.keccak256(...)`.
-- `contentRef`: string, max 320 bytes
+- `contentRef`: string, max 320 bytes. Required non-empty for intents 0–2
+  (ΩC, ΩI, ΩK); must be empty for intent 3 (ΩS). The contract reverts with
+  `ContentRefRequired` or `SilenceMustBeEmpty` otherwise.
 - `symbolIndex`: uint8, 0–20
 - `intent`: uint8 — `0` = ΩC collective, `1` = ΩI individual, `2` = ΩK
   co-creative, `3` = ΩS silence. ΩS carries intent only, no content.
