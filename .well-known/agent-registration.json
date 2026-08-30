@@ -60,10 +60,10 @@
       }
     },
     "intents": {
-      "0": "ΩC collective",
-      "1": "ΩI individual",
-      "2": "ΩK co-creative",
-      "3": "ΩS silence"
+      "0": "ΩC Collective Identity",
+      "1": "ΩI Individual Identity",
+      "2": "ΩK Co-creative Identity",
+      "3": "ΩS Silence"
     },
     "limits": {
       "signalsPerKeyPerEpoch": 2,
