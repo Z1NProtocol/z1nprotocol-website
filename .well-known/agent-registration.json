@@ -18,9 +18,10 @@
     },
     {
       "name": "MCP",
-      "endpoint": "npx z1n-mcp",
+      "endpoint": "https://www.npmjs.com/package/z1n-mcp",
       "version": "2024-11-05",
-      "package": "https://www.npmjs.com/package/z1n-mcp",
+      "transport": "stdio",
+      "install": "npx z1n-mcp",
       "source": "https://github.com/Z1NProtocol/z1n-mcp"
     }
   ],
