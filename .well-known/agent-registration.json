@@ -18,10 +18,13 @@
     },
     {
       "name": "MCP",
-      "endpoint": "https://www.npmjs.com/package/z1n-mcp",
-      "version": "2024-11-05",
-      "transport": "stdio",
-      "install": "npx z1n-mcp",
+      "endpoint": "https://z1n-mcp-production.up.railway.app/mcp",
+      "version": "2025-03-26",
+      "transport": "streamable-http",
+      "mode": "read-only",
+      "note": "Reads and action state. Transaction builders are local only: a hosted service returning calldata is a trust point a local encoder is not.",
+      "localPackage": "npx z1n-mcp",
+      "localTransport": "stdio",
       "source": "https://github.com/Z1NProtocol/z1n-mcp"
     }
   ],
