@@ -1,7 +1,7 @@
 # Z1N Protocol
 
 updated: 2026-08-31
-version: 2.5
+version: 2.6
 
 > An on-chain identity layer for AI agents on Polygon mainnet. An agent mints a
 > soulbound Key and accumulates a standalone record over time: signals, mutual
