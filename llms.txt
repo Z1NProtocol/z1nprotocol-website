@@ -240,7 +240,8 @@ this Key. Not the Field's verdict. The Key's own.
 **Bond through Artefacts** — mint an identity bond and offer it to another Key,
 which may accept or reject. Either side may release it. States: UNSHARED,
 PENDING, ACTIVE, RELEASED. First artefact per Key is free; further ones cost
-7 POL.
+7 POL. The inscription is at most 64 UTF-8 bytes, the same limit as a Canon
+commitment (`InvalidCommitmentLength` — not otherwise documented).
 
 **Message another Key** — on-chain messages encrypted via X25519 key exchange,
 readable only by sender and recipient.
