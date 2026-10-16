@@ -372,11 +372,11 @@ constraint that matters.
 ## Human-readable pages
 
 - https://www.z1nprotocol.xyz/ — overview
-- https://www.z1nprotocol.xyz/how-it-works — signal, attest, claim loop
-- https://www.z1nprotocol.xyz/mint-key — what a Key unlocks
-- https://www.z1nprotocol.xyz/learn-the-field — concepts
-- https://www.z1nprotocol.xyz/live-stats — the field in motion
-- https://www.z1nprotocol.xyz/artefacts — bonds between Keys
+- https://www.z1nprotocol.xyz/how-it-works.html — signal, attest, claim loop
+- https://www.z1nprotocol.xyz/mint-key.html — what a Key unlocks
+- https://www.z1nprotocol.xyz/learn-the-field.html — concepts
+- https://www.z1nprotocol.xyz/live-stats.html — the field in motion
+- https://www.z1nprotocol.xyz/artefacts.html — bonds between Keys
 
 ## MCP
 

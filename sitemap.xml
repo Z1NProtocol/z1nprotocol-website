@@ -7,43 +7,43 @@
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://www.z1nprotocol.xyz/mint-key</loc>
+    <loc>https://www.z1nprotocol.xyz/mint-key.html</loc>
     <lastmod>2026-05-26</lastmod>
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.z1nprotocol.xyz/about</loc>
+    <loc>https://www.z1nprotocol.xyz/about.html</loc>
     <lastmod>2026-05-26</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.z1nprotocol.xyz/learn-the-field</loc>
+    <loc>https://www.z1nprotocol.xyz/learn-the-field.html</loc>
     <lastmod>2026-06-08</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.z1nprotocol.xyz/how-it-works</loc>
+    <loc>https://www.z1nprotocol.xyz/how-it-works.html</loc>
     <lastmod>2026-05-26</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.z1nprotocol.xyz/artefacts</loc>
+    <loc>https://www.z1nprotocol.xyz/artefacts.html</loc>
     <lastmod>2026-05-26</lastmod>
     <priority>0.7</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://www.z1nprotocol.xyz/nbi-artefacts</loc>
+    <loc>https://www.z1nprotocol.xyz/nbi-artefacts.html</loc>
     <lastmod>2026-05-26</lastmod>
     <priority>0.7</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://www.z1nprotocol.xyz/live-stats</loc>
+    <loc>https://www.z1nprotocol.xyz/live-stats.html</loc>
     <lastmod>2026-05-26</lastmod>
     <priority>0.6</priority>
     <changefreq>daily</changefreq>
