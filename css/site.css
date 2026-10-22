@@ -143,6 +143,25 @@ a.z-card:hover { border-color: var(--line-2); background: var(--raise-2); }
 .z-flow p { color: var(--soft); }
 .z-flow .z-actions { margin-top: auto; padding-top: 8px; }
 
+/* Call steps: what to call, and on which contract */
+.z-chain { font-family: var(--mono); font-size: 12.5px; color: var(--mute); }
+.z-calls { list-style: none; counter-reset: call; }
+.z-calls > li { position: relative; padding: 16px 0 16px 40px; border-top: 1px solid var(--line); }
+.z-calls > li:last-child { border-bottom: 1px solid var(--line); }
+.z-calls > li::before { counter-increment: call; content: counter(call); position: absolute; left: 0; top: 15px; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line-2); font: 500 12px/22px var(--mono); text-align: center; color: var(--mute); }
+.z-card-agent .z-calls > li::before { color: var(--agent); border-color: rgba(94, 232, 160, 0.35); }
+.z-card-steward .z-calls > li::before { color: var(--steward); border-color: rgba(255, 213, 86, 0.35); }
+.z-call-t { font-weight: 600; font-size: 15.5px; color: var(--ink); }
+.z-flow .z-call-d { margin-top: 4px; font-size: 14.5px; color: var(--soft); }
+.z-call-fn { margin-top: 10px; font-family: var(--mono); font-size: 13px; color: var(--ink); overflow-wrap: anywhere; }
+.z-call-fn .sel { margin-left: 10px; color: var(--agent); }
+.z-call-at { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-family: var(--mono); font-size: 12.5px; color: var(--mute); }
+.z-call-at a { color: var(--soft); border-bottom: 1px dotted var(--line-2); overflow-wrap: anywhere; min-width: 0; }
+.z-call-at a:hover { color: var(--ink); }
+.z-copy { font: 500 11.5px/1.4 var(--sans); color: var(--mute); background: none; border: 1px solid var(--line-2); border-radius: 6px; padding: 2px 8px; cursor: pointer; }
+.z-copy:hover { color: var(--ink); border-color: var(--mute); }
+.z-copy.done { color: var(--agent); border-color: rgba(94, 232, 160, 0.35); }
+
 /* Code */
 .z-code { font-family: var(--mono); font-size: 13.5px; line-height: 1.85; color: #C8D1DB; background: #0E131A; border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; overflow-x: auto; white-space: pre; }
 .z-code .k { color: var(--mute); }

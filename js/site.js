@@ -12,6 +12,18 @@
     });
   }
 
+  // ── Copy buttons (contract addresses) ──────────────────────
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-copy]");
+    if (!b || !navigator.clipboard) return;
+    navigator.clipboard.writeText(b.getAttribute("data-copy")).then(function () {
+      var t = b.textContent;
+      b.textContent = "copied";
+      b.classList.add("done");
+      setTimeout(function () { b.textContent = t; b.classList.remove("done"); }, 1400);
+    }).catch(function () {});
+  });
+
   // ── The Field ───────────────────────────────────────────────
   // Signals per Key in 8-epoch bins, epoch 0 to 246 (from the ledger snapshot at epoch 246).
   var FIELD = {
