@@ -51,6 +51,10 @@ img, svg { display: block; max-width: 100%; }
 
 /* ── Layout ───────────────────────────────────────────────── */
 .z-wrap { max-width: var(--wrap); margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+/* keep the column on whole pixels, so the logo and hairlines stay sharp */
+@supports (margin-left: round(down, 1.5px, 1px)) {
+  .z-wrap { margin-left: max(0px, round(down, (100% - var(--wrap)) / 2, 1px)); margin-right: 0; }
+}
 .z-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); }
 
 /* ── Type ─────────────────────────────────────────────────── */
@@ -70,8 +74,8 @@ img, svg { display: block; max-width: 100%; }
   border-bottom: 1px solid var(--line);
 }
 .z-header-inner { display: flex; align-items: center; gap: 32px; height: 68px; }
-.z-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
-.z-brand-mark { display: block; flex: none; width: 28px; height: 28px; color: var(--ink); shape-rendering: geometricPrecision; }
+.z-brand { display: inline-flex; align-items: center; gap: 10px; height: 28px; line-height: 28px; text-decoration: none; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+.z-brand-mark { display: block; flex: none; width: 28px; height: 28px; color: var(--ink); }
 .z-brand-sub { color: var(--mute); font-weight: 500; }
 .z-nav { display: flex; gap: 6px; margin-left: auto; }
 .z-nav a { text-decoration: none; color: var(--soft); font-size: 15px; font-weight: 500; padding: 8px 12px; border-radius: 8px; }
@@ -269,3 +273,7 @@ a.z-guide-card:hover { border-color: var(--line-2); border-top-color: var(--g); 
 .z-subnav a[aria-current="page"] { color: var(--ink); background: color-mix(in srgb, var(--g, #EDF1F5) 9%, transparent); border-color: color-mix(in srgb, var(--g, #EDF1F5) 32%, transparent); }
 .z-guide .z-hero .z-eyebrow { color: var(--g, var(--mute)); }
 @media (max-width: 760px) { .z-subnav-label { display: none; } }
+
+/* An intro line beside a section heading ends on the heading's last line */
+.z-grid:has(> .z-sec-body > .z-body:only-child) > .z-sec-head,
+.z-grid > .z-sec-body:has(> .z-body:only-child) { align-self: last baseline; }
