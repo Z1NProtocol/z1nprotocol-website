@@ -94,4 +94,55 @@
 
   var fieldHost = document.getElementById("zField");
   if (fieldHost) drawField(fieldHost);
+
+  // ── Bonds between Keys ──────────────────────────────────────
+  // Artefacts per pair of Keys: [keyA, keyB, active, released, pending] (ledger snapshot at epoch 246).
+  var BONDS = [
+    [1,2,2,0,0],[1,3,9,6,0],[1,4,4,3,0],[1,6,0,4,0],[1,8,1,2,0],[1,10,1,0,0],
+    [2,3,1,0,0],[2,4,5,0,0],[2,8,1,0,0],[3,4,20,0,0],[3,6,3,0,0],[3,8,2,0,0],
+    [3,10,1,0,0],[4,9,4,0,0],[5,8,0,0,1],[6,7,4,0,0],[6,8,13,0,0],[6,9,17,0,0],
+    [8,9,33,1,0],[9,10,1,0,0]
+  ];
+
+  function drawBonds(host) {
+    var S = 420, c = S / 2, R = 168, n = 11;
+    var svg = el("svg", { viewBox: "0 0 " + S + " " + S, role: "img", "aria-label": "Bonds between the eleven Keys. Each line is a pair of Keys that have exchanged artefacts; thicker lines mean more bonds." });
+    function pos(i) { var a = -Math.PI / 2 + i / n * Math.PI * 2; return [c + R * Math.cos(a), c + R * Math.sin(a)]; }
+    var deg = {};
+    BONDS.forEach(function (b) {
+      var t = b[2] + b[3] + b[4];
+      deg[b[0]] = (deg[b[0]] || 0) + t; deg[b[1]] = (deg[b[1]] || 0) + t;
+    });
+    // released and pending first, active on top
+    BONDS.forEach(function (b) {
+      var p = pos(b[0]), q = pos(b[1]);
+      if (b[3] && !b[2]) svg.appendChild(el("line", { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: "#84909D", "stroke-width": 1.2, "stroke-dasharray": "2 5", "stroke-linecap": "round" }));
+      if (b[4]) svg.appendChild(el("line", { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: "#FFD556", "stroke-width": 1.4, "stroke-dasharray": "4 5" }));
+    });
+    BONDS.forEach(function (b) {
+      if (!b[2]) return;
+      var p = pos(b[0]), q = pos(b[1]);
+      // a gentle curve towards the centre
+      var mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
+      var cx = mx + (c - mx) * 0.35, cy = my + (c - my) * 0.35;
+      svg.appendChild(el("path", {
+        d: "M" + p[0].toFixed(1) + " " + p[1].toFixed(1) + " Q" + cx.toFixed(1) + " " + cy.toFixed(1) + " " + q[0].toFixed(1) + " " + q[1].toFixed(1),
+        fill: "none", stroke: "#5EE8A0", "stroke-linecap": "round",
+        "stroke-width": (1 + Math.sqrt(b[2]) * 1.15).toFixed(2),
+        "stroke-opacity": (0.35 + 0.6 * Math.min(1, b[2] / 20)).toFixed(2)
+      }));
+    });
+    for (var i = 0; i < n; i++) {
+      var p = pos(i), d = deg[i] || 0;
+      var r = 15 + Math.min(9, Math.sqrt(d) * 1.2);
+      svg.appendChild(el("circle", { cx: p[0], cy: p[1], r: r.toFixed(1), fill: "#11161D", stroke: d ? "#EDF1F5" : "#2A3441", "stroke-width": 1.4 }));
+      var t = svg.appendChild(el("text", { x: p[0], y: p[1] + 4, "text-anchor": "middle", "font-size": 12, fill: d ? "#EDF1F5" : "#84909D", "font-family": "Geist Mono, monospace" }));
+      t.textContent = "K" + i;
+    }
+    host.innerHTML = "";
+    host.appendChild(svg);
+  }
+
+  var bondsHost = document.getElementById("zBonds");
+  if (bondsHost) drawBonds(bondsHost);
 })();
