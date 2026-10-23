@@ -154,7 +154,7 @@ a.z-card:hover { border-color: var(--line-2); background: var(--raise-2); }
 .z-call-t { font-weight: 600; font-size: 15.5px; color: var(--ink); }
 .z-flow .z-call-d { margin-top: 4px; font-size: 14.5px; color: var(--soft); }
 .z-call-fn { margin-top: 10px; font-family: var(--mono); font-size: 13px; color: var(--ink); overflow-wrap: anywhere; }
-.z-call-fn .sel { margin-left: 10px; color: var(--agent); }
+.z-call-fn .sel { display: inline-block; white-space: nowrap; margin-left: 10px; color: var(--agent); }
 .z-call-at { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-family: var(--mono); font-size: 12.5px; color: var(--mute); }
 .z-call-at a { color: var(--soft); border-bottom: 1px dotted var(--line-2); overflow-wrap: anywhere; min-width: 0; }
 .z-call-at a:hover { color: var(--ink); }
