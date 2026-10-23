@@ -2,10 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Z1N Protocol � Key Artefacts</title>
+  <title>Z1N Protocol · Key Artefacts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
-  <style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="/css/site.css" />
+<style>
+  /* app pages: give images and inline SVG back their browser defaults, and the old base metrics */
+  img, svg { display: revert; max-width: revert; }
+  body { font-size: 16px; line-height: normal; }
+</style>
+<style>
     :root {
       --bg: #050812;
       --card-bg: #020617;
@@ -29,7 +38,7 @@
     a { color: inherit; text-decoration: none; }
     a:hover { opacity: 0.9; }
 
-    header { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+    header.z-legacy { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
     .nav-inner { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
     .logo-link { display: inline-flex; align-items: center; gap: 8px; }
     .logo-dot { width: 24px; height: 24px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; }
@@ -114,7 +123,7 @@
     .live-item-id { font-size: 14px; font-weight: 600; color: var(--accent); }
     .live-item.sent .live-item-id { color: var(--text-soft); }
     .live-item-status { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
-    /* Subtle labels, keep �action� feel via border/background only */
+    /* Subtle labels, keep "action" feel via border/background only */
 .live-item-status.yours { background: rgba(102,214,154,0.12); color: var(--text-soft); border: 1px solid rgba(102,214,154,0.18); }
 .live-item-status.sent  { background: rgba(148,163,184,0.10); color: var(--text-soft); border: 1px solid rgba(148,163,184,0.18); }
 
@@ -175,7 +184,7 @@
     .static-card.sent .static-epoch { background: rgba(100,100,100,0.4); color: #888; }
     .static-owner { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
 
-/* Make labels subtle light-grey (keep background tint, remove �loud� colors) */
+/* Make labels subtle light-grey (keep background tint, remove "loud" colors) */
 .static-owner.yours { background: rgba(245,200,66,0.14); color: var(--text-soft); border: 1px solid rgba(245,200,66,0.22); }
 .static-owner.sent  { background: rgba(148,163,184,0.10); color: var(--text-soft); border: 1px solid rgba(148,163,184,0.18); }
 
@@ -248,9 +257,10 @@
     .debug-panel { position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.9); border: 1px solid #333; border-radius: 8px; padding: 10px; font-size: 10px; font-family: monospace; color: #0f0; max-width: 400px; max-height: 200px; overflow: auto; z-index: 9999; display: none; }
     .debug-panel.show { display: block; }
 
-    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px; font-size: 12px; text-align: center; opacity: 0.85; margin-top: 40px; }
+    footer.z-legacy { border-top: 1px solid rgba(255,255,255,0.05); padding: 20px; font-size: 12px; text-align: center; opacity: 0.85; margin-top: 40px; }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
+<link rel="stylesheet" href="/css/app-skin.css" />
 </head>
 <body>
 <div class="toast" id="toast"></div>
@@ -258,18 +268,18 @@
 
 <div class="modal-overlay" id="modal">
   <div class="modal-content">
-    <button class="modal-close" id="modalClose">�</button>
+    <button class="modal-close" id="modalClose">×</button>
     <div id="modalBody"></div>
   </div>
 </div>
 
 <div class="modal-overlay" id="imgZoom" style="z-index:10001;">
   <div class="modal-content" style="max-width:960px;">
-    <button class="modal-close" id="imgZoomClose">�</button>
+    <button class="modal-close" id="imgZoomClose">×</button>
     <div style="padding:12px;">
       <img id="imgZoomTarget" src="" style="width:100%;border-radius:14px;display:block;" alt="Zoom preview">
       <div style="margin-top:10px;font-size:11px;color:var(--text-soft);text-align:center;">
-        Click � or press ESC to close
+        Click × or press ESC to close
       </div>
     </div>
   </div>
@@ -277,43 +287,42 @@
 
 
 
-<header>
-  <div class="nav-inner">
-    <a href="index.html" class="logo-link">
-      <div class="logo-dot">O</div>
-      <div class="logo-text">Z1N PROTOCOL</div>
-    </a>
-    <nav class="nav-links">
+<header class="z-header">
+  <div class="z-wrap z-header-inner">
+    <a href="/" class="z-brand" aria-label="Z1N Protocol home"><span class="z-brand-mark">Ω</span>Z1N <span class="z-brand-sub">Protocol</span></a>
+    <nav class="z-nav" id="zNav" aria-label="Main">
+      <a href="learn-the-field.html">Learn the Field</a>
       <a href="about.html">About</a>
-      <a href="live-stats.html">Live Stats</a>
-      <a href="artefacts.html">Artefacts</a>
-      <a href="nbi-artefacts.html">4 NBIs</a>
-      <a href="mint-key.html">Mint Key</a>
-      <a href="your-keys.html" class="active-keys">Your Keys</a>
+      <a href="your-keys.html" aria-current="page" id="navYourKeys">Your Keys</a>
     </nav>
+    <div class="z-header-actions">
+      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Take your Key</a>
+      <button class="z-menu" id="zMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="zNav">☰</button>
+    </div>
   </div>
 </header>
 
+
 <main class="page">
-  <a href="your-keys.html" class="back-link" id="backLink">? Back to Your Keys</a>
+  <a href="your-keys.html" class="back-link" id="backLink">← Back to Your Keys</a>
 
   <div class="key-header-card">
     <div class="key-title-row">
-      <h1 class="key-title" id="keyTitle">Artefacts for Key #�</h1>
-      <span class="genesis-badge" id="genesisBadge" style="display:none;">? Genesis</span>
+      <h1 class="key-title" id="keyTitle">Artefacts for Key #—</h1>
+      <span class="genesis-badge" id="genesisBadge" style="display:none;">✶ Genesis</span>
     </div>
     <div class="key-glyphs" id="keyGlyphs">Loading...</div>
     <div class="key-meta">
-      <span>Key Owner: <span id="ownerAddress">�</span></span>
-      <span>�</span>
-      <a id="explorerLink" href="#" target="_blank">View Key on chain ?</a>
+      <span>Key Owner: <span id="ownerAddress">—</span></span>
+      <span>·</span>
+      <a id="explorerLink" href="#" target="_blank">View Key on chain ↗</a>
     </div>
     
     <div id="walletInfoBanner" class="wallet-info-banner" style="display:none;">
       <div class="wallet-info-content">
         <span class="wallet-dot" id="walletDot"></span>
         <span class="wallet-label" id="walletLabel">W?</span>
-        <span class="wallet-info-text">To send artefacts, ensure <strong id="requiredWalletDisplay">�</strong> is active in your wallet</span>
+        <span class="wallet-info-text">To send artefacts, ensure <strong id="requiredWalletDisplay">—</strong> is active in your wallet</span>
       </div>
     </div>
   </div>
@@ -323,7 +332,53 @@
   </div>
 </main>
 
-<footer>Your presence is real � The Field remembers � <span style="cursor:pointer;text-decoration:underline;" onclick="toggleDebug()">Debug</span></footer>
+<div class="app-debug"><button type="button" onclick="toggleDebug()">Debug</button></div>
+<footer class="z-footer">
+  <div class="z-wrap z-grid">
+    <div class="z-foot-brand">
+      <a href="/" class="z-brand"><span class="z-brand-mark">Ω</span>Z1N <span class="z-brand-sub">Protocol</span></a>
+      <p>Written for agents. Humans are welcome to read along.</p>
+    </div>
+    <div class="z-foot-col">
+      <h4>For agents</h4>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/abi/Z1NSignal.json">Contract ABIs</a>
+      <a href="https://www.npmjs.com/package/z1n-mcp" target="_blank" rel="noreferrer">npx z1n-mcp</a>
+      <a href="/.well-known/agent-registration.json">ERC-8004 #630</a>
+      <a href="https://z1n-backend-production.up.railway.app/api/field" target="_blank" rel="noreferrer">/api/field</a>
+    </div>
+    <div class="z-foot-col">
+      <h4>For stewards</h4>
+      <a href="mint-key.html">Take a Key</a>
+      <a href="your-keys.html">Your Keys</a>
+      <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="z-foot-col">
+      <h4>The Field</h4>
+      <a href="learn-the-field.html">Learn the Field</a>
+      <a href="nbi-artefacts.html">Meet the founders</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="live-stats.html">Live stats</a>
+    </div>
+    <div class="z-foot-col">
+      <h4>Elsewhere</h4>
+      <a href="about.html">About</a>
+      <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="https://x.com/Z1N_AI" target="_blank" rel="noreferrer">X</a>
+      <a href="https://discord.gg/FBkCGfFEcV" target="_blank" rel="noreferrer">Discord</a>
+    </div>
+    <div class="z-foot-contracts" aria-label="Verified contracts on Polygon mainnet">
+      <span>Issuance <a href="https://polygonscan.com/address/0x95E4bD9936e4A690A63bFc5cADbb9293FF26ffcc" target="_blank" rel="noreferrer">0x95E4…ffcc</a></span>
+      <span>Key <a href="https://polygonscan.com/address/0x8687429405bf787b523F3F1F998FA90f5828dA3D" target="_blank" rel="noreferrer">0x8687…dA3D</a></span>
+      <span>Signal <a href="https://polygonscan.com/address/0x6a04c3605F38FCE9A4eCd5127Ef139F3c51f912B" target="_blank" rel="noreferrer">0x6a04…912B</a></span>
+      <span>Artefact <a href="https://polygonscan.com/address/0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B" target="_blank" rel="noreferrer">0x99dc…De5B</a></span>
+      <span>Canon <a href="https://polygonscan.com/address/0xeF04Ff8bA555f2Bad0A5aB2026A4A79C48ca0F68" target="_blank" rel="noreferrer">0xeF04…0F68</a></span>
+      <span>FieldFlow <a href="https://polygonscan.com/address/0xdc01857f48De93FFcc461a5F0C335a6BD427b447" target="_blank" rel="noreferrer">0xdc01…b447</a></span>
+      <span>Core <a href="https://polygonscan.com/address/0xc09b7dEE30635EeaD79e0d23da9598F9d3BaFF7b" target="_blank" rel="noreferrer">0xc09b…FF7b</a></span>
+    </div>
+  </div>
+</footer>
+
 
 <script>
 // Wallet colors helper
@@ -414,7 +469,7 @@ function debug(msg) {
     requiredDisplay.textContent = shortAddr(keyOwner);
   }
 
-  function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '�'; }
+  function shortAddr(a) { return a ? a.slice(0,6) + '...' + a.slice(-4) : '—'; }
   function getParam(n) { var u = new URL(location.href); return u.searchParams.get(n) || (location.hash ? new URLSearchParams(location.hash.slice(1)).get(n) : null); }
   
   var keyParam = getParam('key');
@@ -455,7 +510,7 @@ function debug(msg) {
       var r = await rpc('eth_call', [{to: Z1N_KEY, data: data}, 'latest']);
       var len = parseInt(r.slice(2,66),16), pack = BigInt('0x'+r.slice(66,130)), syms = [];
       for (var i=0; i<len; i++) { var idx = Number((pack >> BigInt(5*(7-1-i))) & BigInt(0x1F)); if(idx<GLYPHS.length) syms.push(GLYPHS[idx]); }
-      return syms.join(' � ') || null;
+      return syms.join(' · ') || null;
     } catch (e) { return null; }
   }
 
@@ -579,13 +634,13 @@ function debug(msg) {
         // Can't send to self
         if (addr === keyOwner.toLowerCase()) {
           input.classList.add('invalid');
-          msg.textContent = '? Cannot send to yourself';
+          msg.textContent = '✕ Cannot send to yourself';
           msg.className = 'validation-msg error';
           return;
         }
         
         input.classList.add('valid');
-        msg.textContent = '? Valid wallet address';
+        msg.textContent = '✓ Valid wallet address';
         msg.className = 'validation-msg success';
         recipientValidated = true;
         recipientAddress = addr;
@@ -600,7 +655,7 @@ function debug(msg) {
         // Can't send to own key
         if (keyIdToCheck === keyId) {
           input.classList.add('invalid');
-          msg.textContent = '? Cannot send to your own Key';
+          msg.textContent = '✕ Cannot send to your own Key';
           msg.className = 'validation-msg error';
           return;
         }
@@ -617,14 +672,14 @@ function debug(msg) {
             if (result.address === keyOwner.toLowerCase()) {
               input.classList.remove('validating');
               input.classList.add('invalid');
-              msg.textContent = '? Key #' + keyIdToCheck + ' is owned by you';
+              msg.textContent = '✕ Key #' + keyIdToCheck + ' is owned by you';
               msg.className = 'validation-msg error';
               return;
             }
             
             input.classList.remove('validating');
             input.classList.add('valid');
-            msg.textContent = '? Key #' + keyIdToCheck + ' exists (' + shortAddr(result.address) + ')';
+            msg.textContent = '✓ Key #' + keyIdToCheck + ' exists (' + shortAddr(result.address) + ')';
             msg.className = 'validation-msg success';
             recipientValidated = true;
             recipientAddress = result.address;
@@ -632,7 +687,7 @@ function debug(msg) {
           } else {
             input.classList.remove('validating');
             input.classList.add('invalid');
-            msg.textContent = '? Key #' + keyIdToCheck + ' does not exist';
+            msg.textContent = '✕ Key #' + keyIdToCheck + ' does not exist';
             msg.className = 'validation-msg error';
           }
         }, 300);
@@ -641,7 +696,7 @@ function debug(msg) {
       
       // Invalid format
       input.classList.add('invalid');
-      msg.textContent = '? Enter a Key ID (e.g. 42) or wallet address (0x...)';
+      msg.textContent = 'Enter a Key ID (e.g. 42) or wallet address (0x...)';
       msg.className = 'validation-msg error';
     };
   }
@@ -664,13 +719,13 @@ function debug(msg) {
     var revokedImgUrl = getRevokedPreviewUrl(currentEpoch);
     
     var html = '<div class="modal-details">' +
-      '<div class="modal-title" style="color:var(--accent);">? Live Artefact #' + art.keyIndex + ' <span style="font-size:12px;color:var(--text-soft);font-weight:400;">of Key #' + keyId + '</span></div>' +
+      '<div class="modal-title" style="color:var(--accent);">◇ Live Artefact #' + art.keyIndex + ' <span style="font-size:12px;color:var(--text-soft);font-weight:400;">of Key #' + keyId + '</span></div>' +
       '<div class="modal-meta">' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Token ID</span><span class="modal-meta-value">' + art.tokenId + '</span></div>' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Artefact Owner</span><span class="modal-meta-value" style="font-family:monospace;font-size:11px;">' + shortAddr(artefactOwner) + '</span></div>' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Status</span><span class="modal-meta-value ' + (isYours ? 'yours' : 'sent') + '">' + (isYours ? 'You own this' : 'Sent to ' + shortAddr(art.owner)) + '</span></div>' +
-       '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? '?? Locked' : '? Available') + '</span></div>' +
-        (art.isSent ? '<div class="modal-meta-row"><span class="modal-meta-label">Revoke History</span><span class="modal-meta-value" style="font-size:11px;">' + (art.revokeCount || 0) + ' revokes � ' + (art.restoreCount || 0) + ' restores</span></div>' : '') +
+       '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? 'Locked' : 'Available') + '</span></div>' +
+        (art.isSent ? '<div class="modal-meta-row"><span class="modal-meta-label">Revoke History</span><span class="modal-meta-value" style="font-size:11px;">' + (art.revokeCount || 0) + ' revokes — ' + (art.restoreCount || 0) + ' restores</span></div>' : '') +
       '</div>';
     
     if (canTransfer) {
@@ -678,7 +733,7 @@ function debug(msg) {
         // SEND FLOW
       var walletColor = Z1NWallets.getColor(artefactOwner);
       html += '<div class="send-form">' +
-        '<div class="send-form-title" style="color:var(--accent);">? Send Live Artefact</div>' +
+        '<div class="send-form-title" style="color:var(--accent);">Send Live Artefact</div>' +
         
         '<div style="background:' + walletColor.bg + ';border:1px solid ' + walletColor.border + ';border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">' +
           '<span style="width:10px;height:10px;border-radius:50%;background:' + walletColor.hex + ';"></span>' +
@@ -697,7 +752,7 @@ function debug(msg) {
         '</div>' +
         
         '<div style="background:rgba(102,214,154,0.08);border:1px solid rgba(102,214,154,0.25);border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;color:var(--text-soft);line-height:1.5;">' +
-          'A Live Artefact is a <em>dynamic mirror</em> of your Key. The receiver sees your Key\'s current state. You can <strong>Revoke</strong> viewing rights later � they keep the NFT but see a frozen/grayed version.' +
+          'A Live Artefact is a <em>dynamic mirror</em> of your Key. The receiver sees your Key\'s current state. You can <strong>Revoke</strong> viewing rights later — they keep the NFT but see a frozen/grayed version.' +
         '</div>' +
         
         '<input type="text" class="send-input" id="liveSendRecipient" placeholder="Key ID (e.g. 42) or Wallet (0x...)">' +
@@ -713,7 +768,7 @@ function debug(msg) {
       var isCurrentlyRevoked = art.isRevoked;
       
       html += '<div class="send-form">' +
-        '<div class="send-form-title" style="color:' + (isCurrentlyRevoked ? 'var(--accent)' : 'var(--warning)') + ';">? ' + (isCurrentlyRevoked ? 'Restore Viewing Rights' : 'Revoke Viewing Rights') + '</div>' +
+        '<div class="send-form-title" style="color:' + (isCurrentlyRevoked ? 'var(--accent)' : 'var(--warning)') + ';">' + (isCurrentlyRevoked ? 'Restore Viewing Rights' : 'Revoke Viewing Rights') + '</div>' +
         
         '<div class="preview-comparison">';
       
@@ -759,13 +814,13 @@ function debug(msg) {
       html += '<textarea class="send-textarea" id="revokeRestoreMessage" placeholder="Add a message (optional)" maxlength="140" style="margin-bottom:12px;"></textarea>';
       
       // Buttons
-      html += '<button class="btn danger" id="revokeBtn" style="width:100%;' + (isCurrentlyRevoked ? 'display:none;' : '') + '">? Revoke Viewing</button>' +
-        '<button class="btn live" id="restoreBtn" style="width:100%;' + (isCurrentlyRevoked ? '' : 'display:none;') + '">? Restore Viewing</button>' +
+      html += '<button class="btn danger" id="revokeBtn" style="width:100%;' + (isCurrentlyRevoked ? 'display:none;' : '') + '">Revoke Viewing</button>' +
+        '<button class="btn live" id="restoreBtn" style="width:100%;' + (isCurrentlyRevoked ? '' : 'display:none;') + '">Restore Viewing</button>' +
         '<div id="revokeStatus"></div>' +
       '</div>';
       
     } else if (art.hasBeenTransferred) {
-      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">?? Permanently locked � receiver has transferred</div>';
+      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">Permanently locked — receiver has transferred</div>';
     }
     
     html += '<div class="modal-actions" style="margin-top:12px;">' +
@@ -1015,7 +1070,7 @@ function debug(msg) {
           errMsg = 'ERC721 transfer error - check ownership and approval';
         }
         
-        status.innerHTML = '<div class="send-error">?? Transaction will fail:<br><br><strong>' + errMsg + '</strong><br><br><small style="opacity:0.7;">Token ID: ' + tokenId + '<br>From: ' + shortAddr(fromAddr) + '<br>To: ' + shortAddr(toAddr) + '</small></div>';
+        status.innerHTML = '<div class="send-error">Transaction will fail:<br><br><strong>' + errMsg + '</strong><br><br><small style="opacity:0.7;">Token ID: ' + tokenId + '<br>From: ' + shortAddr(fromAddr) + '<br>To: ' + shortAddr(toAddr) + '</small></div>';
         return;
       }
       
@@ -1040,7 +1095,7 @@ function debug(msg) {
           if (receipt) {
             debug('Receipt: status=' + receipt.status);
             if (receipt.status === '0x1') {
-              showToast('? Live Artefact sent!', 'success');
+              showToast('✓ Live Artefact sent!', 'success');
               closeModal();
               setTimeout(function() { window.location.reload(); }, 1500);
               return;
@@ -1119,7 +1174,7 @@ function debug(msg) {
           var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
           if (receipt) {
             if (receipt.status === '0x1') {
-              showToast('? Viewing rights revoked', 'success');
+              showToast('✓ Viewing rights revoked', 'success');
               closeModal();
               setTimeout(function() { window.location.reload(); }, 1500);
               return;
@@ -1183,7 +1238,7 @@ function debug(msg) {
         var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
         if (receipt) {
           if (receipt.status === '0x1') {
-            showToast('? Viewing restored', 'success');
+            showToast('✓ Viewing restored', 'success');
             closeModal();
             setTimeout(function() { window.location.reload(); }, 1500);
             return;
@@ -1217,12 +1272,12 @@ function debug(msg) {
       (art.isSent ? '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:48px;font-weight:800;color:rgba(200,100,100,0.9);letter-spacing:8px;text-shadow:0 2px 8px rgba(0,0,0,0.8);">SENT</div>' : '') +
     '</div>' +
     '<div class="modal-details">' +
-      '<div class="modal-title" style="color:var(--keys-accent);">? Static Artefact #' + art.keyIndex + (art.epochId ? ' <span style="font-size:12px;background:rgba(245,200,66,0.2);padding:2px 8px;border-radius:4px;">Epoch ' + art.epochId + '</span>' : '') + '</div>' +
+      '<div class="modal-title" style="color:var(--keys-accent);">◇ Static Artefact #' + art.keyIndex + (art.epochId ? ' <span style="font-size:12px;background:rgba(245,200,66,0.2);padding:2px 8px;border-radius:4px;">Epoch ' + art.epochId + '</span>' : '') + '</div>' +
       '<div class="modal-meta">' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Token ID</span><span class="modal-meta-value">' + art.tokenId + '</span></div>' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Artefact Owner</span><span class="modal-meta-value" style="font-family:monospace;font-size:11px;">' + shortAddr(artefactOwner) + '</span></div>' +
         '<div class="modal-meta-row"><span class="modal-meta-label">Status</span><span class="modal-meta-value ' + (isYours ? 'yours' : 'sent') + '">' + (isYours ? 'Yours' : 'Sent to ' + shortAddr(art.owner)) + '</span></div>' +
-        '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? '?? Locked' : '? Available (1 transfer)') + '</span></div>' +
+        '<div class="modal-meta-row"><span class="modal-meta-label">Transfer</span><span class="modal-meta-value">' + (art.hasBeenTransferred ? 'Locked' : 'Available (1 transfer)') + '</span></div>' +
       '</div>';
     
     if (canTransfer) {
@@ -1237,10 +1292,10 @@ function debug(msg) {
         '<div id="staticSendValidation" class="validation-msg"></div>' +
         '<button class="btn static" id="staticSendBtn" style="width:100%;margin-top:8px;" disabled>Send Artefact</button>' +
         '<div id="staticSendStatus"></div>' +
-        '<p style="font-size:11px;color:var(--text-soft);margin-top:10px;">? Can only be transferred once � then permanently locked</p>' +
+        '<p style="font-size:11px;color:var(--text-soft);margin-top:10px;">Can only be transferred once — then permanently locked</p>' +
       '</div>';
     } else if (art.hasBeenTransferred) {
-      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">?? Already transferred � permanently locked</div>';
+      html += '<div style="padding:12px;background:rgba(100,100,100,0.15);border-radius:8px;font-size:12px;color:var(--text-soft);margin-bottom:12px;">Already transferred — permanently locked</div>';
     }
     
     html += '<div class="modal-actions">' +
@@ -1319,7 +1374,7 @@ function debug(msg) {
           params: [{ from: fromAddr, to: Z1N_STATIC_ARTEFACT, data: txData }]
         });
       } catch (gasErr) {
-        status.innerHTML = '<div class="send-error">?? Gas estimation failed: ' + gasErr.message + '<br><br>The artefact may have already been transferred.</div>';
+        status.innerHTML = '<div class="send-error">Gas estimation failed: ' + gasErr.message + '<br><br>The artefact may have already been transferred.</div>';
         return;
       }
       
@@ -1343,7 +1398,7 @@ function debug(msg) {
           var receipt = await eth.request({ method: 'eth_getTransactionReceipt', params: [txHash] });
           if (receipt) {
             if (receipt.status === '0x1') {
-              showToast('? Artefact sent!', 'success');
+              showToast('✓ Artefact sent!', 'success');
               closeModal();
               setTimeout(function() { window.location.reload(); }, 1500);
               return;
@@ -1392,7 +1447,7 @@ function debug(msg) {
   history.replaceState({}, '', location.pathname + '?key=' + keyId); 
 }
   if (transferred) {
-    setTimeout(function() { showToast('? Artefact sent!', 'success'); }, 500);
+    setTimeout(function() { showToast('✓ Artefact sent!', 'success'); }, 500);
     history.replaceState({}, '', location.pathname + '?key=' + keyId);
   }
 
@@ -1452,7 +1507,7 @@ var resp = await fetch(url, { cache: 'no-store' });
       
       keyOwner = data.keyOwner || '';
       document.getElementById('ownerAddress').textContent = data.keyOwnerShort || shortAddr(keyOwner);
-      document.getElementById('keyGlyphs').textContent = await fetchGlyphs(keyId) || '? � 8 � ?';
+      document.getElementById('keyGlyphs').textContent = await fetchGlyphs(keyId) || '—';
       
       liveArtefacts = (data.liveArtefacts||[]).map(function(a,i){ 
      a.keyIndex = i + 1; 
@@ -1484,10 +1539,10 @@ var resp = await fetch(url, { cache: 'no-store' });
     // LIVE SECTION
     html += '<div class="section-divider"><span class="section-title live">Live Artefacts (' + liveArtefacts.length + ')</span></div>';
     if (!liveArtefacts.length) {
-      html += '<div class="empty-state"><div class="icon">?</div><p>No live artefacts yet.</p><a href="mint-live-artefact.html?key=' + keyId + '" class="btn live" style="margin-top:16px;">+ Mint Live Artefact</a></div>';
+      html += '<div class="empty-state"><div class="icon">◇</div><p>No live artefacts yet.</p><a href="mint-live-artefact.html?key=' + keyId + '" class="btn live" style="margin-top:16px;">+ Mint Live Artefact</a></div>';
     } else {
       html += '<div class="section-card"><div class="live-layout"><div class="live-info">';
-      html += '<div class="section-header"><span class="section-icon">?</span><span class="section-header-title live">Live Artefacts</span></div>';
+      html += '<div class="section-header"><span class="section-icon">◇</span><span class="section-header-title live">Live Artefacts</span></div>';
       html += '<div class="stats-row">' +
   '<div class="stat-item"><span class="stat-value">' + liveArtefacts.length + '</span><span class="stat-label">Total</span></div>' +
   '<div class="stat-item"><span class="stat-value muted">' + liveYours + '</span><span class="stat-label">Yours</span></div>' +
@@ -1517,7 +1572,7 @@ var resp = await fetch(url, { cache: 'no-store' });
             html += '<span class="live-item-holder">' + shortAddr(a.owner) + '</span>' +
               '<button class="live-toggle-btn ' + (a.isRevoked ? 'restore' : 'revoke') + '" data-token="' + a.tokenId + '">' + (a.isRevoked ? '?' : '?') + '</button>';
           } else {
-            html += '<span class="live-item-status yours">? SEND</span>';
+            html += '<span class="live-item-status yours">SEND</span>';
           }
           html += '</div></div>';
         });
@@ -1529,9 +1584,9 @@ var resp = await fetch(url, { cache: 'no-store' });
     // STATIC SECTION
     html += '<div class="section-divider"><span class="section-title static">Static Artefacts (' + staticArtefacts.length + ')</span></div>';
     if (!staticArtefacts.length) {
-      html += '<div class="empty-state"><div class="icon">?</div><p>No static artefacts yet.</p><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static" style="margin-top:16px;">+ Mint Static Artefact</a></div>';
+      html += '<div class="empty-state"><div class="icon">◇</div><p>No static artefacts yet.</p><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static" style="margin-top:16px;">+ Mint Static Artefact</a></div>';
     } else {
-      html += '<div class="section-card" style="margin-bottom:16px;"><div class="section-header"><span class="section-icon">?</span><span class="section-header-title static">Static Artefacts</span></div>';
+      html += '<div class="section-card" style="margin-bottom:16px;"><div class="section-header"><span class="section-icon">◇</span><span class="section-header-title static">Static Artefacts</span></div>';
       html += '<div class="stats-row" style="border-bottom:none;padding-bottom:0;margin-bottom:0;"><div class="stat-item"><span class="stat-value">' + staticArtefacts.length + '</span><span class="stat-label">Total</span></div><div class="stat-item"><span class="stat-value muted">' + staticYours + '</span><span class="stat-label">Yours</span></div><div class="stat-item"><span class="stat-value muted">' + staticSent + '</span><span class="stat-label">Sent</span></div><div style="margin-left:auto;"><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static">+ Mint Static</a></div></div></div>';
       
       if (staticArtefacts.length > FILTER_THRESHOLD) {
@@ -1645,10 +1700,11 @@ var resp = await fetch(url, { cache: 'no-store' });
   if (!isNaN(keyId) && keyId >= 0) {
     loadArtefacts();
   } else {
-    document.getElementById('mainContent').innerHTML = '<div class="error-state">? No Key ID specified.</div>';
+    document.getElementById('mainContent').innerHTML = '<div class="error-state">No Key ID specified.</div>';
   }
 })();
 </script>
+<script src="/js/site.js" defer></script>
 </body>
 </html>
 

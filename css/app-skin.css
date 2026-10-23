@@ -1,0 +1,39 @@
+/* ─────────────────────────────────────────────────────────────
+   App pages (Key dashboard, artefacts, canon, artefact mints).
+   Loaded after the apps' own styles: maps their palette onto the
+   site system so they read as one site. Layout and logic stay theirs.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --bg: #0B0F14;
+  --card-bg: #11161D;
+  --text-main: #EDF1F5;
+  --text-soft: #A3AEBA;
+  --text-muted: #6B7684;
+  --card-border: #2A3441;
+  --accent: #5EE8A0;
+  --accent-soft: #3FB47A;
+  --keys-accent: #FFD556;
+  --keys-accent-soft: #C9A62E;
+  --danger: #F87171;
+}
+
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font-family: inherit; }
+
+/* the site header and footer keep their own metrics */
+.z-header, .z-footer { font-size: 17px; line-height: 1.6; }
+.z-header { z-index: 60; }
+
+/* app column aligns with the header */
+main.page { max-width: var(--wrap); padding-left: var(--gutter); padding-right: var(--gutter); padding-top: 32px; padding-bottom: 96px; }
+
+.back-link { font-size: 14px; color: var(--mute); }
+.back-link:hover { color: var(--ink); }
+
+/* Debug toggle that lived in the old footer (key-artefacts) */
+.app-debug { max-width: var(--wrap); margin: -56px auto 40px; padding: 0 var(--gutter); }
+.app-debug button { background: none; border: 0; color: var(--mute); font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; }
+
+/* gas banner (js/gas-banner.js) sits right under the sticky header */
+.z1n-gas-banner { font-family: var(--sans); }

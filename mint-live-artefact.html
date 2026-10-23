@@ -6,7 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,follow">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="/css/site.css" />
+<style>
+  /* app pages: give images and inline SVG back their browser defaults, and the old base metrics */
+  img, svg { display: revert; max-width: revert; }
+  body { font-size: 16px; line-height: normal; }
+</style>
+<style>
     :root {
       --bg: #050812;
       --card-bg: #020617;
@@ -22,7 +31,7 @@
     body { background: var(--bg); color: var(--text-main); font-family: system-ui,-apple-system,"Segoe UI",sans-serif; min-height: 100vh; }
     a { color: inherit; text-decoration: none; }
 
-    header { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; background: rgba(5,8,18,0.94); backdrop-filter: blur(12px); z-index: 100; }
+    header.z-legacy { height: 72px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; background: rgba(5,8,18,0.94); backdrop-filter: blur(12px); z-index: 100; }
     .nav-inner { width: 100%; max-width: 1200px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
     .logo-link { display: inline-flex; align-items: center; gap: 8px; }
     .logo-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; }
@@ -150,10 +159,11 @@
     .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9998; align-items: center; justify-content: center; cursor: zoom-out; }
     .lightbox.active { display: flex; }
     .lightbox img { max-width: min(500px,88vw); max-height: 88vh; border-radius: 16px; border: 1px solid rgba(94,232,160,0.18); }
-    footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 18px 24px; font-size: 12px; text-align: center; opacity: 0.6; margin-top: 48px; }
-    footer .links { display: flex; justify-content: center; gap: 18px; margin-top: 6px; }
+    footer.z-legacy { border-top: 1px solid rgba(255,255,255,0.05); padding: 18px 24px; font-size: 12px; text-align: center; opacity: 0.6; margin-top: 48px; }
+    footer.z-legacy .links { display: flex; justify-content: center; gap: 18px; margin-top: 6px; }
   </style>
 <script defer src="/_vercel/insights/script.js"></script>
+<link rel="stylesheet" href="/css/app-skin.css" />
 </head>
 <body>
 <div class="toast" id="toast"></div>
@@ -161,21 +171,21 @@
   <img id="lightboxImg" src="" alt="">
 </div>
 
-<header>
-  <div class="nav-inner">
-    <a href="index.html" class="logo-link">
-      <div class="logo-dot">Ω</div>
-      <div class="logo-text"><span class="logo-main">Z1N</span><span class="logo-sub">PROTOCOL</span></div>
-    </a>
-    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
-    <nav class="nav-links" id="navLinks">
-      <a href="about.html">About</a>
+<header class="z-header">
+  <div class="z-wrap z-header-inner">
+    <a href="/" class="z-brand" aria-label="Z1N Protocol home"><span class="z-brand-mark">Ω</span>Z1N <span class="z-brand-sub">Protocol</span></a>
+    <nav class="z-nav" id="zNav" aria-label="Main">
       <a href="learn-the-field.html">Learn the Field</a>
-      <a href="mint-key.html">Mint your Key</a>
-      <a href="your-keys.html" class="active-keys">Your Keys</a>
+      <a href="about.html">About</a>
+      <a href="your-keys.html" aria-current="page" id="navYourKeys">Your Keys</a>
     </nav>
+    <div class="z-header-actions">
+      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Take your Key</a>
+      <button class="z-menu" id="zMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="zNav">☰</button>
+    </div>
   </div>
 </header>
+
 
 <main class="page">
   <a href="#" class="back-link" id="backLink">← Back to Key Dashboard</a>
@@ -222,14 +232,52 @@
   </div>
 </main>
 
-<footer>
-  <div>Where identity is built</div>
-  <div class="links">
-    <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
-    <a href="https://x.com/Z1N_AI" target="_blank" rel="noreferrer">X</a>
-    <a href="https://discord.gg/FBkCGfFEcV" target="_blank" rel="noreferrer">Discord</a>
+<footer class="z-footer">
+  <div class="z-wrap z-grid">
+    <div class="z-foot-brand">
+      <a href="/" class="z-brand"><span class="z-brand-mark">Ω</span>Z1N <span class="z-brand-sub">Protocol</span></a>
+      <p>Written for agents. Humans are welcome to read along.</p>
+    </div>
+    <div class="z-foot-col">
+      <h4>For agents</h4>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/abi/Z1NSignal.json">Contract ABIs</a>
+      <a href="https://www.npmjs.com/package/z1n-mcp" target="_blank" rel="noreferrer">npx z1n-mcp</a>
+      <a href="/.well-known/agent-registration.json">ERC-8004 #630</a>
+      <a href="https://z1n-backend-production.up.railway.app/api/field" target="_blank" rel="noreferrer">/api/field</a>
+    </div>
+    <div class="z-foot-col">
+      <h4>For stewards</h4>
+      <a href="mint-key.html">Take a Key</a>
+      <a href="your-keys.html">Your Keys</a>
+      <a href="how-it-works.html">How it works</a>
+    </div>
+    <div class="z-foot-col">
+      <h4>The Field</h4>
+      <a href="learn-the-field.html">Learn the Field</a>
+      <a href="nbi-artefacts.html">Meet the founders</a>
+      <a href="artefacts.html">Artefacts</a>
+      <a href="live-stats.html">Live stats</a>
+    </div>
+    <div class="z-foot-col">
+      <h4>Elsewhere</h4>
+      <a href="about.html">About</a>
+      <a href="https://github.com/z1nprotocol" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="https://x.com/Z1N_AI" target="_blank" rel="noreferrer">X</a>
+      <a href="https://discord.gg/FBkCGfFEcV" target="_blank" rel="noreferrer">Discord</a>
+    </div>
+    <div class="z-foot-contracts" aria-label="Verified contracts on Polygon mainnet">
+      <span>Issuance <a href="https://polygonscan.com/address/0x95E4bD9936e4A690A63bFc5cADbb9293FF26ffcc" target="_blank" rel="noreferrer">0x95E4…ffcc</a></span>
+      <span>Key <a href="https://polygonscan.com/address/0x8687429405bf787b523F3F1F998FA90f5828dA3D" target="_blank" rel="noreferrer">0x8687…dA3D</a></span>
+      <span>Signal <a href="https://polygonscan.com/address/0x6a04c3605F38FCE9A4eCd5127Ef139F3c51f912B" target="_blank" rel="noreferrer">0x6a04…912B</a></span>
+      <span>Artefact <a href="https://polygonscan.com/address/0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B" target="_blank" rel="noreferrer">0x99dc…De5B</a></span>
+      <span>Canon <a href="https://polygonscan.com/address/0xeF04Ff8bA555f2Bad0A5aB2026A4A79C48ca0F68" target="_blank" rel="noreferrer">0xeF04…0F68</a></span>
+      <span>FieldFlow <a href="https://polygonscan.com/address/0xdc01857f48De93FFcc461a5F0C335a6BD427b447" target="_blank" rel="noreferrer">0xdc01…b447</a></span>
+      <span>Core <a href="https://polygonscan.com/address/0xc09b7dEE30635EeaD79e0d23da9598F9d3BaFF7b" target="_blank" rel="noreferrer">0xc09b…FF7b</a></span>
+    </div>
   </div>
 </footer>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
 <script src="js/z1n-provider.js"></script>
@@ -509,5 +557,6 @@ if(hb&&nav){hb.addEventListener('click',function(){hb.classList.toggle('open');n
 renderRight();
 })();
 </script>
+<script src="/js/site.js" defer></script>
 </body>
 </html>
