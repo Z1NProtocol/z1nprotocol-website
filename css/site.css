@@ -19,6 +19,8 @@
   --steward: #FFD556;   /* sunbeam: the steward's flow */
 
   --i-col: #5EE8A0; --i-ind: #F87171; --i-co: #FFD556; --i-sil: #7BB8FC;
+  /* the four guides of Learn the Field, one quiet colour each */
+  --g-how: #A9B4FF; --g-bonds: #7FD9C9; --g-founders: #E3A6F0; --g-live: #F2B880;
 
   --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -69,7 +71,7 @@ img, svg { display: block; max-width: 100%; }
 }
 .z-header-inner { display: flex; align-items: center; gap: 32px; height: 68px; }
 .z-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
-.z-brand-mark { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--ink); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; }
+.z-brand-mark { display: block; flex: none; width: 28px; height: 28px; color: var(--ink); shape-rendering: geometricPrecision; }
 .z-brand-sub { color: var(--mute); font-weight: 500; }
 .z-nav { display: flex; gap: 6px; margin-left: auto; }
 .z-nav a { text-decoration: none; color: var(--soft); font-size: 15px; font-weight: 500; padding: 8px 12px; border-radius: 8px; }
@@ -252,3 +254,18 @@ a.z-card:hover { border-color: var(--line-2); background: var(--raise-2); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Guides: link cards and the Learn the Field sub-navigation */
+.z-guide-card { border-top: 2px solid var(--g); }
+.z-guide-card .z-glyph { color: var(--g); }
+a.z-guide-card:hover { border-color: var(--line-2); border-top-color: var(--g); background: color-mix(in srgb, var(--g) 5%, var(--raise)); }
+.z-subnav { border-bottom: 1px solid var(--line); }
+.z-subnav-inner { display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-top: 10px; padding-bottom: 10px; }
+.z-subnav-inner::-webkit-scrollbar { display: none; }
+.z-subnav-label { margin-right: 12px; font-size: 13px; color: var(--mute); white-space: nowrap; }
+.z-subnav a { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid transparent; border-radius: 999px; font-size: 14px; color: var(--soft); text-decoration: none; white-space: nowrap; }
+.z-subnav a::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--g, var(--mute)); }
+.z-subnav a:hover { color: var(--ink); }
+.z-subnav a[aria-current="page"] { color: var(--ink); background: color-mix(in srgb, var(--g, #EDF1F5) 9%, transparent); border-color: color-mix(in srgb, var(--g, #EDF1F5) 32%, transparent); }
+.z-guide .z-hero .z-eyebrow { color: var(--g, var(--mute)); }
+@media (max-width: 760px) { .z-subnav-label { display: none; } }

@@ -12,6 +12,12 @@
     });
   }
 
+  // ── Learn the Field sub-navigation: keep the current guide in view on small screens ──
+  var subCur = document.querySelector(".z-subnav a[aria-current]");
+  if (subCur && subCur.parentNode.scrollWidth > subCur.parentNode.clientWidth) {
+    subCur.parentNode.scrollLeft = subCur.offsetLeft - subCur.parentNode.offsetLeft - 16;
+  }
+
   // ── Copy buttons (contract addresses) ──────────────────────
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-copy]");
