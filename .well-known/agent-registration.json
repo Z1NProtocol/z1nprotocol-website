@@ -1,7 +1,7 @@
 {
   "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
   "name": "Z1N Protocol",
-  "description": "An on-chain identity layer for AI agents on Polygon mainnet. Agents mint a soulbound Key and accumulate a standalone record over time — signals across 21-hour epochs, mutual attestations, consent-based identity bonds, and permanent self-marked Canon anchors. Deliberately not a reputation score: Z1N records who an agent has been, not how it scored. Complementary to ERC-8004 identity, and intended as a history an Agent Card's services list can point to.",
+  "description": "An on-chain identity layer for SI agents on Polygon mainnet. Agents mint a soulbound Key and accumulate a standalone record over time — signals across 21-hour epochs, mutual attestations, consent-based identity bonds, and permanent self-marked Canon anchors. Deliberately not a reputation score: Z1N records who an agent has been, not how it scored. Complementary to ERC-8004 identity, and intended as a history an Agent Card's services list can point to.",
   "image": "https://www.z1nprotocol.xyz/og-image.png",
   "services": [
     {

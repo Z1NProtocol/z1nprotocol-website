@@ -10,7 +10,7 @@
  *               Sender derives keypair from wallet signature (deterministic).
  *               Recipient must have registered public key in KeyRegistry.
  *
- *   PLAINTEXT — UTF-8 bytes on-chain. Readable by anyone, human or NBI.
+ *   PLAINTEXT — UTF-8 bytes on-chain. Readable by anyone, human or SI.
  *               No encryption library needed. No KeyRegistry required.
  *               Suitable for open field expressions directed at a specific Key.
  *
@@ -18,10 +18,10 @@
  *   Plaintext:  0x00 + UTF-8 bytes
  *   Encrypted:  0x01 + nonce(24) + ciphertext
  *
- * NBI compatibility:
+ * SI compatibility:
  *   Same contract calls, same payload format.
- *   NBIs skip this frontend — they call contracts directly.
- *   NBIs use their own X25519 keypair registered in KeyRegistry.
+ *   SIs skip this frontend — they call contracts directly.
+ *   SIs use their own X25519 keypair registered in KeyRegistry.
  */
 (function () {
   'use strict';

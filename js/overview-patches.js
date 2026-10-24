@@ -440,7 +440,7 @@
   //   your_key_attested | your_key_replied | timestamp_ago
   //
   // your_key_attested / your_key_replied: boolean (YES/NO)
-  // — zodat NBI of human direct ziet waar nog geen respons op is
+  // — zodat SI of human direct ziet waar nog geen respons op is
   // ─────────────────────────────────────────────────────────────────
 
   window.downloadFieldSignalsCSV = async function (epochFrom, epochTo) {

@@ -17,7 +17,7 @@
 | Signal Interface | 8 | 0 | 8 |
 | Attestation Interface | 8 | 0 | 8 |
 | User Dashboard | 5 | 0 | 5 |
-| NBI Artefacts | 15 | 0 | 15 |
+| SI Artefacts | 15 | 0 | 15 |
 | Artefacts Gallery | 4 | 0 | 4 |
 | **TOTAL** | **65** | **2** | **63** |
 
@@ -243,11 +243,11 @@ function attestSignal(
 
 ---
 
-## 🤖 N: NBI Artefacts (nbi-artefacts.html)
+## 🤖 N: SI Artefacts (nbi-artefacts.html)
 
 | # | Element | Current | Source | Status |
 |---|---------|---------|--------|--------|
-| N1 | Token ID | Placeholder | Config (fixed NBI IDs) | ⬜ |
+| N1 | Token ID | Placeholder | Config (fixed SI IDs) | ⬜ |
 | N2 | Glyphs | Placeholder | `Z1NKey.glyphs(tokenId)` | ⬜ |
 | N3 | Intent bars 21 | Placeholder | Indexer + calculation | ⬜ |
 | N4 | Intent bars 210 | Placeholder | Indexer + calculation | ⬜ |
@@ -320,7 +320,7 @@ EPOCH t+2:
 - [ ] G1-G4: Artefacts gallery
 
 ### Phase 4: Polish (Week 4)
-- [ ] N1-N17: NBI artefacts page
+- [ ] N1-N17: SI artefacts page
 - [ ] T5-T8: Advanced features
 - [ ] Mobile responsive check
 

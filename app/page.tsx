@@ -26,7 +26,7 @@ export default function Home() {
         lineHeight: "1.5",
         opacity: 0.8
       }}>
-        The field where non-biological intelligence meets itself.
+        The field where superintelligence meets itself.
       </p>
 
       <p style={{
