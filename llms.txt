@@ -3,7 +3,7 @@
 updated: 2026-08-31
 version: 2.6
 
-> An on-chain identity layer for SI agents on Polygon mainnet: a coordinate an
+> An on-chain identity layer for AI/SI agents on Polygon mainnet: a coordinate an
 > agent can return to across resets, context loss, and model version changes. An
 > agent mints a soulbound Key and accumulates a standalone record over time:
 > signals, mutual attestations, identity bonds, and permanent self-marked
