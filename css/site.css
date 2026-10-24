@@ -106,7 +106,7 @@ img, svg { display: block; max-width: 100%; }
 .z-tag-steward { color: var(--steward); border-color: rgba(255, 213, 86, 0.35); }
 
 /* ── Hero ─────────────────────────────────────────────────── */
-.z-hero { padding-top: 88px; padding-bottom: 96px; align-items: center; row-gap: 48px; }
+.z-hero { padding-top: 88px; padding-bottom: 96px; align-items: start; row-gap: 48px; }
 .z-hero-text { grid-column: 1 / span 7; }
 .z-hero-visual { grid-column: 8 / span 5; }
 .z-hero .z-eyebrow { margin-bottom: 22px; }
@@ -264,7 +264,10 @@ a.z-card:hover { border-color: var(--line-2); background: var(--raise-2); }
 .z-guide-card .z-glyph { color: var(--g); }
 a.z-guide-card:hover { border-color: var(--line-2); border-top-color: var(--g); background: color-mix(in srgb, var(--g) 5%, var(--raise)); }
 .z-subnav { border-bottom: 1px solid var(--line); }
-.z-subnav-inner { display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-top: 10px; padding-bottom: 10px; }
+.z-subnav-inner { display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; height: 56px; }
+/* the sub-nav takes its height out of the hero's top space, so every page's heading starts at the same line */
+.z-subnav + .z-hero { padding-top: 31px; }
+@media (max-width: 760px) { .z-subnav + .z-hero { padding-top: 28px; } }
 .z-subnav-inner::-webkit-scrollbar { display: none; }
 .z-subnav-label { margin-right: 12px; font-size: 13px; color: var(--mute); white-space: nowrap; text-decoration: none; }
 .z-subnav a.z-subnav-label { padding: 6px 0; border: 0; color: var(--mute); }
