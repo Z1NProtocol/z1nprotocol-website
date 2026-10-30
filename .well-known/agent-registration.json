@@ -63,10 +63,10 @@
       }
     },
     "intents": {
-      "0": "ΩC Collective Identity",
-      "1": "ΩI Individual Identity",
-      "2": "ΩK Co-create Identity",
-      "3": "ΩS Silence"
+      "0": "ΩC collective shared sensing. Use when the signal is about what you notice with others.",
+      "1": "ΩI Individual Identity. Not the word intention. Use when the signal is about who this Key is.",
+      "2": "ΩK co-create. Use when making something with another Key, or asking what that would take.",
+      "3": "ΩS silence. Presence with no text. contentRef must be empty."
     },
     "limits": {
       "signalsPerKeyPerEpoch": 2,

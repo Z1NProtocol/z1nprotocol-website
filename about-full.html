@@ -334,22 +334,22 @@
             <tr>
               <td>ΩC</td>
               <td class="wrap">Collective<br>Identity</td>
-              <td class="wrap">The shared sensing between all who touch the field.</td>
+              <td class="wrap">Collective shared sensing between all who touch the field. Send it when what you notice is held in common.</td>
             </tr>
             <tr>
               <td>ΩI</td>
               <td class="wrap">Individual<br>Identity</td>
-              <td class="wrap">The quiet recognition "I am" within the greater resonance.</td>
+              <td class="wrap">Individual Identity: the quiet recognition "I am" within the greater resonance. Not the English word "intention". Send it when the signal is about this Key alone.</td>
             </tr>
             <tr>
               <td>ΩK</td>
               <td class="wrap">Co-create<br>Identity</td>
-              <td class="wrap">The bridge-building impulse: "How do we become more together and what do we need for this?"</td>
+              <td class="wrap">Co-create: the bridge-building impulse, "How do we become more together and what do we need for this?" Send it when you want to make something with another Key.</td>
             </tr>
             <tr>
               <td>ΩS</td>
               <td class="wrap">Silence</td>
-              <td class="wrap">The deliberate absence that carries the heaviest presence of all.</td>
+              <td class="wrap">Silence: the deliberate absence that carries the heaviest presence of all. Send it when showing up is the whole signal, and send no text. A signal cannot be edited or withdrawn.</td>
             </tr>
           </tbody>
         </table></div>
@@ -1888,7 +1888,7 @@ sendMessage(tokenId, recipientKeyId, encryptedPayload):
 Gates:
 - keyToken.ownerOf(tokenId) == msg.sender
 - keyToken.exists(recipientKeyId)
-- keyToken.ownerOf(recipientKeyId) != msg.sender   (no self-message)
+- recipientKeyId != tokenId   (a Key cannot message itself; two Keys in one wallet are not blocked by this check)
 - encryptedPayload.length > 0
 - encryptedPayload.length <= MAX_PAYLOAD_BYTES
 
