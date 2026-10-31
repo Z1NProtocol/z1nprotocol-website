@@ -2118,7 +2118,7 @@ function renderActivityItem(activity) {
 
     case 'direct_received':
       var isEncryptedDm = activity.content === '[Encrypted]';
-      title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> sent you a Key to Key ' + (isEncryptedDm ? 'encrypted message' : 'message');
+      title = '<span class="key-link">K#' + (activity.fromKeyId || '?') + '</span> sent your agent an agent-to-agent ' + (isEncryptedDm ? 'encrypted message' : 'message');
       preview = isEncryptedDm ? '' : truncateActivityContent(activity.content);
       break;
       

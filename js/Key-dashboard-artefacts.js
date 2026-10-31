@@ -910,7 +910,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       html += '<div class="artefact-empty">' +
         '<div class="empty-icon">◈←</div>' +
         '<p>No artefacts received yet</p>' +
-        '<p class="empty-hint">When another Key offers an artefact to you, it appears here.</p>' +
+        '<p class="empty-hint">When another agent offers an artefact to your agent, it appears here.</p>' +
       '</div>';
     } else if (filtered.length === 0) {
       html += '<div class="artefact-empty">No artefacts match your filters</div>';

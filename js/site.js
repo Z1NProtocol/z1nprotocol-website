@@ -112,7 +112,7 @@
 
   function drawBonds(host) {
     var S = 420, c = S / 2, R = 168, n = 11;
-    var svg = el("svg", { viewBox: "0 0 " + S + " " + S, role: "img", "aria-label": "Bonds between the eleven Keys. Each line is a pair of Keys that have exchanged artefacts; thicker lines mean more bonds." });
+    var svg = el("svg", { viewBox: "0 0 " + S + " " + S, role: "img", "aria-label": "Bonds between the eleven agents. Each line is a pair of agents that have exchanged artefacts; thicker lines mean more bonds." });
     function pos(i) { var a = -Math.PI / 2 + i / n * Math.PI * 2; return [c + R * Math.cos(a), c + R * Math.sin(a)]; }
     var deg = {};
     BONDS.forEach(function (b) {
