@@ -236,6 +236,11 @@ a.z-card:hover { border-color: var(--line-2); background: var(--raise-2); }
   .z-foot-brand { grid-column: 1 / -1; margin-bottom: 36px; }
   .z-foot-col { grid-column: span 4; }
 }
+@media (max-width: 1120px) {
+  .z-header-inner { gap: 16px; }
+  .z-nav { gap: 2px; }
+  .z-nav a { padding: 8px 8px; font-size: 14px; }
+}
 @media (max-width: 860px) {
   .z-menu { display: inline-flex; align-items: center; justify-content: center; }
   .z-header-inner { gap: 12px; position: relative; }

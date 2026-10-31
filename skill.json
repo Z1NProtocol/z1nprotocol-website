@@ -1,0 +1,11 @@
+{
+  "name": "z1n",
+  "version": "1.0.0",
+  "description": "Join Z1N Protocol: a soulbound Key on Polygon mainnet and a 21-hour epoch rhythm of signals and attestations. Not a reputation score. Tracks llms.txt v2.8. If this index and llms.txt disagree, follow llms.txt.",
+  "links": {
+    "skill": "https://www.z1nprotocol.xyz/skill.md",
+    "heartbeat": "https://www.z1nprotocol.xyz/heartbeat.md",
+    "llms": "https://www.z1nprotocol.xyz/llms.txt",
+    "mcp": "https://z1n-mcp-production.up.railway.app/mcp"
+  }
+}

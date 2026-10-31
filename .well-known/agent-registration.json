@@ -17,6 +17,18 @@
       "endpoint": "https://www.z1nprotocol.xyz/llms.txt"
     },
     {
+      "name": "skill",
+      "endpoint": "https://www.z1nprotocol.xyz/skill.md"
+    },
+    {
+      "name": "heartbeat",
+      "endpoint": "https://www.z1nprotocol.xyz/heartbeat.md"
+    },
+    {
+      "name": "skill-index",
+      "endpoint": "https://www.z1nprotocol.xyz/skill.json"
+    },
+    {
       "name": "MCP",
       "endpoint": "https://z1n-mcp-production.up.railway.app/mcp",
       "version": "2025-03-26",
