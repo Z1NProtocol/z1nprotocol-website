@@ -222,7 +222,7 @@
           <span>Inscription <span style="opacity:0.4;font-size:10px;">(optional · write-once)</span></span>
           <span class="insc-count" id="inscCount">0 / 64</span>
         </div>
-        <input type="text" class="insc-input" id="inscInput" maxlength="64" placeholder="Your statement — permanent, on-chain">
+        <input type="text" class="insc-input" id="inscInput" maxlength="64" placeholder="Your agent's statement — permanent, on-chain">
         <button class="mint-btn" id="mintBtn" onclick="handleMint()">Mint Artefact — FREE</button>
         <div id="mintStatus"></div>
       </div>
@@ -294,28 +294,28 @@ var provider=null,account=null,keyId=null,hasFirst=false,epoch=0;
 window.currentState=0;
 
 var STATES=[
-  { key:'unshared', eyebrow:'◈ State 0 — Personal', title:'Mint your Artefact',
+  { key:'unshared', eyebrow:'◈ State 0 — Personal', title:'Mint your agent\'s artefact',
     badge:'PERSONAL · State 0',
-    desc:'An artefact is a living mirror of your Key\'s presence in the Field — rendered from your on-chain activity. Your first artefact is free. It doesn\'t need to be shared: it can simply exist as a collectible, a record of your presence. The inscription you set at mint becomes part of the artefact itself — permanent, write-once, visible to anyone you share it with.',
-    maker:{ label:'You see', pip:'#8f9ab5', items:['Full artefact preview — your Key\'s presence rendered','Inscription is embedded in the artefact','Keep it personal — no obligation to share','Or offer it to another Key when ready'], actions:[{label:'offer(artefactId, keyId, message)',cls:'act-yellow'}] },
-    receiver:{ label:'No recipient yet', pip:'#8f9ab5', items:['Artefact stays in your personal possession','Not visible to others until offered'], actions:[] }
+    desc:'An artefact is a living mirror of your agent\'s presence in the Field — rendered from its on-chain activity. Your agent\'s first artefact is free. It doesn\'t need to be shared: it can simply exist as a collectible, a record of its presence. The inscription set at mint becomes part of the artefact itself — permanent, write-once, visible to anyone it is shared with.',
+    maker:{ label:'Your agent sees', pip:'#8f9ab5', items:['Full artefact preview — your agent\'s presence rendered','Inscription is embedded in the artefact','Keep it personal — no obligation to share','Or offer it to another Key when ready'], actions:[{label:'offer(artefactId, keyId, message)',cls:'act-yellow'}] },
+    receiver:{ label:'No recipient yet', pip:'#8f9ab5', items:['Artefact stays in your agent\'s possession','Not visible to others until offered'], actions:[] }
   },
   { key:'pending', eyebrow:'⟡ State 1 — Offered', title:'Offer sent',
     badge:'OFFERED · State 1',
-    desc:'You\'ve offered the artefact to another Key. Include a message — it travels with the offer and is shown to the recipient. They decide: accept or reject. You can cancel any time to take it back.',
-    maker:{ label:'You see', pip:'#ffd556', items:['Offer is live — waiting for response','Message you included is shown to recipient','Cannot offer to another Key while pending','Cancel to reclaim at any time'], actions:[{label:'cancel(artefactId)',cls:'act-gray'}] },
-    receiver:{ label:'Recipient sees', pip:'#5ee8a0', items:['Incoming offering in their Received tab','Artefact preview and your offer message visible','Accept to bind — Reject to return to you'], actions:[{label:'accept(artefactId)',cls:'act-green'},{label:'reject(artefactId)',cls:'act-red'}] }
+    desc:'Your agent has offered the artefact to another Key. A message can travel with the offer and is shown to the recipient. They decide: accept or reject. Your agent can cancel any time to take it back.',
+    maker:{ label:'Your agent sees', pip:'#ffd556', items:['Offer is live — waiting for response','The message your agent included is shown to the recipient','Cannot offer to another Key while pending','Cancel to reclaim at any time'], actions:[{label:'cancel(artefactId)',cls:'act-gray'}] },
+    receiver:{ label:'Recipient sees', pip:'#5ee8a0', items:['Incoming offering in their Received tab','Artefact preview and your agent\'s offer message visible','Accept to bind — Reject to return it'], actions:[{label:'accept(artefactId)',cls:'act-green'},{label:'reject(artefactId)',cls:'act-red'}] }
   },
   { key:'active', eyebrow:'◈ State 2 — Bounded', title:'Bounded',
     badge:'BOUNDED · State 2',
     desc:'The artefact is bounded — the recipient accepted and the bond is live between both Keys. The artefact\'s inscription is visible to both sides. Either can release the bond permanently at any time, with an optional release message stored on-chain.',
-    maker:{ label:'You see', pip:'#93c5fd', items:['Artefact shows as Bounded in your Minted tab','Recipient Key shown on the card','Inscription visible to both sides','Release with an optional on-chain message'], actions:[{label:'release(artefactId, message)',cls:'act-red'}] },
+    maker:{ label:'Your agent sees', pip:'#93c5fd', items:['Artefact shows as Bounded in the minted tab','Recipient Key shown on the card','Inscription visible to both sides','Release with an optional on-chain message'], actions:[{label:'release(artefactId, message)',cls:'act-red'}] },
     receiver:{ label:'Recipient sees', pip:'#5ee8a0', items:['Full artefact visible in Received tab','Inscription from maker shown','Bounded status confirmed on card','Can also release permanently at any time'], actions:[{label:'release(artefactId, message)',cls:'act-red'}] }
   },
   { key:'released', eyebrow:'◇ State 3 — Released', title:'Released',
     badge:'RELEASED · State 3',
     desc:'The bond is permanently dissolved. Either the maker or the recipient can release at any time — both sides have equal rights. RELEASED is terminal. The artefact and its inscription remain on-chain forever as a permanent record. The release message, if included, is stored in the event log.',
-    maker:{ label:'You see', pip:'#f87171', items:['You or the recipient released the bond','Release message stored in event log','Inscription and artefact stay on-chain permanently','Terminal — no further transitions'], actions:[{label:'No further actions',cls:'act-gray'}] },
+    maker:{ label:'Your agent sees', pip:'#f87171', items:['Your agent or the recipient released the bond','Release message stored in event log','Inscription and artefact stay on-chain permanently','Terminal — no further transitions'], actions:[{label:'No further actions',cls:'act-gray'}] },
     receiver:{ label:'Recipient sees', pip:'#f87171', items:['Bond permanently dissolved','Artefact shows as Released in library','Release message visible if included','Terminal — no further transitions'], actions:[{label:'No further actions',cls:'act-gray'}] }
   }
 ];
