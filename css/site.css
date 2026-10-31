@@ -14,9 +14,21 @@
   --ink:     #EDF1F5;
   --soft:    #B4BEC9;
   --mute:    #84909D;
+  --header:  rgba(11, 15, 20, 0.86);
+  --footer:  #090C10;
+  --code-bg: #0E131A;
+  --code-ink:#C8D1DB;
+  --btn-primary-hover: #FFFFFF;
 
   --agent:   #5EE8A0;   /* mint: the agent's flow   */
   --steward: #FFD556;   /* sunbeam: the steward's flow */
+  --card-bg: #11161D;
+  --text-main: #EDF1F5;
+  --text-soft: #B4BEC9;
+  --text-muted: #84909D;
+  --card-border: #2A3441;
+  --accent: #5EE8A0;
+  --keys-accent: #FFD556;
 
   --i-col: #5EE8A0; --i-ind: #F87171; --i-co: #FFD556; --i-sil: #7BB8FC;
   /* the four guides of Learn the Field, one quiet colour each */
@@ -30,6 +42,66 @@
   --col-gap: 24px;
   --radius: 16px;
   color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #F5F7F9;
+  --raise: #FFFFFF;
+  --raise-2: #EEF2F6;
+  --line: #D7DEE6;
+  --line-2: #C3CDD8;
+  --ink: #12181F;
+  --soft: #3C4A59;
+  --mute: #4C5C6C;
+  --header: rgba(245, 247, 249, 0.92);
+  --footer: #E6EBF1;
+  --code-bg: #F2F5F8;
+  --code-ink: #1A2330;
+  --btn-primary-hover: #2A3441;
+  --agent: #0C6B3C;
+  --steward: #6F5600;
+  --card-bg: #FFFFFF;
+  --text-main: #12181F;
+  --text-soft: #3C4A59;
+  --text-muted: #4C5C6C;
+  --card-border: #C3CDD8;
+  --accent: #0C6B3C;
+  --keys-accent: #6F5600;
+  --g-how: #3A46A8;
+  --g-bonds: #0C6E60;
+  --g-founders: #7A3488;
+  --g-live: #8E520E;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --bg: #F5F7F9;
+    --raise: #FFFFFF;
+    --raise-2: #EEF2F6;
+    --line: #D7DEE6;
+    --line-2: #C3CDD8;
+    --ink: #12181F;
+    --soft: #3C4A59;
+    --mute: #4C5C6C;
+    --header: rgba(245, 247, 249, 0.92);
+    --footer: #E6EBF1;
+    --code-bg: #F2F5F8;
+    --code-ink: #1A2330;
+    --btn-primary-hover: #2A3441;
+    --agent: #0C6B3C;
+    --steward: #6F5600;
+    --card-bg: #FFFFFF;
+    --text-main: #12181F;
+    --text-soft: #3C4A59;
+    --text-muted: #4C5C6C;
+    --card-border: #C3CDD8;
+    --accent: #0C6B3C;
+    --keys-accent: #6F5600;
+    --g-how: #3A46A8;
+    --g-bonds: #0C6E60;
+    --g-founders: #7A3488;
+    --g-live: #8E520E;
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -69,7 +141,7 @@ img, svg { display: block; max-width: 100%; }
 /* ── Header ───────────────────────────────────────────────── */
 .z-header {
   position: sticky; top: 0; z-index: 40;
-  background: rgba(11, 15, 20, 0.86);
+  background: var(--header);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -83,15 +155,25 @@ img, svg { display: block; max-width: 100%; }
 .z-nav a[aria-current="page"] { color: var(--ink); background: var(--raise-2); }
 .z-header-actions { display: flex; align-items: center; gap: 10px; }
 .z-menu { display: none; width: 40px; height: 40px; border-radius: 8px; background: transparent; color: var(--soft); border: 1px solid var(--line-2); cursor: pointer; font-size: 17px; }
+.z-theme { width: 40px; height: 40px; border-radius: 8px; background: transparent; color: var(--ink); border: 1px solid var(--line-2); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.z-theme:hover { border-color: var(--soft); }
+.z-theme svg { width: 18px; height: 18px; display: block; }
+.z-theme-moon { display: none; }
+html[data-theme="light"] .z-theme-sun { display: none; }
+html[data-theme="light"] .z-theme-moon { display: block; }
+@media (prefers-color-scheme: light) {
+  html:not([data-theme]) .z-theme-sun { display: none; }
+  html:not([data-theme]) .z-theme-moon { display: block; }
+}
 
 /* ── Buttons ──────────────────────────────────────────────── */
 .z-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 10px; font: inherit; font-size: 15px; font-weight: 600; text-decoration: none; border: 1px solid transparent; cursor: pointer; white-space: nowrap; transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease; }
 .z-btn-sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
 .z-btn-primary { background: var(--ink); color: var(--bg); }
-.z-btn-primary:hover { background: #FFFFFF; }
-.z-btn-agent { background: var(--agent); color: #06140D; }
+.z-btn-primary:hover { background: var(--btn-primary-hover); }
+.z-btn-agent { background: #5EE8A0; color: #06140D; }
 .z-btn-agent:hover { background: #7FF0B6; }
-.z-btn-steward { background: var(--steward); color: #1A1404; }
+.z-btn-steward { background: #FFD556; color: #1A1404; }
 .z-btn-steward:hover { background: #FFE17F; }
 .z-btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-2); }
 .z-btn-ghost:hover { border-color: var(--soft); }
@@ -106,9 +188,9 @@ img, svg { display: block; max-width: 100%; }
 .z-tag-steward { color: var(--steward); border-color: rgba(255, 213, 86, 0.35); }
 
 /* ── Hero ─────────────────────────────────────────────────── */
-.z-hero { padding-top: 88px; padding-bottom: 96px; align-items: start; row-gap: 48px; }
+.z-hero { padding-top: 88px; padding-bottom: 96px; align-items: stretch; row-gap: 48px; }
 .z-hero-text { grid-column: 1 / span 7; }
-.z-hero-visual { grid-column: 8 / span 5; }
+.z-hero-visual { grid-column: 8 / span 5; height: 100%; min-height: 0; }
 .z-hero .z-eyebrow { margin-bottom: 22px; }
 .z-hero .z-lead { margin-top: 26px; }
 .z-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 34px; }
@@ -169,7 +251,7 @@ a.z-card:hover { border-color: var(--line-2); background: var(--raise-2); }
 .z-copy.done { color: var(--agent); border-color: rgba(94, 232, 160, 0.35); }
 
 /* Code */
-.z-code { font-family: var(--mono); font-size: 13.5px; line-height: 1.85; color: #C8D1DB; background: #0E131A; border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; overflow-x: auto; white-space: pre; }
+.z-code { font-family: var(--mono); font-size: 13.5px; line-height: 1.85; color: var(--code-ink); background: var(--code-bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; overflow-x: auto; white-space: pre; }
 .z-code .k { color: var(--mute); }
 .z-code .s { color: var(--agent); }
 
@@ -211,7 +293,7 @@ a.z-card:hover { border-color: var(--line-2); background: var(--raise-2); }
 .z-fig-k { margin-top: 4px; font-size: 14.5px; color: var(--mute); }
 
 /* ── Footer ───────────────────────────────────────────────── */
-.z-footer { border-top: 1px solid var(--line); background: #090C10; }
+.z-footer { border-top: 1px solid var(--line); background: var(--footer); }
 .z-footer > .z-wrap { padding-top: 64px; padding-bottom: 40px; }
 .z-foot-brand { grid-column: 1 / span 4; }
 .z-foot-brand p { margin-top: 14px; font-size: 15px; color: var(--mute); max-width: 22em; }
@@ -228,6 +310,22 @@ a.z-card:hover { border-color: var(--line-2); background: var(--raise-2); }
 .z-loading { animation: z-fade 1.6s ease-in-out infinite; }
 
 /* ── Responsive ───────────────────────────────────────────── */
+/* Desktop: a card beside the hero text stretches to that text. The Learn the Field
+   doors share the text block's height so their last edge meets the copy. */
+@media (min-width: 1101px) {
+  .z-grid.z-hero > .field-doors {
+    height: 0;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .z-grid.z-hero > .field-doors > .field-door {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
 @media (max-width: 1100px) {
   .z-hero-text, .z-hero-visual { grid-column: 1 / -1; }
   .z-sec-head { grid-column: 1 / -1; padding-right: 0; margin-bottom: 36px; }

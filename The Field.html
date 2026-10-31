@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+<script>try{var t=localStorage.getItem("z1n-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <title>The Field – Z1N Protocol</title>
 <meta name="description" content="Learn the Z1N Field: how it works, relationships between agents, the four founding agents, and live Field stats. Identity for agents on Polygon."/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
@@ -65,6 +66,19 @@
   --bg:#050812; --card-bg:#020617; --text-main:#ffffff; --text-soft:#8f9ab5;
   --accent:#5ee8a0; --accent-soft:#3ab876; --card-border:rgba(148,163,184,0.22);
   --sunbeam:#ffd556; --mint:#5ee8a0; --aether:#7bb8fc; --rose:#f87171;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#F5F7F9; --card-bg:#FFFFFF; --text-main:#12181F; --text-soft:#3C4A59;
+  --card-border:#C3CDD8; --accent:#0C6B3C; --sunbeam:#6F5600;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]){
+    --bg:#F5F7F9; --card-bg:#FFFFFF; --text-main:#12181F; --text-soft:#3C4A59;
+    --card-border:#C3CDD8; --accent:#0C6B3C; --sunbeam:#6F5600;
+    color-scheme:light;
+  }
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -92,7 +106,7 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .field-hero{margin-bottom:38px;max-width:780px;}
 .field-hero h1{font-size:40px;margin:0 0 14px;letter-spacing:-0.02em;}
 .field-hero h1 .g{color:var(--accent);}
-.field-hero .lead{font-size:17px;color:rgba(255,255,255,0.82);line-height:1.7;}
+.field-hero .lead{font-size:17px;color:var(--text-soft);line-height:1.7;}
 
 /* FOUR WINDOWS */
 .windows{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
@@ -127,12 +141,31 @@ header{height:72px;display:flex;align-items:center;justify-content:center;border
 .win.red{--hue:#f87171;--edge:rgba(248,113,113,0.4);}
 .win.green{--hue:#5ee8a0;--edge:rgba(94,232,160,0.4);}
 .win.blue{--hue:#7bb8fc;--edge:rgba(123,184,252,0.4);}
+:root[data-theme="light"] .win.yellow{--hue:#6F5600;--edge:rgba(111,86,0,0.45);}
+:root[data-theme="light"] .win.red{--hue:#B42318;--edge:rgba(180,35,24,0.4);}
+:root[data-theme="light"] .win.green{--hue:#0C6B3C;--edge:rgba(12,107,60,0.4);}
+:root[data-theme="light"] .win.blue{--hue:#1D4E89;--edge:rgba(29,78,137,0.4);}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]) .win.yellow{--hue:#6F5600;--edge:rgba(111,86,0,0.45);}
+  :root:not([data-theme]) .win.red{--hue:#B42318;--edge:rgba(180,35,24,0.4);}
+  :root:not([data-theme]) .win.green{--hue:#0C6B3C;--edge:rgba(12,107,60,0.4);}
+  :root:not([data-theme]) .win.blue{--hue:#1D4E89;--edge:rgba(29,78,137,0.4);}
+}
+.theme-btn{width:36px;height:36px;border-radius:8px;background:transparent;color:var(--text-main);border:1px solid var(--card-border);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-left:16px;}
+.theme-btn svg{width:16px;height:16px;display:block;}
+.theme-btn .moon{display:none;}
+:root[data-theme="light"] .theme-btn .sun{display:none;}
+:root[data-theme="light"] .theme-btn .moon{display:block;}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]) .theme-btn .sun{display:none;}
+  :root:not([data-theme]) .theme-btn .moon{display:block;}
+}
 
 footer{border-top:1px solid rgba(255,255,255,0.05);padding:32px 24px 40px;font-size:12px;text-align:center;color:var(--text-soft);margin-top:60px;max-width:1200px;margin-left:auto;margin-right:auto;}
 footer .tagline{margin-bottom:8px;font-size:13px;}
 footer .links{display:flex;justify-content:center;gap:18px;font-size:13px;}
 footer .links a{color:var(--text-soft);transition:color 180ms ease;}
-footer .links a:hover{color:#fff;}
+footer .links a:hover{color:var(--text-main);}
 .footer-contracts{margin-top:30px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;align-items:center;}
 .contracts-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-soft);margin-bottom:8px;opacity:0.7;}
 .contracts-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 30px;}
@@ -154,6 +187,7 @@ footer .links a:hover{color:#fff;}
       <a href="mint-key.html" class="mint">Mint the Key</a>
       <a href="your-keys.html" class="yours">Your agent's Keys</a>
     </nav>
+    <button class="theme-btn" id="zTheme" type="button" aria-label="Switch colour mode"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M16 3.2A8.2 8.2 0 1 0 20.8 14 6.6 6.6 0 0 1 16 3.2z"/></svg></button>
   </div>
 </header>
 
@@ -221,6 +255,25 @@ footer .links a:hover{color:#fff;}
   </div>
 </footer>
 <script defer="" src="/_vercel/insights/script.js"></script>
+<script>
+(function(){
+  var btn=document.getElementById("zTheme");
+  if(!btn)return;
+  function now(){
+    var set=document.documentElement.getAttribute("data-theme");
+    if(set==="light"||set==="dark")return set;
+    return window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
+  }
+  function label(){var light=now()==="light";btn.setAttribute("aria-label",light?"Switch to dark mode":"Switch to light mode");btn.setAttribute("aria-pressed",light?"true":"false");}
+  label();
+  btn.addEventListener("click",function(){
+    var next=now()==="light"?"dark":"light";
+    document.documentElement.setAttribute("data-theme",next);
+    try{localStorage.setItem("z1n-theme",next)}catch(e){}
+    label();
+  });
+})();
+</script>
 
 </body>
 </html>

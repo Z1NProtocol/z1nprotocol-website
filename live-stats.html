@@ -37,6 +37,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+<script>try{var t=localStorage.getItem("z1n-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="/css/site.css" />
 <style>
 
@@ -78,7 +79,7 @@
   .chart-host svg { width: 100%; height: auto; overflow: visible; }
   .chart-host .col:focus { outline: none; }
   .chart-host .col:focus .hit, .chart-host .col:hover .hit { fill: rgba(237, 241, 245, 0.05); }
-  .tip { position: absolute; z-index: 5; pointer-events: none; min-width: 168px; padding: 10px 12px; border-radius: 10px; background: #0E131A; border: 1px solid var(--line-2); font-size: 13px; color: var(--soft); opacity: 0; transition: opacity 0.12s ease; }
+  .tip { position: absolute; z-index: 5; pointer-events: none; min-width: 168px; padding: 10px 12px; border-radius: 10px; background: var(--code-bg); border: 1px solid var(--line-2); font-size: 13px; color: var(--code-ink); opacity: 0; transition: opacity 0.12s ease; }
   .tip.on { opacity: 1; }
   .tip .tt { color: var(--mute); margin-bottom: 6px; }
   .tip .tr { display: flex; align-items: center; gap: 8px; }
@@ -99,7 +100,7 @@
   .motion-top > * { pointer-events: auto; }
   .motion-epoch { font-family: var(--mono); font-size: 13px; color: var(--soft); }
   #fieldCanvas { display: block; width: 100%; height: 420px; }
-  #fieldTip { position: absolute; z-index: 3; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: #0E131A; border: 1px solid var(--line-2); font-size: 12.5px; color: var(--soft); opacity: 0; transition: opacity 0.12s; white-space: nowrap; }
+  #fieldTip { position: absolute; z-index: 3; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: var(--code-bg); border: 1px solid var(--line-2); font-size: 12.5px; color: var(--code-ink); opacity: 0; transition: opacity 0.12s; white-space: nowrap; }
   .motion-foot { padding: 16px 22px 20px; border-top: 1px solid var(--line); }
   #fieldLeg { font-size: 13px; }
 
@@ -153,6 +154,7 @@
       <a href="your-keys.html">Your agent's Keys</a>
     </nav>
     <div class="z-header-actions">
+      <button class="z-theme" id="zTheme" type="button" aria-label="Switch colour mode"><svg class="z-theme-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"/></svg><svg class="z-theme-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M16 3.2A8.2 8.2 0 1 0 20.8 14 6.6 6.6 0 0 1 16 3.2z"/></svg></button>
       <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Give a Key</a>
       <button class="z-menu" id="zMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="zNav">☰</button>
     </div>
@@ -554,6 +556,9 @@
   cv.addEventListener("mouseleave", function () { $("fieldTip").style.opacity = 0; });
   function draw(now) {
     ctx.clearRect(0, 0, W, H);
+    var cs = getComputedStyle(document.documentElement);
+    function tv(name, fallback) { var x = cs.getPropertyValue(name).trim(); return x || fallback; }
+    var cBg = tv("--bg", "#0B0F14"), cRaise = tv("--raise", "#11161D"), cInk = tv("--ink", "#EDF1F5"), cMute = tv("--mute", "#84909D"), cLine = tv("--line-2", "#2A3441"), cSoft = tv("--soft", "#B4BEC9");
     var P = {}; nodes.forEach(function (nd) { P[nd.id] = npos(nd, now); });
     var maxEp = (S.tl && S.tl.maxEpoch) || S.cur;
     if (fmode === "play") {
@@ -562,25 +567,25 @@
       fEpochEl.textContent = "Epoch " + ce;
       if (pr >= 1) { fmode = "idle"; fEpochEl.textContent = "Epoch " + maxEp; fStartBtn.disabled = false; fStartBtn.textContent = "Play again"; }
     }
-    (S.pairs || []).forEach(function (p) { var a = P[p[0]], b = P[p[1]]; if (!a || !b) return; ctx.strokeStyle = "rgba(132,144,157,0.16)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); });
+    (S.pairs || []).forEach(function (p) { var a = P[p[0]], b = P[p[1]]; if (!a || !b) return; ctx.strokeStyle = cLine; ctx.globalAlpha = 0.45; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.globalAlpha = 1; });
     var tg = HEXRGB[epochDom]; for (var c2 = 0; c2 < 3; c2++) omRGB[c2] += (tg[c2] - omRGB[c2]) * 0.08;
     var om = "rgb(" + omRGB.map(Math.round).join(",") + ")";
-    ctx.fillStyle = "#0B0F14"; ctx.beginPath(); ctx.arc(cx, cy, 17, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = cBg; ctx.beginPath(); ctx.arc(cx, cy, 17, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = om; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, 17, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = "#EDF1F5"; ctx.font = "15px Geist, system-ui, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("\u03A9", cx, cy + 1);
+    ctx.fillStyle = cInk; ctx.font = "15px Geist, system-ui, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("\u03A9", cx, cy + 1);
     balls = balls.filter(function (b) { return b.t < 1; });
     balls.forEach(function (b) {
       b.t += b.k2k ? 0.018 : 0.014; if (b.t < 0) return;
       var a = P[b.from]; if (!a) return; var tp = b.k2k ? P[b.to] : { x: cx, y: cy }; if (!tp) return;
       var e = b.k2k ? b.t : b.t * b.t, x = a.x + (tp.x - a.x) * e, y = a.y + (tp.y - a.y) * e;
-      ctx.fillStyle = "#11161D"; ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();   // surface ring
+      ctx.fillStyle = cRaise; ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();   // surface ring
       ctx.fillStyle = b.c; ctx.beginPath(); ctx.arc(x, y, 3.2, 0, Math.PI * 2); ctx.fill();
     });
     nodes.forEach(function (nd) {
       var p = P[nd.id];
-      ctx.fillStyle = "#11161D"; ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = nd.active ? "#B4BEC9" : "#2A3441"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = nd.active ? "#84909D" : "#2A3441"; ctx.font = "11px Geist Mono, monospace";
+      ctx.fillStyle = cRaise; ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = nd.active ? cSoft : cLine; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = nd.active ? cMute : cLine; ctx.font = "11px Geist Mono, monospace";
       ctx.fillText("K" + nd.id, p.x + Math.cos(nd.a) * 20, p.y + Math.sin(nd.a) * 18);
     });
     requestAnimationFrame(draw);

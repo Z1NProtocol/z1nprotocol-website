@@ -74,6 +74,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+<script>try{var t=localStorage.getItem("z1n-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="/css/site.css" />
 <style>
   /* app pages: give images and inline SVG back their browser defaults, and the old base metrics */
@@ -86,7 +87,7 @@
   <link rel="stylesheet" href="css/key-dashboard-signals.css" />
 
 <style>
-    :root{--bg:#050812;--card-bg:#020617;--text-main:#ffffff;--text-soft:#9aa3bb;--accent:#5ee8a0;--keys-accent:#ffd556;--keys-accent-soft:#bf9f0f;--card-border:rgba(148,163,184,0.25);--danger:#e05555;--stealth-color:#93c5fd;--tab-active-bg:rgba(255,213,86,0.15);--canon-color:#c084fc;--treasury-color:#93c5fd}
+    :root{--accent:#5ee8a0;--keys-accent:#ffd556;--keys-accent-soft:#bf9f0f;--danger:#e05555;--stealth-color:#93c5fd;--tab-active-bg:rgba(255,213,86,0.15);--canon-color:#c084fc;--treasury-color:#93c5fd}
     *{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text-main);font-family:system-ui,-apple-system,sans-serif;min-height:100vh}a{color:inherit;text-decoration:none}
     header.z-legacy{height:72px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,0.05)}.nav-inner{width:100%;max-width:1200px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}.logo-link{display:inline-flex;align-items:center;gap:8px}.logo-dot{width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;font-size:13px;font-family:"Segoe UI Symbol","Apple Symbols",sans-serif}.logo-text{
   font-size:11px;
@@ -530,6 +531,7 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; marg
       <a href="your-keys.html" aria-current="page" id="navYourKeys">Your agent's Keys</a>
     </nav>
     <div class="z-header-actions">
+      <button class="z-theme" id="zTheme" type="button" aria-label="Switch colour mode"><svg class="z-theme-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"/></svg><svg class="z-theme-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M16 3.2A8.2 8.2 0 1 0 20.8 14 6.6 6.6 0 0 1 16 3.2z"/></svg></button>
       <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Give a Key</a>
       <button class="z-menu" id="zMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="zNav">☰</button>
     </div>
