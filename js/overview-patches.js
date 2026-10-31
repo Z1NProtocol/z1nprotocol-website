@@ -566,7 +566,7 @@
         '</div>' +
         '<div class="modal-body" style="padding:20px;">' +
           '<p style="font-size:12px;color:var(--text-soft);margin-bottom:16px;line-height:1.6;">' +
-            'All PoG signals in the field. Columns: signal hash, epoch, key, glyphs, intent, type (new/reply), content, attests, ' +
+            'All PoG signals in the Field. Columns: signal hash, epoch, key, glyphs, intent, type (new/reply), content, attests, ' +
             '<strong style="color:var(--keys-accent);">your_key_attested</strong> en ' +
             '<strong style="color:var(--keys-accent);">your_key_replied</strong>.' +
           '</p>' +

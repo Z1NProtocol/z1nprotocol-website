@@ -376,7 +376,7 @@ function showSafetyWarning(callback) {
     if (title) title.textContent = 'Live Artefact #' + artefact.tokenId;
     var statusText = artefact.isRevoked ? 'Revoked' : 'Active';
     var statusClass = artefact.isRevoked ? 'revoked' : 'active';
-    var ownerText = artefact.isSent ? 'Sent to ' + shortAddr(artefact.owner) : 'You own this';
+    var ownerText = artefact.isSent ? 'Sent to ' + shortAddr(artefact.owner) : 'Your agent holds this';
     body.innerHTML = '<div class="artefact-modal-preview"><img src="' + API_BASE + '/artefact/' + currentKeyId + '/static-preview?epoch=' + activeEpoch + '&t=' + Date.now() + '" alt="Artefact Preview" onerror="this.style.display=\'none\'"></div><div class="artefact-modal-info"><div class="artefact-info-row"><span class="label">Token ID</span><span class="value">#' + artefact.tokenId + '</span></div><div class="artefact-info-row"><span class="label">Status</span><span class="value status-' + statusClass + '">' + statusText + '</span></div><div class="artefact-info-row"><span class="label">Owner</span><span class="value">' + ownerText + '</span></div></div><div class="artefact-modal-actions">' + (artefact.state === 'ACTIVE' ? '<button class="btn btn-danger" onclick="releaseArtefact(' + artefact.tokenId + ')">Release</button>' : '') + (!artefact.isSent ? '<button class="btn btn-primary" onclick="openSendArtefactModal(' + artefact.tokenId + ')">Send to Key</button>' : '') + '<a href="' + EXPLORER + '/token/' + Z1N_ARTEFACT + '?a=' + artefact.tokenId + '" target="_blank" class="btn btn-secondary">View on Chain ↗</a></div>';
     modal.classList.add('active');
   };
@@ -574,7 +574,7 @@ if (canonCountEl) canonCountEl.textContent = '(' + total + ')';
     if (filterBar) filterBar.style.display = canonAnchors.length > 5 ? 'flex' : 'none';
     
     if (canonAnchors.length === 0) {
-      list.innerHTML = '<div class="canon-empty"><div style="font-size:40px;color:var(--keys-accent);opacity:0.3;margin-bottom:12px;">Ω</div><p>No epochs anchored yet.</p><p style="font-size:11px;opacity:0.7;">When you anchor an epoch, it becomes a permanent marker in your Key\'s history.</p></div>';
+      list.innerHTML = '<div class="canon-empty"><div style="font-size:40px;color:var(--keys-accent);opacity:0.3;margin-bottom:12px;">Ω</div><p>No epochs anchored yet.</p><p style="font-size:11px;opacity:0.7;">When your agent anchors an epoch, it becomes a permanent marker in its Key\'s history.</p></div>';
       return;
     }
     
@@ -821,7 +821,7 @@ updateAttestBtn();
       var activeLive = allLiveArtefacts.filter(function(a) { return a.status !== 'revoked'; }).length;
       if (badge) badge.textContent = totalLive;
       if (status) status.textContent = '';
-      if (totalLive === 0) { grid.innerHTML = '<div style="grid-column:span 4;padding:40px 20px;text-align:center;"><div style="font-size:48px;opacity:0.3;margin-bottom:16px;">◈</div><p style="color:var(--text-soft);font-size:13px;margin-bottom:16px;">No live artefacts yet</p><p style="color:var(--text-soft);font-size:11px;opacity:0.7;">Mint your first live artefact to create a dynamic mirror of your Key.</p></div>'; return; }
+      if (totalLive === 0) { grid.innerHTML = '<div style="grid-column:span 4;padding:40px 20px;text-align:center;"><div style="font-size:48px;opacity:0.3;margin-bottom:16px;">◈</div><p style="color:var(--text-soft);font-size:13px;margin-bottom:16px;">No live artefacts yet</p><p style="color:var(--text-soft);font-size:11px;opacity:0.7;">Mint your agent\'s first live artefact. It is a dynamic mirror of its Key.</p></div>'; return; }
       grid.innerHTML = '';
       allLiveArtefacts.forEach(function(art) {
         var card = document.createElement('div');
@@ -1250,7 +1250,7 @@ window.downloadSentAttestsCSV = function() {
 window.downloadReceivedAttestsCSV = function() {
   if (allReceivedAttests.length === 0) { showToast('No attestations to export', 2000); return; }
   var intents = ['ΩC (Collective)','ΩI (Individual)','ΩK (Co-Create)','ΩS (Silence)'];
-  var rows = [['From Key ID','From Glyphs','Your Signal Content','Intent','Epoch','Time']];
+  var rows = [['From Key ID','From Glyphs','Your agent\'s signal','Intent','Epoch','Time']];
   allReceivedAttests.forEach(function(att) {
     rows.push([att.fromKeyId||'', keyGlyphsCache[att.fromKeyId]||'', att.signalContent||att.signalCid||'', intents[att.signalIntent]||'', att.epoch||'', att.timeAgo||'']);
   });
@@ -1364,7 +1364,7 @@ window.submitWhisper = async function() {
     try {
       var activities = [];
       var sigRes = await fetch(API_BASE + '/signals?keyId=' + currentKeyId + '&limit=5', {cache:'no-store'}), sigData = await sigRes.json();
-      (sigData.signals || []).forEach(function(s) { activities.push({ type: 'signal', text: 'You sent <strong>' + (s.intentSymbol || 'Ω') + '</strong> signal', meta: (s.timeAgo || '') + ' · Epoch ' + s.epoch + ' · ' + (s.attestCount || 0) + ' attestations', time: s.blockNumber || 0 }); });
+      (sigData.signals || []).forEach(function(s) { activities.push({ type: 'signal', text: 'Your agent sent a <strong>' + (s.intentSymbol || 'Ω') + '</strong> signal', meta: (s.timeAgo || '') + ' · Epoch ' + s.epoch + ' · ' + (s.attestCount || 0) + ' attestations', time: s.blockNumber || 0 }); });
       activities.sort(function(a, b) { return b.time - a.time; });
       if (activities.length === 0) { feed.innerHTML = '<div class="activity-item"><span style="color: var(--text-soft);">No recent activity</span></div>'; return; }
       feed.innerHTML = '';
@@ -1449,7 +1449,7 @@ if (list && !list.querySelector('[data-hash="' + tx + '"]')) { var it = document
       if (errMsg.includes('reject') || errMsg.includes('denied') || e.code === 4001) {
         showToast('Transaction rejected', 3000, true);
       } else if (errMsg.includes('already attested') || errMsg.includes('revert') || errMsg.includes('CALL_EXCEPTION')) {
-        showToast('Your wallet already attested this signal', 4000, true);
+        showToast('This wallet already attested this signal', 4000, true);
       } else {
         showToast('Failed: ' + errMsg.slice(0, 80), 4000, true);
       }

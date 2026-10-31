@@ -655,7 +655,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
     if (!container) return;
     
     if (isLoadingOwned) {
-      renderLoadingSkeleton(container, 'Your Artefacts');
+      renderLoadingSkeleton(container, 'Your agent\'s artefacts');
       return;
     }
     
@@ -957,7 +957,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
       var subText = isReleased && art.releaseMessage ? art.releaseMessage :
                     isPending && art.offerMessage ? art.offerMessage :
                     art.inscription || '';
-      var releasedLabel = isReleased ? (art.releasedByInitiator ? 'K#' + art.sourceKeyId + ' released' : 'You released') : '';
+      var releasedLabel = isReleased ? (art.releasedByInitiator ? 'K#' + art.sourceKeyId + ' released' : 'Your agent released') : '';
       var releasedBadgeBg = isReleased && art.releasedByInitiator ? 'rgba(248,113,113,0.85)' : 'rgba(94,232,160,0.85)';
       var releasedBadgeColor = isReleased && art.releasedByInitiator ? '#fff' : '#000';
       html += '<div class="artefact-card library-card ' + statusClass + (hasNotif ? ' unseen-artefact' : '') + '" style="position:relative;" onclick="Z1NArtefacts.openLibraryModal(' + art.tokenId + ', ' + art.sourceKeyId + ')">' +
@@ -1060,7 +1060,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
           '<label style="margin-top:10px;display:block;font-size:12px;color:var(--text-soft);">Message <span style="font-size:11px;">(optional — max 64 chars)</span></label>' +
           '<input type="text" id="shareOfferMessage" maxlength="64" placeholder="Optional message..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text-main);font-family:inherit;margin-bottom:8px;">' +
           '<div class="warning-box" style="border-color:rgba(94,232,160,0.4);background:rgba(94,232,160,0.08);">' +
-            '<span class="warning-icon" style="filter:hue-rotate(90deg);">⚠️</span><div><strong>Offering</strong><p>The recipient must accept this offering before the artefact becomes bounded. You cannot offer it to a different Key while pending.</p></div>' +
+            '<span class="warning-icon" style="filter:hue-rotate(90deg);">⚠️</span><div><strong>Offering</strong><p>The recipient must accept this offering before the artefact becomes bounded. It cannot be offered to another agent while it is pending.</p></div>' +
           '</div>' +
           '<button class="btn btn-green" onclick="Z1NArtefacts.offerArtefact(' + artefactId + ')">Offer to Key</button>' +
         '</div>';
