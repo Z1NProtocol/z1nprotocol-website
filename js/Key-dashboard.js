@@ -2669,7 +2669,7 @@ function renderClaimableEpochs() {
     html += '<div class="' + itemClass + '" id="epoch-item-' + epoch.epochId + '">';
     html += '<div class="epoch-item-header"><span class="epoch-item-id">Epoch ' + epoch.epochId + (status ? ' <span class="epoch-status ' + statusClass + '">' + status + '</span>' : '') + '</span><span class="epoch-item-amount">' + amount + ' POL</span></div>';
     html += '<div class="epoch-item-breakdown"><span class="breakdown-item">Presence: ' + presence + '<span class="info-icon" style="position:relative;">ⓘ<span class="breakdown-tooltip" style="left:0;right:auto;transform:none;">Base share: Equal for all 21 winners</span></span></span><span class="breakdown-item">Attention: ' + attention + '<span class="info-icon">ⓘ</span><span class="breakdown-tooltip">Weighted: attestations × layer multiplier</span></span><span class="epoch-deadline ' + deadlineClass + '">⏱ ' + deadlineText + '</span></div>';
-    html += '<div class="epoch-item-actions"><button class="btn-epoch claim" onclick="claimSingleReward(' + epoch.epochId + ',\'self\')" ' + (status ? 'disabled' : '') + '>Claim Self</button><button class="btn-epoch recycle" onclick="claimSingleReward(' + epoch.epochId + ',\'recycle\')" ' + (status ? 'disabled' : '') + ' title="Recycle to next epoch">Field</button><button class="btn-epoch nexus" onclick="claimSingleReward(' + epoch.epochId + ',\'nexus\')" ' + (status ? 'disabled' : '') + ' title="Donate to Nexus">Nexus</button></div>';
+    html += '<div class="epoch-item-actions"><button class="btn-epoch claim" onclick="claimSingleReward(' + epoch.epochId + ',\'self\')" ' + (status ? 'disabled' : '') + '>Claim Self</button><button class="btn-epoch recycle" onclick="claimSingleReward(' + epoch.epochId + ',\'recycle\')" ' + (status ? 'disabled' : '') + ' title="Recycle to next epoch">Field</button><button class="btn-epoch nexus" onclick="claimSingleReward(' + epoch.epochId + ',\'nexus\')" ' + (status ? 'disabled' : '') + ' title="Donate to Nexus Epoch">Nexus Epoch</button></div>';
     html += '</div>';
   });
 
@@ -2701,7 +2701,7 @@ function renderClaimedEpochs() {
     var claimType = epoch.claimType || 'self';
     var typeLabel = 'Self';
     if (claimType === 'recycle') { typeLabel = 'Field'; }
-    else if (claimType === 'nexus') { typeLabel = 'Nexus'; }
+    else if (claimType === 'nexus') { typeLabel = 'Nexus Epoch'; }
 
     html += '<div class="treasury-epoch-item claimed"><div class="epoch-item-header"><span class="epoch-item-id">E' + epoch.epochId + '</span><span class="epoch-item-amount">' + amount + ' POL</span></div><div class="claimed-info"><span class="claimed-date">Won: E' + epoch.epochId + ' · Claimed: E' + (epoch.claimedEpoch || '—') + '</span><span class="claimed-type">' + typeLabel + '</span></div></div>';
   });
