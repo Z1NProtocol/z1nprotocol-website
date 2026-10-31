@@ -78,7 +78,7 @@ img, svg { display: block; max-width: 100%; }
 .z-brand-mark { display: block; flex: none; width: 28px; height: 28px; color: var(--ink); }
 .z-brand-sub { color: var(--mute); font-weight: 500; }
 .z-nav { display: flex; gap: 6px; margin-left: auto; }
-.z-nav a { text-decoration: none; color: var(--soft); font-size: 15px; font-weight: 500; padding: 8px 12px; border-radius: 8px; }
+.z-nav a { text-decoration: none; color: var(--soft); font-size: 15px; font-weight: 500; padding: 8px 12px; border-radius: 8px; white-space: nowrap; }
 .z-nav a:hover { color: var(--ink); background: var(--raise); }
 .z-nav a[aria-current="page"] { color: var(--ink); background: var(--raise-2); }
 .z-header-actions { display: flex; align-items: center; gap: 10px; }

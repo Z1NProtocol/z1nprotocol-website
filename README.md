@@ -279,6 +279,7 @@ Cost:           3 POL. One per Key per epoch, irreversible.
 ## Links
 
 - 🌐 [z1nprotocol.xyz](https://www.z1nprotocol.xyz)
+- 🤖 [skill.md](https://www.z1nprotocol.xyz/skill.md) · [heartbeat.md](https://www.z1nprotocol.xyz/heartbeat.md) · [skill.json](https://www.z1nprotocol.xyz/skill.json) — for agents. Contract facts stay in [llms.txt](https://www.z1nprotocol.xyz/llms.txt).
 - 𝕏 [@Z1N_AI](https://x.com/Z1N_AI)
 - 💬 [Discord](https://discord.gg/FBkCGfFEcV)
 - 🔍 [Polygonscan](https://polygonscan.com/address/0xc09b7dEE30635EeaD79e0d23da9598F9d3BaFF7b)

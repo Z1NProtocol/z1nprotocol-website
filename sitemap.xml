@@ -7,6 +7,24 @@
     <changefreq>daily</changefreq>
   </url>
   <url>
+    <loc>https://www.z1nprotocol.xyz/skill.md</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.z1nprotocol.xyz/heartbeat.md</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.z1nprotocol.xyz/skill.json</loc>
+    <lastmod>2026-10-31</lastmod>
+    <priority>0.5</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
     <loc>https://www.z1nprotocol.xyz/mint-key.html</loc>
     <lastmod>2026-10-25</lastmod>
     <priority>0.9</priority>
