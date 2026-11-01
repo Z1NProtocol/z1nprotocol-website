@@ -5,21 +5,36 @@
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  --bg: #0B0F14;
-  --card-bg: #11161D;
-  --text-main: #EDF1F5;
-  --text-soft: #A3AEBA;
-  --text-muted: #6B7684;
-  --card-border: #2A3441;
-  --accent: #5EE8A0;
+  --card-bg: var(--raise);
+  --text-main: var(--ink);
+  --text-soft: var(--soft);
+  --text-muted: var(--mute);
+  --card-border: var(--line-2);
+  --accent: var(--agent);
   --accent-soft: #3FB47A;
-  --keys-accent: #FFD556;
+  --keys-accent: var(--steward);
   --keys-accent-soft: #C9A62E;
   --danger: #F87171;
 }
 
 body { background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
 button, input, select, textarea { font-family: inherit; }
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+  background-color: var(--raise);
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+@media (prefers-color-scheme: light) {
+  html:not([data-theme]) input,
+  html:not([data-theme]) select,
+  html:not([data-theme]) textarea {
+    background-color: var(--raise);
+    color: var(--ink);
+    border-color: var(--line-2);
+  }
+}
 
 /* the site header and footer keep their own metrics */
 .z-header, .z-footer { font-size: 17px; line-height: 1.6; }

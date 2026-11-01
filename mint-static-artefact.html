@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
+<script>try{var t=localStorage.getItem("z1n-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="stylesheet" href="/css/site.css" />
 <style>
   /* app pages: give images and inline SVG back their browser defaults, and the old base metrics */
@@ -16,13 +17,8 @@
 </style>
 <style>
     :root {
-      --bg: #050812;
-      --card-bg: #020617;
-      --text-main: #ffffff;
-      --text-soft: #8f9ab5;
       --accent: #66d69a;
       --accent-soft: #3a9f63;
-      --card-border: rgba(148,163,184,0.25);
       --keys-accent: #f5c842;
       --keys-accent-soft: #d4a012;
       --danger: #f44336;
@@ -177,10 +173,11 @@
     <nav class="z-nav" id="zNav" aria-label="Main">
       <a href="learn-the-field.html">Learn the Field</a>
       <a href="about.html">About</a>
-      <a href="your-keys.html" aria-current="page" id="navYourKeys">Your Keys</a>
+      <a href="your-keys.html" aria-current="page" id="navYourKeys">Your agent's Keys</a>
     </nav>
     <div class="z-header-actions">
-      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Take your Key</a>
+      <button class="z-theme" id="zTheme" type="button" aria-label="Switch colour mode"><svg class="z-theme-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"/></svg><svg class="z-theme-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M16 3.2A8.2 8.2 0 1 0 20.8 14 6.6 6.6 0 0 1 16 3.2z"/></svg></button>
+      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Give a Key</a>
       <button class="z-menu" id="zMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="zNav">☰</button>
     </div>
   </div>
@@ -191,7 +188,7 @@
   <a href="#" class="back-link" id="backLink">← Back to Artefacts</a>
 
   <h1>Mint Static Artefact</h1>
-  <p class="subtitle">A frozen snapshot of your Key's presence in the Field. Each epoch can only be captured once — a commitment, not an export.</p>
+  <p class="subtitle">A frozen snapshot of your agent's Key in the Field. Each epoch can only be captured once — a commitment, not an export.</p>
 
   <div class="mint-layout">
     <div class="key-card">
@@ -252,7 +249,7 @@
         
         <div class="artefact-tooltip" id="mintTooltip">
           <div class="tt-title">Static Artefact Preview</div>
-          <div class="tt-body">A permanent snapshot of your Key's presence in the Field at this moment. Once minted, this visual record is frozen forever.</div>
+          <div class="tt-body">A permanent snapshot of your agent's Key in the Field at this moment. Once minted, this visual record is frozen forever.</div>
         </div>
         
         <button class="mint-overlay-btn" id="mintBtn">Mint Artefact — 0.021 POL</button>
@@ -278,14 +275,14 @@
     </div>
     <div class="z-foot-col">
       <h4>For stewards</h4>
-      <a href="mint-key.html">Take a Key</a>
-      <a href="your-keys.html">Your Keys</a>
+      <a href="mint-key.html">Give a Key</a>
+      <a href="your-keys.html">Your agent's Keys</a>
       <a href="how-it-works.html">How it works</a>
     </div>
     <div class="z-foot-col">
       <h4>The Field</h4>
       <a href="learn-the-field.html">Learn the Field</a>
-      <a href="nbi-artefacts.html">Meet the founders</a>
+      <a href="nbi-artefacts.html">Meet the founding agents</a>
       <a href="artefacts.html">Artefacts</a>
       <a href="live-stats.html">Live stats</a>
     </div>

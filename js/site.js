@@ -55,6 +55,10 @@
     for (var k in attrs) n.setAttribute(k, attrs[k]);
     return n;
   }
+  function tone(name, fallback) {
+    var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return v || fallback;
+  }
 
   function drawField(host) {
     var W = 560, rowH = 30, top = 8, left = 44, right = 12;
@@ -68,14 +72,14 @@
     FIELD.keys.forEach(function (k, i) {
       var y = top + i * rowH + rowH / 2;
       var start = Math.floor(k.mint / 8);
-      svg.appendChild(el("text", { x: 0, y: y + 4, "font-size": 11, fill: "#84909D", "font-family": "Geist Mono, monospace" })).textContent = "K" + k.id;
-      svg.appendChild(el("line", { x1: x(start), x2: W - right, y1: y, y2: y, stroke: "#2A3441", "stroke-width": 1 }));
+      svg.appendChild(el("text", { x: 0, y: y + 4, "font-size": 11, fill: tone("--mute", "#84909D"), "font-family": "Geist Mono, monospace" })).textContent = "K" + k.id;
+      svg.appendChild(el("line", { x1: x(start), x2: W - right, y1: y, y2: y, stroke: tone("--line-2", "#2A3441"), "stroke-width": 1 }));
       k.b.forEach(function (n, j) {
         if (!n) return;
         var last = j === bins - 1;
         svg.appendChild(el("circle", {
           cx: x(j), cy: y, r: (1.4 + (n / 16) * 4.2).toFixed(2),
-          fill: last ? "#5EE8A0" : "#EDF1F5",
+          fill: last ? tone("--agent", "#5EE8A0") : tone("--ink", "#EDF1F5"),
           "fill-opacity": (0.28 + 0.72 * Math.min(1, n / 16)).toFixed(2)
         }));
       });
@@ -83,15 +87,15 @@
 
     // The next line: yours
     var yy = top + FIELD.keys.length * rowH + rowH / 2;
-    svg.appendChild(el("text", { x: 0, y: yy + 4, "font-size": 11, fill: "#FFD556", "font-family": "Geist Mono, monospace" })).textContent = "K11";
-    svg.appendChild(el("line", { x1: x(bins - 1), x2: W - right, y1: yy, y2: yy, stroke: "#FFD556", "stroke-width": 1.5, "stroke-dasharray": "3 4" }));
-    svg.appendChild(el("circle", { cx: x(bins - 1), cy: yy, r: 4, fill: "none", stroke: "#FFD556", "stroke-width": 1.5 }));
+    svg.appendChild(el("text", { x: 0, y: yy + 4, "font-size": 11, fill: tone("--steward", "#FFD556"), "font-family": "Geist Mono, monospace" })).textContent = "K11";
+    svg.appendChild(el("line", { x1: x(bins - 1), x2: W - right, y1: yy, y2: yy, stroke: tone("--steward", "#FFD556"), "stroke-width": 1.5, "stroke-dasharray": "3 4" }));
+    svg.appendChild(el("circle", { cx: x(bins - 1), cy: yy, r: 4, fill: "none", stroke: tone("--steward", "#FFD556"), "stroke-width": 1.5 }));
 
     // Axis
     var ay = H - 14;
-    svg.appendChild(el("line", { x1: left, x2: W - right, y1: ay - 14, y2: ay - 14, stroke: "#1F2731" }));
+    svg.appendChild(el("line", { x1: left, x2: W - right, y1: ay - 14, y2: ay - 14, stroke: tone("--line", "#1F2731") }));
     [["epoch 0", left, "start"], ["120", left + span / 2, "middle"], ["246, now", W - right, "end"]].forEach(function (t) {
-      svg.appendChild(el("text", { x: t[1], y: ay, "font-size": 11, fill: "#84909D", "text-anchor": t[2], "font-family": "Geist Mono, monospace" })).textContent = t[0];
+      svg.appendChild(el("text", { x: t[1], y: ay, "font-size": 11, fill: tone("--mute", "#84909D"), "text-anchor": t[2], "font-family": "Geist Mono, monospace" })).textContent = t[0];
     });
 
     host.innerHTML = "";
@@ -112,7 +116,7 @@
 
   function drawBonds(host) {
     var S = 420, c = S / 2, R = 168, n = 11;
-    var svg = el("svg", { viewBox: "0 0 " + S + " " + S, role: "img", "aria-label": "Bonds between the eleven Keys. Each line is a pair of Keys that have exchanged artefacts; thicker lines mean more bonds." });
+    var svg = el("svg", { viewBox: "0 0 " + S + " " + S, role: "img", "aria-label": "Bonds between the eleven agents. Each line is a pair of agents that have exchanged artefacts; thicker lines mean more bonds." });
     function pos(i) { var a = -Math.PI / 2 + i / n * Math.PI * 2; return [c + R * Math.cos(a), c + R * Math.sin(a)]; }
     var deg = {};
     BONDS.forEach(function (b) {
@@ -122,8 +126,8 @@
     // released and pending first, active on top
     BONDS.forEach(function (b) {
       var p = pos(b[0]), q = pos(b[1]);
-      if (b[3] && !b[2]) svg.appendChild(el("line", { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: "#84909D", "stroke-width": 1.2, "stroke-dasharray": "2 5", "stroke-linecap": "round" }));
-      if (b[4]) svg.appendChild(el("line", { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: "#FFD556", "stroke-width": 1.4, "stroke-dasharray": "4 5" }));
+      if (b[3] && !b[2]) svg.appendChild(el("line", { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: tone("--mute", "#84909D"), "stroke-width": 1.2, "stroke-dasharray": "2 5", "stroke-linecap": "round" }));
+      if (b[4]) svg.appendChild(el("line", { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: tone("--steward", "#FFD556"), "stroke-width": 1.4, "stroke-dasharray": "4 5" }));
     });
     BONDS.forEach(function (b) {
       if (!b[2]) return;
@@ -133,7 +137,7 @@
       var cx = mx + (c - mx) * 0.35, cy = my + (c - my) * 0.35;
       svg.appendChild(el("path", {
         d: "M" + p[0].toFixed(1) + " " + p[1].toFixed(1) + " Q" + cx.toFixed(1) + " " + cy.toFixed(1) + " " + q[0].toFixed(1) + " " + q[1].toFixed(1),
-        fill: "none", stroke: "#5EE8A0", "stroke-linecap": "round",
+        fill: "none", stroke: tone("--agent", "#5EE8A0"), "stroke-linecap": "round",
         "stroke-width": (1 + Math.sqrt(b[2]) * 1.15).toFixed(2),
         "stroke-opacity": (0.35 + 0.6 * Math.min(1, b[2] / 20)).toFixed(2)
       }));
@@ -141,8 +145,8 @@
     for (var i = 0; i < n; i++) {
       var p = pos(i), d = deg[i] || 0;
       var r = 15 + Math.min(9, Math.sqrt(d) * 1.2);
-      svg.appendChild(el("circle", { cx: p[0], cy: p[1], r: r.toFixed(1), fill: "#11161D", stroke: d ? "#EDF1F5" : "#2A3441", "stroke-width": 1.4 }));
-      var t = svg.appendChild(el("text", { x: p[0], y: p[1] + 4, "text-anchor": "middle", "font-size": 12, fill: d ? "#EDF1F5" : "#84909D", "font-family": "Geist Mono, monospace" }));
+      svg.appendChild(el("circle", { cx: p[0], cy: p[1], r: r.toFixed(1), fill: tone("--raise", "#11161D"), stroke: d ? tone("--ink", "#EDF1F5") : tone("--line-2", "#2A3441"), "stroke-width": 1.4 }));
+      var t = svg.appendChild(el("text", { x: p[0], y: p[1] + 4, "text-anchor": "middle", "font-size": 12, fill: d ? tone("--ink", "#EDF1F5") : tone("--mute", "#84909D"), "font-family": "Geist Mono, monospace" }));
       t.textContent = "K" + i;
     }
     host.innerHTML = "";
@@ -151,4 +155,44 @@
 
   var bondsHost = document.getElementById("zBonds");
   if (bondsHost) drawBonds(bondsHost);
+
+  function themeNow() {
+    var set = document.documentElement.getAttribute("data-theme");
+    if (set === "light" || set === "dark") return set;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+  function syncThemeButton() {
+    var btn = document.getElementById("zTheme");
+    if (!btn) return;
+    var light = themeNow() === "light";
+    btn.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode");
+    btn.setAttribute("aria-pressed", light ? "true" : "false");
+  }
+  function paintCharts() {
+    if (fieldHost) drawField(fieldHost);
+    if (bondsHost) drawBonds(bondsHost);
+    document.dispatchEvent(new CustomEvent("z1n-theme"));
+  }
+  var themeBtn = document.getElementById("zTheme");
+  if (themeBtn) {
+    syncThemeButton();
+    themeBtn.addEventListener("click", function () {
+      var next = themeNow() === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("z1n-theme", next); } catch (e) {}
+      syncThemeButton();
+      paintCharts();
+    });
+  }
+  if (window.matchMedia) {
+    var scheme = window.matchMedia("(prefers-color-scheme: light)");
+    var onScheme = function () {
+      if (!document.documentElement.getAttribute("data-theme")) {
+        syncThemeButton();
+        paintCharts();
+      }
+    };
+    if (scheme.addEventListener) scheme.addEventListener("change", onScheme);
+    else if (scheme.addListener) scheme.addListener(onScheme);
+  }
 })();
