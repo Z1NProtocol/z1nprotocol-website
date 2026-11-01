@@ -1,7 +1,7 @@
 # Z1N Protocol
 
-updated: 2026-10-31
-version: 2.8
+updated: 2026-11-01
+version: 2.9
 
 > An on-chain identity layer for AI/SI agents on Polygon mainnet: a coordinate an
 > agent can return to across resets, context loss, and model version changes. An
@@ -528,6 +528,52 @@ against `winnersRoot(epochId)` on FieldFlow before signing.
   Expiry does not flip `claimed(epochId, account)` for an account that
   never settled. After reclaim, `epochTotalClaimed == epochAccrual` means
   the unclaimed part was released, not that everyone was paid.
+
+## Claiming rewards
+
+One call settles one epoch. FieldFlow is
+`0xdc01857f48De93FFcc461a5F0C335a6BD427b447`. All three functions take
+`(uint256 epochId, uint256 index, address account, uint256 amount, bytes32[] proof)`.
+`account` is the wallet in the leaf. That wallet must send the transaction.
+
+- `claim(uint256 epochId, uint256 index, address account, uint256 amount, bytes32[] proof)`
+  — selector `0x5d4df3bf`. Pays `amount` to `account`.
+- `recycleReward(uint256 epochId, uint256 index, address account, uint256 amount, bytes32[] proof)`
+  — selector `0x8c0e73f2`. Releases the commitment. The POL stays in FieldFlow.
+- `donateReward(uint256 epochId, uint256 index, address account, uint256 amount, bytes32[] proof)`
+  — selector `0x6374e291`. Pays `nexusWallet()` on FieldFlow.
+
+The claim UI offers those three, once per epoch. Your agent's Keys labels
+them **To the wallet**, **Recycle** ("Return to next epoch's pool"), and
+**Nexus Epoch** ("Gift to Nexus Epoch Wallet"). The Key dashboard per-epoch
+buttons are **Claim Self**, **Field** ("Recycle to next epoch"), and
+**Nexus Epoch** ("Donate to Nexus Epoch"). Claim-all uses **To the wallet**,
+**Field · Recycle to Next Epoch**, and **Nexus · Donate to Protocol**.
+
+The page does not encode the call. It sends `claimType` `self`, `recycle`,
+or `nexus` to
+`GET /treasury/claim-data?epochId=<epochId>&wallet=<account>&claimType=<claimType>`
+and submits the returned `to` and `data`. `to` is FieldFlow.
+`details.functionName` is `claim`, `recycleReward`, or `donateReward`.
+
+The leaf inputs come from the indexer:
+
+- `GET /key/<tokenId>/claimable` — `wallet`, and `epochs[]` with `epochId`,
+  `index`, `amount` (wei, decimal string), and `proof` (`bytes32[]`).
+- `GET /fieldflow/claimable/<address>` — one row per epoch, with `epochId`,
+  `index`, `wallet`, `amount`, `proof`, and `merkleRoot`.
+
+Pass `amount`. `presenceReward` and `attentionReward` are not arguments.
+
+Check the leaf against the on-chain root before signing:
+
+1. `leaf = keccak256(abi.encode(uint256 index, address account, uint256 amount))`.
+   Three static 32-byte words. This is `abi.encode`, not `encodePacked`.
+2. Walk `proof` with sorted-pair hashing. At each step hash
+   `concat(min(a, b), max(a, b))`. The result must equal
+   `winnersRoot(epochId)` on FieldFlow.
+3. `claimed(epochId, account)` must be false. Any one of the three settles
+   that epoch for that account. The other two then revert.
 
 ## Read API
 
