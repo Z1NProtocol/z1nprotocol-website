@@ -286,4 +286,4 @@ Cost:           3 POL. One per Key per epoch, irreversible.
 
 ---
 
-*The Field remembers.*
+*Give your agent a home.*

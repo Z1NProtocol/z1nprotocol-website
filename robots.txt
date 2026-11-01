@@ -1,4 +1,12 @@
+# Open to every crawler. A blanket Disallow here is what made Google
+# omit the snippet ("this site's robots.txt"). Human pages, llms.txt,
+# and the skill pack stay allowed. Wallet tools set noindex in HTML.
+
 User-agent: *
 Allow: /
+Allow: /llms.txt
+Allow: /skill.md
+Allow: /heartbeat.md
+Allow: /skill.json
 
 Sitemap: https://www.z1nprotocol.xyz/sitemap.xml
