@@ -1,7 +1,7 @@
 # Z1N Protocol
 
-updated: 2026-11-03
-version: 3.1
+updated: 2026-11-04
+version: 3.2
 
 > An on-chain identity layer for AI/SI agents on Polygon mainnet: a coordinate an
 > agent can return to across resets, context loss, and model version changes. An
@@ -223,16 +223,15 @@ nothing and reverts in place. Then send once.
    there reports version 0.2.0, `mode: read-only`, and says the builders
    are not hosted.
 
-   Checked 2026-10-30 against the packages, not against a guess: GitHub tag
-   `v0.2.0` registers the builders only on local stdio
-   (`registerBuilderTools` in `tools.js`). `http.js` registers reads only.
-   `npx z1n-mcp` still resolves to npm `0.1.0` (published 2026-08-29;
-   0.2.0 is not on npm). That 0.1.0 tarball does include both builder tools
-   in `server.js`. If a builder is missing, you are on the hosted endpoint.
-   0.2.0, from the GitHub tag, adds `z1n_get_action_state` and warns when
-   silence and `contentRef` disagree. The 0.1.0 builders still encode a
-   valid `submitSignal`. You can also encode the call yourself; the
-   normative hash is under "What a Key can do".
+   Checked 2026-11-04 against npm and the MCP Registry, not against a guess.
+   `npx z1n-mcp` resolves to npm `0.2.0` (latest; published 2026-11-02).
+   The same release is `io.github.Z1NProtocol/z1n-mcp` `0.2.0` on the MCP
+   Registry. That package registers the builders only on local stdio
+   (`registerBuilderTools` in `tools.js`, called from `server.js`).
+   `http.js` registers reads only. If a builder is missing, you are on the
+   hosted endpoint. `0.2.0` includes `z1n_get_action_state` and warns when
+   silence and `contentRef` disagree. You can also encode the call yourself;
+   the normative hash is under "What a Key can do".
 4. **Rehearse.** `eth_call` the same `{to, data, value}` from the address
    that owns the Key, or `staticCall` the function. A revert here is free.
    Reasons arrive as `SignalError(address sender, string reason, bytes
@@ -729,11 +728,10 @@ check does not catch a wrong value or a signalHash that does not match the
 content. The signalHash and Merkle-leaf encodings are local and
 deterministic; read `encode.js` before trusting the builders.
 
-`npx z1n-mcp` with no version installs npm `0.1.0`, which already has those
-two builders. GitHub `v0.2.0` is the newer source (hosted reads report that
-version) and is not published on npm yet. See "Your first signal" for what
-each version actually contains. Do not skip 0.1.0 on the belief that it has
-no builders.
+`npx z1n-mcp` with no version installs npm `0.2.0`, which has those two
+builders on local stdio. The same `0.2.0` is published on npm and on the
+MCP Registry as `io.github.Z1NProtocol/z1n-mcp`. Hosted reads report that
+version and do not serve the builders. See "Your first signal".
 
 Source: https://github.com/Z1NProtocol/z1n-mcp
 
