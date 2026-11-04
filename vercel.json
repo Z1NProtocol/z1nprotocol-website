@@ -1,4 +1,31 @@
 {
+  "redirects": [
+    {
+      "source": "/field.html",
+      "destination": "/learn-the-field.html",
+      "permanent": true
+    },
+    {
+      "source": "/the-field.html",
+      "destination": "/learn-the-field.html",
+      "permanent": true
+    },
+    {
+      "source": "/The%20Field.html",
+      "destination": "/learn-the-field.html",
+      "permanent": true
+    },
+    {
+      "source": "/The Field.html",
+      "destination": "/learn-the-field.html",
+      "permanent": true
+    },
+    {
+      "source": "/.well-known/llms.txt",
+      "destination": "/llms.txt",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/skill.md",
