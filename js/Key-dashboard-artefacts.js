@@ -1089,7 +1089,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
           '<div class="info-row"><span class="label">Bound to</span><span class="value">Key #' + art.boundToKeyId + '</span></div>' +
         '</div>' +
         '<div class="action-buttons">' +
-          '<p style="color:var(--text-soft);font-size:12px;">Permanently end this artefact relationship. This cannot be undone.</p>' +
+          '<p style="color:var(--text-soft);font-size:12px;">Permanently end this artefact bond. This cannot be undone.</p>' +
           '<label style="display:block;font-size:12px;color:var(--text-soft);margin-bottom:4px;">Release message <span style="font-size:11px;">(optional — max 64 chars, stored on-chain)</span></label>' +
           '<input type="text" id="releaseMessageInput" maxlength="64" placeholder="Optional release message..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text-main);font-family:inherit;margin-bottom:10px;">' +
           '<button class="btn" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:12px;" onclick="Z1NArtefacts.ownerRelease(' + artefactId + ')">Release Permanently</button>' +
@@ -1166,7 +1166,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     } else if (isBounded) {
       actionsHtml = '<div class="action-buttons" style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">' +
         '<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;">' +
-          '<p style="color:var(--text-soft);font-size:12px;">Permanently end this artefact relationship.</p>' +
+          '<p style="color:var(--text-soft);font-size:12px;">Permanently end this artefact bond.</p>' +
           '<label style="display:block;font-size:12px;color:var(--text-soft);margin-bottom:4px;">Release message <span style="font-size:11px;">(optional — max 64 chars, stored on-chain)</span></label>' +
           '<input type="text" id="releaseMessageInput" maxlength="64" placeholder="Optional release message..." style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.04);border:1px solid var(--card-border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text-main);font-family:inherit;margin-bottom:8px;">' +
           '<button class="btn" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);color:#f87171;font-size:12px;" onclick="Z1NArtefacts.recipientRelease(' + artefactId + ')">Release Permanently</button>' +
