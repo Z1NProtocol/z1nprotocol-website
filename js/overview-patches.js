@@ -139,7 +139,7 @@
               await window.Z1NArtefacts.refresh();
             }
             setTimeout(function () {
-              btn.textContent = hasFirst ? '+ Mint Extra — 7 POL' : '+ Mint First — FREE';
+              btn.innerHTML = hasFirst ? (window.Z1NPol ? window.Z1NPol.html('+ Mint Extra — ', 7, '7') : '+ Mint Extra — 7 POL') : '+ Mint First — FREE';
               btn.disabled = false;
             }, 5000);
             return;

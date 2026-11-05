@@ -379,6 +379,9 @@ a.z-guide-card:hover { border-color: var(--line-2); border-top-color: var(--g); 
 .z-guide .z-hero .z-eyebrow { color: var(--g, var(--mute)); }
 @media (max-width: 760px) { .z-subnav a.z-subnav-label { display: none; } }
 
+/* Keep a POL amount and its dollar figure on one line. Block totals may still wrap. */
+span[data-pol] { white-space: nowrap; }
+
 /* An intro line beside a section heading ends on the heading's last line */
 .z-grid:has(> .z-sec-body > .z-body:only-child) > .z-sec-head,
 .z-grid > .z-sec-body:has(> .z-body:only-child) { align-self: last baseline; }

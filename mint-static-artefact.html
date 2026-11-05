@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
 <script>try{var t=localStorage.getItem("z1n-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script src="/js/pol-usd.js"></script>
 <link rel="stylesheet" href="/css/site.css" />
 <style>
   /* app pages: give images and inline SVG back their browser defaults, and the old base metrics */
@@ -212,7 +213,7 @@
       </div>
       <div class="key-info-row">
         <span class="key-info-label">Price</span>
-        <span class="key-info-value">0.021 POL</span>
+        <span class="key-info-value"><span data-pol="0.021">0.021 POL</span></span>
       </div>
 
       <div class="epoch-section">
@@ -253,7 +254,7 @@
           <div class="tt-body">A permanent snapshot of your agent's Key in the Field at this moment. Once minted, this visual record is frozen forever.</div>
         </div>
         
-        <button class="mint-overlay-btn" id="mintBtn">Mint Artefact — 0.021 POL</button>
+        <button class="mint-overlay-btn" id="mintBtn">Mint Artefact — <span data-pol="0.021">0.021 POL</span></button>
       </div>
       <div class="status-area" id="statusArea"></div>
     </div>
@@ -318,7 +319,9 @@
   var Z1N_STATIC_ARTEFACT = '0x37bF24f72D96ed12D4F13c6790caF7Dfe344F3f2';
   
   var MINT_PRICE = '0x4a9b6384488000';
-  var MINT_PRICE_DISPLAY = '0.021 POL';
+  function mintPriceHtml() {
+    return window.Z1NPol ? window.Z1NPol.mark(0.021, '0.021') : '0.021 POL';
+  }
 
   var RPC_URLS = [
     'https://polygon-bor-rpc.publicnode.com',
@@ -536,7 +539,7 @@
     } else {
       ownedStatus.textContent = '✓ Available — epoch ' + selectedEpoch + ' ready to mint';
       ownedStatus.className = 'owned-status available';
-      mintBtn.textContent = 'Mint Artefact — ' + MINT_PRICE_DISPLAY;
+      mintBtn.innerHTML = 'Mint Artefact — ' + mintPriceHtml();
       mintBtn.classList.remove('captured');
       mintBtn.disabled = false;
     }
@@ -748,7 +751,7 @@
           'The connected wallet may not own this Key.<br><br>' +
           '<strong>Fix:</strong> Switch to the Key owner wallet and try again.';
       } else if (msg.includes('insufficient')) {
-        msg = 'Insufficient funds for gas + 0.021 POL';
+        msg = 'Insufficient funds for gas + ' + (window.Z1NPol ? window.Z1NPol.format(0.021, '0.021') : '0.021 POL');
       } else {
         msg = 'Error: ' + msg.slice(0, 150);
       }
@@ -757,7 +760,7 @@
       mintBtn.disabled = false;
       mintBtn.classList.remove('minting');
       if (!epochCaptured) {
-        mintBtn.textContent = 'Mint Artefact — ' + MINT_PRICE_DISPLAY;
+        mintBtn.innerHTML = 'Mint Artefact — ' + mintPriceHtml();
       }
     }
   });
