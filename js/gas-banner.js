@@ -147,11 +147,9 @@
 
     if (dismissed) return;
 
-    var costDisplay = costPol < 10
-      ? '~' + costPol.toFixed(2) + ' POL'
-      : '~' + costPol.toFixed(1) + ' POL';
-
-    valueEl.textContent = costDisplay;
+    var amountText = costPol < 10 ? '~' + costPol.toFixed(2) : '~' + costPol.toFixed(1);
+    if (window.Z1NPol) valueEl.innerHTML = window.Z1NPol.mark(costPol, amountText);
+    else valueEl.textContent = amountText + ' POL';
 
     if (costPol >= POL_DANGER) {
       el.className = 'z1n-gas-banner danger visible';

@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
 <script>try{var t=localStorage.getItem("z1n-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script src="/js/pol-usd.js"></script>
 <link rel="stylesheet" href="/css/site.css" />
 <style>
   /* app pages: give images and inline SVG back their browser defaults, and the old base metrics */
@@ -456,7 +457,7 @@ function loadKeyData(){
 
 function updateBtn(){
   var b=document.getElementById('mintBtn');
-  b.textContent=hasFirst?'Mint Extra Artefact — 7 POL':'Mint Artefact — FREE';
+  b.innerHTML=hasFirst?(window.Z1NPol?window.Z1NPol.html('Mint Extra Artefact — ',7,'7'):'Mint Extra Artefact — 7 POL'):'Mint Artefact — FREE';
 }
 
 if(keyId!==null){ loadPreview(); loadKeyData(); }

@@ -6,6 +6,22 @@
 (function(){
   'use strict';
 
+  function polHtml(prefix, amount, text) {
+    return window.Z1NPol ? window.Z1NPol.html(prefix, amount, text) : (prefix + text + ' POL');
+  }
+  function showPol(el, amount, text, empty) {
+    if (!el) return;
+    var n = Number(amount);
+    if (!(n > 0)) {
+      el.removeAttribute('data-pol');
+      el.removeAttribute('data-pol-base');
+      el.textContent = empty;
+      return;
+    }
+    if (window.Z1NPol) window.Z1NPol.fill(el, n, text);
+    else el.textContent = text + ' POL';
+  }
+
   var CHAIN_ID = '0x89';
   var Z1N_KEY = '0x8687429405bf787b523F3F1F998FA90f5828dA3D';
   var Z1N_CORE = '0xc09b7dEE30635EeaD79e0d23da9598F9d3BaFF7b';
@@ -769,7 +785,7 @@ updateAttestBtn();
     }
     var overviewMintBtn = document.getElementById('btnMintLiveArtefactOverview');
     if (overviewMintBtn && !overviewMintBtn.disabled) {
-      overviewMintBtn.textContent = hasFirstArtefact ? '+ Mint Artefact — 7 POL' : '+ Mint First Artefact — FREE';
+      overviewMintBtn.innerHTML = hasFirstArtefact ? polHtml('+ Mint Artefact — ', 7, '7') : '+ Mint First Artefact — FREE';
     }
   }
 
@@ -795,7 +811,7 @@ updateAttestBtn();
       '</div>' +
       '<div style="margin-top:16px;display:flex;gap:8px;justify-content:center;">' +
         '<button onclick="switchTab(\'artefacts\');closeArtefactModal();" class="btn btn-primary" style="font-size:12px;padding:8px 16px;">View All Artefacts</button>' +
-        '<button onclick="window.location.href=\'mint-live-artefact.html?key=\'+(window.Z1N&&window.Z1N.keyId||0)+\'&wallet=\'+encodeURIComponent(window.Z1N&&window.Z1N.wallet||\'\');closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? '+ Mint Extra — 7 POL' : '+ Mint First — FREE') + '</button>' +
+        '<button onclick="window.location.href=\'mint-live-artefact.html?key=\'+(window.Z1N&&window.Z1N.keyId||0)+\'&wallet=\'+encodeURIComponent(window.Z1N&&window.Z1N.wallet||\'\');closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? polHtml('+ Mint Extra — ', 7, '7') : '+ Mint First — FREE') + '</button>' +
       '</div>' +
     '</div>';
     
@@ -811,7 +827,7 @@ updateAttestBtn();
     grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">Loading artefacts...</div>';
     try {
       await checkHasFirstArtefact();
-      if (mintBtn) mintBtn.textContent = hasFirstArtefact ? '+ Mint Extra (mintExtra) — 7 POL' : '+ Mint First (mint) — FREE';
+      if (mintBtn) mintBtn.innerHTML = hasFirstArtefact ? polHtml('+ Mint Extra (mintExtra) — ', 7, '7') : '+ Mint First (mint) — FREE';
       var r = await fetch(API_BASE + '/key/' + currentKeyId + '/artefacts', {cache:'no-store'});
       if (!r.ok) { grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No artefacts found</div>'; if (badge) badge.textContent = '0'; if (status) status.textContent = 'No live artefact'; allLiveArtefacts = []; allStaticArtefacts = []; return; }
       var d = await r.json();
@@ -2156,7 +2172,7 @@ function renderActivityItem(activity) {
       iconClass = 'treasury';
       icon = '⬡';
       title = '<span style="color:#93c5fd;">Claimable event</span> · <strong style="color:#93c5fd;">Epoch ' + (activity.epoch || '?') + '</strong>';
-      preview = activity.amount ? '<span style="color:#93c5fd;">' + activity.amount + ' POL</span>' : '';
+      preview = activity.amount ? '<span style="color:#93c5fd;">' + polHtml('', activity.amount, activity.amount) + '</span>' : '';
       break;
       
     default:
@@ -2580,7 +2596,7 @@ async function loadTreasuryData() {
     });
 
     totalClaimable = parseFloat(data.totalClaimableFormatted || '0');
-    if (claimableEl) claimableEl.textContent = totalClaimable > 0 ? totalClaimable.toFixed(2) : '—';
+    showPol(claimableEl, totalClaimable, totalClaimable.toFixed(2), '—');
     if (claimableCountEl) claimableCountEl.textContent = '(' + claimableEpochsData.length + ')';
 
     if (claimableBox) claimableBox.classList.toggle('has-claimable', totalClaimable > 0);
@@ -2627,7 +2643,7 @@ async function loadClaimedEpochs() {
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl) {
     var totalEarned = claimedEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amount || '0'); }, 0);
-    totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '—';
+    showPol(totalEl, totalEarned, totalEarned.toFixed(2), '—');
   }
 
   renderClaimedEpochs();
@@ -2648,9 +2664,12 @@ function renderClaimableEpochs() {
 
   var html = '';
   sorted.forEach(function(epoch) {
-    var amount = parseFloat(epoch.amountFormatted || '0').toFixed(2);
-    var presence = epoch.presenceReward ? (parseFloat(epoch.presenceReward) / 1e18).toFixed(4) : '—';
-    var attention = epoch.attentionReward ? (parseFloat(epoch.attentionReward) / 1e18).toFixed(4) : '—';
+    var amountNum = parseFloat(epoch.amountFormatted || '0');
+    var amount = amountNum.toFixed(2);
+    var presenceNum = epoch.presenceReward ? (parseFloat(epoch.presenceReward) / 1e18) : null;
+    var attentionNum = epoch.attentionReward ? (parseFloat(epoch.attentionReward) / 1e18) : null;
+    var presence = presenceNum == null ? '—' : polHtml('', presenceNum, presenceNum.toFixed(4));
+    var attention = attentionNum == null ? '—' : polHtml('', attentionNum, attentionNum.toFixed(4));
     var status = epoch._status || '';
     var statusClass = epoch._statusClass || '';
     var epochsRemaining = epoch.epochsRemaining;
@@ -2667,7 +2686,7 @@ function renderClaimableEpochs() {
     if (status) itemClass += ' claiming';
 
     html += '<div class="' + itemClass + '" id="epoch-item-' + epoch.epochId + '">';
-    html += '<div class="epoch-item-header"><span class="epoch-item-id">Epoch ' + epoch.epochId + (status ? ' <span class="epoch-status ' + statusClass + '">' + status + '</span>' : '') + '</span><span class="epoch-item-amount">' + amount + ' POL</span></div>';
+    html += '<div class="epoch-item-header"><span class="epoch-item-id">Epoch ' + epoch.epochId + (status ? ' <span class="epoch-status ' + statusClass + '">' + status + '</span>' : '') + '</span><span class="epoch-item-amount">' + polHtml('', amountNum, amount) + '</span></div>';
     html += '<div class="epoch-item-breakdown"><span class="breakdown-item">Presence: ' + presence + '<span class="info-icon" style="position:relative;">ⓘ<span class="breakdown-tooltip" style="left:0;right:auto;transform:none;">Base share: Equal for all 21 winners</span></span></span><span class="breakdown-item">Attention: ' + attention + '<span class="info-icon">ⓘ</span><span class="breakdown-tooltip">Weighted: attestations × layer multiplier</span></span><span class="epoch-deadline ' + deadlineClass + '">⏱ ' + deadlineText + '</span></div>';
     html += '<div class="epoch-item-actions"><button class="btn-epoch claim" onclick="claimSingleReward(' + epoch.epochId + ',\'self\')" ' + (status ? 'disabled' : '') + '>Claim Self</button><button class="btn-epoch recycle" onclick="claimSingleReward(' + epoch.epochId + ',\'recycle\')" ' + (status ? 'disabled' : '') + ' title="Recycle to next epoch">Field</button><button class="btn-epoch nexus" onclick="claimSingleReward(' + epoch.epochId + ',\'nexus\')" ' + (status ? 'disabled' : '') + ' title="Donate to Nexus Epoch">Nexus Epoch</button></div>';
     html += '</div>';
@@ -2696,14 +2715,15 @@ function renderClaimedEpochs() {
 
   var html = '';
   sorted.forEach(function(epoch) {
-    var amount = parseFloat(epoch.amount || '0').toFixed(2);
+    var amountNum = parseFloat(epoch.amount || '0');
+    var amount = amountNum.toFixed(2);
     var date = epoch.claimedAt ? new Date(epoch.claimedAt).toLocaleDateString() : '—';
     var claimType = epoch.claimType || 'self';
     var typeLabel = 'Self';
     if (claimType === 'recycle') { typeLabel = 'Field'; }
     else if (claimType === 'nexus') { typeLabel = 'Nexus Epoch'; }
 
-    html += '<div class="treasury-epoch-item claimed"><div class="epoch-item-header"><span class="epoch-item-id">E' + epoch.epochId + '</span><span class="epoch-item-amount">' + amount + ' POL</span></div><div class="claimed-info"><span class="claimed-date">Won: E' + epoch.epochId + ' · Claimed: E' + (epoch.claimedEpoch || '—') + '</span><span class="claimed-type">' + typeLabel + '</span></div></div>';
+    html += '<div class="treasury-epoch-item claimed"><div class="epoch-item-header"><span class="epoch-item-id">E' + epoch.epochId + '</span><span class="epoch-item-amount">' + polHtml('', amountNum, amount) + '</span></div><div class="claimed-info"><span class="claimed-date">Won: E' + epoch.epochId + ' · Claimed: E' + (epoch.claimedEpoch || '—') + '</span><span class="claimed-type">' + typeLabel + '</span></div></div>';
   });
 
   listEl.innerHTML = html;
@@ -2731,7 +2751,7 @@ function saveClaimedEpoch(epochId, amount, claimType) {
   var totalEl = document.getElementById('treasuryTotal');
   if (totalEl) {
     var totalEarned = claimedEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amount || '0'); }, 0);
-    totalEl.textContent = totalEarned > 0 ? totalEarned.toFixed(2) : '—';
+    showPol(totalEl, totalEarned, totalEarned.toFixed(2), '—');
   }
   renderClaimedEpochs();
 }
@@ -2761,7 +2781,7 @@ async function claimSingleReward(epochId, claimType) {
       var claimableCountEl = document.getElementById('treasuryClaimableCount');
       if (claimableCountEl) claimableCountEl.textContent = '(' + claimableEpochsData.length + ')';
       var claimableEl = document.getElementById('treasuryClaimable');
-      if (claimableEl) { var total = claimableEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amountFormatted || '0'); }, 0); claimableEl.textContent = total > 0 ? total.toFixed(2) : '0'; }
+      if (claimableEl) { var total = claimableEpochsData.reduce(function(sum, e) { return sum + parseFloat(e.amountFormatted || '0'); }, 0); showPol(claimableEl, total, total.toFixed(2), '0'); }
       var claimableBox = document.getElementById('treasuryClaimableBox');
       if (claimableBox) claimableBox.classList.toggle('has-claimable', claimableEpochsData.length > 0);
       var actionDone = claimType === 'recycle' ? 'Recycled' : claimType === 'nexus' ? 'Donated' : 'Claimed';

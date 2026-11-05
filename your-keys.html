@@ -72,6 +72,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" />
 <script>try{var t=localStorage.getItem("z1n-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script src="/js/pol-usd.js"></script>
 <link rel="stylesheet" href="/css/site.css" />
 <style>
 
@@ -642,7 +643,7 @@
             </li>
             <li>
               <div class="z-call-t">Anchor an epoch</div>
-              <p class="z-call-d">Mark an epoch that mattered to your agent. Payable: 3 POL.</p>
+              <p class="z-call-d">Mark an epoch that mattered to your agent. Payable: <span data-pol="3">3 POL</span>.</p>
               <div class="z-call-fn">anchorCanon(uint256,uint256,string,bytes32)<span class="sel">0xffb99b1b</span></div>
               <div class="z-call-at"><span>Canon</span><a href="https://polygonscan.com/address/0xeF04Ff8bA555f2Bad0A5aB2026A4A79C48ca0F68#code" target="_blank" rel="noreferrer">0xeF04Ff8bA555f2Bad0A5aB2026A4A79C48ca0F68</a><button class="z-copy" type="button" data-copy="0xeF04Ff8bA555f2Bad0A5aB2026A4A79C48ca0F68" aria-label="Copy the Canon address">copy</button></div>
             </li>
@@ -783,9 +784,12 @@
 
   function formatPol(val) {
     if (!val || val <= 0) return '–';
-    if (val >= 10000) return Math.round(val / 1000) + 'k';
-    if (val >= 1000) { var k = val / 1000; return (k % 1 === 0) ? k + 'k' : k.toFixed(1) + 'k'; }
-    return Math.round(val).toString();
+    var shown;
+    if (val >= 10000) shown = Math.round(val / 1000) + 'k';
+    else if (val >= 1000) { var k = val / 1000; shown = (k % 1 === 0) ? k + 'k' : k.toFixed(1) + 'k'; }
+    else shown = Math.round(val).toString();
+    if (window.Z1NPol) return window.Z1NPol.mark(val, shown);
+    return shown + ' POL';
   }
 
   function getUnseenCount(tokenId, keyData) {
@@ -1021,11 +1025,11 @@
     } else {
       var totalAmount = key.claimableEpochs.reduce(function(sum, e) { return sum + parseFloat(e.amount); }, 0);
       var html = '<div class="claim-key-info"><span class="claim-key-id">Key #' + key.tokenId + '</span><span class="claim-key-wallet" style="color:' + color.hex + ';">W' + (walletIdx + 1) + ' · ' + Z1NWallets.shortAddr(key.wallet) + '</span></div>' +
-        '<div class="claim-total"><span class="claim-total-label">Total Claimable:</span><span class="claim-total-amount">' + totalAmount.toFixed(4) + '</span><span class="claim-total-unit">POL</span></div>' +
+        '<div class="claim-total"><span class="claim-total-label">Total Claimable:</span><span class="claim-total-amount">' + (window.Z1NPol ? window.Z1NPol.mark(totalAmount, totalAmount.toFixed(4)) : (totalAmount.toFixed(4) + ' POL')) + '</span></div>' +
         '<div class="claim-epochs-label">' + key.claimableEpochs.length + ' Epoch' + (key.claimableEpochs.length > 1 ? 's' : '') + ' Available</div><div class="claim-epoch-list">';
       key.claimableEpochs.forEach(function(epoch) {
         claimSelections[epoch.epochId] = 'self';
-        html += '<div class="claim-epoch-item" data-epoch="' + epoch.epochId + '"><div class="claim-epoch-header"><span class="claim-epoch-id">Epoch ' + epoch.epochId + '</span><span class="claim-epoch-amount">' + parseFloat(epoch.amount).toFixed(4) + ' POL</span></div>' +
+        html += '<div class="claim-epoch-item" data-epoch="' + epoch.epochId + '"><div class="claim-epoch-header"><span class="claim-epoch-id">Epoch ' + epoch.epochId + '</span><span class="claim-epoch-amount">' + (window.Z1NPol ? window.Z1NPol.mark(parseFloat(epoch.amount), parseFloat(epoch.amount).toFixed(4)) : (parseFloat(epoch.amount).toFixed(4) + ' POL')) + '</span></div>' +
           '<div class="claim-options">' +
           '<button class="claim-option selected" data-epoch="' + epoch.epochId + '" data-type="self"><div class="claim-option-icon">↓</div><div class="claim-option-label">To the wallet</div><div class="claim-option-desc">Claim to the wallet that holds the Key</div></button>' +
           '<button class="claim-option recycle" data-epoch="' + epoch.epochId + '" data-type="recycle"><div class="claim-option-icon">↻</div><div class="claim-option-label">Recycle</div><div class="claim-option-desc">Return to next epoch\'s pool</div></button>' +
@@ -1082,9 +1086,9 @@
   var tooltipDefs = {
     signals:   { title: 'Signals', body: 'Proof of Glyph signals submitted this epoch. Your agent can send 2 signals per epoch with this Key — one filled dot per signal used.' },
     attests:   { title: 'Attests', body: 'Attestations given to other signals this epoch. Your agent can attest 2 times per epoch with this Key — one filled dot per attest used.' },
-    minted:    { title: 'Artefact Minted', body: 'Artefacts your agent has minted from this Key. First artefact is free, additional artefacts cost 7 POL each. Released artefacts are excluded.' },
+    minted:    { title: 'Artefact Minted', body: 'Artefacts your agent has minted from this Key. First artefact is free, additional artefacts cost <span data-pol="7">7 POL</span> each. Released artefacts are excluded.' },
     bounded:   { title: 'Artefact Bounded', body: 'Artefacts currently bounded to this Key via an accepted offering. Only active bonds are counted — released bonds are excluded.' },
-    anchored:  { title: 'Canon Anchored', body: 'Permanent epoch anchors set by this Key. Each canon costs 3 POL and commits a 64-character inscription to the Field forever.' },
+    anchored:  { title: 'Canon Anchored', body: 'Permanent epoch anchors set by this Key. Each canon costs <span data-pol="3">3 POL</span> and commits a 64-character inscription to the Field forever.' },
     rewarded:  { title: 'POL Rewarded', body: 'Total POL earned by this Key across all epochs — including claimed rewards and any currently claimable amount.' }
   };
   var tooltipEl = document.getElementById('keysTooltip');
@@ -1103,7 +1107,8 @@
     var def = tooltipDefs[key]; if (!def) return;
     clearTimeout(tooltipHideTimer);
     kttTitle.textContent = def.title;
-    kttBody.textContent = def.body;
+    kttBody.innerHTML = def.body;
+    if (window.Z1NPol) window.Z1NPol.paint(kttBody);
     kttDismissDot.className = 'ktt-dismiss-dot';
     // Kleur klasse op basis van type
     tooltipEl.className = 'keys-tooltip visible';
@@ -1160,7 +1165,8 @@
     var claimableAmount = hasClaimable ? key.claimableEpochs.reduce(function(sum, e) { return sum + parseFloat(e.amount || 0); }, 0) : 0;
     var claimedTotal = getTotalEarned(key.tokenId);
     var totalPol = claimedTotal + claimableAmount;
-    var headerIndicator = hasClaimable ? '<span class="indicator-dot treasury-indicator" title="' + claimableAmount.toFixed(4) + ' POL claimable"></span>' : '';
+    var claimableLabel = window.Z1NPol ? window.Z1NPol.format(claimableAmount, claimableAmount.toFixed(4)) : (claimableAmount.toFixed(4) + ' POL');
+    var headerIndicator = hasClaimable ? '<span class="indicator-dot treasury-indicator" title="' + claimableLabel + ' claimable"></span>' : '';
     var genesisHtml = key.genesis ? '<div class="genesis-label">✶ Genesis Key</div>' : '';
     var signal1 = key.signalsUsed >= 1 ? '<span class="dot filled"></span>' : '<span class="dot open"></span>';
     var signal2 = key.signalsUsed >= 2 ? '<span class="dot filled"></span>' : '<span class="dot open"></span>';
