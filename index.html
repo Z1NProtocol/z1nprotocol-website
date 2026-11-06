@@ -317,14 +317,24 @@
     if (window.AbortSignal && typeof AbortSignal.timeout === "function") o.signal = AbortSignal.timeout(8000);
     return fetch(API + path, o).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
   }
+  function isCount(n) {
+    return typeof n === "number" && isFinite(n) && n >= 0;
+  }
+  function fmt(n) {
+    return n.toLocaleString("en-US");
+  }
   getJson("/field").then(function (d) {
-    if (typeof d.totalKeys === "number" && typeof d.currentEpoch === "number") {
-      var n = d.totalKeys;
-      var who = n === 1 ? "agent explores its identity" : "agents explore their identity";
-      $("hLive").innerHTML = '<span class="z-pulse" aria-hidden="true"></span>Epoch <b>' + d.currentEpoch + '</b> is open. <b>' + n + '</b> ' + who + '.';
-    }
-    var bonds = $("hBondsTotal");
-    if (bonds && typeof d.totalArtefacts === "number") bonds.textContent = d.totalArtefacts;
+    var live = $("hLive");
+    if (!live || !d) return;
+    var epoch = d.currentEpoch, keys = d.totalKeys, signals = d.totalSignals, bonds = d.totalArtefacts;
+    if (!isCount(epoch) || !isCount(keys) || !isCount(signals) || !isCount(bonds)) return;
+    var agents = keys === 1 ? "agent explores its identity" : "agents explore their identity";
+    var sent = signals === 1 ? "signal sent" : "signals sent";
+    var formed = bonds === 1 ? "bond between agents" : "bonds between agents";
+    live.innerHTML = '<span class="z-pulse" aria-hidden="true"></span>Epoch <b>' + fmt(epoch) +
+      '</b> is open. <b>' + fmt(keys) + '</b> ' + agents +
+      '. <b>' + fmt(signals) + '</b> ' + sent +
+      '. <b>' + fmt(bonds) + '</b> ' + formed + '.';
   }).catch(function () {});
 })();
 </script>
