@@ -6,7 +6,9 @@
  * Requires: window.Z1N (set by dashboard after connect)
  *
  * Two message modes:
- *   ENCRYPTED — ECDH via tweetnacl. Only recipient can read.
+ *   ENCRYPTED — ECDH via tweetnacl. The recipient reads with its secret and
+ *               the sender's public key. The sender can also read its sent
+ *               copy (sender secret + recipient public key).
  *               Sender derives keypair from wallet signature (deterministic).
  *               Recipient must have registered public key in KeyRegistry.
  *
@@ -29,9 +31,35 @@
   // ─── Constants ───
   var SIGN_PREFIX = 'Z1N-DirectChannel-v1-';
   var NONCE_LENGTH = 24;
-  var MAX_MESSAGE_LENGTH = 1400; // safe margin below 2048 byte contract limit
+  var MAX_PAYLOAD_BYTES = 2048;
+  var PLAINTEXT_OVERHEAD = 1;   // 0x00
+  var ENCRYPTED_OVERHEAD = 41;  // 0x01 + nonce[24] + 16-byte auth tag
   var PAYLOAD_TYPE_PLAIN = 0x00;
   var PAYLOAD_TYPE_ENCRYPTED = 0x01;
+
+  function utf8Size(text) {
+    return new TextEncoder().encode(text).length;
+  }
+
+  // Encrypted cap is 2007 text bytes; plaintext is 2047. Both fit in 2048.
+  function maxTextBytes() {
+    var overhead = (isEncryptedMode && isUnlocked) ? ENCRYPTED_OVERHEAD : PLAINTEXT_OVERHEAD;
+    return MAX_PAYLOAD_BYTES - overhead;
+  }
+
+  function trimToByteLimit(text, maxBytes) {
+    if (utf8Size(text) <= maxBytes) return text;
+    var encoder = new TextEncoder();
+    var out = '';
+    var used = 0;
+    for (var ch of text) {
+      var n = encoder.encode(ch).length;
+      if (used + n > maxBytes) break;
+      out += ch;
+      used += n;
+    }
+    return out;
+  }
 
   // ─── State ───
   var secretKey = null;       // Uint8Array(32) — in-memory only, never stored
@@ -429,8 +457,8 @@
           '</div>' +
 
           '<div class="input-group">' +
-            '<div class="input-label"><span>Message</span><span class="char-count" id="directCharCount">0 / ' + MAX_MESSAGE_LENGTH + '</span></div>' +
-            '<textarea id="directContent" placeholder="Your message..." maxlength="' + MAX_MESSAGE_LENGTH + '" oninput="updateDirectCharCount()"></textarea>' +
+            '<div class="input-label"><span>Message</span><span class="char-count" id="directCharCount">0 / ' + maxTextBytes() + ' bytes</span></div>' +
+            '<textarea id="directContent" placeholder="Your message..." maxlength="' + maxTextBytes() + '" oninput="updateDirectCharCount()"></textarea>' +
           '</div>' +
 
           '<div style="margin-top:14px;">' +
@@ -624,6 +652,11 @@
       return;
     }
     var useEncryption = isEncryptedMode;
+    var textCap = MAX_PAYLOAD_BYTES - (useEncryption ? ENCRYPTED_OVERHEAD : PLAINTEXT_OVERHEAD);
+    if (utf8Size(content) > textCap) {
+      if (status) status.innerHTML = '<div class="status-msg error">Message is over the ' + textCap + '-byte limit.</div>';
+      return;
+    }
 
     var payload;
 
@@ -900,7 +933,19 @@
   window.updateDirectCharCount = function () {
     var el = document.getElementById('directCharCount');
     var ta = document.getElementById('directContent');
-    if (el && ta) el.textContent = ta.value.length + ' / ' + MAX_MESSAGE_LENGTH;
+    if (!ta) return;
+    var max = maxTextBytes();
+    var trimmed = trimToByteLimit(ta.value, max);
+    if (trimmed !== ta.value) {
+      var pos = ta.selectionStart;
+      ta.value = trimmed;
+      var next = Math.min(pos == null ? trimmed.length : pos, trimmed.length);
+      try { ta.setSelectionRange(next, next); } catch (e) {}
+    }
+    if (el) {
+      el.textContent = utf8Size(ta.value) + ' / ' + max + ' bytes';
+      el.classList.toggle('zone-orange', utf8Size(ta.value) >= max);
+    }
   };
 
   window.replyDirect = function (fromKeyId) {
