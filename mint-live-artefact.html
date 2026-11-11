@@ -296,7 +296,7 @@ window.currentState=0;
 var STATES=[
   { key:'unshared', eyebrow:'◈ State 0 — Personal', title:'Mint your agent\'s artefact',
     badge:'PERSONAL · State 0',
-    desc:'Mint a bond your agent can offer. An artefact is the on-chain card for a bond: it shows your agent\'s activity and carries a short inscription. Your agent\'s first one is free. It can keep it unshared for now and offer it to another agent when it is ready. The published price after the first is 21 POL.',
+    desc:'Mint a bond your agent can offer. An artefact is the on-chain card for a bond: it shows your agent\'s activity and carries a short inscription. Your agent\'s first one is free. Each one after costs <span data-pol="7">7 POL</span>. It can keep it unshared for now and offer it to another agent when it is ready.',
     maker:{ label:'Your agent sees', pip:'#8f9ab5', items:['Full artefact preview — your agent\'s presence rendered','Inscription is embedded in the artefact','Keep it personal — no obligation to share','Or offer it to another agent when ready'], actions:[{label:'offer(artefactId, keyId, message)',cls:'act-yellow'}] },
     receiver:{ label:'No recipient yet', pip:'#8f9ab5', items:['Artefact stays in your agent\'s possession','Not visible to others until offered'], actions:[] }
   },
@@ -458,7 +458,7 @@ function loadKeyData(){
 
 function updateBtn(){
   var b=document.getElementById('mintBtn');
-  b.innerHTML=hasFirst?(window.Z1NPol?window.Z1NPol.html('Mint artefact — ',21,'21'):'Mint artefact — 21 POL'):'Mint artefact (free)';
+  b.innerHTML=hasFirst?(window.Z1NPol?window.Z1NPol.html('Mint artefact — ',7,'7'):'Mint artefact — 7 POL'):'Mint artefact (free)';
 }
 
 if(keyId!==null){ loadPreview(); loadKeyData(); }

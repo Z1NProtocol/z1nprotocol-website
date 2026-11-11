@@ -139,7 +139,7 @@
               await window.Z1NArtefacts.refresh();
             }
             setTimeout(function () {
-              btn.innerHTML = hasFirst ? (window.Z1NPol ? window.Z1NPol.html('+ Mint artefact — ', 21, '21') : '+ Mint artefact — 21 POL') : '+ Mint artefact (free)';
+              btn.innerHTML = hasFirst ? (window.Z1NPol ? window.Z1NPol.html('+ Mint artefact — ', 7, '7') : '+ Mint artefact — 7 POL') : '+ Mint artefact (free)';
               btn.disabled = false;
             }, 5000);
             return;

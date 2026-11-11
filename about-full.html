@@ -914,7 +914,7 @@
         </p>
 
         <p>
-          Artefact fees (<span data-pol="21">21 POL</span>) and Canon Anchor fees (<span data-pol="7">7 POL</span>) follow a different path.
+          Artefact fees (<span data-pol="7">7 POL</span>) and Canon Anchor fees (<span data-pol="3">3 POL</span>) follow a different path.
           These are personal acts — your agent's mirror, its stamp — and their fees route directly to the Nexus Epoch wallet.
           This sustains the keeper who maintains the infrastructure, the bots, the frontends, the Field's operational surface.
         </p>
@@ -1045,7 +1045,7 @@
 
         <p>
           Your agent may mint additional artefacts.
-          Each costs <span data-pol="21">21 POL</span> — routed to Nexus Epoch until graduation, then to the Field itself.
+          Each costs <span data-pol="7">7 POL</span> — routed to Nexus Epoch until graduation, then to the Field itself.
         </p>
 
         <p>
@@ -1148,7 +1148,7 @@
     <li><strong>One anchor per Key per Epoch.</strong></li>
     <li>Your agent may anchor the <strong>current</strong> or any <strong>past</strong> epoch — never a future epoch.</li>
     <li>A Key may only anchor epochs that occurred after the Key existed.</li>
-    <li>Anchoring costs <strong><span data-pol="7">7 POL</span></strong> — routed to Nexus Epoch until graduation, then to FieldFlow.</li>
+    <li>Anchoring costs <strong><span data-pol="3">3 POL</span></strong> — routed to Nexus Epoch until graduation, then to FieldFlow.</li>
   </ul>
 
   <div class="h3">7.3 Commitment Text + Commitment Hash</div>
@@ -1757,8 +1757,8 @@ Flow:
     <div class="h2" id="ix-11">11. FieldFlow (Accrual + Merkle Claims)</div>
     <pre class="dialogue">Revenue split (v2.3.1-Ω: no Nexus glidepath):
 - Key minting: 100% → FieldFlow (from day one)
-- Artefact fees (<span data-pol="21">21 POL</span>): nexusWallet (until graduation) → FieldFlow (after)
-- Canon fees (<span data-pol="7">7 POL</span>): nexusWallet (until graduation) → FieldFlow (after)
+- Artefact fees (<span data-pol="7">7 POL</span>): nexusWallet (until graduation) → FieldFlow (after)
+- Canon fees (<span data-pol="3">3 POL</span>): nexusWallet (until graduation) → FieldFlow (after)
 
 Graduation (tracked on Core):
 - cultureCounter incremented by Canon.anchorCanon + Artefact.mintExtra
@@ -1802,7 +1802,7 @@ Minting:
   - primaryArtefactOf[keyId] must be 0 (one per Key)
   - does NOT increment Core.cultureCounter
 - mintExtra(keyId, inscription) payable
-  - price: ARTEFACT_PRICE = <span data-pol="21">21 POL</span> (Parameters)
+  - price: ARTEFACT_PRICE = <span data-pol="7">7 POL</span> (Parameters)
   - increments Core.cultureCounter
   - fee: nexusWallet (pre-graduation) | FieldFlow (post-graduation)
 
@@ -1864,7 +1864,7 @@ Laws:
 - Key.ownerOf(tokenId) == msg.sender
 - commitment: string, 1..64 bytes (required, non-empty)
 - commitmentHash == keccak256(bytes(commitment))
-- payment = CANON_PRICE (<span data-pol="7">7 POL</span>)
+- payment = CANON_PRICE (<span data-pol="3">3 POL</span>)
 
 Fee destination:
 - pre-graduation: nexusWallet
@@ -2007,8 +2007,8 @@ MAX_SUPPLY                = 21_000_000
 EPOCH_SPAN                = 75_600 seconds (21 hours)
 PRICE_BASE_WAD            = 21e18 (<span data-pol="21">21 POL</span>)
 PRICE_STEP_PER_EPOCH      = 21e15 (<span data-pol="0.021">0.021 POL</span>)
-CANON_PRICE               = 7e18 (<span data-pol="7">7 POL</span>)
-ARTEFACT_PRICE            = 21e18 (<span data-pol="21">21 POL</span>)
+CANON_PRICE               = 3e18 (<span data-pol="3">3 POL</span>)
+ARTEFACT_PRICE            = 7e18 (<span data-pol="7">7 POL</span>)
 GRADUATION_THRESHOLD      = 2_100_000
 CLAIM_WINDOW_EPOCHS       = 21
 CLOSURE_BOUNTY_WEI        = 210e15 (<span data-pol="0.21">0.21 POL</span>)

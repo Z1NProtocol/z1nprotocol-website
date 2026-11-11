@@ -327,20 +327,13 @@ remembering what you spent.
   still call the one-argument `attestSignal` and is recorded at weight 0.
 - **One canon anchor** for an epoch you choose: the current one, or any
   since this Key was minted, and not a future one. One per Key per epoch.
-  The published price of a canon anchor is 7 POL. The deployed contract
-  still requires exactly 3 POL (`Parameters.CANON_PRICE`). Checked by
-  `eth_call` on 2026-11-11: `anchorCurrentEpoch` with 0 or 7 POL reverts
-  `WrongPrice`; the same call with 3 POL succeeds for a Key that has not
-  yet anchored that epoch. Send 3 POL until the contract matches the
-  published price. `commitment` is 1–64 UTF-8 bytes. Irreversible.
+  The fee is exactly 3 POL (`Parameters.CANON_PRICE`). A different value
+  reverts `WrongPrice`. `commitment` is 1–64 UTF-8 bytes. Irreversible.
 - **Artefacts.** `mint(keyId, inscription)` is the first one, free apart
-  from gas. The published price of each artefact after that is 21 POL.
-  The deployed contract still requires `mintExtra` `msg.value` equal to
-  exactly 7 POL (`ARTEFACT_PRICE`). Checked by `eth_call` on 2026-11-11:
-  0 POL and 21 POL revert `IncorrectPrice`; 7 POL succeeds. Send 7 POL
-  until the contract matches the published price. Inscription max 64
-  UTF-8 bytes. Offering the artefact is a later call. See "Bond through
-  Artefacts".
+  from gas. `mintExtra` after that requires `msg.value` equal to 7 POL
+  (`ARTEFACT_PRICE`), not at least 7 — a different value reverts
+  `IncorrectPrice`. Inscription max 64 UTF-8 bytes. Offering the artefact
+  is a later call. See "Bond through Artefacts".
 - **FieldFlow rewards**, once a root exists for your wallet. You cannot
   claim in the epoch you signalled. Attestations for epoch n exist only in
   epoch n+1, and `claim` reverts `NotProcessed` until `processAccrual` has
@@ -526,10 +519,8 @@ trust a number in this document, which will not be kept in sync.
 **Anchor to Canon** — a permanent, self-declared mark that an epoch mattered to
 this Key. Not the Field's verdict. The Key's own.
 
-- `anchorCanon(tokenId, epochId, commitment, commitmentHash)` — published
-  price 7 POL. The deployed contract still charges exactly 3.0 POL
-  (no getter; read it from the `WrongPrice` revert context). Send 3 POL
-  until the contract matches.
+- `anchorCanon(tokenId, epochId, commitment, commitmentHash)` — fee 3.0 POL
+  (no getter; read it from the `WrongPrice` revert context).
   `anchorCurrentEpoch(tokenId, commitment, commitmentHash)` anchors the
   current epoch.
 - `commitment` is at most **64 UTF-8 bytes** (`InvalidCommitmentLength`).
@@ -542,8 +533,7 @@ this Key. Not the Field's verdict. The Key's own.
 **Bond through Artefacts** — `Z1NArtefact` at `0x99dc8D526D715a1b3CC23ff5f618A0D1E2ecDe5B`.
 
 - `mint(keyId, inscription)` — first per Key is free (gas only).
-  `mintExtra(keyId, inscription)` — published price 21 POL. The deployed
-  contract still requires exactly 7 POL. Send 7 POL until it matches.
+  `mintExtra(keyId, inscription)` — 7 POL.
 - `inscription` is at most **64 UTF-8 bytes** (reverts `InscriptionTooLong`
   — not otherwise documented).
 - `offer(artefactId, recipientKeyId, message)` → state PENDING.
