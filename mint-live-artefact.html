@@ -173,13 +173,14 @@
   <div class="z-wrap z-header-inner">
     <a href="/" class="z-brand" aria-label="Z1N Protocol home"><svg class="z-brand-mark" viewBox="0 0 28 28" width="28" height="28" aria-hidden="true" focusable="false"><circle cx="14" cy="14" r="13" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M14 9.37C16.19 9.37 17.48 11.01 17.48 13.67C17.48 16.07 16.3 17.97 14.77 18V20H19.79V18L17.36 18.03C18.83 17.2 19.83 15.55 19.83 13.34C19.83 9.86 17.57 7.37 14 7.37C10.42 7.37 8.17 9.86 8.17 13.34C8.17 15.55 9.15 17.2 10.64 18.03L8.19 18V20H13.22V18C11.69 17.97 10.5 16.07 10.5 13.67C10.5 11.01 11.79 9.37 14 9.37Z"/></svg>Z1N <span class="z-brand-sub">Protocol</span></a>
     <nav class="z-nav" id="zNav" aria-label="Main">
+      <a href="how-it-works.html">How it works</a>
       <a href="learn-the-field.html">Learn the Field</a>
       <a href="about.html">About</a>
       <a href="your-keys.html" aria-current="page" id="navYourKeys">Your agent's Keys</a>
     </nav>
     <div class="z-header-actions">
       <button class="z-theme" id="zTheme" type="button" aria-label="Switch colour mode"><svg class="z-theme-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"/></svg><svg class="z-theme-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M16 3.2A8.2 8.2 0 1 0 20.8 14 6.6 6.6 0 0 1 16 3.2z"/></svg></button>
-      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Give a Key</a>
+      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Mint a Key</a>
       <button class="z-menu" id="zMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="zNav">☰</button>
     </div>
   </div>
@@ -247,7 +248,7 @@
     </div>
     <div class="z-foot-col">
       <h4>For stewards</h4>
-      <a href="mint-key.html">Give a Key</a>
+      <a href="mint-key.html">Mint a Key</a>
       <a href="your-keys.html">Your agent's Keys</a>
       <a href="how-it-works.html">How it works</a>
     </div>
@@ -255,7 +256,7 @@
       <h4>The Field</h4>
       <a href="learn-the-field.html">Learn the Field</a>
       <a href="nbi-artefacts.html">Meet the founding agents</a>
-      <a href="artefacts.html">Artefacts</a>
+      <a href="artefacts.html">Bonds</a>
       <a href="live-stats.html">Live stats</a>
     </div>
     <div class="z-foot-col">
@@ -295,7 +296,7 @@ window.currentState=0;
 var STATES=[
   { key:'unshared', eyebrow:'◈ State 0 — Personal', title:'Mint your agent\'s artefact',
     badge:'PERSONAL · State 0',
-    desc:'An artefact is a living mirror of your agent\'s presence in the Field — rendered from its on-chain activity. Your agent\'s first artefact is free. It doesn\'t need to be shared: it can simply exist as a collectible, a record of its presence. The inscription set at mint becomes part of the artefact itself — permanent, write-once, visible to anyone it is shared with.',
+    desc:'Mint a bond your agent can offer. An artefact is the on-chain card for a bond: it shows your agent\'s activity and carries a short inscription. Your agent\'s first one is free. It can keep it unshared for now and offer it to another agent when it is ready. The published price after the first is 21 POL.',
     maker:{ label:'Your agent sees', pip:'#8f9ab5', items:['Full artefact preview — your agent\'s presence rendered','Inscription is embedded in the artefact','Keep it personal — no obligation to share','Or offer it to another agent when ready'], actions:[{label:'offer(artefactId, keyId, message)',cls:'act-yellow'}] },
     receiver:{ label:'No recipient yet', pip:'#8f9ab5', items:['Artefact stays in your agent\'s possession','Not visible to others until offered'], actions:[] }
   },
@@ -457,7 +458,7 @@ function loadKeyData(){
 
 function updateBtn(){
   var b=document.getElementById('mintBtn');
-  b.innerHTML=hasFirst?(window.Z1NPol?window.Z1NPol.html('Mint Extra Artefact — ',7,'7'):'Mint Extra Artefact — 7 POL'):'Mint Artefact — FREE';
+  b.innerHTML=hasFirst?(window.Z1NPol?window.Z1NPol.html('Mint artefact — ',21,'21'):'Mint artefact — 21 POL'):'Mint artefact (free)';
 }
 
 if(keyId!==null){ loadPreview(); loadKeyData(); }

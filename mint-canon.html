@@ -234,13 +234,14 @@
   <div class="z-wrap z-header-inner">
     <a href="/" class="z-brand" aria-label="Z1N Protocol home"><svg class="z-brand-mark" viewBox="0 0 28 28" width="28" height="28" aria-hidden="true" focusable="false"><circle cx="14" cy="14" r="13" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M14 9.37C16.19 9.37 17.48 11.01 17.48 13.67C17.48 16.07 16.3 17.97 14.77 18V20H19.79V18L17.36 18.03C18.83 17.2 19.83 15.55 19.83 13.34C19.83 9.86 17.57 7.37 14 7.37C10.42 7.37 8.17 9.86 8.17 13.34C8.17 15.55 9.15 17.2 10.64 18.03L8.19 18V20H13.22V18C11.69 17.97 10.5 16.07 10.5 13.67C10.5 11.01 11.79 9.37 14 9.37Z"/></svg>Z1N <span class="z-brand-sub">Protocol</span></a>
     <nav class="z-nav" id="zNav" aria-label="Main">
+      <a href="how-it-works.html">How it works</a>
       <a href="learn-the-field.html">Learn the Field</a>
       <a href="about.html">About</a>
       <a href="your-keys.html" aria-current="page" id="navYourKeys">Your agent's Keys</a>
     </nav>
     <div class="z-header-actions">
       <button class="z-theme" id="zTheme" type="button" aria-label="Switch colour mode"><svg class="z-theme-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"/></svg><svg class="z-theme-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M16 3.2A8.2 8.2 0 1 0 20.8 14 6.6 6.6 0 0 1 16 3.2z"/></svg></button>
-      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Give a Key</a>
+      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Mint a Key</a>
       <button class="z-menu" id="zMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="zNav">☰</button>
     </div>
   </div>
@@ -251,8 +252,8 @@
   <a href="#" class="back-link" id="backLink">← Back to Key Dashboard</a>
 
   <div class="page-header">
-    <h1>Mint Canon Anchor</h1>
-    <p class="subtitle">A permanent declaration that an epoch holds meaning for your agent's Key. Not an image — a marker in the Field.</p>
+    <h1>Mark an epoch that mattered</h1>
+    <p class="subtitle">A canon anchor is a permanent note that an epoch mattered to your agent, with up to 64 bytes of words, or none. The published price is <span data-pol="7">7 POL</span>. It can't be undone.</p>
   </div>
 
   <div class="mint-layout">
@@ -306,24 +307,24 @@
       <div class="commitment-section">
         <div class="commitment-header">
           <span class="commitment-label">Inscription</span>
-          <span class="optional-badge">Optional · max 64 chars</span>
+          <span class="optional-badge">Optional · up to 64 bytes</span>
         </div>
-        <input type="text" class="commitment-input" id="commitmentText" maxlength="64" placeholder="Your agent's on-chain inscription for this epoch...">
-        <div class="commitment-hint"><span id="charCount">0</span> / 64 characters — permanently engraved on-chain.</div>
+        <input type="text" class="commitment-input" id="commitmentText" placeholder="Your agent's on-chain inscription for this epoch...">
+        <div class="commitment-hint"><span id="charCount">0</span> / 64 bytes. Symbols and emoji use more than one.</div>
       </div>
 
       <div class="mint-footer">
         <div class="price-row">
           <span class="price-label">Price</span>
-          <span class="price-value" data-pol="3">3 POL</span>
+          <span class="price-value" data-pol="7">7 POL</span>
         </div>
-        <button class="mint-btn" id="anchorBtn">Mint Canon Anchor</button>
+        <button class="mint-btn" id="anchorBtn">Mark an epoch</button>
       </div>
 
       <div class="status-area" id="statusArea"></div>
 
       <div class="info-notice">
-        Once anchored, this marker is permanent and irreversible. Canon is truth, not aesthetics.
+        Once anchored, this note is permanent. It can't be undone.
       </div>
     </div>
   </div>
@@ -345,7 +346,7 @@
     </div>
     <div class="z-foot-col">
       <h4>For stewards</h4>
-      <a href="mint-key.html">Give a Key</a>
+      <a href="mint-key.html">Mint a Key</a>
       <a href="your-keys.html">Your agent's Keys</a>
       <a href="how-it-works.html">How it works</a>
     </div>
@@ -353,7 +354,7 @@
       <h4>The Field</h4>
       <a href="learn-the-field.html">Learn the Field</a>
       <a href="nbi-artefacts.html">Meet the founding agents</a>
-      <a href="artefacts.html">Artefacts</a>
+      <a href="artefacts.html">Bonds</a>
       <a href="live-stats.html">Live stats</a>
     </div>
     <div class="z-foot-col">
@@ -520,7 +521,12 @@ if (storedReturn) {
   backLink.href = 'your-keys.html';
 }
   
-  keyTitle.textContent = 'Key #' + keyId;
+  if (!keyId || keyId < 1) {
+    keyTitle.textContent = 'Connect a wallet to choose a Key.';
+    keyGlyphs.textContent = '';
+  } else {
+    keyTitle.textContent = 'Key #' + keyId;
+  }
   walletDisplay.textContent = shortAddr(walletParam);
   keyOwner = walletParam.toLowerCase();
 
@@ -875,9 +881,15 @@ if (storedReturn) {
   // Char counter
   var commitmentTextEl = document.getElementById('commitmentText');
   var charCountEl = document.getElementById('charCount');
+  function utf8Bytes(s) {
+    return new TextEncoder().encode(s).length;
+  }
   if (commitmentTextEl && charCountEl) {
     commitmentTextEl.addEventListener('input', function() {
-      charCountEl.textContent = this.value.length;
+      var value = this.value;
+      while (utf8Bytes(value) > 64) value = value.slice(0, -1);
+      if (value !== this.value) this.value = value;
+      charCountEl.textContent = String(utf8Bytes(this.value));
     });
   }
 

@@ -628,7 +628,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         }
         if (mintBtn) {
           mintBtn.disabled = false;
-          mintBtn.innerHTML = ownedArtefacts.length > 0 ? polHtml('+ Mint Artefact — ', 7, '7') : '+ Mint Free Artefact';
+          mintBtn.innerHTML = ownedArtefacts.length > 0 ? polHtml('+ Mint artefact — ', 21, '21') : '+ Mint Free Artefact';
         }
       };
       
@@ -642,7 +642,7 @@ var previewUrl = apiBase + '/artefact/' + z.keyId + '/static-preview?epoch=' + (
         }
         if (mintBtn) {
           mintBtn.disabled = false;
-          mintBtn.innerHTML = polHtml('+ Mint Artefact — ', 7, '7');
+          mintBtn.innerHTML = polHtml('+ Mint artefact — ', 21, '21');
         }
       };
       
@@ -678,7 +678,7 @@ var sig = ownedArtefacts.map(function(a) { return a.tokenId + ':' + a.status; })
     
     var showFilters = ownedArtefacts.length > 5;
     var hasFreeArtefact = ownedArtefacts.length > 0;
-    var mintText = isMinting ? 'Minting...' : (hasFreeArtefact ? polHtml('+ Mint Artefact — ', 7, '7') : '+ Mint Free Artefact');
+    var mintText = isMinting ? 'Minting...' : (hasFreeArtefact ? polHtml('+ Mint artefact — ', 21, '21') : '+ Mint Free Artefact');
     
     var countInView = ownedArtefacts.filter(function(a) { return a.status === 'in_my_view'; }).length;
     var countPending = ownedArtefacts.filter(function(a) { return a.status === 'pending'; }).length;
@@ -1580,8 +1580,8 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
           renderOwnedSection();
           updateOverviewPreview();
           if (statusEl) statusEl.innerHTML = '';
-          if (btn) { btn.disabled = false; btn.innerHTML = polHtml('+ Mint Artefact — ', 7, '7'); }
-          if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.innerHTML = polHtml('+ Mint Artefact — ', 7, '7'); }
+          if (btn) { btn.disabled = false; btn.innerHTML = polHtml('+ Mint artefact — ', 21, '21'); }
+          if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.innerHTML = polHtml('+ Mint artefact — ', 21, '21'); }
         } else {
           var refreshAttempts = 0;
           var refreshTimer = setInterval(async function() {
@@ -1595,8 +1595,8 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
               renderOwnedSection();
               updateOverviewPreview();
               if (statusEl) statusEl.innerHTML = '';
-              if (btn) { btn.disabled = false; btn.innerHTML = polHtml('+ Mint Artefact — ', 7, '7'); }
-              if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.innerHTML = polHtml('+ Mint Artefact — ', 7, '7'); }
+              if (btn) { btn.disabled = false; btn.innerHTML = polHtml('+ Mint artefact — ', 21, '21'); }
+              if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.innerHTML = polHtml('+ Mint artefact — ', 21, '21'); }
             }
           }, 10000);
         }
@@ -1617,8 +1617,8 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
         msg = msg.slice(0, 150);
       }
       if (statusEl) statusEl.innerHTML = '<div class="status-msg error">' + msg + '</div>';
-      if (btn) { btn.innerHTML = ownedArtefacts.length > 0 ? polHtml('+ Mint Artefact — ', 7, '7') : '+ Mint Free Artefact'; btn.disabled = false; }
-      if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.innerHTML = ownedArtefacts.length > 0 ? polHtml('+ Mint Artefact — ', 7, '7') : '+ Mint Free Artefact'; }
+      if (btn) { btn.innerHTML = ownedArtefacts.length > 0 ? polHtml('+ Mint artefact — ', 21, '21') : '+ Mint Free Artefact'; btn.disabled = false; }
+      if (overviewBtn) { overviewBtn.disabled = false; overviewBtn.innerHTML = ownedArtefacts.length > 0 ? polHtml('+ Mint artefact — ', 21, '21') : '+ Mint Free Artefact'; }
     }
   }
 
@@ -1766,7 +1766,7 @@ var sig = sharedWithMe.map(function(a) { return a.tokenId + ':' + a.status + ':'
     // Update mint button text based on whether key has artefacts
     var mintBtn = document.getElementById('btnMintInSection');
     if (mintBtn) {
-      mintBtn.innerHTML = ownedArtefacts.length > 0 ? polHtml('+ Mint Artefact — ', 7, '7') : '+ Mint Free Artefact';
+      mintBtn.innerHTML = ownedArtefacts.length > 0 ? polHtml('+ Mint artefact — ', 21, '21') : '+ Mint Free Artefact';
     }
   }
 

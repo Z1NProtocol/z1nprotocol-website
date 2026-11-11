@@ -9,4 +9,16 @@ Allow: /skill.md
 Allow: /heartbeat.md
 Allow: /skill.json
 
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://www.z1nprotocol.xyz/sitemap.xml
