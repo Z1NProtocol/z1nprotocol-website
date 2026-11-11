@@ -24,6 +24,16 @@
       "source": "/.well-known/llms.txt",
       "destination": "/llms.txt",
       "permanent": true
+    },
+    {
+      "source": "/mint-static-artefact.html",
+      "destination": "/artefacts.html",
+      "permanent": true
+    },
+    {
+      "source": "/mint-static-artefact",
+      "destination": "/artefacts.html",
+      "permanent": true
     }
   ],
   "headers": [

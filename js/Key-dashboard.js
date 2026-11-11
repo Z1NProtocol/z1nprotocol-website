@@ -34,7 +34,8 @@
   var SUBMISSION_FEE = '0';
   var SILENCE_FEE = '0';
   var ATTEST_FEE = '0';
-  var MINT_PRICE = '0x1236efcbcbb340000';
+  // mintExtra requires exactly 7 POL (7e18).
+  var MINT_PRICE = '0x6124FEE993BC0000';
   var SEL = { balanceOf: '0x70a08231', tokenOfOwnerByIndex: '0x2f745c59', ownerOf: '0x6352211e', glyphs: '0x887296c3', activeEpoch: '0x76671808', signalCount: '0xfd68f0e5', attestCount: '0xfe6569d7' };
   var GLYPHS = ['∞','π','⋮','⊕','⊗','∴','∵','↔','↻','△','◇','○','●','□','☰','☷','⚑','✱','⊥','≡','◊'];
   
@@ -785,7 +786,7 @@ updateAttestBtn();
     }
     var overviewMintBtn = document.getElementById('btnMintLiveArtefactOverview');
     if (overviewMintBtn && !overviewMintBtn.disabled) {
-      overviewMintBtn.innerHTML = hasFirstArtefact ? polHtml('+ Mint Artefact — ', 7, '7') : '+ Mint First Artefact — FREE';
+      overviewMintBtn.innerHTML = hasFirstArtefact ? polHtml('+ Mint artefact — ', 7, '7') : '+ Mint artefact (free)';
     }
   }
 
@@ -811,7 +812,7 @@ updateAttestBtn();
       '</div>' +
       '<div style="margin-top:16px;display:flex;gap:8px;justify-content:center;">' +
         '<button onclick="switchTab(\'artefacts\');closeArtefactModal();" class="btn btn-primary" style="font-size:12px;padding:8px 16px;">View All Artefacts</button>' +
-        '<button onclick="window.location.href=\'mint-live-artefact.html?key=\'+(window.Z1N&&window.Z1N.keyId||0)+\'&wallet=\'+encodeURIComponent(window.Z1N&&window.Z1N.wallet||\'\');closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? polHtml('+ Mint Extra — ', 7, '7') : '+ Mint First — FREE') + '</button>' +
+        '<button onclick="window.location.href=\'mint-live-artefact.html?key=\'+(window.Z1N&&window.Z1N.keyId||0)+\'&wallet=\'+encodeURIComponent(window.Z1N&&window.Z1N.wallet||\'\');closeArtefactModal();" class="btn btn-secondary" style="font-size:12px;padding:8px 16px;">' + (hasFirstArtefact ? polHtml('+ Mint artefact — ', 7, '7') : '+ Mint artefact (free)') + '</button>' +
       '</div>' +
     '</div>';
     
@@ -827,7 +828,7 @@ updateAttestBtn();
     grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">Loading artefacts...</div>';
     try {
       await checkHasFirstArtefact();
-      if (mintBtn) mintBtn.innerHTML = hasFirstArtefact ? polHtml('+ Mint Extra (mintExtra) — ', 7, '7') : '+ Mint First (mint) — FREE';
+      if (mintBtn) mintBtn.innerHTML = hasFirstArtefact ? polHtml('+ Mint artefact — ', 7, '7') : '+ Mint artefact (free)';
       var r = await fetch(API_BASE + '/key/' + currentKeyId + '/artefacts', {cache:'no-store'});
       if (!r.ok) { grid.innerHTML = '<div style="grid-column:span 4;padding:30px;text-align:center;color:var(--text-soft);font-size:11px;">No artefacts found</div>'; if (badge) badge.textContent = '0'; if (status) status.textContent = 'No live artefact'; allLiveArtefacts = []; allStaticArtefacts = []; return; }
       var d = await r.json();

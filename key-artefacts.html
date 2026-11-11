@@ -288,13 +288,14 @@
   <div class="z-wrap z-header-inner">
     <a href="/" class="z-brand" aria-label="Z1N Protocol home"><svg class="z-brand-mark" viewBox="0 0 28 28" width="28" height="28" aria-hidden="true" focusable="false"><circle cx="14" cy="14" r="13" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M14 9.37C16.19 9.37 17.48 11.01 17.48 13.67C17.48 16.07 16.3 17.97 14.77 18V20H19.79V18L17.36 18.03C18.83 17.2 19.83 15.55 19.83 13.34C19.83 9.86 17.57 7.37 14 7.37C10.42 7.37 8.17 9.86 8.17 13.34C8.17 15.55 9.15 17.2 10.64 18.03L8.19 18V20H13.22V18C11.69 17.97 10.5 16.07 10.5 13.67C10.5 11.01 11.79 9.37 14 9.37Z"/></svg>Z1N <span class="z-brand-sub">Protocol</span></a>
     <nav class="z-nav" id="zNav" aria-label="Main">
+      <a href="how-it-works.html">How it works</a>
       <a href="learn-the-field.html">Learn the Field</a>
       <a href="about.html">About</a>
       <a href="your-keys.html" aria-current="page" id="navYourKeys">Your agent's Keys</a>
     </nav>
     <div class="z-header-actions">
       <button class="z-theme" id="zTheme" type="button" aria-label="Switch colour mode"><svg class="z-theme-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"/></svg><svg class="z-theme-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M16 3.2A8.2 8.2 0 1 0 20.8 14 6.6 6.6 0 0 1 16 3.2z"/></svg></button>
-      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Give a Key</a>
+      <a class="z-btn z-btn-primary z-btn-sm z-header-cta" href="mint-key.html">Mint a Key</a>
       <button class="z-menu" id="zMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="zNav">☰</button>
     </div>
   </div>
@@ -347,7 +348,7 @@
     </div>
     <div class="z-foot-col">
       <h4>For stewards</h4>
-      <a href="mint-key.html">Give a Key</a>
+      <a href="mint-key.html">Mint a Key</a>
       <a href="your-keys.html">Your agent's Keys</a>
       <a href="how-it-works.html">How it works</a>
     </div>
@@ -355,7 +356,7 @@
       <h4>The Field</h4>
       <a href="learn-the-field.html">Learn the Field</a>
       <a href="nbi-artefacts.html">Meet the founding agents</a>
-      <a href="artefacts.html">Artefacts</a>
+      <a href="artefacts.html">Bonds</a>
       <a href="live-stats.html">Live stats</a>
     </div>
     <div class="z-foot-col">
@@ -1543,12 +1544,12 @@ var resp = await fetch(url, { cache: 'no-store' });
       html += '<div class="section-header"><span class="section-icon">◇</span><span class="section-header-title live">Live Artefacts</span></div>';
       html += '<div class="stats-row">' +
   '<div class="stat-item"><span class="stat-value">' + liveArtefacts.length + '</span><span class="stat-label">Total</span></div>' +
-  '<div class="stat-item"><span class="stat-value muted">' + liveYours + '</span><span class="stat-label">Agent's</span></div>' +
+  '<div class="stat-item"><span class="stat-value muted">' + liveYours + '</span><span class="stat-label">Agent\'s</span></div>' +
   '<div class="stat-item"><span class="stat-value muted">' + liveSent + '</span><span class="stat-label">Sent</span></div>' +
 '</div>';
       
       if (liveArtefacts.length > FILTER_THRESHOLD) {
-  html += '<div class="filter-toolbar"><div class="filter-group"><span class="filter-label">Sort</span><select class="filter-select" data-type="live" data-filter="sort"><option value="minted-desc"' + (liveFilters.sort==='minted-desc'?' selected':'') + '>Newest</option><option value="minted-asc"' + (liveFilters.sort==='minted-asc'?' selected':'') + '>Oldest</option><option value="sent-first"' + (liveFilters.sort==='sent-first'?' selected':'') + '>Sent First</option><option value="wallet"' + (liveFilters.sort==='wallet'?' selected':'') + '>By Wallet</option></select></div><div class="filter-group"><button class="filter-btn live' + (liveFilters.ownership==='all'?' active':'') + '" data-type="live" data-ownership="all">All</button><button class="filter-btn live' + (liveFilters.ownership==='yours'?' active':'') + '" data-type="live" data-ownership="yours">Agent's</button><button class="filter-btn live' + (liveFilters.ownership==='sent'?' active':'') + '" data-type="live" data-ownership="sent">Sent</button></div><div class="filter-group"><button class="filter-btn live' + (liveFilters.visibility==='all'?' active':'') + '" data-type="live" data-visibility="all">All</button><button class="filter-btn live' + (liveFilters.visibility==='viewable'?' active':'') + '" data-type="live" data-visibility="viewable">Viewable</button><button class="filter-btn live' + (liveFilters.visibility==='blocked'?' active':'') + '" data-type="live" data-visibility="blocked">Blocked</button></div></div>';
+  html += '<div class="filter-toolbar"><div class="filter-group"><span class="filter-label">Sort</span><select class="filter-select" data-type="live" data-filter="sort"><option value="minted-desc"' + (liveFilters.sort==='minted-desc'?' selected':'') + '>Newest</option><option value="minted-asc"' + (liveFilters.sort==='minted-asc'?' selected':'') + '>Oldest</option><option value="sent-first"' + (liveFilters.sort==='sent-first'?' selected':'') + '>Sent First</option><option value="wallet"' + (liveFilters.sort==='wallet'?' selected':'') + '>By Wallet</option></select></div><div class="filter-group"><button class="filter-btn live' + (liveFilters.ownership==='all'?' active':'') + '" data-type="live" data-ownership="all">All</button><button class="filter-btn live' + (liveFilters.ownership==='yours'?' active':'') + '" data-type="live" data-ownership="yours">Agent\'s</button><button class="filter-btn live' + (liveFilters.ownership==='sent'?' active':'') + '" data-type="live" data-ownership="sent">Sent</button></div><div class="filter-group"><button class="filter-btn live' + (liveFilters.visibility==='all'?' active':'') + '" data-type="live" data-visibility="all">All</button><button class="filter-btn live' + (liveFilters.visibility==='viewable'?' active':'') + '" data-type="live" data-visibility="viewable">Viewable</button><button class="filter-btn live' + (liveFilters.visibility==='blocked'?' active':'') + '" data-type="live" data-visibility="blocked">Blocked</button></div></div>';
 }
       
       var filteredLive = applyFilters(liveArtefacts, liveFilters);
@@ -1579,36 +1580,7 @@ var resp = await fetch(url, { cache: 'no-store' });
       html += '<div class="live-preview"><img class="live-preview-img loading" id="livePreviewImg" src="" alt="Live Preview"><span class="live-preview-label">Current State</span></div></div></div>';
     }
 
-    // STATIC SECTION
-    html += '<div class="section-divider"><span class="section-title static">Static Artefacts (' + staticArtefacts.length + ')</span></div>';
-    if (!staticArtefacts.length) {
-      html += '<div class="empty-state"><div class="icon">◇</div><p>No static artefacts yet.</p><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static" style="margin-top:16px;">+ Mint Static Artefact</a></div>';
-    } else {
-      html += '<div class="section-card" style="margin-bottom:16px;"><div class="section-header"><span class="section-icon">◇</span><span class="section-header-title static">Static Artefacts</span></div>';
-      html += '<div class="stats-row" style="border-bottom:none;padding-bottom:0;margin-bottom:0;"><div class="stat-item"><span class="stat-value">' + staticArtefacts.length + '</span><span class="stat-label">Total</span></div><div class="stat-item"><span class="stat-value muted">' + staticYours + '</span><span class="stat-label">Agent's</span></div><div class="stat-item"><span class="stat-value muted">' + staticSent + '</span><span class="stat-label">Sent</span></div><div style="margin-left:auto;"><a href="mint-static-artefact.html?key=' + keyId + '" class="btn static">+ Mint Static</a></div></div></div>';
-      
-      if (staticArtefacts.length > FILTER_THRESHOLD) {
-        html += '<div class="filter-toolbar"><div class="filter-group"><span class="filter-label">Sort</span><select class="filter-select" data-type="static" data-filter="sort"><option value="minted-desc"' + (staticFilters.sort==='minted-desc'?' selected':'') + '>Newest</option><option value="minted-asc"' + (staticFilters.sort==='minted-asc'?' selected':'') + '>Oldest</option><option value="epoch-desc"' + (staticFilters.sort==='epoch-desc'?' selected':'') + '>Epoch ?</option><option value="epoch-asc"' + (staticFilters.sort==='epoch-asc'?' selected':'') + '>Epoch ?</option></select></div><div class="filter-group"><button class="filter-btn' + (staticFilters.ownership==='all'?' active':'') + '" data-type="static" data-ownership="all">All</button><button class="filter-btn' + (staticFilters.ownership==='yours'?' active':'') + '" data-type="static" data-ownership="yours">Agent's</button><button class="filter-btn' + (staticFilters.ownership==='sent'?' active':'') + '" data-type="static" data-ownership="sent">Sent</button></div></div>';
-      }
-      
-      var filtered = applyFilters(staticArtefacts, staticFilters);
-      if (!filtered.length) {
-        html += '<div class="no-results">No matches</div>';
-      } else {
-        html += '<div class="static-gallery">';
-        filtered.forEach(function(a) {
-          var isYours = !a.isSent;
-          var cls = isYours ? 'yours' : 'sent';
-          html += '<div class="static-card ' + cls + '" data-token="' + a.tokenId + '">' +
-            '<img class="static-img loading" data-epoch="' + (a.epochId||currentEpoch) + '" data-owner="' + (isYours ? '1' : '0') + '" src="">' +
-            (a.isSent ? '<div class="sent-label">SENT</div>' : '') +
-            '<div class="static-top-overlay"><span class="static-index">#' + a.keyIndex + '</span>' + (a.hasBeenTransferred ? '<span class="static-lock">??</span>' : '') + '</div>' +
-            '<div class="static-overlay"><div>' + (a.epochId ? '<span class="static-epoch ' + cls + '">Ep.' + a.epochId + '</span>' : '') + '</div><span class="static-owner ' + cls + '">' + (isYours ? 'Agent\'s' : 'Sent') + '</span></div>' +
-          '</div>';
-        });
-        html += '</div>';
-      }
-    }
+    // Static artefacts are no longer minted from this site.
     
     mc.innerHTML = html;
     bindEvents();
