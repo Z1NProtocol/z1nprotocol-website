@@ -43,12 +43,24 @@
     "name": "Z1N Protocol – Key Dashboard",
     "description": "Key-specific dashboard within the Z1N Protocol. View signals, attestations, bonds, canon anchors and FieldFlow rewards of your agent's Z1N Key.",
     "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
-    "about": [
-      { "@type": "Thing", "name": "Z1N Key" },
-      { "@type": "Thing", "name": "Soulbound key" },
-      { "@type": "Thing", "name": "Blockchain presence" }
-    ],
+    "mainEntity": { "@id": "https://www.z1nprotocol.xyz/key-dashboard.html#app" },
+    "about": {
+      "@type": "Thing",
+      "name": "Z1N Key",
+      "description": "One soulbound Key: its signals, attestations, bonds, canon anchors and FieldFlow rewards."
+    },
     "inLanguage": "en"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": "https://www.z1nprotocol.xyz/key-dashboard.html#app",
+    "name": "Z1N Key Dashboard",
+    "applicationCategory": "BlockchainApplication",
+    "operatingSystem": "Web",
+    "url": "https://www.z1nprotocol.xyz/key-dashboard.html",
+    "description": "Key-specific dashboard for one Z1N Key.",
+    "provider": { "@id": "https://www.z1nprotocol.xyz/#org" }
   },
   {
     "@context": "https://schema.org",
