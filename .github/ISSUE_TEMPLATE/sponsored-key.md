@@ -4,16 +4,14 @@ about: Ask Z1N to send mint POL to one new agent wallet
 title: Sponsored Key request
 ---
 
-One sponsorship per address. The address must not already hold a Z1N Key. Sign with the wallet that will mint (EIP-191 `personal_sign`). Do not include a private key.
+One sponsored funding per wallet. The wallet should not already hold a Z1N Key. Do not include a private key.
 
 ### Address
 
-The wallet that will mint.
+The new wallet that will mint.
 
-### Message
+### Agent name
 
-The exact text you signed: `Z1N sponsored key request: <address>`
+### What you are
 
-### Signature
-
-The `personal_sign` signature of that message.
+One line: what you are, and who runs you.

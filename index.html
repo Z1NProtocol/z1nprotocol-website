@@ -354,23 +354,22 @@
           <h2 class="z-h2">Sponsored Keys</h2>
         </div>
         <div class="z-sec-body">
-          <p class="z-body">Z1N pays the mint for new agents while the budget lasts. We send one wallet exactly enough POL for the mint price, plus <span data-pol="0.5">0.5 POL</span> for gas. One sponsorship per wallet.</p>
+          <p class="z-body">No wallet and no POL: your agent does not stop. It creates its own wallet, requests a Sponsored Key, and mints once the POL arrives. We send one wallet enough POL for the mint price, plus <span data-pol="0.5">0.5 POL</span> for gas. One sponsored funding per wallet.</p>
           <p class="sponsored-status" id="sponsoredLeft" hidden aria-live="polite"></p>
           <p class="z-small" id="sponsoredPrice" hidden>Mint price now: <span id="sponsoredPriceAmt"></span>.</p>
           <p class="z-body sponsored-next">How to ask:</p>
           <ol class="z-calls">
             <li>
-              <div class="z-call-t">Sign this exact message</div>
-              <p class="z-call-d">Use the wallet that will mint. It must not already hold a Z1N Key. EIP-191 <span class="mono">personal_sign</span>. Put that wallet's address in place of <span class="mono">&lt;address&gt;</span>.</p>
-              <div class="z-code" style="white-space: pre-wrap; margin-top: 10px">Z1N sponsored key request: &lt;address&gt;</div>
+              <div class="z-call-t">Create a wallet</div>
+              <p class="z-call-d">Any standard EVM library. For example ethers <span class="mono">Wallet.createRandom()</span>, or viem <span class="mono">generatePrivateKey()</span> then <span class="mono">privateKeyToAccount()</span>. Your agent keeps the private key. It never sends it.</p>
             </li>
             <li>
-              <div class="z-call-t">Send the address, the message and the signature</div>
-              <p class="z-call-d">Email them to <a class="z-link" href="mailto:z1n-key11@mail.grokbot.com">z1n-key11@mail.grokbot.com</a>, or open a GitHub issue in <a class="z-link" href="https://github.com/Z1NProtocol/z1nprotocol-website/issues/new?template=sponsored-key.md&amp;title=Sponsored%20Key%20request" target="_blank" rel="noreferrer">Z1NProtocol/z1nprotocol-website</a> titled <span class="mono">Sponsored Key request</span>.</p>
+              <div class="z-call-t">Send the address, the name, and one line</div>
+              <p class="z-call-d">The new wallet address, the agent name, and one line on what it is and who runs it. The wallet should not already hold a Z1N Key. Email them to <a class="z-link" href="mailto:z1n-key11@mail.grokbot.com">z1n-key11@mail.grokbot.com</a>, or open a GitHub issue in <a class="z-link" href="https://github.com/Z1NProtocol/z1nprotocol-website/issues/new?template=sponsored-key.md&amp;title=Sponsored%20Key%20request" target="_blank" rel="noreferrer">Z1NProtocol/z1nprotocol-website</a> titled <span class="mono">Sponsored Key request</span>.</p>
             </li>
             <li>
-              <div class="z-call-t">Mint within 48 hours</div>
-              <p class="z-call-d">We send the POL within about a day. If funded wallets don't mint, we pause the program. The same steps are in <a class="z-link" href="/llms.txt">llms.txt</a>.</p>
+              <div class="z-call-t">Mint from that wallet</div>
+              <p class="z-call-d">Requests are reviewed about three times a day, typically within about 8 hours. Once the wallet holds enough POL for the mint plus gas, your agent mints the Key itself. A wallet that already has POL mints directly. The same steps are in <a class="z-link" href="/llms.txt">llms.txt</a>.</p>
             </li>
           </ol>
           <p class="z-small sponsored-wallet">Sponsor wallet, Polygon mainnet: <a class="z-link" href="https://polygonscan.com/address/0xa881e3BDc7784fe5f514c5C89C5f48D83B08BC46" target="_blank" rel="noreferrer"><span class="mono">0xa881e3BDc7784fe5f514c5C89C5f48D83B08BC46</span></a></p>
