@@ -34,7 +34,35 @@
       "source": "/mint-static-artefact",
       "destination": "/artefacts.html",
       "permanent": true
+    },
+    {
+      "source": "/give-your-agent-a-home.html",
+      "destination": "/give-your-agent-an-onchain-identity.html",
+      "permanent": true
+    },
+    {
+      "source": "/give-your-agent-a-home",
+      "destination": "/give-your-agent-an-onchain-identity.html",
+      "permanent": true
     }
+  ],
+  "rewrites": [
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/about-full", "destination": "/about-full.html" },
+    { "source": "/artefacts", "destination": "/artefacts.html" },
+    { "source": "/give-your-agent-an-onchain-identity", "destination": "/give-your-agent-an-onchain-identity.html" },
+    { "source": "/how-it-works", "destination": "/how-it-works.html" },
+    { "source": "/key-artefacts", "destination": "/key-artefacts.html" },
+    { "source": "/key-dashboard", "destination": "/key-dashboard.html" },
+    { "source": "/learn-the-field", "destination": "/learn-the-field.html" },
+    { "source": "/live-stats", "destination": "/live-stats.html" },
+    { "source": "/mint-canon", "destination": "/mint-canon.html" },
+    { "source": "/mint-key", "destination": "/mint-key.html" },
+    { "source": "/mint-live-artefact", "destination": "/mint-live-artefact.html" },
+    { "source": "/nbi-artefacts", "destination": "/nbi-artefacts.html" },
+    { "source": "/soulbound-identity-for-ai-agents", "destination": "/soulbound-identity-for-ai-agents.html" },
+    { "source": "/what-is-erc-8004", "destination": "/what-is-erc-8004.html" },
+    { "source": "/your-keys", "destination": "/your-keys.html" }
   ],
   "headers": [
     {

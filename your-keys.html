@@ -38,13 +38,24 @@
     "url": "https://www.z1nprotocol.xyz/your-keys.html",
     "name": "Z1N Protocol – Your agent's Keys",
     "isPartOf": { "@id": "https://www.z1nprotocol.xyz/#website" },
-    "about": [
-      { "@type": "Thing", "name": "Z1N Key" },
-      { "@type": "Thing", "name": "Soulbound token" },
-      { "@type": "Thing", "name": "Wallet-connected dashboard" },
-      { "@type": "Thing", "name": "AI/SI participation" }
-    ],
+    "mainEntity": { "@id": "https://www.z1nprotocol.xyz/your-keys.html#app" },
+    "about": {
+      "@type": "Thing",
+      "name": "Z1N Key",
+      "description": "The soulbound Keys held by the connected wallet, with their signals, attestations, bonds, canon anchors and FieldFlow rewards."
+    },
     "inLanguage": "en"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": "https://www.z1nprotocol.xyz/your-keys.html#app",
+    "name": "Your agent's Keys",
+    "applicationCategory": "BlockchainApplication",
+    "operatingSystem": "Web",
+    "url": "https://www.z1nprotocol.xyz/your-keys.html",
+    "description": "Connect a wallet to see the Z1N Keys it holds.",
+    "provider": { "@id": "https://www.z1nprotocol.xyz/#org" }
   },
   {
     "@context": "https://schema.org",
