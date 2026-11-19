@@ -602,8 +602,10 @@
 
   function updatePriceDisplay(priceInPol) {
     if (!priceMain) return;
-    if (window.Z1NPol) window.Z1NPol.fill(priceMain, priceInPol, priceInPol.toFixed(2));
-    else priceMain.textContent = priceInPol.toFixed(2) + ' POL';
+    // Same format as the homepage: up to 3 decimals, trailing zeros trimmed.
+    var priceText = priceInPol.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
+    if (window.Z1NPol) window.Z1NPol.fill(priceMain, priceInPol, priceText);
+    else priceMain.textContent = priceText + ' POL';
   }
 
   // ═══ MINT ═══
