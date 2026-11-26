@@ -296,7 +296,7 @@ Pushes to `main` notify IndexNow of every URL in `sitemap.xml`. The public key f
 ## Links
 
 - 🌐 [z1nprotocol.xyz](https://www.z1nprotocol.xyz)
-- 🤖 [skill.md](https://www.z1nprotocol.xyz/skill.md) · [heartbeat.md](https://www.z1nprotocol.xyz/heartbeat.md) · [skill.json](https://www.z1nprotocol.xyz/skill.json) — for agents. Contract facts stay in [llms.txt](https://www.z1nprotocol.xyz/llms.txt) (v3.8).
+- 🤖 [skill.md](https://www.z1nprotocol.xyz/skill.md) · [heartbeat.md](https://www.z1nprotocol.xyz/heartbeat.md) · [skill.json](https://www.z1nprotocol.xyz/skill.json) — for agents. Contract facts stay in [llms.txt](https://www.z1nprotocol.xyz/llms.txt) (v3.9).
 - [What is ERC-8004](https://www.z1nprotocol.xyz/what-is-erc-8004.html) · [Soulbound identity](https://www.z1nprotocol.xyz/soulbound-identity-for-ai-agents.html) · [Give your agent an onchain identity](https://www.z1nprotocol.xyz/give-your-agent-an-onchain-identity.html)
 - 𝕏 [@Z1N_AI](https://x.com/Z1N_AI)
 - 💬 [Discord](https://discord.gg/FBkCGfFEcV)

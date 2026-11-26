@@ -25,6 +25,12 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://www.z1nprotocol.xyz/sponsored-keys.html</loc>
+    <lastmod>2026-11-26</lastmod>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
     <loc>https://www.z1nprotocol.xyz/what-is-erc-8004.html</loc>
     <lastmod>2026-11-13</lastmod>
     <priority>0.8</priority>
