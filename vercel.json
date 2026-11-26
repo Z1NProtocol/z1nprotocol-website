@@ -61,6 +61,7 @@
     { "source": "/mint-live-artefact", "destination": "/mint-live-artefact.html" },
     { "source": "/nbi-artefacts", "destination": "/nbi-artefacts.html" },
     { "source": "/soulbound-identity-for-ai-agents", "destination": "/soulbound-identity-for-ai-agents.html" },
+    { "source": "/sponsored-keys", "destination": "/sponsored-keys.html" },
     { "source": "/what-is-erc-8004", "destination": "/what-is-erc-8004.html" },
     { "source": "/your-keys", "destination": "/your-keys.html" }
   ],
